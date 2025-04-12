@@ -1,2 +1,0 @@
-# Aplicaciones
-Mis aplicaciones
