@@ -1,0 +1,54 @@
+{
+  "stocks": [
+    {
+      "name": "Archer-Daniels-Midland",
+      "ticker": "ADM",
+      "currency": "USD",
+      "country": "EEUU",
+      "shares": 22,
+      "buyPrice": 59.36,
+      "clubPrice": 60.10,
+      "dividend": 1.80
+    },
+    {
+      "name": "AMCOR PLC",
+      "ticker": "AMCR",
+      "currency": "USD",
+      "country": "EEUU",
+      "shares": 164,
+      "buyPrice": 9.53,
+      "clubPrice": 9.70,
+      "dividend": 0.48
+    },
+    {
+      "name": "BASF SE NA O.N.",
+      "ticker": "BAS",
+      "currency": "EUR",
+      "country": "Alemania",
+      "shares": 36,
+      "buyPrice": 44.51,
+      "clubPrice": 52.00,
+      "dividend": 3.40
+    },
+    {
+      "name": "Best Buy Co Inc",
+      "ticker": "BBY",
+      "currency": "USD",
+      "country": "EEUU",
+      "shares": 24,
+      "buyPrice": 76.60,
+      "clubPrice": 83.00,
+      "dividend": 3.68
+    },
+    {
+      "name": "VOLKSWAGEN",
+      "ticker": "VOW",
+      "currency": "EUR",
+      "country": "Alemania",
+      "shares": 15,
+      "buyPrice": 103.50,
+      "clubPrice": 103.00,
+      "dividend": 6.00
+    }
+  ]
+}
