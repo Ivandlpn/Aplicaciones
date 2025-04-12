@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Aplicaciones de IA</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-robot"></i> Top Aplicaciones de IA</h1>
+            <p>Descubre las mejores herramientas de inteligencia artificial organizadas por categorías</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Buscar aplicaciones...">
+            <button id="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+
+        <div id="categories-container">
+            <!-- Las categorías se generarán dinámicamente con JavaScript -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Top Aplicaciones de IA - Malagueño.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Fallback para logos que no carguen
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.app-logo').forEach(img => {
+                img.onerror = function() {
+                    this.src = 'https://via.placeholder.com/50?text=IA';
+                    this.style.background = '#f0f0f0';
+                };
+            });
+        });
+    </script>
+
+    <!-- Cargamos los scripts -->
+    <script src="data/apps-data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

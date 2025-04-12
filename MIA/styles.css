@@ -1,0 +1,352 @@
+/* Estilos generales */
+:root {
+    --primary-color: #4a6bff;
+    --secondary-color: #6c757d;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --success-color: #28a745;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Estilos del encabezado */
+header {
+    background: linear-gradient(135deg, #4a6bff 0%, #3a5ae8 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+header::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    transform: rotate(30deg);
+}
+
+header h1 {
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+header h1 i {
+    margin-right: 15px;
+    color: #ffd700;
+    animation: float 4s ease-in-out infinite;
+}
+
+header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Animación flotante para el icono */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Estilos de búsqueda */
+#search-container {
+    display: flex;
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 5px 15px rgba(74, 107, 255, 0.2);
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+#search-input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    border: none;
+    font-size: 1.1rem;
+    background: white;
+}
+
+#search-input:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px #4a6bff;
+}
+
+#search-btn {
+    padding: 0 2rem;
+    background: linear-gradient(to right, #4a6bff, #3a5ae8);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+#search-btn:hover {
+    background: linear-gradient(to right, #3a5ae8, #2a4ad5);
+}
+
+/* Estilos de categorías */
+.category {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.category:hover {
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.category-header {
+    background: linear-gradient(to right, #4a6bff, #3a5ae8);
+    color: white;
+    padding: 1.2rem 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.category-header:hover {
+    background: linear-gradient(to right, #3a5ae8, #2a4ad5);
+}
+
+.category-header h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.category-header i {
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.category-content {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    background: #f9faff;
+}
+
+/* Estilos de tarjetas de aplicaciones */
+.app-card {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    border: none;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(74, 107, 255, 0.1);
+    animation: fadeInUp 0.6s ease forwards;
+    opacity: 0;
+}
+
+.app-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #4a6bff, #3a5ae8);
+    transition: width 0.3s ease;
+}
+
+.app-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(74, 107, 255, 0.2);
+}
+
+.app-card:hover::before {
+    width: 8px;
+}
+
+.app-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: white;
+    padding: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    z-index: 1;
+}
+
+.app-card:hover .app-logo {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.app-content {
+    flex: 1;
+}
+
+.app-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    position: relative;
+    display: inline-block;
+}
+
+.app-content h3::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #4a6bff;
+    transition: width 0.3s ease;
+}
+
+.app-card:hover .app-content h3::after {
+    width: 100%;
+}
+
+.app-content p {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.app-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.5rem;
+    background: linear-gradient(to right, #4a6bff, #3a5ae8);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(74, 107, 255, 0.3);
+}
+
+.app-link:hover {
+    background: linear-gradient(to right, #3a5ae8, #2a4ad5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 107, 255, 0.4);
+}
+
+.app-link i {
+    font-size: 0.8rem;
+}
+
+/* Estilos del pie de página */
+footer {
+    background-color: var(--dark-color);
+    color: white;
+    text-align: center;
+    padding: 3rem 0 1.5rem;
+    margin-top: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+footer::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' fill='%23f9faff'/%3E%3C/svg%3E");
+    background-size: cover;
+}
+
+/* Efecto de partículas flotantes */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='1' fill='%234a6bff' fill-opacity='0.1'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Animaciones para las tarjetas */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Retraso escalonado para las tarjetas */
+.category-content .app-card:nth-child(1) { animation-delay: 0.1s; }
+.category-content .app-card:nth-child(2) { animation-delay: 0.2s; }
+.category-content .app-card:nth-child(3) { animation-delay: 0.3s; }
+.category-content .app-card:nth-child(4) { animation-delay: 0.4s; }
+.category-content .app-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .category-content {
+        grid-template-columns: 1fr;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .app-card {
+        flex-direction: column;
+    }
+    
+    .app-logo {
+        align-self: center;
+    }
+    
+    #search-container {
+        margin-bottom: 2rem;
+    }
+}
