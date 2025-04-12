@@ -1,1 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 en Raya Familiar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- NUEVA PANTALLA: Selección de Jugadores (Inicio por defecto) -->
+    <div id="pantalla-seleccion-jugador">
+        <h2>¡Elige 2 Jugadores!</h2>
+        <div id="seleccion-contenedor">
+            <!-- Las tarjetas de jugador se generarán aquí por JS -->
+        </div>
+        <p id="seleccion-feedback" class="oculto">¡Selecciona 2 jugadores diferentes!</p>
+        <button id="boton-confirmar-seleccion" disabled>Confirmar y Jugar</button>
+        <div class="botones-extra-seleccion">
+             <button id="boton-abrir-mensaje" class="boton-mensaje-abrir">✉️ Enviar Mensaje</button>
+             <button id="boton-mostrar-reglas" class="boton-reglas-abrir">❓ Reglas</button>
+        </div>
+    </div>
 
+    <!-- Pantalla Inicial Original (Ahora Oculta por defecto) -->
+    <div id="pantalla-inicial" class="oculto">
+        <!-- Este contenido ya no se usa principalmente, pero lo dejamos por si acaso -->
+        <button id="boton-comenzar">🚀 ¡Comenzar Juego! 🚀</button>
+        <!-- Botones movidos a pantalla-seleccion-jugador -->
+    </div>
+
+    <!-- Contenedor del Juego (inicialmente oculto) -->
+    <div id="juego-contenedor" class="oculto">
+        <div id="marcador">
+             <div class="marcador-jugador">
+                <!-- IDs cambiados -->
+                <img src="" alt="Foto Jugador 1" class="foto-jugador" id="foto-jugador1">
+                <span class="nombre-jugador" id="nombre-jugador1">Jugador 1</span>
+                <span class="puntaje-jugador" id="puntaje-jugador1" data-last-score="0">0</span>
+            </div>
+            <span class="marcador-separador">:</span>
+            <div class="marcador-jugador">
+                 <!-- IDs cambiados -->
+                <img src="" alt="Foto Jugador 2" class="foto-jugador" id="foto-jugador2">
+                <span class="nombre-jugador" id="nombre-jugador2">Jugador 2</span>
+                <span class="puntaje-jugador" id="puntaje-jugador2" data-last-score="0">0</span>
+            </div>
+        </div>
+        <p id="info-turno">Turno de:</p>
+        <div id="tablero">
+            <div class="celda" data-index="0"></div> <div class="celda" data-index="1"></div> <div class="celda" data-index="2"></div>
+            <div class="celda" data-index="3"></div> <div class="celda" data-index="4"></div> <div class="celda" data-index="5"></div>
+            <div class="celda" data-index="6"></div> <div class="celda" data-index="7"></div> <div class="celda" data-index="8"></div>
+        </div>
+        <button id="boton-reiniciar" class="oculto">🔄 Siguiente Ronda 🔄</button>
+    </div>
+
+    <!-- PANTALLA: Ganador del Juego -->
+    <div id="pantalla-ganador" class="oculto">
+        <div class="confeti-contenedor"></div>
+        <h2 id="texto-ganador">¡EL CAMPEÓN ES...!</h2>
+        <img src="" alt="Foto del Ganador" id="foto-ganador" class="foto-ganador">
+        <p id="nombre-ganador" class="nombre-ganador"></p>
+        <div class="botones-ganador">
+            <button id="boton-volver-a-elegir" class="boton-ganador boton-jugar oculto">🎉 ¡Jugar Otra Vez! 🎉</button>
+            <button id="boton-salir-a-seleccion" class="boton-ganador boton-cerrar oculto">🏠 Elegir Jugadores</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA: Pregunta tipo Test -->
+    <div id="pantalla-pregunta" class="oculto">
+         <div class="pregunta-contenido">
+            <h3 id="titulo-pregunta">¡Pregunta para ganar el punto!</h3>
+            <p id="texto-pregunta">Aquí va la pregunta...</p>
+            <div id="opciones-pregunta" class="opciones-quiz"></div>
+            <p id="feedback-pregunta" class="feedback-quiz oculto"></p>
+        </div>
+    </div>
+
+    <!-- PANTALLA: Curiosidad (modificada desde ejercicio) -->
+    <div id="pantalla-ejercicio" class="oculto">
+         <div class="ejercicio-contenido curiosidad">
+            <h2>¡Curiosidad Divertida! 🤔</h2>
+            <p id="nombre-ejercicio">¡Dato curioso aquí!</p>
+            <div id="contador-ejercicio" class="contador">8</div>
+            <p id="categoria-curiosidad" class="categoria-curiosidad"></p>
+        </div>
+    </div>
+
+    <!-- Modal para Enviar Mensaje -->
+    <div id="modal-mensaje" class="modal oculto">
+        <div class="modal-contenido">
+            <button id="boton-cerrar-mensaje" class="modal-cerrar-btn">×</button>
+            <h3>Escribe tu mensaje para el Tito Iván</h3>
+            <form id="form-mensaje" action="https://formspree.io/f/TU_CODIGO_UNICO" method="POST">
+                 <div class="form-grupo"> <label for="remitente">¿Quién eres?:</label> <select name="remitente" id="remitente" required><option value="">--Selecciona--</option><option value="Hugo">Hugo</option><option value="Saul">Saúl</option></select> </div>
+                <div class="form-grupo"> <label for="mensaje-texto">Tu mensaje:</label> <textarea name="mensaje" id="mensaje-texto" rows="5" required placeholder="Escribe aquí lo que quieras decir..."></textarea> </div>
+                <input type="hidden" name="_subject" value="¡Mensaje desde el 3 en Raya!"><input type="hidden" name="_captcha" value="false">
+                <button type="submit" class="boton-enviar-msg">🚀 ¡Enviar Mensaje!</button>
+            </form>
+            <p id="mensaje-feedback" class="mensaje-estado oculto"></p>
+        </div>
+    </div>
+
+    <!-- Modal para las Reglas del Juego -->
+    <div id="modal-reglas" class="modal oculto">
+        <div class="modal-contenido-reglas">
+            <button id="boton-cerrar-reglas" class="modal-cerrar-btn">×</button>
+            <h2>📜 ¡Reglas del Juego! 📜</h2>
+            <ul>
+                <li><strong>Objetivo:</strong> ¡Ser el primero en conseguir <strong>3 puntos</strong>!</li>
+                <li><strong>Cómo jugar al 3 en Raya:</strong>
+                    <ul>
+                        <li>Cada jugador ('X' y 'O') pone su ficha en una casilla vacía por turnos.</li>
+                        <li>Gana la ronda el primero que consiga <strong>3 fichas en línea</strong> (horizontal, vertical o diagonal).</li>
+                    </ul>
+                </li>
+                <li><strong>¡Pregunta para el Punto!:</strong>
+                    <ul>
+                        <li>Si ganas una ronda, ¡aún no tienes el punto!</li>
+                        <li>Aparecerá una pregunta sorpresa (de elegir o Verdadero/Falso).</li>
+                        <li>Si respondes <strong>correctamente</strong>, ¡sumas <strong>1 punto</strong> al marcador!</li>
+                        <li>Si fallas, ¡no pasa nada!, pero no sumas el punto.</li>
+                    </ul>
+                </li>
+                <li><strong>¡Empate = Curiosidad Divertida!:</strong>
+                    <ul>
+                        <li>Si nadie gana la ronda (empate), ¡disfruta de una curiosidad interesante!</li>
+                        <li>Aparecerá un <strong>dato curioso</strong> con un contador de 8 segundos.</li>
+                        <li>Después de la curiosidad, se pasa a la siguiente ronda.</li>
+                    </ul>
+                </li>
+                <li><strong>El Campeón:</strong> El primero que llegue a <strong>3 puntos</strong> en el marcador, ¡gana el juego completo! 🏆</li>
+            </ul>
+            <p><strong>¡Mucha suerte y a divertirse!</strong> 😉</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="curiosidades.js"></script>
+    <script src="preguntas.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
