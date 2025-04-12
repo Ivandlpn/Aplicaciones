@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubre tu Tren</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="img/train-icon.png" type="image/png"> <!-- Favicon opcional -->
+</head>
+<body>
+    <div class="container">
+        <h1>¡Descubre tu Tren! 🚂</h1>
 
+        <div class="input-area">
+            <label for="trainNumberInput">Introduce el número de tu tren (5 dígitos):</label>
+            <input type="text" id="trainNumberInput" maxlength="5" placeholder="Ej: 03155">
+            <button id="submitButton">¡Descubre!</button>
+        </div>
+
+        <div id="resultArea" class="result-area" aria-live="polite">
+            <img id="operatorLogo" src="" alt="Logo del operador" class="operator-logo">
+            <div id="trainInfo" class="info-box">
+                <p id="serviceType" class="service-type"></p> <!-- Para mostrar Operador y Tipo (AV/MD) -->
+                <p><strong>Ruta Probable:</strong> <span id="routeInfo"></span></p>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message">
+            <!-- Mensajes de error se mostrarán aquí -->
+        </div>
+
+        <div class="extra-features">
+             <button id="exploreMoreButton">Explorar Rangos de Números</button>
+        </div>
+
+        <!-- Sección oculta para "Explorar Más" -->
+        <div id="rangeInfoSection" class="range-info-section" style="display: none;">
+            <h2>Guía Rápida de Números de Tren</h2>
+            <ul>
+                 <!-- Actualizado para mencionar Alvia -->
+                <li><strong>Renfe AVE/Alvia (AV):</strong> 000xx, 02xxx, 03xxx, 04xxx, 05xxx, 097xx, 1xxxx</li>
+                <li><strong>Renfe Avant (MD AV):</strong> 08xxx, 090xx-093xx, 33xxx, 34xxx</li>
+                <li><strong>Iryo (AV):</strong> 06000-06399 (y quizás 38xxx)</li>
+                <li><strong>Ouigo (AV):</strong> 06400-06999 (y algunos 097xx)</li>
+            </ul>
+            <p><em>Nota: AV=Alta Velocidad, MD AV=Media Distancia AV. Rutas probables. ¡Consulta tu billete!</em></p>
+            <button id="closeRangeInfoButton">Cerrar Guía</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
