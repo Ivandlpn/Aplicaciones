@@ -3,12 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3 en Raya Familiar</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Juegos Educativos</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- NUEVA PANTALLA: Selección de Jugadores (Inicio por defecto) -->
-    <div id="pantalla-seleccion-jugador">
+    <!-- NUEVA PANTALLA: Selección de Juegos -->
+    <div id="pantalla-seleccion-juego">
+        <h1>¡Elige tu Juego!</h1>
+        <div class="contenedor-juegos">
+            <div class="juego-opcion" onclick="seleccionarJuego('tresraya')">
+                <img src="img/portada/tresraya-icon.png" alt="3 en Raya">
+                <h2>3 en Raya</h2>
+                <p>¡Juega y aprende con preguntas divertidas!</p>
+            </div>
+            <div class="juego-opcion" onclick="seleccionarJuego('memocartas')">
+                <img src="img/portada/memocartas-icon.png" alt="Memocartas">
+                <h2>Memocartas</h2>
+                <p>¡Encuentra las parejas y entrena tu memoria!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA: Selección de Jugadores (Ahora oculta por defecto) -->
+    <div id="pantalla-seleccion-jugador" class="oculto">
         <h2>¡Elige 2 Jugadores!</h2>
         <div id="seleccion-contenedor">
             <!-- Las tarjetas de jugador se generarán aquí por JS -->

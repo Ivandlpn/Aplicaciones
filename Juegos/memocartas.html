@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memocartas</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/memocartas.css">
+</head>
+<body class="fondo-juego">
+    <!-- PANTALLA: Selección de Jugadores -->
+    <div id="pantalla-seleccion-jugador" class="pantalla-activa">
+        <h2>¡Elige 2 Jugadores!</h2>
+        <div id="seleccion-contenedor">
+            <!-- Las tarjetas de jugador se generarán aquí por JS -->
+        </div>
+        <p id="seleccion-feedback" class="oculto">¡Selecciona 2 jugadores diferentes!</p>
+        <button id="boton-confirmar-seleccion" disabled>Confirmar y Jugar</button>
+        <div class="botones-extra-seleccion">
+            <button id="boton-volver-inicio" class="boton-volver">🏠 Volver al Inicio</button>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR: Juego Memocartas -->
+    <div id="memocartas-contenedor" class="oculto">
+        <!-- Marcador -->
+        <div id="marcador">
+            <div class="marcador-jugador">
+                <img src="" alt="Foto Jugador 1" class="foto-jugador" id="foto-jugador1">
+                <span class="nombre-jugador" id="nombre-jugador1">Jugador 1</span>
+                <span class="puntaje-jugador" id="puntaje-jugador1">0</span>
+            </div>
+            <span class="marcador-separador">:</span>
+            <div class="marcador-jugador">
+                <img src="" alt="Foto Jugador 2" class="foto-jugador" id="foto-jugador2">
+                <span class="nombre-jugador" id="nombre-jugador2">Jugador 2</span>
+                <span class="puntaje-jugador" id="puntaje-jugador2">0</span>
+            </div>
+        </div>
+        <div id="info-turno" class="info-turno-memocartas"></div>
+        <div id="tablero-memocartas">
+            <!-- Las cartas se generarán aquí por JS -->
+        </div>
+        <button id="boton-reiniciar" class="boton-reiniciar-memocartas oculto">Reiniciar Juego</button>
+    </div>
+
+    <!-- PANTALLA: Ganador -->
+    <div id="pantalla-ganador" class="oculto">
+        <div class="confeti-contenedor"></div>
+        <h2 id="texto-ganador">¡EL CAMPEÓN ES...!</h2>
+        <img src="" alt="Foto del Ganador" id="foto-ganador" class="foto-ganador">
+        <p id="nombre-ganador" class="nombre-ganador"></p>
+        <div class="botones-ganador">
+            <button id="boton-volver-a-elegir" class="boton-ganador boton-jugar">🎉 ¡Jugar Otra Vez! 🎉</button>
+            <button id="boton-salir-a-seleccion" class="boton-ganador boton-cerrar">🏠 Elegir Jugadores</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/memocartas/script.js"></script>
+</body>
+</html>
