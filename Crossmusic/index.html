@@ -1,1 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrossFit Timer Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        .work-mode {
+            background-color: #f87171;
+            color: white;
+        }
+        .rest-mode {
+            background-color: #60a5fa;
+            color: white;
+        }
+        .normal-mode {
+            background-color: #1f2937;
+            color: white;
+        }
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">CrossFit Timer Pro</h1>
+            <p class="text-lg text-gray-600">The ultimate timing tool for your WODs</p>
+        </header>
 
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <!-- Tab Navigation -->
+            <div class="flex border-b border-gray-200">
+                <button class="tab-button active px-6 py-3 font-medium" data-tab="stopwatch">Stopwatch</button>
+                <button class="tab-button px-6 py-3 font-medium" data-tab="countdown">Countdown</button>
+                <button class="tab-button px-6 py-3 font-medium" data-tab="emom">EMOM</button>
+                <button class="tab-button px-6 py-3 font-medium" data-tab="amrap">AMRAP</button>
+                <button class="tab-button px-6 py-3 font-medium" data-tab="fortime">For Time</button>
+                <button class="tab-button px-6 py-3 font-medium" data-tab="intervals">Intervals</button>
+                <button class="tab-button px-6 py-3 font-medium" data-tab="tabata">Tabata</button>
+            </div>
+
+            <!-- Timer Display -->
+            <div class="p-8 text-center">
+                <div id="timer-display" class="timer-display text-7xl mb-6 rounded-lg py-8 px-4 normal-mode">
+                    00:00:00
+                </div>
+                
+                <!-- Additional Info Display -->
+                <div id="additional-info" class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <div class="text-sm font-medium text-gray-500">Round</div>
+                        <div id="round-display" class="text-2xl font-bold">-</div>
+                    </div>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <div class="text-sm font-medium text-gray-500">Status</div>
+                        <div id="status-display" class="text-2xl font-bold">Ready</div>
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="flex justify-center space-x-4 mb-6">
+                    <button id="start-btn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold">
+                        <i class="fas fa-play mr-2"></i>Start
+                    </button>
+                    <button id="pause-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-bold hidden">
+                        <i class="fas fa-pause mr-2"></i>Pause
+                    </button>
+                    <button id="stop-btn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-bold hidden">
+                        <i class="fas fa-stop mr-2"></i>Stop
+                    </button>
+                    <button id="reset-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-bold">
+                        <i class="fas fa-redo mr-2"></i>Reset
+                    </button>
+                </div>
+
+                <!-- Special Action Buttons -->
+                <div class="flex justify-center space-x-4 mb-6 hidden" id="special-actions">
+                    <button id="next-round-btn" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-bold">
+                        <i class="fas fa-step-forward mr-2"></i>Next Round
+                    </button>
+                    <button id="add-time-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg font-bold">
+                        <i class="fas fa-plus-circle mr-2"></i>Add 15s
+                    </button>
+                </div>
+            </div>
+
+            <!-- Configuration Panels -->
+            <div class="p-6 bg-gray-50 border-t border-gray-200">
+                <!-- Stopwatch Config (hidden by default) -->
+                <div id="stopwatch-config" class="tab-content">
+                    <p class="text-gray-600 mb-4">Simple stopwatch to track elapsed time.</p>
+                </div>
+
+                <!-- Countdown Config -->
+                <div id="countdown-config" class="tab-content hidden">
+                    <h3 class="font-bold text-lg mb-4">Countdown Timer</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Minutes</label>
+                            <input type="number" id="countdown-minutes" min="0" max="120" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Seconds</label>
+                            <input type="number" id="countdown-seconds" min="0" max="59" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div class="flex items-end">
+                            <button id="countdown-set-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md w-full">
+                                Set Timer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMOM Config -->
+                <div id="emom-config" class="tab-content hidden">
+                    <h3 class="font-bold text-lg mb-4">EMOM (Every Minute On the Minute)</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+                            <input type="number" id="emom-duration" min="1" max="60" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div class="flex items-end">
+                            <button id="emom-set-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md w-full">
+                                Set EMOM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AMRAP Config -->
+                <div id="amrap-config" class="tab-content hidden">
+                    <h3 class="font-bold text-lg mb-4">AMRAP (As Many Rounds As Possible)</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+                            <input type="number" id="amrap-duration" min="1" max="120" value="20" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div class="flex items-end">
+                            <button id="amrap-set-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md w-full">
+                                Set AMRAP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- For Time Config -->
+                <div id="fortime-config" class="tab-content hidden">
+                    <h3 class="font-bold text-lg mb-4">For Time</h3>
+                    <p class="text-gray-600 mb-4">Simple stopwatch to track your "For Time" workouts.</p>
+                </div>
+
+                <!-- Intervals Config -->
+                <div id="intervals-config" class="tab-content hidden">
+                    <h3 class="font-bold text-lg mb-4">Custom Intervals</h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Work (sec)</label>
+                            <input type="number" id="interval-work" min="5" max="600" value="30" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Rest (sec</label>
+                            <input type="number" id="interval-rest" min="5" max="600" value="15" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Rounds</label>
+                            <input type="number" id="interval-rounds" min="1" max="50" value="5" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div class="flex items-end">
+                            <button id="interval-set-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md w-full">
+                                Set Intervals
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabata Config -->
+                <div id="tabata-config" class="tab-content hidden">
+                    <h3 class="font-bold text-lg mb-4">Tabata (20s work / 10s rest × 8 rounds)</h3>
+                    <button id="tabata-set-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                        Set Tabata
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-gray-500 text-sm">
+            <p>CrossFit Timer Pro © 2023 | Designed for athletes by athletes</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const roundDisplay = document.getElementById('round-display');
+        const statusDisplay = document.getElementById('status-display');
+        const additionalInfo = document.getElementById('additional-info');
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const nextRoundBtn = document.getElementById('next-round-btn');
+        const addTimeBtn = document.getElementById('add-time-btn');
+        const specialActions = document.getElementById('special-actions');
+        
+        // Timer Variables
+        let timer;
+        let startTime;
+        let elapsedTime = 0;
+        let isRunning = false;
+        let currentMode = 'stopwatch';
+        let countdownTime = 0;
+        let intervalWork = 30;
+        let intervalRest = 15;
+        let intervalRounds = 5;
+        let currentRound = 1;
+        let isWorkPhase = true;
+        let emomDuration = 10;
+        let amrapDuration = 20;
+        
+        // Tab Switching
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Update active tab button
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Show corresponding content
+                tabContents.forEach(content => content.classList.add('hidden'));
+                document.getElementById(`${tabId}-config`).classList.remove('hidden');
+                
+                // Reset timer when switching tabs
+                resetTimer();
+                currentMode = tabId;
+                
+                // Update UI based on mode
+                updateUIForMode();
+            });
+        });
+        
+        function updateUIForMode() {
+            // Hide special actions by default
+            specialActions.classList.add('hidden');
+            
+            // Show/hide additional info based on mode
+            if (['emom', 'amrap', 'intervals', 'tabata'].includes(currentMode)) {
+                additionalInfo.classList.remove('hidden');
+            } else {
+                additionalInfo.classList.add('hidden');
+            }
+            
+            // Show special actions for specific modes
+            if (currentMode === 'intervals' || currentMode === 'countdown') {
+                specialActions.classList.remove('hidden');
+            }
+            
+            // Reset status display
+            statusDisplay.textContent = 'Ready';
+            roundDisplay.textContent = '-';
+            
+            // Reset timer display color
+            timerDisplay.classList.remove('work-mode', 'rest-mode');
+            timerDisplay.classList.add('normal-mode');
+        }
+        
+        // Timer Functions
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startTime = Date.now() - elapsedTime;
+                timer = setInterval(updateTimer, 10);
+                
+                startBtn.classList.add('hidden');
+                pauseBtn.classList.remove('hidden');
+                stopBtn.classList.remove('hidden');
+                
+                if (currentMode === 'countdown' && countdownTime > 0) {
+                    statusDisplay.textContent = 'Running';
+                }
+            }
+        }
+        
+        function pauseTimer() {
+            if (isRunning) {
+                isRunning = false;
+                clearInterval(timer);
+                elapsedTime = Date.now() - startTime;
+                
+                pauseBtn.classList.add('hidden');
+                startBtn.classList.remove('hidden');
+                
+                statusDisplay.textContent = 'Paused';
+            }
+        }
+        
+        function stopTimer() {
+            isRunning = false;
+            clearInterval(timer);
+            elapsedTime = 0;
+            
+            pauseBtn.classList.add('hidden');
+            stopBtn.classList.add('hidden');
+            startBtn.classList.remove('hidden');
+            
+            statusDisplay.textContent = 'Stopped';
+            
+            // Reset display for countdown
+            if (currentMode === 'countdown' && countdownTime > 0) {
+                displayTime(countdownTime);
+            } else {
+                displayTime(0);
+            }
+        }
+        
+        function resetTimer() {
+            stopTimer();
+            elapsedTime = 0;
+            currentRound = 1;
+            isWorkPhase = true;
+            
+            displayTime(0);
+            statusDisplay.textContent = 'Ready';
+            roundDisplay.textContent = '-';
+            
+            timerDisplay.classList.remove('work-mode', 'rest-mode');
+            timerDisplay.classList.add('normal-mode');
+        }
+        
+        function updateTimer() {
+            const currentTime = Date.now();
+            elapsedTime = currentTime - startTime;
+            
+            if (currentMode === 'stopwatch' || currentMode === 'fortime') {
+                displayTime(elapsedTime);
+            } else if (currentMode === 'countdown') {
+                const remainingTime = Math.max(0, countdownTime - elapsedTime);
+                displayTime(remainingTime);
+                
+                // Check for countdown completion
+                if (remainingTime <= 0) {
+                    stopTimer();
+                    timerDisplay.classList.add('pulse');
+                    setTimeout(() => timerDisplay.classList.remove('pulse'), 1000);
+                }
+            } else if (currentMode === 'emom') {
+                const totalSeconds = Math.floor(elapsedTime / 1000);
+                const currentMinute = Math.floor(totalSeconds / 60);
+                const secondsInMinute = totalSeconds % 60;
+                const remainingSeconds = 60 - secondsInMinute;
+                
+                if (currentMinute >= emomDuration) {
+                    stopTimer();
+                    timerDisplay.classList.add('pulse');
+                    setTimeout(() => timerDisplay.classList.remove('pulse'), 1000);
+                    return;
+                }
+                
+                // Display remaining seconds in current minute
+                displayTime(remainingSeconds * 1000);
+                
+                // Update round display
+                roundDisplay.textContent = `${currentMinute + 1}/${emomDuration}`;
+            } else if (currentMode === 'amrap') {
+                const remainingTime = Math.max(0, amrapDuration * 60000 - elapsedTime);
+                displayTime(elapsedTime); // Show elapsed time for AMRAP
+                
+                if (remainingTime <= 0) {
+                    stopTimer();
+                    timerDisplay.classList.add('pulse');
+                    setTimeout(() => timerDisplay.classList.remove('pulse'), 1000);
+                }
+            } else if (currentMode === 'intervals') {
+                const intervalDuration = (isWorkPhase ? intervalWork : intervalRest) * 1000;
+                const totalIntervals = intervalRounds * 2 - (isWorkPhase ? 0 : 1);
+                const intervalElapsed = elapsedTime % (intervalWork + intervalRest) * 1000;
+                
+                let currentIntervalTime;
+                if (isWorkPhase) {
+                    currentIntervalTime = intervalWork * 1000 - (elapsedTime % (intervalWork + intervalRest) * 1000);
+                } else {
+                    currentIntervalTime = intervalRest * 1000 - (elapsedTime % (intervalWork + intervalRest) * 1000 - intervalWork * 1000);
+                }
+                
+                // Check if we should switch phases
+                if (elapsedTime >= totalIntervals * (intervalWork + intervalRest) * 1000) {
+                    stopTimer();
+                    timerDisplay.classList.add('pulse');
+                    setTimeout(() => timerDisplay.classList.remove('pulse'), 1000);
+                    return;
+                }
+                
+                // Update display
+                displayTime(currentIntervalTime);
+                
+                // Update round and phase info
+                const currentRoundNum = Math.floor(elapsedTime / ((intervalWork + intervalRest) * 1000)) + 1;
+                roundDisplay.textContent = `${currentRoundNum}/${intervalRounds}`;
+                
+                if (isWorkPhase) {
+                    statusDisplay.textContent = 'Work';
+                    timerDisplay.classList.remove('rest-mode');
+                    timerDisplay.classList.add('work-mode');
+                    
+                    // Check for phase transition
+                    if (elapsedTime % ((intervalWork + intervalRest) * 1000) >= intervalWork * 1000) {
+                        isWorkPhase = false;
+                    }
+                } else {
+                    statusDisplay.textContent = 'Rest';
+                    timerDisplay.classList.remove('work-mode');
+                    timerDisplay.classList.add('rest-mode');
+                    
+                    // Check for phase transition
+                    if (elapsedTime % ((intervalWork + intervalRest) * 1000) >= (intervalWork + intervalRest) * 1000) {
+                        isWorkPhase = true;
+                    }
+                }
+            } else if (currentMode === 'tabata') {
+                // Tabata is 20s work, 10s rest for 8 rounds
+                const tabataWork = 20 * 1000;
+                const tabataRest = 10 * 1000;
+                const tabataRoundTime = tabataWork + tabataRest;
+                const tabataTotalTime = 8 * tabataRoundTime;
+                
+                if (elapsedTime >= tabataTotalTime) {
+                    stopTimer();
+                    timerDisplay.classList.add('pulse');
+                    setTimeout(() => timerDisplay.classList.remove('pulse'), 1000);
+                    return;
+                }
+                
+                const currentRoundNum = Math.floor(elapsedTime / tabataRoundTime) + 1;
+                const roundElapsed = elapsedTime % tabataRoundTime;
+                
+                let currentIntervalTime;
+                if (roundElapsed < tabataWork) {
+                    // Work phase
+                    currentIntervalTime = tabataWork - roundElapsed;
+                    statusDisplay.textContent = 'Work';
+                    timerDisplay.classList.remove('rest-mode');
+                    timerDisplay.classList.add('work-mode');
+                    isWorkPhase = true;
+                } else {
+                    // Rest phase
+                    currentIntervalTime = tabataRest - (roundElapsed - tabataWork);
+                    statusDisplay.textContent = 'Rest';
+                    timerDisplay.classList.remove('work-mode');
+                    timerDisplay.classList.add('rest-mode');
+                    isWorkPhase = false;
+                }
+                
+                // Update display
+                displayTime(currentIntervalTime);
+                roundDisplay.textContent = `${currentRoundNum}/8`;
+            }
+        }
+        
+        function displayTime(milliseconds) {
+            const hours = Math.floor(milliseconds / 3600000);
+            const minutes = Math.floor((milliseconds % 3600000) / 60000);
+            const seconds = Math.floor((milliseconds % 60000) / 1000);
+            const centiseconds = Math.floor((milliseconds % 1000) / 10);
+            
+            timerDisplay.textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Button Event Listeners
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        
+        nextRoundBtn.addEventListener('click', () => {
+            if (currentMode === 'intervals') {
+                // For intervals, skip to next round
+                const currentRoundTime = (intervalWork + intervalRest) * 1000;
+                const currentRoundNum = Math.floor(elapsedTime / currentRoundTime);
+                startTime = Date.now() - ((currentRoundNum + 1) * currentRoundTime);
+            } else if (currentMode === 'countdown') {
+                // For countdown, reset to full time
+                startTime = Date.now();
+            }
+        });
+        
+        addTimeBtn.addEventListener('click', () => {
+            if (currentMode === 'amrap') {
+                // Add 15 seconds to AMRAP
+                startTime -= 15000;
+            }
+        });
+        
+        // Configuration Event Listeners
+        document.getElementById('countdown-set-btn').addEventListener('click', () => {
+            const minutes = parseInt(document.getElementById('countdown-minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('countdown-seconds').value) || 0;
+            countdownTime = (minutes * 60 + seconds) * 1000;
+            displayTime(countdownTime);
+            statusDisplay.textContent = 'Ready';
+        });
+        
+        document.getElementById('emom-set-btn').addEventListener('click', () => {
+            emomDuration = parseInt(document.getElementById('emom-duration').value) || 10;
+            statusDisplay.textContent = 'Ready';
+            roundDisplay.textContent = `1/${emomDuration}`;
+        });
+        
+        document.getElementById('amrap-set-btn').addEventListener('click', () => {
+            amrapDuration = parseInt(document.getElementById('amrap-duration').value) || 20;
+            statusDisplay.textContent = 'Ready';
+        });
+        
+        document.getElementById('interval-set-btn').addEventListener('click', () => {
+            intervalWork = parseInt(document.getElementById('interval-work').value) || 30;
+            intervalRest = parseInt(document.getElementById('interval-rest').value) || 15;
+            intervalRounds = parseInt(document.getElementById('interval-rounds').value) || 5;
+            statusDisplay.textContent = 'Ready';
+            roundDisplay.textContent = `1/${intervalRounds}`;
+        });
+        
+        document.getElementById('tabata-set-btn').addEventListener('click', () => {
+            statusDisplay.textContent = 'Ready';
+            roundDisplay.textContent = '1/8';
+        });
+        
+        // Initialize
+        updateUIForMode();
+    </script>
+</body>
+</html>
