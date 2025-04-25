@@ -1,1 +1,317 @@
 
+
+<!DOCTYPE html>
+<html lang="es"> <!-- Cambiado a es para indicar idioma español -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrossFit Lexicon | La Guía Definitiva de Terminología de CrossFit</title> <!-- Título traducido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Enlace a tu archivo CSS -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Tu CSS personalizado aquí (sin cambios de texto, solo estilos) */
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .muscle-group {
+            transition: all 0.3s ease;
+        }
+        .muscle-group:hover {
+            transform: scale(1.05);
+        }
+        .search-highlight {
+            background-color: #fef08a;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+        .category-tab.active {
+            border-bottom: 3px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .alphabet-nav a.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-dumbbell text-3xl mr-3 text-blue-300"></i>
+                    <h1 class="text-2xl md:text-3xl font-bold">
+                        <span class="text-blue-300">CrossFit</span> Lexicon <!-- Nombre propio, mantener -->
+                    </h1>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Buscar términos de CrossFit..."
+                               class="w-full px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"> <!-- Placeholder traducido -->
+                        <button id="searchButton" class="absolute right-3 top-3 text-gray-500 hover:text-blue-600">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- La sección Hero ha sido eliminada -->
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-lg shadow text-center">
+                <div class="text-blue-600 text-2xl font-bold">250+</div>
+                <div class="text-gray-600">Ejercicios</div> <!-- Traducido -->
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow text-center">
+                <div class="text-blue-600 text-2xl font-bold">50+</div>
+                <div class="text-gray-600">Formatos de WOD</div> <!-- Traducido -->
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow text-center">
+                <div class="text-blue-600 text-2xl font-bold">30+</div>
+                <div class="text-gray-600">Tipos de Equipamiento</div> <!-- Traducido -->
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow text-center">
+                <div class="text-blue-600 text-2xl font-bold">100+</div>
+                <div class="text-gray-600">Acrónimos</div> <!-- Traducido -->
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="mb-8 border-b border-gray-200">
+            <div class="flex flex-wrap -mb-px overflow-x-auto">
+                <!-- Los data-category se mantienen en inglés para la lógica JS -->
+                <button class="category-tab active px-4 py-2 font-medium text-sm md:text-base" data-category="all">Todos los Términos</button> <!-- Traducido -->
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="exercises">Ejercicios</button> <!-- Traducido -->
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="wods">WODs</button> <!-- Mantener WODs -->
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="equipment">Equipamiento</button> <!-- Traducido -->
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="acronyms">Acrónimos</button> <!-- Traducido -->
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="gymnastics">Gimnásticos</button> <!-- Traducido -->
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="concepts">Conceptos</button> <!-- Traducido -->
+            </div>
+        </div>
+
+        <!-- Alphabet Navigation -->
+        <div class="mb-6 flex flex-wrap justify-center gap-1">
+            <!-- Mantener el texto 'All' y las letras A-Z. 'All' se traduce en JS si es necesario para lógica/mostrar -->
+             <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100 active">All</a> <!-- Mantener 'All' como clave -->
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">A</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">B</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">C</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">D</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">E</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">F</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">G</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">H</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">I</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">J</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">K</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">L</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">M</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">N</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">O</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">P</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">Q</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">R</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">S</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">T</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">U</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">V</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">W</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">X</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">Y</a>
+            </div>
+            <div class="alphabet-nav">
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">Z</a>
+            </div>
+        </div>
+
+        <!-- Term Detail Section (hidden by default) -->
+        <section id="termDetail" class="hidden bg-white rounded-lg shadow-lg p-6 mb-8">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 id="termTitle" class="text-3xl font-bold text-gray-800"></h2> <!-- El título se llena con JS -->
+                    <span id="termCategory" class="inline-block mt-2 text-sm px-3 py-1 rounded-full"></span> <!-- La categoría se llena con JS -->
+                </div>
+                <button id="backButton" class="text-gray-500 hover:text-blue-600" title="Volver a la lista"> <!-- Añadir título traducido -->
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column -->
+                <div class="lg:col-span-2">
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Definición</h3> <!-- Traducido -->
+                        <p id="termDefinition" class="text-gray-700 leading-relaxed">
+                            <!-- Contenido llenado por JS -->
+                        </p>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Ejemplo de Uso</h3> <!-- Traducido -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p id="termExample" class="text-gray-700 italic">
+                                <!-- Contenido llenado por JS -->
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Video Demostración</h3> <!-- Traducido -->
+                        <div class="video-container bg-gray-200 rounded-lg overflow-hidden">
+                            <iframe id="termVideo" src="" frameborder="0" allowfullscreen></iframe> <!-- src llenado por JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Músculos Trabajados</h3> <!-- Traducido -->
+                        <div id="musclesWorked" class="grid grid-cols-2 gap-2">
+                             <!-- Contenido llenado por JS -->
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Variaciones</h3> <!-- Traducido -->
+                        <ul id="termVariations" class="space-y-2">
+                            <!-- Contenido llenado por JS -->
+                        </ul>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Términos Relacionados</h3> <!-- Traducido -->
+                        <div id="relatedTerms" class="flex flex-wrap gap-2">
+                            <!-- Contenido llenado por JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search Results Section -->
+        <section id="searchResults" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-800">Resultados de Búsqueda</h3> <!-- Traducido -->
+                <div id="resultsCount" class="text-gray-600"></div> <!-- Contenido llenado por JS -->
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <ul id="resultsList" class="divide-y divide-gray-200">
+                    <!-- Resultados llenados por JavaScript -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- Browse All Terms Section -->
+        <section id="browseAll">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-800">Explorar Todos los Términos de CrossFit</h3> <!-- Traducido -->
+                <div class="relative">
+                    <select id="sortSelect" class="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <!-- Las opciones de texto se mantienen en inglés para value, pero el texto visible está traducido -->
+                        <option value="name-asc">Ordenar A-Z</option> <!-- Traducido -->
+                        <option value="name-desc">Ordenar Z-A</option> <!-- Traducido -->
+                        <option value="category">Ordenar por Categoría</option> <!-- Traducido -->
+                        <option value="popularity">Ordenar por Popularidad</option> <!-- Traducido -->
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Term cards will be populated here by JavaScript -->
+            </div>
+
+            <!-- Pagination (Contenedor para paginación dinámica) -->
+            <div class="mt-8 flex justify-center">
+                <nav class="inline-flex rounded-md shadow">
+                    <!-- Contenido llenado por JavaScript (renderPaginationControls) -->
+                </nav>
+            </div>
+        </section>
+    </main>
+
+    <!-- Enlace a tu archivo JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+/* --- START OF FILE style.css --- */
+
+.gradient-bg {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+}
+.exercise-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.muscle-group {
+    transition: all 0.3s ease;
+}
+.muscle-group:hover {
+    transform: scale(1.05);
+}
+.search-highlight {
+    background-color: #fef08a;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+.category-tab.active {
+    border-bottom: 3px solid #3b82f6;
+    color: #3b82f6;
+}
+.alphabet-nav a.active {
+    background-color: #3b82f6;
+    color: white;
+}
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- END OF FILE style.css --- */
