@@ -1,19 +1,15 @@
-
 <!DOCTYPE html>
-<html lang="es"> <!-- Cambiado a es para indicar idioma español -->
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrossFit Lexicon | La Guía Definitiva de Terminología de CrossFit</title> <!-- Título traducido -->
+    <title>Wodabulary</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Enlace a tu archivo CSS -->
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Tu CSS personalizado existente */
-        .gradient-bg {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-        }
+        /* Tu CSS personalizado existente (idealmente mover a style.css) */
         .exercise-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -39,10 +35,11 @@
         }
         .video-container {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-bottom: 56.25%; /* Relación de aspecto 16:9 para videos */
             height: 0;
             overflow: hidden;
         }
+        /* Estilo para el iframe de video */
         .video-container iframe {
             position: absolute;
             top: 0;
@@ -50,8 +47,22 @@
             width: 100%;
             height: 100%;
         }
+         /* Estilo para la imagen dentro del video-container */
+         /* La imagen no necesita la relación de aspecto fija si no es un video,
+            pero la posicionamos igual para que ocupe el mismo espacio. */
+         .video-container img {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              object-fit: contain; /* 'contain' muestra la imagen completa sin recortar */
+              /* object-fit: cover; // Usa 'cover' si prefieres que la imagen llene el espacio y se recorte si es necesario */
+              display: none; /* Ocultar por defecto */
+              border-radius: 0.5rem; /* rounded-lg de Tailwind */
+         }
 
-        /* CSS para la cabecera con imagen */
+        /* CSS para la cabecera con imagen (consolidado en style.css recomendado) */
         .header-image-logo {
             /* Ruta a tu imagen */
             background-image: url('cabecera.jpeg');
@@ -80,15 +91,12 @@
     <header class="gradient-bg text-white shadow-lg">
         <div class="container mx-auto px-4 py-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
-                <!-- Este div ahora solo contendrá la imagen de fondo -->
                 <div class="flex items-center mb-4 md:mb-0 header-image-logo h-16 md:h-20">
-                    <!-- Contenido (icono y h1) eliminado -->
                 </div>
-                <!-- El div de la barra de búsqueda se mantiene -->
-                <div class="w-full md:w-1/2"> <!-- Mantener w-full para móvil, md:w-1/2 para tablet/desktop -->
+                <div class="w-full md:w-1/2">
                     <div class="relative">
                         <input type="text" id="searchInput" placeholder="Buscar términos de CrossFit..."
-                               class="w-full px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"> <!-- Placeholder traducido -->
+                               class="w-full px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <button id="searchButton" class="absolute right-3 top-3 text-gray-500 hover:text-blue-600">
                             <i class="fas fa-search"></i>
                         </button>
@@ -98,29 +106,26 @@
         </div>
     </header>
 
-    <!-- Main Content (El resto del contenido permanece igual) -->
+    <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
-        <!-- Las secciones Hero y Quick Stats han sido eliminadas -->
-
         <!-- Category Tabs -->
         <div class="mb-8 border-b border-gray-200">
             <div class="flex flex-wrap -mb-px overflow-x-auto">
-                <!-- Los data-category se mantienen en inglés para la lógica JS -->
-                <button class="category-tab active px-4 py-2 font-medium text-sm md:text-base" data-category="all">Todos los Términos</button> <!-- Traducido -->
-                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="exercises">Ejercicios</button> <!-- Traducido -->
-                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="wods">WODs</button> <!-- Mantener WODs -->
-                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="equipment">Equipamiento</button> <!-- Traducido -->
-                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="acronyms">Acrónimos</button> <!-- Traducido -->
-                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="gymnastics">Gimnásticos</button> <!-- Traducido -->
-                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="concepts">Conceptos</button> <!-- Traducido -->
+                <button class="category-tab active px-4 py-2 font-medium text-sm md:text-base" data-category="all">Todos los Términos</button>
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="exercises">Ejercicios</button>
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="wods">WODs</button>
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="equipment">Equipamiento</button>
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="acronyms">Acrónimos</button>
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="gymnastics">Gimnásticos</button>
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="concepts">Conceptos</button>
+                <button class="category-tab px-4 py-2 font-medium text-sm md:text-base" data-category="athletes">Atletas</button>
             </div>
         </div>
 
         <!-- Alphabet Navigation -->
         <div class="mb-6 flex flex-wrap justify-center gap-1">
-            <!-- Mantener el texto 'All' y las letras A-Z. 'All' se traduce en JS si es necesario para lógica/mostrar -->
              <div class="alphabet-nav">
-                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100 active">All</a> <!-- Mantener 'All' como clave -->
+                <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100 active">All</a>
             </div>
             <div class="alphabet-nav">
                 <a href="#" class="inline-block w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-blue-100">A</a>
@@ -203,62 +208,72 @@
         </div>
 
         <!-- Term Detail Section (hidden by default) -->
-        <section id="termDetail" class="hidden bg-white rounded-lg shadow-lg p-6 mb-8">
+        <section id="termDetail" class="hidden bg-white rounded-lg shadow-lg p-6 mb-8 border-4 border-blue-500">
             <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h2 id="termTitle" class="text-3xl font-bold text-gray-800"></h2> <!-- El título se llena con JS -->
-                    <span id="termCategory" class="inline-block mt-2 text-sm px-3 py-1 rounded-full"></span> <!-- La categoría se llena con JS -->
+                    <h2 id="termTitle" class="text-3xl font-bold text-gray-800"></h2>
+                    <span id="termCategory" class="inline-block mt-2 text-sm px-3 py-1 rounded-full"></span>
                 </div>
-                <button id="backButton" class="text-gray-500 hover:text-blue-600" title="Volver a la lista"> <!-- Añadir título traducido -->
+                <button id="backButton" class="text-gray-500 hover:text-blue-600" title="Volver a la lista">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Left Column -->
+                <!-- Left Column (Main Info) -->
                 <div class="lg:col-span-2">
                     <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Definición</h3> <!-- Traducido -->
+                        <h3 id="definitionTitle" class="text-xl font-semibold mb-3 text-gray-800"><i class="fas fa-book mr-2 text-blue-600"></i></h3>
                         <p id="termDefinition" class="text-gray-700 leading-relaxed">
                             <!-- Contenido llenado por JS -->
                         </p>
                     </div>
 
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Ejemplo de Uso</h3> <!-- Traducido -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p id="termExample" class="text-gray-700 italic">
-                                <!-- Contenido llenado por JS -->
-                            </p>
-                        </div>
-                    </div>
+                     <div class="mb-8" id="termExampleContainer">
+                         <h3 id="exampleTitle" class="text-xl font-semibold mb-3 text-gray-800"><i class="fas fa-clipboard-list mr-2 text-blue-600"></i></h3>
+                         <div class="bg-gray-50 p-4 rounded-lg">
+                             <p id="termExample" class="text-gray-700 italic">
+                                 <!-- Contenido llenado por JS -->
+                             </p>
+                         </div>
+                     </div>
 
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Video Demostración</h3> <!-- Traducido -->
+                    <div class="mb-8" id="termVideoContainer">
+                        <h3 id="videoTitle" class="text-xl font-semibold mb-3 text-gray-800"><i class="fas fa-video mr-2 text-blue-600"></i></h3>
                         <div class="video-container bg-gray-200 rounded-lg overflow-hidden">
-                            <iframe id="termVideo" src="" frameborder="0" allowfullscreen></iframe> <!-- src llenado por JS -->
+                            <!-- Ambos elementos estarán aquí, JS/CSS controlará cuál se muestra -->
+                            <iframe id="termVideo" src="" frameborder="0" allowfullscreen style="display: none;"></iframe>
+                            <img id="termImage" src="" alt="Imagen del término o atleta" style="display: none;">
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column -->
+                <!-- Right Column (Side Info - Athlete Stats, Muscles, Variations, Related) -->
                 <div>
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Músculos Trabajados</h3> <!-- Traducido -->
+                     <!-- NUEVO CONTENEDOR PARA ESTADÍSTICAS DE ATLETA -->
+                     <div class="mb-8" id="athleteStatsContainer">
+                          <h3 class="text-xl font-semibold mb-3 text-gray-800"><i class="fas fa-chart-bar mr-2 text-blue-600"></i>Estadísticas del Atleta</h3>
+                          <div id="athleteStats" class="space-y-3">
+                               <!-- Contenido llenado por JS (Nacionalidad, Edad, etc.) -->
+                          </div>
+                     </div>
+
+                     <div class="mb-8" id="musclesWorkedContainer">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800"><i class="fas fa-dumbbell mr-2 text-blue-600"></i>Músculos Trabajados</h3>
                         <div id="musclesWorked" class="grid grid-cols-2 gap-2">
                              <!-- Contenido llenado por JS -->
                         </div>
                     </div>
 
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Variaciones</h3> <!-- Traducido -->
+                    <div class="mb-8" id="termVariationsContainer">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800"><i class="fas fa-random mr-2 text-blue-600"></i>Variaciones</h3>
                         <ul id="termVariations" class="space-y-2">
                             <!-- Contenido llenado por JS -->
                         </ul>
                     </div>
 
                     <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Términos Relacionados</h3> <!-- Traducido -->
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800"><i class="fas fa-link mr-2 text-blue-600"></i>Términos Relacionados</h3>
                         <div id="relatedTerms" class="flex flex-wrap gap-2">
                             <!-- Contenido llenado por JS -->
                         </div>
@@ -270,8 +285,8 @@
         <!-- Search Results Section -->
         <section id="searchResults" class="hidden">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-gray-800">Resultados de Búsqueda</h3> <!-- Traducido -->
-                <div id="resultsCount" class="text-gray-600"></div> <!-- Contenido llenado por JS -->
+                <h3 class="text-xl font-semibold text-gray-800">Resultados de Búsqueda</h3>
+                <div id="resultsCount" class="text-gray-600"></div>
             </div>
 
             <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -284,17 +299,43 @@
         <!-- Browse All Terms Section -->
         <section id="browseAll">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-gray-800">Explorar Todos los Términos de CrossFit</h3> <!-- Traducido -->
-                <div class="relative">
-                    <select id="sortSelect" class="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        <!-- Las opciones de texto se mantienen en inglés para value, pero el texto visible está traducido -->
-                        <option value="name-asc">Ordenar A-Z</option> <!-- Traducido -->
-                        <option value="name-desc">Ordenar Z-A</option> <!-- Traducido -->
-                        <option value="category">Ordenar por Categoría</option> <!-- Traducido -->
-                        <option value="popularity">Ordenar por Popularidad</option> <!-- Traducido -->
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <i class="fas fa-chevron-down text-gray-400"></i>
+                <h3 class="text-xl font-semibold text-gray-800">Explorar Todos los Términos de CrossFit</h3>
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <div class="relative w-full md:w-auto">
+                        <select id="sortSelect" class="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="name-asc">Ordenar A-Z</option>
+                            <option value="name-desc">Ordenar Z-A</option>
+                            <option value="category">Ordenar por Categoría</option>
+                            <option value="popularity">Ordenar por Popularidad</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div class="relative w-full md:w-auto">
+                         <select id="muscleFilterSelect" class="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                             <option value="all">Filtrar por Músculo</option>
+                             <option value="Cuádriceps">Cuádriceps</option>
+                             <option value="Isquiosurales">Isquiosurales</option>
+                             <option value="Pectorales">Pectorales</option>
+                             <option value="Hombros">Hombros</option>
+                             <option value="Core">Core</option>
+                             <option value="Dorsal Ancho">Dorsal Ancho</option>
+                             <option value="Bíceps">Bíceps</option>
+                             <option value="Tríceps">Tríceps</option>
+                             <option value="Glúteos">Glúteos</option>
+                             <option value="Espalda Baja">Espalda Baja</option>
+                             <option value="Trapecios">Trapecios</option>
+                             <option value="Gemelos">Gemelos</option>
+                             <option value="Antebrazos">Antebrazos</option>
+                             <option value="Cuerpo Completo">Cuerpo Completo</option>
+                             <option value="Flexores de Cadera">Flexores de Cadera</option>
+                             <option value="Espalda">Espalda</option>
+                             <option value="Espalda Alta">Espalda Alta</option>
+                         </select>
+                         <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                             <i class="fas fa-chevron-down text-gray-400"></i>
+                         </div>
                     </div>
                 </div>
             </div>

@@ -1,11 +1,12 @@
 /* --- START OF FILE style.css --- */
 
 .gradient-bg {
-    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #007bff 0%, #6f42c1 100%); /* Azul eléctrico a púrpura vibrante */
 }
 .exercise-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* Sombra más pronunciada */
+    border: 2px solid #007bff; /* Borde azul al pasar el ratón */
 }
 .muscle-group {
     transition: all 0.3s ease;
@@ -19,16 +20,18 @@
     border-radius: 2px;
 }
 .category-tab.active {
-    border-bottom: 3px solid #3b82f6;
-    color: #3b82f6;
+    border-bottom: 4px solid #007bff; /* Borde inferior más grueso y vibrante */
+    color: #007bff; /* Color de texto vibrante */
+    font-weight: bold; /* Texto en negrita */
 }
 .alphabet-nav a.active {
-    background-color: #3b82f6;
+    background-color: #007bff; /* Fondo vibrante */
     color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil */
 }
 .video-container {
     position: relative;
-    padding-bottom: 56.25%;
+    padding-bottom: 56.25%; /* Relación de aspecto 16:9 */
     height: 0;
     overflow: hidden;
 }
@@ -39,5 +42,41 @@
     width: 100%;
     height: 100%;
 }
+/* Estilo para la imagen del atleta dentro del video-container */
+/* La imagen no necesita la relación de aspecto fija si no es un video */
+.video-container img {
+     position: absolute; /* También posicionarla absolutamente */
+     top: 0;
+     left: 0;
+     width: 100%; /* Ocupar todo el ancho */
+     height: 100%; /* Ocupar toda la altura */
+     object-fit: contain; /* O 'cover' dependiendo de cómo quieras escalar la imagen */
+     display: none; /* Ocultar por defecto */
+     border-radius: 0.5rem; /* rounded-lg de Tailwind */
+}
+
+
+/* Consolidar estilos del header que estaban en inline */
+.header-image-logo {
+     background-image: url('cabecera.jpeg');
+     background-size: contain;
+     background-repeat: no-repeat;
+     background-position: left center;
+     min-width: 150px;
+     flex-grow: 1;
+}
+
+ header .container .flex {
+      gap: 1rem;
+ }
+ header .container .flex > div:first-child {
+      flex-shrink: 0;
+ }
+ header .container .flex > div:last-child {
+       flex-grow: 1;
+       max-width: 500px;
+ }
+/* Fin consolidación */
+
 
 /* --- END OF FILE style.css --- */

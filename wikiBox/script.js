@@ -1,13 +1,11 @@
-/* --- START OF FILE script.js (Español) --- */
-
 // El objeto principal que contiene toda la lógica y el estado de la aplicación
 const App = {
     // --- Propiedades para almacenar datos y referencias ---
 
-    // Almacena la lista completa de términos cargados de data.json
     crossfitTerms: [],
+    termMapByName: null,
+    termMapById: null, // Añadido para búsqueda rápida por ID
 
-    // Objeto para guardar referencias a los elementos clave del DOM
     domElements: {
         searchInput: null,
         searchButton: null,
@@ -19,60 +17,52 @@ const App = {
         termTitle: null,
         termCategory: null,
         termDefinition: null,
+        definitionTitle: null, // Referencia para el título de la definición
         termExample: null,
-        termVideo: null,
+        termExampleContainer: null,
+        exampleTitle: null, // Referencia para el título del ejemplo
+        termVideo: null, // Referencia al iframe
+        termImage: null, // Referencia al img
+        termVideoContainer: null, // Contenedor que ahora albergará video O imagen
+        videoTitle: null,
         musclesWorked: null,
+        musclesWorkedContainer: null,
         termVariations: null,
+        termVariationsContainer: null,
         relatedTerms: null,
         backButton: null,
         categoryTabs: null,
         sortSelect: null,
-        browseGridContainer: null, // Contenedor para las tarjetas de la vista de exploración
-        paginationNav: null, // Contenedor para los controles de paginación
-        // TODO: Añadir más referencias DOM si son necesarias (ej. para mensajes de error de carga)
+        browseGridContainer: null,
+        paginationNav: null,
+        athleteStatsContainer: null,
+        athleteStats: null,
     },
 
     // --- Estado de la aplicación ---
-    // Contiene toda la información que define la UI actual en un momento dado
     state: {
-        view: 'browse', // La vista actual: 'browse', 'detail', 'search'
-        selectedTermId: null, // El ID del término mostrado en la vista 'detail'
-        searchTerm: '', // El texto actual en el campo de búsqueda
-        activeCategory: 'all', // El filtro de categoría activo ('all' o el nombre de la categoría)
-        activeLetter: 'All', // El filtro por letra activo ('All' o una letra del alfabeto)
-        sortBy: 'name-asc', // El criterio de ordenación activo ('name-asc', 'name-desc', 'category', 'popularity')
-        // --- Propiedades de Paginación ---
-        currentPage: 1, // La página actual mostrada en la vista 'browse'
-        termsPerPage: 12, // Número de términos a mostrar por página en la vista 'browse' (ajústalo según necesites)
-        // totalPages y totalItems se calculan al vuelo en getFilteredAndSortedTermsIncludingPaginationInfo
+        view: 'browse',
+        selectedTermId: null,
+        searchTerm: '',
+        activeCategory: 'all',
+        activeLetter: 'All',
+        sortBy: 'name-asc',
+        currentPage: 1,
+        termsPerPage: 12,
+        activeMuscle: 'all', // Nuevo estado para el filtro por músculo
     },
 
 
     // --- Métodos de inicialización y configuración ---
 
-    // Punto de entrada principal para iniciar la aplicación
-    // Se llama una vez cuando el DOM está listo.
     init: function() {
         console.log("App initialized.");
-        this.getDOMElements(); // Paso 1: Obtener referencias a los elementos del DOM
-
-        // Paso 2: Leer el estado de la URL INICIAL para configurar el estado de la App
-        // Esto debe hacerse antes de cargar los datos para que loadTerms pueda usar el estado inicial si es necesario
-        // (aunque en este caso loadTerms solo lo usa para la ordenación por defecto, es una buena práctica).
+        this.getDOMElements();
         this.updateStateFromUrl();
-
-        // Paso 3: Cargar los datos. bindEvents y renderUI se llaman después de la carga exitosa.
         this.loadTerms();
-
-        // NOTA: Los event listeners para popstate se añaden en bindEvents, que es llamado después de loadTerms.
-        // Esto asegura que App.state y this.crossfitTerms estén disponibles cuando popstate se dispare.
     },
 
-    // Obtiene referencias a los elementos del DOM y las almacena en this.domElements
-    // Esto se hace al inicio para no tener que buscarlos repetidamente.
     getDOMElements: function() {
-        // Usamos console.error si algún elemento crítico no se encuentra
-        // para ayudar en la depuración.
         this.domElements.searchInput = document.getElementById('searchInput');
          if (!this.domElements.searchInput) console.error("DOM Element #searchInput not found!");
 
@@ -103,17 +93,38 @@ const App = {
         this.domElements.termDefinition = document.getElementById('termDefinition');
          if (!this.domElements.termDefinition) console.error("DOM Element #termDefinition not found!");
 
+        this.domElements.definitionTitle = document.getElementById('definitionTitle');
+         if (!this.domElements.definitionTitle) console.error("DOM Element #definitionTitle not found!");
+        this.domElements.exampleTitle = document.getElementById('exampleTitle');
+         if (!this.domElements.exampleTitle) console.error("DOM Element #exampleTitle not found!");
+        this.domElements.videoTitle = document.getElementById('videoTitle');
+         if (!this.domElements.videoTitle) console.error("DOM Element #videoTitle not found!");
+
+
         this.domElements.termExample = document.getElementById('termExample');
          if (!this.domElements.termExample) console.error("DOM Element #termExample not found!");
+        this.domElements.termExampleContainer = document.getElementById('termExampleContainer');
+         if (!this.domElements.termExampleContainer) console.error("DOM Element #termExampleContainer not found!");
 
         this.domElements.termVideo = document.getElementById('termVideo');
          if (!this.domElements.termVideo) console.error("DOM Element #termVideo not found!");
+        this.domElements.termImage = document.getElementById('termImage');
+         if (!this.domElements.termImage) console.error("DOM Element #termImage not found!");
+
+        this.domElements.termVideoContainer = document.getElementById('termVideoContainer');
+         if (!this.domElements.termVideoContainer) console.error("DOM Element #termVideoContainer not found!");
+
 
         this.domElements.musclesWorked = document.getElementById('musclesWorked');
          if (!this.domElements.musclesWorked) console.error("DOM Element #musclesWorked not found!");
+        this.domElements.musclesWorkedContainer = document.getElementById('musclesWorkedContainer');
+         if (!this.domElements.musclesWorkedContainer) console.error("DOM Element #musclesWorkedContainer not found!");
+
 
         this.domElements.termVariations = document.getElementById('termVariations');
          if (!this.domElements.termVariations) console.error("DOM Element #termVariations not found!");
+        this.domElements.termVariationsContainer = document.getElementById('termVariationsContainer');
+         if (!this.domElements.termVariationsContainer) console.error("DOM Element #termVariationsContainer not found!");
 
         this.domElements.relatedTerms = document.getElementById('relatedTerms');
          if (!this.domElements.relatedTerms) console.error("DOM Element #relatedTerms not found!");
@@ -121,187 +132,224 @@ const App = {
         this.domElements.backButton = document.getElementById('backButton');
          if (!this.domElements.backButton) console.error("DOM Element #backButton not found!");
 
-        // Usar querySelectorAll para colecciones
         this.domElements.categoryTabs = document.querySelectorAll('.category-tab');
          if (this.domElements.categoryTabs.length === 0) console.warn("DOM Elements .category-tab not found!");
 
         this.domElements.sortSelect = document.getElementById('sortSelect');
          if (!this.domElements.sortSelect) console.error("DOM Element #sortSelect not found!");
 
-        // Asegúrate de que este selector apunte al contenedor correcto en index.html
         this.domElements.browseGridContainer = document.querySelector('#browseAll .grid');
          if (!this.domElements.browseGridContainer) console.error("DOM Element #browseAll .grid not found!");
 
-        // Asegúrate de que este selector apunte a la navegación de paginación
         this.domElements.paginationNav = document.querySelector('#browseAll .mt-8 nav');
-         if (!this.domElements.paginationNav) console.error("DOM Element #browseAll .mt-8 nav not found!");
+         if (!this.domElements.paginationNav) console.error("DOM Element #paginationNav not found!");
+
+        this.domElements.athleteStatsContainer = document.getElementById('athleteStatsContainer');
+         if (!this.domElements.athleteStatsContainer) console.error("DOM Element #athleteStatsContainer not found!");
+        this.domElements.athleteStats = document.getElementById('athleteStats');
+         if (!this.domElements.athleteStats) console.error("DOM Element #athleteStats not found!");
+        this.domElements.muscleFilterSelect = document.getElementById('muscleFilterSelect');
+         if (!this.domElements.muscleFilterSelect) console.error("DOM Element #muscleFilterSelect not found!");
     },
 
-    // Asigna todos los event listeners a los elementos interactivos del DOM
-    // Estos listeners llaman a métodos que actualizan el estado.
     bindEvents: function() {
-        // Búsqueda: Llama a performSearch al hacer click o presionar Enter
-        if (this.domElements.searchButton) this.domElements.searchButton.addEventListener('click', () => this.performSearch());
+        if (this.domElements.searchButton) {
+             this.domElements.searchButton.addEventListener('click', () => this.performSearch());
+        }
         if (this.domElements.searchInput) {
             this.domElements.searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') this.performSearch();
+                if (e.key === 'Enter') {
+                    this.performSearch();
+                }
             });
+             this.domElements.searchInput.addEventListener('input', () => {
+                 if (this.domElements.searchInput.value.length >= 3 || (this.state.view === 'search' && this.domElements.searchInput.value.length < 3 && this.domElements.searchInput.value.length > 0)) {
+                      this.performSearch();
+                 } else if (this.state.view === 'search' && this.domElements.searchInput.value.length === 0) {
+                      this.showBrowseView();
+                 } else if (this.state.view === 'search' && this.domElements.searchInput.value.length < 3) {
+                     if (this.domElements.resultsList) {
+                        this.domElements.resultsList.innerHTML = '<li class="p-4 text-center text-gray-500">Introduce al menos 3 caracteres para buscar.</li>';
+                        this.domElements.resultsCount.textContent = '';
+                     }
+                 }
+             });
         }
 
-        // Botón de retroceso/cerrar en la vista de detalle: Llama a showBrowseView
-        if (this.domElements.backButton) this.domElements.backButton.addEventListener('click', () => this.showBrowseView());
+        // BOTÓN DE RETROCESO: USAR FUNCIÓN FLECHA SIMPLE LLAMANDO A App
+        if (this.domElements.backButton) {
+             // Llama al método showBrowseView a través del objeto App global
+             this.domElements.backButton.addEventListener('click', () => App.updateStateForBrowse()); // Mantener esta sintaxis
+        }
 
-        // Pestañas de categoría: Llama a updateStateForCategoryFilter
+
+        // Pestañas de Categoría: Acceden a App a través de 'App.updateState...'
         if (this.domElements.categoryTabs) {
             this.domElements.categoryTabs.forEach(tab => {
                 tab.addEventListener('click', function() {
-                    // 'this' dentro de addEventListener se refiere al elemento que disparó el evento (el botón)
-                    // Usamos App para llamar al método del objeto App desde aquí
                     App.updateStateForCategoryFilter(this.dataset.category);
                 });
             });
         }
 
-        // Selector de ordenación: Llama a updateStateForSort
+        // Selector de Ordenación: Usa arrow function
         if (this.domElements.sortSelect) {
             this.domElements.sortSelect.addEventListener('change', () => {
-                // 'this' dentro de la arrow function mantiene el contexto del objeto App
                 this.updateStateForSort(this.domElements.sortSelect.value);
             });
         }
 
-        // Navegación alfabética: Llama a updateStateForLetterFilter
+        // Selector de Filtro por Músculo: Usa arrow function
+        if (this.domElements.muscleFilterSelect) {
+            this.domElements.muscleFilterSelect.addEventListener('change', () => {
+                this.updateStateForMuscleFilter(this.domElements.muscleFilterSelect.value);
+            });
+        }
+
+        // Navegación Alfabética: Acceden a App a través de 'App.updateState...'
         document.querySelectorAll('.alphabet-nav a').forEach(link => {
             link.addEventListener('click', function(e) {
-                e.preventDefault(); // Prevenir el comportamiento por defecto del enlace
-                // 'this' dentro de addEventListener se refiere al enlace que disparó el evento
-                App.updateStateForLetterFilter(this.textContent.trim()); // Llama al método del objeto App
+                e.preventDefault();
+                App.updateStateForLetterFilter(this.textContent.trim());
             });
         });
 
-        // Escucha los cambios en el historial del navegador (botones atrás/adelante)
+        // Listener para popstate: Usa arrow function
         window.addEventListener('popstate', (event) => {
             console.log("Popstate event triggered. State from history:", event.state);
-             // Reconstruye el estado de la App a partir de la URL actual y el estado guardado (event.state si se usó)
-             // Es más robusto leer siempre la URL, ya que event.state podría ser null en algunos casos.
             this.updateStateFromUrl();
-            this.renderUI(); // Dispara un renderizado para reflejar el estado cargado del historial
+            this.renderUI();
         });
 
-        // Los listeners para la paginación se añaden dinámicamente en renderPaginationControls
+         // Delegación de eventos para tarjetas en la vista de exploración (Usa arrow function)
+         if (this.domElements.browseGridContainer) {
+              this.domElements.browseGridContainer.addEventListener('click', (e) => {
+                  const cardElement = e.target.closest('.exercise-card');
+                  if (cardElement && cardElement.dataset.termId) {
+                       const termId = parseInt(cardElement.dataset.termId, 10);
+                       const term = this.termMapById ? this.termMapById[termId] : this.crossfitTerms.find(t => t.id === termId);
+                       if (term) {
+                            this.showTermDetail(term);
+                       } else {
+                           console.error("Término no encontrado en datos al hacer clic en la tarjeta con ID:", termId);
+                       }
+                  }
+              });
+         }
+
+          // Delegación de eventos para resultados de búsqueda (Usa arrow function)
+         if (this.domElements.resultsList) {
+              this.domElements.resultsList.addEventListener('click', (e) => {
+                  const listItem = e.target.closest('li');
+                  if (listItem && listItem.dataset.termId) {
+                       const termId = parseInt(listItem.dataset.termId, 10);
+                       const term = this.termMapById ? this.termMapById[termId] : this.crossfitTerms.find(t => t.id === termId);
+                       if (term) {
+                            this.showTermDetail(term);
+                       } else {
+                            console.error("Término no encontrado en datos al hacer clic en resultado de búsqueda con ID:", termId);
+                       }
+                  }
+              });
+         }
+         // Los listeners de paginación en renderPaginationControls también usan arrow functions.
     },
 
-    // Carga los datos de los términos de CrossFit desde el archivo JSON
-    // Este es un método asíncrono.
     loadTerms: async function() {
         try {
-            // Realiza la petición para obtener data.json
             const response = await fetch('data.json');
-            // Verifica si la respuesta fue exitosa (código 200-299)
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            // Parsea la respuesta JSON y la asigna a la propiedad crossfitTerms del objeto App
             this.crossfitTerms = await response.json();
             console.log("Datos cargados:", this.crossfitTerms.length, "términos.");
 
-            // Una vez que los datos estén cargados, podemos enlazar eventos (si dependen de los datos)
-            // y asegurar que el estado inicial es consistente y renderizamos.
-             this.bindEvents(); // <-- Asegúrate de llamar a bindEvents aquí
+             this.termMapByName = this.crossfitTerms.reduce((map, term) => {
+                 map[term.name] = term;
+                 if (term.fullName) { // Añadir también por nombre completo si existe
+                     map[term.fullName] = term;
+                 }
+                 return map;
+             }, {});
 
-            // Si el estado inicial ya fue cargado de la URL en init(),
-            // validamos si el selectedTermId para la vista 'detail' es válido.
+             this.termMapById = this.crossfitTerms.reduce((map, term) => {
+                 map[term.id] = term;
+                 return map;
+             }, {});
+
+             console.log("Mapas de términos (byName, byId) creados.");
+
+            this.bindEvents();
+
              if (this.state.view === 'detail' && this.state.selectedTermId !== null) {
-                 const termExists = this.crossfitTerms.some(term => term.id === this.state.selectedTermId);
+                 const termExists = this.termMapById.hasOwnProperty(this.state.selectedTermId);
                  if (!termExists) {
                      console.warn(`Term with ID ${this.state.selectedTermId} not found. Changing view to browse.`);
-                     this.state.view = 'browse'; // Redirige a browse si el ID no existe
+                     this.state.view = 'browse';
                      this.state.selectedTermId = null;
-                      // No llamamos a updateUrlFromState aquí porque renderUI lo hará, y no queremos un pushState extra por un ID inválido.
                  }
              }
 
-             // Si el estado inicial de ordenación leído de la URL es inválido, ajustarlo al por defecto
-             const validSorts = ['name-asc', 'name-desc', 'category', 'popularity']; // Define tus criterios válidos
+             const validSorts = ['name-asc', 'name-desc', 'category', 'popularity'];
              if (!validSorts.includes(this.state.sortBy)) {
                   console.warn(`Invalid sort key "${this.state.sortBy}" in URL. Defaulting to "name-asc".`);
                   this.state.sortBy = 'name-asc';
-             }
-              // Si el elemento sortSelect existe, asegúrate de que su valor coincida con el estado
+              }
               if (this.domElements.sortSelect) {
                    this.domElements.sortSelect.value = this.state.sortBy;
               }
 
-            // Validar la página actual del estado si el número total de páginas cambia por un filtro o es inválida
              if (this.state.view === 'browse') {
                  const { totalPages } = this.getFilteredAndSortedTermsIncludingPaginationInfo();
                  if (this.state.currentPage > totalPages && totalPages > 0) {
                       console.warn(`Current page ${this.state.currentPage} is out of bounds (total pages ${totalPages}). Adjusting to page ${totalPages}.`);
                       this.state.currentPage = totalPages;
                  } else if (totalPages === 0) {
-                      this.state.currentPage = 1; // Si no hay términos filtrados, ir a la página 1 (vacía)
+                      this.state.currentPage = 1;
                  }
              }
 
-
-            // Una vez que el estado inicial está definido (posiblemente actualizado desde la URL en init y validado aquí),
-            // asegura que la URL coincide con este estado SIN añadir una entrada extra al historial para la carga inicial.
-            this.updateUrlFromState(true); // Usa history.replaceState para la carga inicial
-
-            // Llama al método central de renderizado para mostrar la UI inicial basada en el estado.
+            this.updateUrlFromState(true);
             this.renderUI();
 
         } catch (error) {
-            console.error("Error al cargar los términos:", error); // Mensaje traducido
-            // Muestra un mensaje de error visible en la interfaz si falla la carga
+            console.error("Error al cargar los términos:", error);
             const mainContent = document.querySelector('main');
             if (mainContent) {
-                mainContent.innerHTML = '<p class="text-center text-red-600 text-xl py-8">Error al cargar los términos. Consulta la consola para más detalles.</p>'; // Mensaje traducido
+                mainContent.innerHTML = '<p class="col-span-full text-center text-red-600 text-xl py-8">Error al cargar los términos. Consulta la consola para más detalles.</p>';
             }
-            // Deshabilita los controles de interacción si los datos no se cargaron correctamente
-             if (this.domElements.searchInput) this.domElements.searchInput.disabled = true;
+             if (this.domElements.searchInput) {this.domElements.searchInput.disabled = true; this.domElements.searchInput.placeholder = "Error de carga";}
              if (this.domElements.searchButton) this.domElements.searchButton.disabled = true;
              if (this.domElements.categoryTabs) this.domElements.categoryTabs.forEach(tab => tab.disabled = true);
              if (this.domElements.sortSelect) this.domElements.sortSelect.disabled = true;
              document.querySelectorAll('.alphabet-nav a').forEach(link => {
                   link.classList.add('pointer-events-none', 'opacity-50');
              });
-             if (this.domElements.paginationNav) this.domElements.paginationNav.classList.add('hidden'); // Oculta paginación si no hay datos
+             if (this.domElements.paginationNav) this.domElements.paginationNav.classList.add('hidden');
         }
     },
 
-     // --- Métodos para leer y escribir el estado desde/hacia la URL ---
-
-     // Lee la URL actual y actualiza el estado de la aplicación para que coincida
-     // Se llama al cargar la página (en init) y en el evento popstate.
      updateStateFromUrl: function() {
          const params = new URLSearchParams(window.location.search);
 
-         // Leer el parámetro 'view' o usar 'browse' por defecto
          const view = params.get('view') || 'browse';
          this.state.view = view;
 
-         // Leer otros parámetros relevantes basados en la vista
          if (view === 'browse') {
              this.state.activeCategory = params.get('cat') || 'all';
              this.state.activeLetter = params.get('letter') || 'All';
-             this.state.currentPage = parseInt(params.get('page') || '1', 10); // Parsea a entero, por defecto 1
-             // Valida que pageNumber sea un número válido > 0; si no, usa 1.
+             this.state.currentPage = parseInt(params.get('page') || '1', 10);
              if (isNaN(this.state.currentPage) || this.state.currentPage < 1) {
                  this.state.currentPage = 1;
              }
-             this.state.sortBy = params.get('sort') || 'name-asc'; // Lee el criterio de ordenación o usa el por defecto
-
-             // Limpiar estados no relacionados con browse
+             this.state.sortBy = params.get('sort') || 'name-asc';
+             this.state.activeMuscle = params.get('muscle') || 'all'; // Leer filtro de músculo de la URL
              this.state.selectedTermId = null;
-             this.state.searchTerm = '';
+
 
          } else if (view === 'detail') {
-             const id = parseInt(params.get('id'), 10); // Parsea el ID a entero
-             // Valida que el ID sea un número válido; si no, usa null. La verificación de si el ID existe en data se hace en loadTerms o renderUI.
+             const id = parseInt(params.get('id'), 10);
              this.state.selectedTermId = !isNaN(id) ? id : null;
-
-             // Limpiar estados no relacionados con detail
              this.state.searchTerm = '';
              this.state.activeCategory = 'all';
              this.state.activeLetter = 'All';
@@ -310,9 +358,7 @@ const App = {
 
 
          } else if (view === 'search') {
-             this.state.searchTerm = params.get('q') || ''; // Lee el término de búsqueda o usa cadena vacía
-
-             // Limpiar estados no relacionados con search
+             this.state.searchTerm = params.get('q') || '';
              this.state.selectedTermId = null;
              this.state.activeCategory = 'all';
              this.state.activeLetter = 'All';
@@ -320,8 +366,7 @@ const App = {
              this.state.sortBy = 'name-asc';
 
          } else {
-              // Si la vista en la URL no es reconocida, por defecto vamos a browse y resetea todo lo demás.
-              console.warn("Vista no reconocida en la URL:", view, "Por defecto 'browse'."); // Mensaje traducido
+              console.warn("Vista no reconocida en la URL:", view, "Por defecto 'browse'.");
               this.state.view = 'browse';
               this.state.selectedTermId = null;
               this.state.searchTerm = '';
@@ -331,600 +376,750 @@ const App = {
               this.state.sortBy = 'name-asc';
          }
 
-         console.log("Estado actualizado desde la URL:", this.state); // Mensaje traducido
-
-         // NOTA: Después de actualizar el estado desde la URL, la función que llamó a updateStateFromUrl
-         // (ya sea init o el listener popstate) DEBE llamar a renderUI() para actualizar la interfaz.
-         // Esto se maneja en init y en el listener popstate.
+         console.log("Estado actualizado desde la URL:", this.state);
      },
 
-     // Actualiza la URL del navegador para reflejar el estado actual de la aplicación
-     // Usa history.pushState por defecto para añadir al historial, pero history.replaceState si replace = true.
      updateUrlFromState: function(replace = false) {
-         // Solo actualizamos la URL si la data está cargada (evita URLs extrañas antes de loadTerms)
          if (this.crossfitTerms.length === 0) {
-             console.warn("Datos no cargados, omitiendo actualización de URL."); // Mensaje traducido
+             console.warn("Datos no cargados, omitiendo actualización de URL.");
              return;
          }
 
-         const url = new URL(window.location.origin + window.location.pathname); // Crea una nueva URL con la base actual
+         const url = new URL(window.location.origin + window.location.pathname);
 
-         // Añade parámetros de URL según la vista activa y otros estados relevantes
-         // Solo añade 'view=browse' si no es la vista por defecto para URLs más limpias
          if (this.state.view !== 'browse') {
             url.searchParams.set('view', this.state.view);
          }
 
 
          if (this.state.view === 'browse') {
-             // Añade parámetros solo si son diferentes de los valores por defecto de la vista browse
              if (this.state.activeCategory !== 'all') {
                  url.searchParams.set('cat', this.state.activeCategory);
              }
              if (this.state.activeLetter !== 'All') {
                  url.searchParams.set('letter', this.state.activeLetter);
              }
-              // Solo añade 'page' si no es la página 1
-             if (this.state.currentPage !== 1) {
+              if (this.state.currentPage !== 1) {
                  url.searchParams.set('page', this.state.currentPage);
              }
-              // Solo añade 'sort' si no es el por defecto 'name-asc'
-             if (this.state.sortBy !== 'name-asc') {
+              if (this.state.sortBy !== 'name-asc') {
                  url.searchParams.set('sort', this.state.sortBy);
-             }
+              }
+              if (this.state.activeMuscle !== 'all') { // Añadir filtro de músculo a la URL
+                 url.searchParams.set('muscle', this.state.activeMuscle);
+              }
 
          } else if (this.state.view === 'detail') {
              if (this.state.selectedTermId !== null) {
                  url.searchParams.set('id', this.state.selectedTermId);
              } else {
-                  console.warn("El estado indica vista de detalle pero selectedTermId es null. La URL estará incompleta."); // Mensaje traducido
-                  // En este caso, la URL solo tendrá ?view=detail sin ID, que updateStateFromUrl manejaría volviendo a browse.
+                  console.warn("El estado indica vista de detalle pero selectedTermId es null. La URL estará incompleta.");
              }
 
          } else if (this.state.view === 'search') {
              if (this.state.searchTerm !== '') {
                  url.searchParams.set('q', this.state.searchTerm);
-             } else {
-                 console.warn("El estado indica vista de búsqueda pero searchTerm está vacío. La URL estará incompleta."); // Mensaje traducido
-                 // En este caso, la URL solo tendrá ?view=search sin 'q', que updateStateFromUrl manejaría con searchTerm=''
-                 // Una búsqueda vacía en performSearch ya redirige a browse, por lo que este caso debería ser raro si la lógica se sigue bien.
              }
          }
 
-         // Decide si usar pushState (añadir al historial) o replaceState (reemplazar la entrada actual)
          if (replace) {
-             history.replaceState(this.state, '', url.toString()); // Reemplaza la entrada actual del historial
+             history.replaceState(this.state, '', url.toString());
          } else {
-             history.pushState(this.state, '', url.toString()); // Añade una nueva entrada al historial
+             history.pushState(this.state, '', url.toString());
          }
-          console.log(`${replace ? 'Reemplazado' : 'Pulsado'} estado a la URL:`, url.toString()); // Mensaje traducido
+          console.log(`${replace ? 'Reemplazado' : 'Pulsado'} estado a la URL:`, url.toString());
      },
 
-    // --- Lógica para obtener términos filtrados/ordenados/paginados basada en el estado ---
-
-     // Obtiene la lista de términos aplicando los filtros, ordenación Y paginación del estado.
-     // Esta función es llamada por renderBrowseView para obtener los términos exactos a mostrar.
     getFilteredAndSortedAndPagedTerms: function() {
-         // Verifica que los datos estén cargados
         if (this.crossfitTerms.length === 0) {
              return [];
         }
-
-        // 1. Obtener la lista completa filtrada y ordenada (sin paginar)
-        const allFilteredSortedTerms = this.getFilteredAndSortedTermsIncludingPaginationInfo().terms; // Usamos el helper para esto
-
-        // 2. Aplicar lógica de paginación (corte)
+        const allFilteredSortedTerms = this.getFilteredAndSortedTermsIncludingPaginationInfo().terms;
         const startIndex = (this.state.currentPage - 1) * this.state.termsPerPage;
         const endIndex = startIndex + this.state.termsPerPage;
-        const termsOnPage = allFilteredSortedTerms.slice(startIndex, endIndex); // Obtiene solo los términos de la página actual
-
-        return termsOnPage; // Retorna solo los términos de la página actual
+        const termsOnPage = allFilteredSortedTerms.slice(startIndex, endIndex);
+        return termsOnPage;
     },
 
-    // Helper: Obtiene la lista completa de términos después de aplicar filtros y ordenación (sin paginar),
-    // y también devuelve el total de items y total de páginas.
-    // Esto es necesario para renderizar correctamente los controles de paginación y mensajes.
     getFilteredAndSortedTermsIncludingPaginationInfo: function() {
          if (this.crossfitTerms.length === 0) {
               return { terms: [], totalItems: 0, totalPages: 0 };
          }
 
-         let terms = [...this.crossfitTerms]; // Clona el array original
+         let terms = [...this.crossfitTerms];
 
-         // 1. Aplicar filtros del estado (Categoría y Letra)
+         // 1. Filtrar por categoría
          if (this.state.activeCategory !== 'all') {
              terms = terms.filter(term => term.category === this.state.activeCategory);
          }
+
+         // 2. Filtrar por letra (nombre O nombre completo para atletas)
          if (this.state.activeLetter !== 'All') {
-              terms = terms.filter(term => term.name.startsWith(this.state.activeLetter));
+              terms = terms.filter(term =>
+                  (term.name && term.name.startsWith(this.state.activeLetter)) ||
+                  (term.fullName && term.fullName.startsWith(this.state.activeLetter))
+              );
          }
 
-         const totalItems = terms.length; // Total de items después de filtrar
-         const totalPages = Math.ceil(totalItems / this.state.termsPerPage); // Total de páginas
+         // 3. Filtrar por músculo (solo para términos con propiedad muscles)
+         if (this.state.activeMuscle !== 'all') {
+              terms = terms.filter(term => term.muscles && term.muscles.includes(this.state.activeMuscle));
+         }
 
-         // 2. Aplicar ordenación del estado
+         const totalItems = terms.length;
+         const totalPages = Math.ceil(totalItems / this.state.termsPerPage);
+
+         // 4. Aplicar ordenación
          switch(this.state.sortBy) {
              case 'name-asc':
-                 terms.sort((a, b) => a.name.localeCompare(b.name));
+                 terms.sort((a, b) => (a.fullName || a.name).localeCompare(b.fullName || b.name));
                  break;
              case 'name-desc':
-                 terms.sort((a, b) => b.name.localeCompare(a.name));
+                 terms.sort((a, b) => (b.fullName || b.name).localeCompare(a.fullName || b.name));
                  break;
              case 'category':
                  terms.sort((a, b) => {
-                    // Ordena primero por categoría, luego alfabéticamente dentro de la categoría
                     if (a.category < b.category) return -1;
                     if (a.category > b.category) return 1;
-                    return a.name.localeCompare(b.name);
+                    return (a.fullName || a.name).localeCompare(b.fullName || b.name);
                 });
                  break;
              case 'popularity':
-                 // Implementación de ejemplo: orden aleatorio.
                  terms = terms.sort(() => Math.random() - 0.5);
                  break;
              default:
-                 // Ordenación por defecto si el valor no es reconocido (A-Z)
-                 terms.sort((a, b) => a.name.localeCompare(b.name));
+                 terms.sort((a, b) => (a.fullName || a.name).localeCompare(b.fullName || b.name));
                  break;
          }
 
-         // Devolver la lista completa filtrada/ordenada, total de items y total de páginas
          return {
-             terms: terms, // La lista completa después de filtrar y ordenar (sin paginar)
+             terms: terms,
              totalItems: totalItems,
              totalPages: totalPages
          };
     },
 
-
-    // --- Métodos para actualizar el estado y disparar el renderizado ---
-    // Estos métodos son los "controladores" que reaccionan a las acciones del usuario
-    // y actualizan el estado (this.state), luego SIEMPRE llaman a this.updateUrlFromState() y this.renderUI().
-
-    // Maneja la acción de búsqueda: actualiza el estado con el término de búsqueda
     performSearch: function() {
         const query = this.domElements.searchInput ? this.domElements.searchInput.value.trim() : '';
-         // Si la búsqueda está vacía, volver a browse
+        if (query.length < 3 && query.length > 0) {
+             console.log("Término de búsqueda demasiado corto:", query);
+             if (this.state.view === 'search') {
+                 if (this.domElements.resultsList) {
+                    this.domElements.resultsList.innerHTML = '<li class="p-4 text-center text-gray-500">Introduce al menos 3 caracteres para buscar.</li>';
+                    this.domElements.resultsCount.textContent = '';
+                 }
+             }
+             return;
+        }
         if (query === '') {
-            // Llama directamente a showBrowseView que ya maneja la actualización de estado y URL
-            this.showBrowseView();
+            if (this.state.view === 'search') {
+                 this.showBrowseView();
+            }
             return;
         }
-         // Verifica si los datos están cargados antes de proceder con la búsqueda real
         if (this.crossfitTerms.length === 0) {
-             console.warn("Datos no cargados, no se puede realizar la búsqueda."); // Mensaje traducido
-             // Podrías mostrar un mensaje temporal al usuario
+             console.warn("Datos no cargados, no se puede realizar la búsqueda.");
              return;
         }
-        this.updateStateForSearch(query); // Llama al método que actualiza el estado de búsqueda y dispara renderUI
+        this.updateStateForSearch(query);
     },
 
-     // Maneja la acción de ir a la vista de exploración: actualiza el estado a 'browse'
-    showBrowseView: function() {
-         // La lógica de ocultar/mostrar secciones y limpiar input se hace en renderUI
-         this.updateStateForBrowse(); // Llama al método que actualiza el estado a 'browse' y dispara renderUI
-    },
 
-     // Maneja la acción de ir a la vista de detalle para un término: actualiza el estado con el ID del término
-    showTermDetail: function(term) {
-        // Verifica el término y su ID antes de actualizar el estado
-         if (!term || term.id === undefined || term.id === null) {
-             console.error("Término inválido pasado a showTermDetail"); // Mensaje traducido
-             // Opcional: Mostrar error al usuario o redirigir a browse
-             return;
-         }
-         // La lógica de ocultar/mostrar secciones y renderizar contenido se hace en renderUI
-         this.updateStateForDetail(term.id); // Llama al método que actualiza el estado a 'detail' y dispara renderUI
-    },
-
-     // Actualiza el estado cuando se aplica un filtro de categoría
-    updateStateForCategoryFilter: function(category) {
-         // Verifica que los datos estén cargados
-        if (this.crossfitTerms.length === 0) {
-             console.warn("Datos no cargados, no se puede actualizar el estado del filtro de categoría."); // Mensaje traducido
-             return;
-        }
-        // Actualiza las propiedades relevantes del estado
-        this.state.activeCategory = category;
-        this.state.activeLetter = 'All'; // Resetea el filtro de letra al cambiar categoría
-        this.state.view = 'browse'; // Asegura que estamos en la vista 'browse'
-        this.state.currentPage = 1; // Resetea la paginación a la página 1 al cambiar filtro
-        this.updateUrlFromState(); // Actualiza la URL antes de renderizar
-        this.renderUI(); // Dispara el renderizado para reflejar el nuevo estado
-    },
-
-     // Actualiza el estado cuando se aplica un filtro por letra
-    updateStateForLetterFilter: function(letter) {
-         // Verifica que los datos estén cargados
-        if (this.crossfitTerms.length === 0) {
-             console.warn("Datos no cargados, no se puede actualizar el estado del filtro por letra."); // Mensaje traducido
-             return;
-        }
-        // Actualiza las propiedades relevantes del estado
-        this.state.activeLetter = letter;
-        this.state.activeCategory = 'all'; // Resetea el filtro de categoría al cambiar letra
-        this.state.view = 'browse'; // Asegura que estamos en la vista 'browse'
-        this.state.currentPage = 1; // Resetea la paginación a la página 1 al cambiar filtro
-        this.updateUrlFromState(); // Actualiza la URL antes de renderizar
-        this.renderUI(); // Dispara el renderizado para reflejar el nuevo estado
-    },
-
-     // Actualiza el estado cuando se aplica una ordenación
-    updateStateForSort: function(sortBy) {
-         // Verifica que los datos estén cargados
-        if (this.crossfitTerms.length === 0) {
-             console.warn("Datos no cargados, no se puede actualizar el estado de ordenación."); // Mensaje traducido
-             return;
-        }
-        // Actualiza la propiedad relevante del estado
-        this.state.sortBy = sortBy;
-        this.state.view = 'browse'; // Asegura que estamos en la vista 'browse'
-        this.state.currentPage = 1; // Resetea la paginación a la página 1 al cambiar ordenación
-        this.updateUrlFromState(); // Actualiza la URL antes de renderizar
-        this.renderUI(); // Dispara el renderizado para reflejar el nuevo estado
-    },
-
-     // Actualiza el estado cuando se cambia de página en la paginación
-    updateStateForPagination: function(pageNumber) {
-         // Verifica que los datos estén cargados
-        if (this.crossfitTerms.length === 0) {
-             console.warn("Datos no cargados, no se puede actualizar el estado de paginación."); // Mensaje traducido
-             return;
-        }
-
-        // Calcula el número total de páginas para validar el pageNumber
-        const { totalPages } = this.getFilteredAndSortedTermsIncludingPaginationInfo();
-
-        // Valida que el número de página sea válido
-        if (pageNumber >= 1 && pageNumber <= totalPages) {
-            // Actualiza la propiedad de página actual en el estado
-            this.state.currentPage = pageNumber;
-            this.state.view = 'browse'; // Asegura que estamos en la vista 'browse'
-            // No es necesario resetear filtros/ordenación/búsqueda aquí, ya están en el estado.
-            this.updateUrlFromState(); // Actualiza la URL antes de renderizar
-            this.renderUI(); // Dispara el renderizado para mostrar la nueva página
-        } else {
-            console.warn("Número de página inválido:", pageNumber, "Páginas totales:", totalPages); // Mensaje traducido
-            // Opcional: Mostrar mensaje al usuario o simplemente no hacer nada
-        }
-    },
-
-    // Actualiza el estado con el término de búsqueda
-     updateStateForSearch: function(query) {
-         // Verifica que los datos estén cargados
-        if (this.crossfitTerms.length === 0) {
-             console.warn("Datos no cargados, no se puede actualizar el estado de búsqueda."); // Mensaje traducido
-             return;
-        }
-         // Actualiza las propiedades relevantes del estado
-        this.state.view = 'search'; // La búsqueda lleva a la vista 'search'
-        this.state.searchTerm = query.trim().toLowerCase();
-         // Los otros estados de filtro/ordenación/paginación se mantienen para cuando vuelvas a la vista browse
-         // this.state.activeCategory = 'all'; // Podrías resetearlos aquí si quieres que la búsqueda sea independiente de browse
-         // this.state.activeLetter = 'All';
-         // this.state.currentPage = 1;
-         // this.state.sortBy = 'name-asc';
-         this.updateUrlFromState(); // Actualiza la URL antes de renderizar
-         this.renderUI(); // Dispara el renderizado para mostrar los resultados de búsqueda
-     },
-
-    // Actualiza el estado para la vista de detalle con un ID específico
-     updateStateForDetail: function(termId) {
-          if (this.crossfitTerms.length === 0 || termId === null || termId === undefined) {
-               console.warn("Datos no cargados o ID de término inválido, no se puede actualizar el estado de detalle."); // Mensaje traducido
-               // Podrías redirigir a browse aquí si no hay datos cargados
-               // this.updateStateForBrowse();
+     updateStateForBrowse: function() {
+          if (this.crossfitTerms.length === 0) {
+               console.warn("Datos no cargados, no se puede actualizar el estado a browse.");
                return;
           }
-          const term = this.crossfitTerms.find(t => t.id === termId);
-           if (!term) {
-                console.warn("Término no encontrado para el ID:", termId, "Cambiando vista a browse."); // Mensaje traducido
-                // Si el término no se encuentra, redirige a la vista browse
-                this.updateStateForBrowse(); // Esto actualizará el estado y la URL y renderizará browse
-                return; // Sal de esta función
-           }
-
-          this.state.view = 'detail';
-          this.state.selectedTermId = termId;
-          // Limpiar estados no relacionados con detail (opcional, ya se hace en updateStateFromUrl)
-          // this.state.searchTerm = ''; this.state.activeCategory = 'all'; ...etc
-
-          this.updateUrlFromState(); // Actualiza la URL antes de renderizar
-          this.renderUI(); // Dispara el renderizado
+           this.state.searchTerm = '';
+          this.state.view = 'browse';
+          this.state.selectedTermId = null;
+          this.updateUrlFromState();
+          this.renderUI();
      },
 
+    showTermDetail: function(term) {
+         if (!term || term.id === undefined || term.id === null) {
+             console.error("Término inválido pasado a showTermDetail");
+             return;
+         }
+         this.state.searchTerm = '';
+         this.state.activeCategory = 'all';
+         this.state.activeLetter = 'All';
+         this.state.currentPage = 1;
+         this.state.sortBy = 'name-asc';
 
-    // --- Método central para renderizar la UI ---
-    // Este método lee el estado actual (this.state) y actualiza la interfaz de usuario para reflejarlo.
-    // Es el único lugar que debe modificar directamente la visibilidad de las secciones principales.
+         this.state.view = 'detail';
+         this.state.selectedTermId = term.id;
+         this.updateUrlFromState();
+         this.renderUI();
+    },
+
+     updateStateForCategoryFilter: function(category) {
+        if (this.crossfitTerms.length === 0) {
+             console.warn("Datos no cargados, no se puede actualizar el estado del filtro de categoría.");
+             return;
+        }
+        this.state.searchTerm = '';
+        this.state.activeLetter = 'All';
+        this.state.activeCategory = category;
+        this.state.view = 'browse';
+        this.state.currentPage = 1;
+        this.updateUrlFromState();
+        this.renderUI();
+    },
+
+     updateStateForLetterFilter: function(letter) {
+        if (this.crossfitTerms.length === 0) {
+             console.warn("Datos no cargados, no se puede actualizar el estado del filtro por letra.");
+             return;
+        }
+        this.state.searchTerm = '';
+        this.state.activeCategory = 'all';
+        this.state.activeLetter = letter;
+        this.state.view = 'browse';
+        this.state.currentPage = 1;
+        this.updateUrlFromState();
+        this.renderUI();
+    },
+
+     updateStateForSort: function(sortBy) {
+        if (this.crossfitTerms.length === 0) {
+             console.warn("Datos no cargados, no se puede actualizar el estado de ordenación.");
+             return;
+        }
+        this.state.searchTerm = '';
+        this.state.sortBy = sortBy;
+        this.state.view = 'browse';
+        this.state.currentPage = 1;
+        this.updateUrlFromState();
+        this.renderUI();
+    },
+
+     updateStateForMuscleFilter: function(muscle) {
+        if (this.crossfitTerms.length === 0) {
+             console.warn("Datos no cargados, no se puede actualizar el estado del filtro por músculo.");
+             return;
+        }
+        this.state.searchTerm = '';
+        this.state.activeMuscle = muscle;
+        this.state.view = 'browse';
+        this.state.currentPage = 1;
+        this.updateUrlFromState();
+        this.renderUI();
+    },
+
+    updateStateForPagination: function(pageNumber) {
+        if (this.crossfitTerms.length === 0) {
+             console.warn("Datos no cargados, no se puede actualizar el estado de paginación.");
+             return;
+        }
+
+        const { totalPages } = this.getFilteredAndSortedTermsIncludingPaginationInfo();
+
+        if (pageNumber >= 1 && pageNumber <= totalPages) {
+            this.state.currentPage = pageNumber;
+            this.state.view = 'browse';
+            this.updateUrlFromState();
+            this.renderUI();
+        } else {
+            console.warn("Número de página inválido:", pageNumber, "Páginas totales:", totalPages);
+        }
+    },
+
+     updateStateForSearch: function(query) {
+        if (this.crossfitTerms.length === 0) {
+             console.warn("Datos no cargados, no se puede actualizar el estado de búsqueda.");
+             return;
+        }
+         this.state.activeCategory = 'all';
+         this.state.activeLetter = 'All';
+         this.state.currentPage = 1;
+         this.state.sortBy = 'name-asc';
+
+        this.state.view = 'search';
+        this.state.searchTerm = query.trim().toLowerCase();
+         this.state.selectedTermId = null;
+         this.updateUrlFromState();
+         this.renderUI();
+     },
+
+    updateStateForDetail: function(termId) {
+         if (!termId || termId === null || termId === undefined) {
+              console.warn("ID de término inválido, no se puede actualizar el estado de detalle.");
+              this.updateStateForBrowse();
+              return;
+         }
+          if (this.crossfitTerms.length === 0) {
+               console.warn("Datos no cargados, no se puede actualizar el estado de detalle.");
+               this.updateStateForBrowse();
+               return;
+          }
+
+         const term = this.termMapById ? this.termMapById[termId] : this.crossfitTerms.find(t => t.id === termId);
+
+          if (!term) {
+               console.warn("Término no encontrado para el ID:", termId, "Cambiando vista a browse.");
+               this.updateStateForBrowse();
+               return;
+          }
+
+         this.state.searchTerm = '';
+         this.state.activeCategory = 'all';
+         this.state.activeLetter = 'All';
+         this.state.currentPage = 1;
+         this.state.sortBy = 'name-asc';
+
+
+         this.state.view = 'detail';
+         this.state.selectedTermId = term.id;
+         this.updateUrlFromState();
+         this.renderUI();
+    },
+
+
     renderUI: function() {
-        console.log("Renderizando UI basada en el estado:", this.state); // Mensaje traducido
+        console.log("Renderizando UI basada en el estado:", this.state);
 
-        // Oculta todas las secciones principales primero para asegurar que solo se muestre la correcta
-        // Usamos las referencias domElements obtenidas en init
         if (this.domElements.browseAll) this.domElements.browseAll.classList.add('hidden');
         if (this.domElements.termDetail) this.domElements.termDetail.classList.add('hidden');
         if (this.domElements.searchResults) this.domElements.searchResults.classList.add('hidden');
 
-        // Decide qué sección mostrar y qué contenido renderizar basado en el estado de la vista (this.state.view)
-        if (this.state.view === 'browse') {
-            // Si la vista es 'browse', muestra la sección Browse All
-            if (this.domElements.browseAll) this.domElements.browseAll.classList.remove('hidden');
+        if (this.domElements.searchInput) {
+             this.domElements.searchInput.value = (this.state.view === 'detail') ? '' : this.state.searchTerm;
+             this.domElements.searchInput.disabled = this.state.view === 'detail';
+        }
 
-            // Obtiene los términos aplicando los filtros, ordenación Y paginación del estado
+        this.updateFilterControlsUI();
+
+
+        if (this.state.view === 'browse') {
+            if (this.domElements.browseAll) this.domElements.browseAll.classList.remove('hidden');
             const termsOnCurrentPage = this.getFilteredAndSortedAndPagedTerms();
-            // Renderiza la cuadrícula de tarjetas con los términos obtenidos (solo los de la página actual)
             this.renderBrowseView(termsOnCurrentPage);
 
-            // Actualiza el estado visual (clases 'active', valor del select, paginación) de los controles
-            this.updateFilterControlsUI();
 
         } else if (this.state.view === 'search') {
-            // Si la vista es 'search', muestra la sección Search Results
              if (this.domElements.searchResults) this.domElements.searchResults.classList.remove('hidden');
-            // Recalcula y renderiza la lista de resultados de búsqueda basada en el término de búsqueda del estado
             const query = this.state.searchTerm;
-             // Filtra los términos basándose solo en la query (la vista search no usa los otros filtros de browse)
-            const results = this.crossfitTerms.filter(term =>
-                term.name.toLowerCase().includes(query) ||
-                term.definition.toLowerCase().includes(query) ||
-                (term.example && term.example.toLowerCase().includes(query)) ||
-                (term.category && term.category.toLowerCase().includes(query))
-                // Puedes añadir más campos de búsqueda aquí
-            );
-            this.renderSearchResultsList(results, query); // Renderiza la lista de resultados
 
-             // Actualiza el estado visual de los controles que SÍ están visibles en esta vista (ej. campo de búsqueda)
-             this.updateFilterControlsUI(); // Reutilizamos esta función aunque no todos los controles se actualicen/muestren
+             if (query.length < 3 && query.length > 0) {
+                  if (this.domElements.resultsList) {
+                     this.domElements.resultsList.innerHTML = '<li class="p-4 text-center text-gray-500">Introduce al menos 3 caracteres para buscar.</li>';
+                     this.domElements.resultsCount.textContent = '';
+                  }
+             } else {
+                 const results = this.crossfitTerms.filter(term =>
+                     term.name.toLowerCase().includes(query) ||
+                     (term.fullName && term.fullName.toLowerCase().includes(query)) ||
+                     term.definition.toLowerCase().includes(query) ||
+                     (term.example && term.example.toLowerCase().includes(query)) ||
+                     (term.category && this.formatCategory(term.category).toLowerCase().includes(query)) ||
+                     (term.category === 'athletes' && term.nationality && this.getCountryName(term.nationality).toLowerCase().includes(query)) ||
+                      (term.category === 'athletes' && term.height && term.height.toLowerCase().includes(query)) ||
+                     (term.category === 'athletes' && term.weight && term.weight.toLowerCase().includes(query)) ||
+                     (term.category === 'athletes' && term.competitions && term.competitions.some(c => c.toLowerCase().includes(query))) ||
+                      (term.category === 'athletes' && term.benchmarks && Object.entries(term.benchmarks).some(([wod, mark]) => wod.toLowerCase().includes(query) || mark.toLowerCase().includes(query)))
+
+                 );
+                 this.renderSearchResultsList(results, query);
+             }
+
 
         } else if (this.state.view === 'detail') {
-            // Si la vista es 'detail', muestra la sección Term Detail
              if (this.domElements.termDetail) this.domElements.termDetail.classList.remove('hidden');
-            // Encuentra el término correspondiente al selectedTermId en el estado
-            const term = this.crossfitTerms.find(t => t.id === this.state.selectedTermId);
-            // Ya verificamos si el término existe en updateStateForDetail.
-            // Aquí simplemente renderizamos si se encontró.
+            const term = this.termMapById ? this.termMapById[this.state.selectedTermId] : this.crossfitTerms.find(t => t.id === this.state.selectedTermId);
+
             if (term) {
-                this.renderTermDetailContent(term); // Renderiza el contenido del detalle
-                 // Opcional: Desplazarse suavemente al inicio de la sección de detalle si está visible
+                this.renderTermDetailContent(term);
                 if (this.domElements.termDetail && !this.domElements.termDetail.classList.contains('hidden')) {
                      this.domElements.termDetail.scrollIntoView({ behavior: 'smooth' });
                 }
             } else {
-                // Si el término no se encuentra, ya updateStateForDetail nos redirigió a browse.
-                // Si llegamos aquí es por un error lógico, o si el DOM no se encontró.
-                 console.error("renderUI: Término no encontrado para el estado de vista de detalle, pero no fue redirigido. ID:", this.state.selectedTermId); // Mensaje traducido
-                 // Podríamos mostrar un mensaje de error genérico aquí si la sección de detalle está vacía
-                 if (this.domElements.termDetail && this.domElements.termDetail.innerHTML === '') {
-                      this.domElements.termDetail.innerHTML = '<p class="text-center text-red-600 text-xl py-8">Error al renderizar el detalle del término.</p>'; // Mensaje traducido
+                 console.error("renderUI: Término no encontrado para el estado de vista de detalle, pero no fue redirigido. ID:", this.state.selectedTermId);
+                 if (this.domElements.termDetail) {
+                     this.domElements.termDetail.innerHTML = '<p class="text-center text-red-600 text-xl py-8">Error al renderizar el detalle del término.</p>';
                  }
             }
-
-             // Actualiza el estado visual de los controles que SÍ están visibles en esta vista (ej. campo de búsqueda)
-             this.updateFilterControlsUI(); // Reutilizamos esta función
         }
 
-        // TODO: Podrías añadir un estado 'loading' o 'error' y manejarlos aquí (mostrar spinners, mensajes, etc.)
+        if (this.domElements.muscleFilterSelect) {
+             if (this.state.view === 'browse') {
+                this.domElements.muscleFilterSelect.value = this.state.activeMuscle;
+                this.domElements.muscleFilterSelect.disabled = false;
+                this.domElements.muscleFilterSelect.classList.remove('opacity-50');
+             } else {
+                this.domElements.muscleFilterSelect.value = 'all';
+                this.domElements.muscleFilterSelect.disabled = true;
+                this.domElements.muscleFilterSelect.classList.add('opacity-50');
+             }
+        }
     },
 
-    // Helper: Actualiza el estado visual de los controles (pestañas, alfabeto, select, paginación, campo búsqueda)
-    // para que coincidan con el estado actual (state.activeCategory, state.activeLetter, state.sortBy, state.currentPage)
     updateFilterControlsUI: function() {
-        // Actualiza el campo de búsqueda para reflejar el estado, solo si la vista NO es detail
-        if (this.domElements.searchInput && this.state.view !== 'detail') {
-             this.domElements.searchInput.value = this.state.searchTerm;
-        } else if (this.domElements.searchInput && this.state.view === 'detail') {
-             // Limpiar el campo de búsqueda si la vista es detail
-             this.domElements.searchInput.value = '';
+        if (this.domElements.searchInput) {
+             this.domElements.searchInput.value = (this.state.view === 'detail') ? '' : this.state.searchTerm;
+             this.domElements.searchInput.disabled = this.state.view === 'detail';
         }
 
-
-        // Actualiza la clase 'active' para las pestañas de categoría
-        if (this.domElements.categoryTabs && this.state.view === 'browse') { // Solo actualiza si la vista es browse
+        if (this.domElements.categoryTabs) {
             this.domElements.categoryTabs.forEach(tab => {
-                if (tab.dataset.category === this.state.activeCategory) {
+                 if (this.state.view === 'browse' && tab.dataset.category === this.state.activeCategory) {
                     tab.classList.add('active');
-                } else {
+                 } else {
                     tab.classList.remove('active');
-                }
+                 }
+                 tab.disabled = this.state.view !== 'browse';
+                 tab.classList.toggle('pointer-events-none', this.state.view !== 'browse');
+                 tab.classList.toggle('opacity-50', this.state.view !== 'browse');
             });
-        } else if (this.domElements.categoryTabs) { // Si no es vista browse, desactiva todas (opcional)
-             this.domElements.categoryTabs.forEach(tab => tab.classList.remove('active'));
-             // Podrías habilitar/deshabilitar los botones aquí si quieres (pointer-events-none opacity-50)
         }
 
-
-        // Actualiza la clase 'active' para la navegación alfabética
         const alphabetLinks = document.querySelectorAll('.alphabet-nav a');
-         if (alphabetLinks.length > 0 && this.state.view === 'browse') { // Solo actualiza si la vista es browse
+         if (alphabetLinks.length > 0) {
              alphabetLinks.forEach(link => {
-                 if (link.textContent.trim() === this.state.activeLetter) {
+                 if (this.state.view === 'browse' && link.textContent.trim() === this.state.activeLetter) {
                      link.classList.add('active');
                  } else {
                      link.classList.remove('active');
                  }
+                 link.classList.toggle('pointer-events-none', this.state.view !== 'browse');
+                 link.classList.toggle('opacity-50', this.state.view !== 'browse');
              });
-         } else if (alphabetLinks.length > 0) { // Si no es vista browse, desactiva todas (opcional)
-              alphabetLinks.forEach(link => link.classList.remove('active'));
-              // Podrías habilitar/deshabilitar los enlaces aquí
          }
 
-
-        // Actualiza el valor seleccionado en el select de ordenación
-         if (this.domElements.sortSelect && this.state.view === 'browse') { // Solo actualiza si la vista es browse
-              this.domElements.sortSelect.value = this.state.sortBy;
-              this.domElements.sortSelect.disabled = false; // Habilitar si es vista browse
-         } else if (this.domElements.sortSelect) {
-              // Si no es vista browse, deshabilitar el select (opcional)
-              this.domElements.sortSelect.value = 'name-asc'; // O el valor que quieras mostrar
-              this.domElements.sortSelect.disabled = true;
+         if (this.domElements.sortSelect) {
+              if (this.state.view === 'browse') {
+                 this.domElements.sortSelect.value = this.state.sortBy;
+                 this.domElements.sortSelect.disabled = false;
+                 this.domElements.sortSelect.classList.remove('opacity-50');
+              } else {
+                 this.domElements.sortSelect.value = 'name-asc';
+                 this.domElements.sortSelect.disabled = true;
+                 this.domElements.sortSelect.classList.add('opacity-50');
+              }
          }
 
-
-         // Si estamos en la vista browse, renderiza los controles de paginación
          if (this.state.view === 'browse') {
              const { totalItems } = this.getFilteredAndSortedTermsIncludingPaginationInfo();
              this.renderPaginationControls(totalItems);
          } else {
-             // Si no estamos en la vista browse, oculta la paginación
               if (this.domElements.paginationNav) this.domElements.paginationNav.classList.add('hidden');
          }
     },
 
 
-    // --- Métodos de renderizado (llenan el contenido de las secciones, NO controlan visibilidad) ---
-    // Son llamados por renderUI para actualizar partes específicas de la interfaz.
-
-    // Renderiza la cuadrícula de tarjetas en la sección "Browse All"
-    // Recibe solo los términos de la página actual (ya paginados por getFilteredAndSortedAndPagedTerms)
     renderBrowseView: function(termsOnCurrentPage) {
-        // Asegúrate de que el contenedor de la cuadrícula exista
         if (!this.domElements.browseGridContainer) {
              console.error("Browse grid container not found, cannot render browse view!");
              return;
         }
 
-        this.domElements.browseGridContainer.innerHTML = ''; // Limpia el contenido actual
+        this.domElements.browseGridContainer.innerHTML = '';
 
-        // Obtiene información de paginación completa para mostrar mensajes correctos si no hay términos
         const { totalItems } = this.getFilteredAndSortedTermsIncludingPaginationInfo();
 
 
         if (termsOnCurrentPage.length === 0 && totalItems > 0) {
-            // No hay términos en la página actual, pero sí hay en total (página fuera de rango, etc.)
-             this.domElements.browseGridContainer.innerHTML = `<p class="col-span-full text-center text-gray-500 py-8">No se encontraron términos en la página ${this.state.currentPage}. Por favor, regresa a la <button onclick="App.updateStateForPagination(1)" class="text-blue-600 hover:underline">primera página</button>.</p>`; // Mensaje traducido
+             this.domElements.browseGridContainer.innerHTML = `<p class="col-span-full text-center text-gray-500 py-8">No se encontraron términos en la página ${this.state.currentPage}. Por favor, regresa a la <button onclick="App.updateStateForPagination(1)" class="text-blue-600 hover:underline">primera página</button>.</p>`;
         } else if (termsOnCurrentPage.length === 0 && totalItems === 0) {
-             // No hay términos después de aplicar filtros (totalItems es 0)
-            this.domElements.browseGridContainer.innerHTML = '<p class="col-span-full text-center text-gray-500 py-8">No se encontraron términos con el filtro actual.</p>'; // Mensaje traducido
+            this.domElements.browseGridContainer.innerHTML = '<p class="col-span-full text-center text-gray-500 py-8">No se encontraron términos con el filtro actual.</p>';
         } else {
-            // Renderiza las tarjetas para los términos de la página actual
             termsOnCurrentPage.forEach(term => {
-                const card = this.createTermCard(term); // Crea la tarjeta usando el helper
-                this.domElements.browseGridContainer.appendChild(card); // Añade la tarjeta al DOM
+                const card = this.createTermCard(term);
+                 card.dataset.termId = term.id;
+                this.domElements.browseGridContainer.appendChild(card);
             });
         }
-        // Nota: renderPaginationControls es llamado por updateFilterControlsUI, que a su vez es llamada por renderUI si la vista es 'browse'.
-        // Por lo tanto, no necesitamos llamarla aquí directamente.
     },
 
-    // Renderiza la lista de resultados en la sección "Search Results"
      renderSearchResultsList: function(results, query = '') {
-         // Asegúrate de que los elementos existan
          if (!this.domElements.resultsList || !this.domElements.resultsCount) {
               console.error("Search results list elements not found, cannot render search results!");
               return;
          }
 
-         this.domElements.resultsList.innerHTML = ''; // Limpia la lista actual
-         this.domElements.resultsCount.textContent = `${results.length} resultados encontrados para "${query}"`; // Mensaje traducido
+         this.domElements.resultsList.innerHTML = '';
+         this.domElements.resultsCount.textContent = `${results.length} resultados encontrados para "${query}"`;
 
          if (results.length === 0) {
-             this.domElements.resultsList.innerHTML = '<li class="p-4 text-center text-gray-500">No se encontraron resultados. Intenta otro término de búsqueda.</li>'; // Mensaje traducido
+             this.domElements.resultsList.innerHTML = '<li class="p-4 text-center text-gray-500">No se encontraron resultados. Intenta otro término de búsqueda.</li>';
              return;
          }
 
-         // Renderiza los elementos de la lista de resultados
          results.forEach(term => {
-             const item = this.createSearchResultItem(term, query); // Usa el método helper
-             this.domElements.resultsList.appendChild(item); // Añade el item a la lista
+             const item = this.createSearchResultItem(term, query);
+             item.dataset.termId = term.id;
+             this.domElements.resultsList.appendChild(item);
          });
      },
 
-    // Renderiza el contenido detallado de un término en la sección "Term Detail"
     renderTermDetailContent: function(term) {
-         // Verifica que todos los elementos de detalle existen antes de intentar llenarlos
-         if (!this.domElements.termTitle || !this.domElements.termDefinition || !this.domElements.termExample ||
-             !this.domElements.termVideo || !this.domElements.musclesWorked || !this.domElements.termVariations ||
-             !this.domElements.relatedTerms || !this.domElements.termCategory) {
+         if (!this.domElements.termTitle || !this.domElements.termDefinition || !this.domElements.definitionTitle ||
+             !this.domElements.termExampleContainer || !this.domElements.exampleTitle || !this.domElements.termExample ||
+             !this.domElements.termVideoContainer || !this.domElements.videoTitle || !this.domElements.termVideo || !this.domElements.termImage ||
+             !this.domElements.musclesWorkedContainer || !this.domElements.musclesWorked ||
+             !this.domElements.termVariationsContainer || !this.domElements.termVariations ||
+             !this.domElements.relatedTerms || !this.domElements.termCategory ||
+             !this.domElements.athleteStatsContainer || !this.domElements.athleteStats
+             ) {
               console.error("One or more Term detail DOM elements not found, cannot render detail content!");
-              // TODO: Mostrar un mensaje de error en la sección de detalle si es necesario
               return;
          }
 
         this.domElements.termTitle.textContent = term.name;
-        this.domElements.termDefinition.textContent = term.definition;
-        this.domElements.termExample.textContent = term.example || "No hay ejemplo disponible."; // Mensaje traducido
-
-        // Configura la insignia de categoría
         this.domElements.termCategory.textContent = this.formatCategory(term.category);
         this.domElements.termCategory.className = 'inline-block mt-2 text-sm px-3 py-1 rounded-full ' + this.getCategoryClass(term.category);
 
-        // Configura el video si está disponible
-        const videoContainer = this.domElements.termVideo.parentElement;
-        if (term.video) {
-            this.domElements.termVideo.src = term.video;
-            videoContainer.style.display = 'block';
+        // --- Configurar secciones basadas en la categoría ---
+
+        // Restablecer visibilidad de todos los contenedores variables
+        this.domElements.athleteStatsContainer.classList.add('hidden');
+        this.domElements.musclesWorkedContainer.classList.add('hidden');
+        this.domElements.termVariationsContainer.classList.add('hidden');
+        // Ocultar video e imagen por defecto y limpiar srcs
+         if (this.domElements.termVideo) {
+              this.domElements.termVideo.style.display = 'none';
+              this.domElements.termVideo.src = ''; // Limpiar src para detener la reproducción
+         }
+         if (this.domElements.termImage) {
+              this.domElements.termImage.style.display = 'none';
+              this.domElements.termImage.src = ''; // Limpiar src de la imagen
+         }
+         // Ocultar el contenedor de video/imagen por defecto
+         this.domElements.termVideoContainer.classList.add('hidden');
+
+
+        if (term.category === 'athletes') {
+            // === Vista de Atleta ===
+            this.domElements.definitionTitle.innerHTML = '<i class="fas fa-book mr-2 text-blue-600"></i>Biografía';
+            this.domElements.termDefinition.textContent = term.definition || "No hay biografía disponible.";
+
+            this.domElements.exampleTitle.innerHTML = '<i class="fas fa-clipboard-list mr-2 text-blue-600"></i>Logros Destacados';
+            this.domElements.termExampleContainer.classList.toggle('hidden', !term.example);
+            this.domElements.termExample.textContent = term.example || "No hay logros destacados listados.";
+
+
+            this.domElements.videoTitle.innerHTML = '<i class="fas fa-video mr-2 text-blue-600"></i>Imagen / Highlights';
+            if (term.image) {
+                 this.domElements.termVideoContainer.classList.remove('hidden');
+                 this.domElements.termImage.style.display = 'block'; // Mostrar la imagen
+                 this.domElements.termImage.src = term.image; // Cargar la imagen
+                 // Asegurarse de que el video esté oculto si se muestra la imagen
+                  if (this.domElements.termVideo) this.domElements.termVideo.style.display = 'none';
+            } else if (term.video) {
+                 this.domElements.termVideoContainer.classList.remove('hidden');
+                 this.domElements.termVideo.style.display = 'block'; // Mostrar el video
+                 this.domElements.termVideo.src = term.video; // Cargar el video
+                  // Asegurarse de que la imagen esté oculto si se muestra el video
+                 if (this.domElements.termImage) this.domElements.termImage.style.display = 'none';
+            }
+
+
+            const hasAthleteStats = term.fullName || term.nationality || term.dob || term.height || term.weight || (term.competitions && term.competitions.length > 0) || (term.benchmarks && Object.keys(term.benchmarks).length > 0);
+            this.domElements.athleteStatsContainer.classList.toggle('hidden', !hasAthleteStats);
+            this.domElements.athleteStats.innerHTML = ''; // Limpiar antes de llenar
+
+            this.addAthleteStat('Nombre Completo', term.fullName);
+            this.addAthleteStat('Nacionalidad', term.nationality ? `${this.getFlagEmoji(term.nationality)} ${this.getCountryName(term.nationality)}` : null);
+            this.addAthleteStat('Nacimiento / Edad', term.dob ? this.formatDateOfBirthAndAge(term.dob) : null);
+            this.addAthleteStat('Estatura', term.height);
+            this.addAthleteStat('Peso', term.weight);
+
+            if (term.competitions && term.competitions.length > 0) {
+                 const competitionsHTML = `
+                      <p class="text-gray-700 text-sm font-semibold">Competiciones:</p>
+                      <ul class="list-disc list-inside text-gray-600 text-sm ml-4 space-y-1">
+                           ${term.competitions.map(comp => `<li>${comp}</li>`).join('')}
+                      </ul>
+                 `;
+                 this.addAthleteStat(null, competitionsHTML, true);
+
+            } else if (hasAthleteStats) { // Mostrar si no hay competiciones pero sí hay otras estadísticas
+                 this.addAthleteStat('Competiciones', 'No hay competiciones destacadas listadas.');
+            }
+
+             if (term.benchmarks && Object.keys(term.benchmarks).length > 0) {
+                 const benchmarksHTML = `
+                      <p class="text-gray-700 text-sm font-semibold">Mejores Marcas (Benchmarks):</p>
+                      <ul class="list-disc list-inside text-gray-600 text-sm ml-4 space-y-1">
+                           ${Object.entries(term.benchmarks).map(([wod, mark]) => `<li><strong>${wod}:</strong> ${mark}</li>`).join('')}
+                      </ul>
+                 `;
+                 this.addAthleteStat(null, benchmarksHTML, true);
+
+             } else if (hasAthleteStats) {
+                 this.addAthleteStat('Mejores Marcas', 'No hay mejores marcas listadas.');
+             }
+
+
         } else {
-            this.domElements.termVideo.src = ''; // Limpia el src si no hay video
-            videoContainer.style.display = 'none';
+            // === Vista de Término General (Ejercicio, WOD, Equipo, etc.) ===
+
+            this.domElements.definitionTitle.innerHTML = '<i class="fas fa-book mr-2 text-blue-600"></i>Definición';
+            this.domElements.termDefinition.textContent = term.definition || "No hay definición disponible.";
+
+            this.domElements.exampleTitle.innerHTML = '<i class="fas fa-clipboard-list mr-2 text-blue-600"></i>Ejemplo de Uso';
+            this.domElements.termExampleContainer.classList.toggle('hidden', !term.example);
+            this.domElements.termExample.textContent = term.example || "No hay ejemplo disponible.";
+
+
+            this.domElements.videoTitle.innerHTML = '<i class="fas fa-video mr-2 text-blue-600"></i>Video Demostración';
+            this.domElements.termVideoContainer.classList.toggle('hidden', !term.video);
+            if (term.video) {
+               this.domElements.termVideo.style.display = 'block';
+               this.domElements.termVideo.src = term.video;
+               // Asegurarse de que la imagen esté oculto si se muestra el video
+                 if (this.domElements.termImage) this.domElements.termImage.style.display = 'none';
+            }
+
+
+            this.domElements.athleteStatsContainer.classList.add('hidden');
+            this.domElements.athleteStats.innerHTML = '';
+
+            this.domElements.musclesWorkedContainer.classList.toggle('hidden', !term.muscles || term.muscles.length === 0);
+            this.domElements.musclesWorked.innerHTML = '';
+             if (term.muscles && term.muscles.length > 0) {
+                 term.muscles.forEach(muscle => {
+                     const muscleEl = document.createElement('div');
+                     muscleEl.className = 'muscle-group bg-blue-50 p-3 rounded-lg text-center';
+                     muscleEl.innerHTML = `
+                         <i class="fas fa-running text-blue-500 text-2xl mb-1"></i>
+                         <div class="text-sm font-medium">${muscle}</div>
+                     `;
+                     this.domElements.musclesWorked.appendChild(muscleEl);
+                 });
+             } else {
+                 this.domElements.musclesWorked.innerHTML = '<p class="col-span-full text-gray-500 text-center text-sm">No hay músculos específicos listados.</p>';
+             }
+
+
+            this.domElements.termVariationsContainer.classList.toggle('hidden', !term.variations || term.variations.length === 0);
+            this.domElements.termVariations.innerHTML = '';
+             if (term.variations && term.variations.length > 0) {
+                 term.variations.forEach(variation => {
+                     const li = document.createElement('li');
+                     li.className = 'flex items-center text-gray-700 text-sm';
+                     li.innerHTML = `
+                         <i class="fas fa-arrow-right text-blue-500 mr-2"></i>
+                         <span>${variation}</span>
+                     `;
+                     this.domElements.termVariations.appendChild(li);
+                 });
+             } else {
+                 this.domElements.termVariations.innerHTML = '<li class="text-gray-500 text-sm">No hay variaciones disponibles.</li>';
+             }
         }
 
-        // Configura la lista de músculos trabajados
-        this.domElements.musclesWorked.innerHTML = ''; // Limpia el contenido actual
-        if (term.muscles && term.muscles.length > 0) {
-            term.muscles.forEach(muscle => {
-                const muscleEl = document.createElement('div');
-                muscleEl.className = 'muscle-group bg-blue-50 p-3 rounded-lg text-center';
-                muscleEl.innerHTML = `
-                    <i class="fas fa-running text-blue-500 text-2xl mb-1"></i>
-                    <div class="text-sm font-medium">${muscle}</div>
-                `;
-                this.domElements.musclesWorked.appendChild(muscleEl);
-            });
-        } else {
-            // Muestra un mensaje si no hay músculos listados, usando col-span-full para ocupar todo el ancho
-            this.domElements.musclesWorked.innerHTML = '<p class="col-span-full text-gray-500 text-center text-sm">No hay músculos específicos listados.</p>'; // Mensaje traducido
-        }
-
-        // Configura la lista de variaciones
-        this.domElements.termVariations.innerHTML = ''; // Limpia el contenido actual
-        if (term.variations && term.variations.length > 0) {
-            term.variations.forEach(variation => {
-                const li = document.createElement('li');
-                li.className = 'flex items-center text-gray-700 text-sm'; // Añade clases para estilo
-                li.innerHTML = `
-                    <i class="fas fa-arrow-right text-blue-500 mr-2"></i>
-                    <span>${variation}</span>
-                `;
-                this.domElements.termVariations.appendChild(li);
-            });
-        } else {
-            this.domElements.termVariations.innerHTML = '<li class="text-gray-500 text-sm">No hay variaciones disponibles.</li>'; // Mensaje traducido
-        }
-
-        // Configura los términos relacionados
-        this.domElements.relatedTerms.innerHTML = ''; // Limpia el contenido actual
+        // La sección de términos relacionados se mantiene para ambas vistas
+        this.domElements.relatedTerms.innerHTML = '';
         if (term.related && term.related.length > 0) {
             term.related.forEach(relatedTermName => {
-                 // Intenta encontrar el término relacionado en los datos cargados
-                const relatedTerm = this.crossfitTerms.find(t => t.name === relatedTermName);
+                const relatedTerm = this.termMapByName ? this.termMapByName[relatedTermName] : null;
                 const a = document.createElement('a');
                 a.href = '#'; // Usamos '#' ya que la navegación es manejada por JS
                 a.className = 'bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm cursor-pointer';
-                a.textContent = relatedTermName;
+                a.textContent = relatedTerm ? (relatedTerm.fullName || relatedTerm.name) : relatedTermName;
 
-                 // Añade un event listener solo si el término relacionado fue encontrado
+
                  if(relatedTerm) {
                       a.addEventListener('click', (e) => {
-                           e.preventDefault(); // Previene el comportamiento por defecto del enlace
-                           // Llama al método que actualiza el estado a 'detail' para el término relacionado
+                           e.preventDefault();
                            this.showTermDetail(relatedTerm);
                       });
                  } else {
-                      // Si el término relacionado no existe en los datos, lo marca como no clicable
                       a.classList.add('pointer-events-none', 'opacity-70');
-                      console.warn(`Término relacionado "${relatedTermName}" no encontrado en los datos.`); // Mensaje traducido
+                      // console.warn(`Término relacionado "${relatedTermName}" no encontrado en los datos.`); // Comentar para reducir spam de consola si "Core" es el único faltante
                  }
                 this.domElements.relatedTerms.appendChild(a);
             });
         } else {
-            this.domElements.relatedTerms.innerHTML = '<p class="text-gray-500 text-sm">No hay términos relacionados.</p>'; // Mensaje traducido
+            this.domElements.relatedTerms.innerHTML = '<p class="text-gray-500 text-sm">No hay términos relacionados.</p>';
         }
 
-        // TODO: Podrías añadir más lógica aquí si necesitas renderizar otros datos del término
+         // Limpiar el src del iframe/img si el contenedor está oculto
+         if (this.domElements.termVideoContainer && this.domElements.termVideoContainer.classList.contains('hidden')) {
+              if (this.domElements.termVideo) this.domElements.termVideo.src = '';
+              if (this.domElements.termImage) this.domElements.termImage.src = '';
+         }
     },
 
-    // Renderiza los controles de paginación (Previous, números de página, Next)
+     addAthleteStat: function(label, value, isHTML = false) {
+         if (!this.domElements.athleteStats) return;
+         if (value === null || value === undefined || value === '' || (isHTML && typeof value === 'string' && value.trim() === '')) {
+              return;
+         }
+
+         const statDiv = document.createElement('div');
+         statDiv.className = 'text-gray-700 text-sm';
+
+         if (isHTML && typeof value === 'string') {
+             statDiv.innerHTML = value;
+         } else {
+             statDiv.innerHTML = `<span class="font-semibold">${label}:</span> ${value}`;
+         }
+
+         this.domElements.athleteStats.appendChild(statDiv);
+     },
+
+     formatDateOfBirthAndAge: function(dobString) {
+          if (!dobString) return null;
+          try {
+               const [year, month, day] = dobString.split('-').map(Number);
+               const dob = new Date(year, month - 1, day);
+               const today = new Date();
+               let age = today.getFullYear() - dob.getFullYear();
+               const monthDiff = today.getMonth() - dob.getMonth();
+               if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                   age--;
+               }
+               const options = { year: 'numeric', month: 'long', day: 'numeric' };
+               const formattedDate = dob.toLocaleDateString('es-ES', options);
+
+               return `${formattedDate} (${age} años)`;
+          } catch (error) {
+               console.error("Error formatting date of birth:", dobString, error);
+               return dobString;
+          }
+     },
+
+     getFlagEmoji: function(countryCode) {
+         if (!countryCode || countryCode.length !== 2) return '';
+          const codePoints = countryCode
+              .toUpperCase()
+              .split('')
+              .map(char => 127345 + char.charCodeAt(0));
+
+          try {
+               return String.fromCodePoint(...codePoints);
+          } catch (error) {
+               console.error("Error getting flag emoji for code:", countryCode, error);
+               return '';
+          }
+     },
+
+      getCountryName: function(countryCode) {
+           const countryNames = {
+               'US': 'Estados Unidos',
+               'IS': 'Islandia',
+               'AU': 'Australia',
+               'GB': 'Reino Unido',
+               'CA': 'Canadá',
+               'FR': 'Francia',
+               'ES': 'España',
+               'SE': 'Suecia',
+               'NO': 'Noruega',
+               'ZA': 'Sudáfrica',
+               'BR': 'Brasil',
+               'PL': 'Polonia',
+               'RS': 'Serbia',
+               'DE': 'Alemania',
+               'IT': 'Italia',
+               'RU': 'Rusia'
+           };
+           return countryNames[countryCode] || countryCode;
+      },
+
+
     renderPaginationControls: function(totalItems) {
         const paginationNav = this.domElements.paginationNav;
         if (!paginationNav) {
@@ -932,152 +1127,129 @@ const App = {
              return;
         }
 
-        // Calcula el número total de páginas
         const totalPages = Math.ceil(totalItems / this.state.termsPerPage);
-        const currentPage = this.state.currentPage; // La página actual del estado
+        const currentPage = this.state.currentPage;
 
-        paginationNav.innerHTML = ''; // Limpia los controles de paginación actuales
+        paginationNav.innerHTML = '';
 
         if (totalPages <= 1) {
-            paginationNav.classList.add('hidden'); // Oculta la paginación si solo hay 1 página o menos
+            paginationNav.classList.add('hidden');
             return;
         }
 
-        paginationNav.classList.remove('hidden'); // Asegúrate de que la paginación esté visible
+        paginationNav.classList.remove('hidden');
 
-        // --- Botón "Previous" ---
         const prevButton = document.createElement('a');
         prevButton.href = '#';
         prevButton.className = `px-4 py-2 rounded-l-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`;
-        prevButton.setAttribute('aria-label', 'Página anterior'); // Añadir accesibilidad traducida
+        prevButton.setAttribute('aria-label', 'Página anterior');
         prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
         if (currentPage > 1) {
-             // Añade listener solo si no está en la primera página
              prevButton.addEventListener('click', (e) => {
                  e.preventDefault();
-                 this.updateStateForPagination(currentPage - 1); // Llama al método para ir a la página anterior
+                 this.updateStateForPagination(currentPage - 1);
              });
         }
         paginationNav.appendChild(prevButton);
 
-        // --- Botones de número de página ---
-        // Lógica para mostrar un rango de páginas (ej. página actual, 2 antes, 2 después)
-        const maxPageButtons = 5; // Número máximo de botones de página a mostrar
+        const maxPageButtons = 5;
         let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
         let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
-        // Ajustar el rango si estamos cerca del final (para mantener maxPageButtons visible si es posible)
         if (endPage - startPage + 1 < maxPageButtons) {
             startPage = Math.max(1, endPage - maxPageButtons + 1);
         }
-        // Asegurarse de que endPage no supere totalPages después del ajuste
         endPage = Math.min(totalPages, endPage);
 
 
         for (let i = startPage; i <= endPage; i++) {
             const pageButton = document.createElement('a');
             pageButton.href = '#';
-             // Clases dinámicas: borde, color, fuente según si es la página actual
             pageButton.className = `px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50 ${i === currentPage ? 'active text-blue-600 font-medium border-blue-300 z-10' : ''}`;
-             // Añade borde izquierdo a partir del segundo botón en el rango VISIBLE
              if (i > startPage) pageButton.classList.add('border-l');
 
             pageButton.textContent = i;
-             pageButton.setAttribute('aria-label', `Página ${i}`); // Añadir accesibilidad traducida
+             pageButton.setAttribute('aria-label', `Página ${i}`);
 
             if (i !== currentPage) {
-                 // Añade listener solo si no es la página actual
                  pageButton.addEventListener('click', (e) => {
                      e.preventDefault();
-                     this.updateStateForPagination(i); // Llama al método para ir a la página i
+                     this.updateStateForPagination(i);
                  });
             } else {
-                 // Si es la página actual, hacerlo no clicable visualmente y con aria-current
                  pageButton.classList.add('pointer-events-none');
                  pageButton.setAttribute('aria-current', 'page');
             }
             paginationNav.appendChild(pageButton);
         }
 
-         // --- Botón "Next" ---
         const nextButton = document.createElement('a');
         nextButton.href = '#';
         nextButton.className = `px-4 py-2 rounded-r-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`;
-        nextButton.setAttribute('aria-label', 'Página siguiente'); // Añadir accesibilidad traducida
+        nextButton.setAttribute('aria-label', 'Página siguiente');
         nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
         if (currentPage < totalPages) {
-            // Añade listener solo si no está en la última página
             nextButton.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.updateStateForPagination(currentPage + 1); // Llama al método para ir a la página siguiente
+                this.updateStateForPagination(currentPage + 1);
             });
         }
         paginationNav.appendChild(nextButton);
     },
 
 
-    // --- Métodos Helper para crear elementos DOM o lógica de visualización ---
-
-    // Crea un elemento DOM de tarjeta de término para la vista de exploración
     createTermCard: function(term) {
         const card = document.createElement('div');
-        // Añade clases para estilo y comportamiento (cursor-pointer)
         card.className = 'exercise-card bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 cursor-pointer';
 
-        // Usa template literals para construir el HTML interno de la tarjeta
+         const cardTitle = term.fullName || term.name;
+
         card.innerHTML = `
             <div class="h-40 ${this.getCategoryBgClass(term.category)} flex items-center justify-center">
                 <i class="${this.getCategoryIcon(term.category)} text-5xl ${this.getCategoryIconColor(term.category)}"></i>
             </div>
             <div class="p-4">
                 <div class="flex justify-between items-start">
-                    <h4 class="text-lg font-bold text-gray-800">${term.name}</h4>
+                    <h4 class="text-lg font-bold text-gray-800">${cardTitle}</h4>
                     <span class="text-xs px-2 py-1 rounded-full ${this.getCategoryClass(term.category)}">${this.formatCategory(term.category)}</span>
                 </div>
                 <p class="text-gray-600 mt-2 text-sm">${term.definition.substring(0, 80)}${term.definition.length > 80 ? '...' : ''}</p>
             </div>
         `;
 
-        // Añade un event listener a la tarjeta completa para mostrar el detalle del término
-        card.addEventListener('click', () => this.showTermDetail(term)); // Llama al controlador showTermDetail
+         card.dataset.termId = term.id;
 
-        return card; // Retorna el elemento DOM div creado
+        return card;
     },
 
-    // Crea un elemento DOM de lista para los resultados de búsqueda
     createSearchResultItem: function(term, query) {
         const li = document.createElement('li');
-        li.className = 'p-4 hover:bg-gray-50 cursor-pointer'; // Clases para estilo y hover
+        li.className = 'p-4 hover:bg-gray-50 cursor-pointer';
 
-        // Construye el HTML interno del item de lista, resaltando el texto de búsqueda
+         const resultTitle = term.fullName || term.name;
+
         li.innerHTML = `
             <div class="flex justify-between items-start">
                 <div>
-                    <h4 class="font-medium text-gray-800">${this.highlightText(term.name, query)}</h4>
+                    <h4 class="font-medium text-gray-800">${this.highlightText(resultTitle, query)}</h4>
                     <p class="text-sm text-gray-600 mt-1">${this.highlightText(term.definition.substring(0, 150) + (term.definition.length > 150 ? '...' : ''), query)}</p>
                 </div>
                 <span class="text-xs px-2 py-1 rounded-full ${this.getCategoryClass(term.category)}">${this.formatCategory(term.category)}</span>
             </div>
         `;
-
-        // Añade un event listener al item de lista para mostrar el detalle del término
-        li.addEventListener('click', () => this.showTermDetail(term)); // Llama al controlador showTermDetail
-
-        return li; // Retorna el elemento DOM li creado
+         li.dataset.termId = term.id;
+        return li;
     },
 
 
-    // Helper: Resalta las ocurrencias de la query dentro de un texto
     highlightText: function(text, query) {
-        if (!query) return text; // No resaltar si no hay query
-        const regex = new RegExp(`(${query})`, 'gi'); // Crea una expresión regular global e insensible a mayúsculas
-        // Evita reemplazar dentro de etiquetas HTML existentes (simple).
-        // Una implementación más robusta podría requerir parsear el HTML o usar una biblioteca.
-        const safeText = text.replace(/</g, '<').replace(/>/g, '>'); // Escapa HTML básico
-        return safeText.replace(regex, '<span class="search-highlight">$1</span>'); // Reemplaza las ocurrencias con la etiqueta de resaltado
+        if (!query) return text;
+        const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${safeQuery})`, 'gi');
+        const safeText = text.replace(/</g, '<').replace(/>/g, '>');
+        return safeText.replace(regex, '<span class="search-highlight">$1</span>');
     },
 
-    // Helper: Formatea la cadena de categoría devolviendo el nombre traducido
     formatCategory: function(category) {
         if (!category) return '';
         const translations = {
@@ -1087,13 +1259,12 @@ const App = {
              'equipment': 'Equipamiento',
              'acronyms': 'Acrónimos',
              'gymnastics': 'Gimnásticos',
-             'concepts': 'Conceptos'
+             'concepts': 'Conceptos',
+             'athletes': 'Atletas'
         };
-        // Devuelve la traducción si existe, de lo contrario formatea la clave (por si hay nuevas categorías no traducidas)
         return translations[category] || category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     },
 
-    // Helper: Obtiene las clases CSS de fondo y texto para una categoría (usan las claves en inglés)
     getCategoryClass: function(category) {
         const classes = {
             'exercises': 'bg-green-100 text-green-800',
@@ -1102,12 +1273,11 @@ const App = {
             'acronyms': 'bg-purple-100 text-purple-800',
             'gymnastics': 'bg-red-100 text-red-800',
             'concepts': 'bg-indigo-100 text-indigo-800',
-            // Añadir más si hay nuevas categorías
+            'athletes': 'bg-orange-100 text-orange-800'
         };
-        return classes[category] || 'bg-gray-100 text-gray-800'; // Clase por defecto
+        return classes[category] || 'bg-gray-100 text-gray-800';
     },
 
-    // Helper: Obtiene la clase CSS de fondo para una categoría (usada en la tarjeta, usan las claves en inglés)
     getCategoryBgClass: function(category) {
         const classes = {
             'exercises': 'bg-green-100',
@@ -1116,26 +1286,24 @@ const App = {
             'acronyms': 'bg-purple-100',
             'gymnastics': 'bg-red-100',
             'concepts': 'bg-indigo-100',
-             // Añadir más si hay nuevas categorías
+            'athletes': 'bg-orange-100'
         };
-        return classes[category] || 'bg-gray-100'; // Clase por defecto
+        return classes[category] || 'bg-gray-100';
     },
 
-    // Helper: Obtiene el icono Font Awesome para una categoría (usan las claves en inglés)
     getCategoryIcon: function(category) {
         const icons = {
             'exercises': 'fas fa-running',
             'wods': 'fas fa-fire-alt',
             'equipment': 'fas fa-dumbbell',
             'acronyms': 'fas fa-trophy',
-            'gymnastics': 'fas fa-grip-lines', // Icono de barras de gimnasia
+            'gymnastics': 'fas fa-grip-lines',
             'concepts': 'fas fa-lightbulb',
-             // Añadir más si hay nuevas categorías
+            'athletes': 'fas fa-user-alt'
         };
-        return icons[category] || 'fas fa-question-circle'; // Icono por defecto
+        return icons[category] || 'fas fa-question-circle';
     },
 
-    // Helper: Obtiene el color CSS para el icono de una categoría (usan las claves en inglés)
     getCategoryIconColor: function(category) {
          const colors = {
             'exercises': 'text-green-600',
@@ -1144,18 +1312,15 @@ const App = {
             'acronyms': 'text-purple-600',
             'gymnastics': 'text-red-600',
             'concepts': 'text-indigo-600',
-             // Añadir más si hay nuevas categorías
+            'athletes': 'text-orange-600'
         };
-        return colors[category] || 'text-gray-600'; // Color por defecto
+        return colors[category] || 'text-gray-600';
     }
-
-    // TODO: Podrías añadir más métodos helper aquí si son necesarios
 }; // Fin del objeto App
 
 // --- Inicio de la aplicación ---
-// Espera a que todo el DOM esté cargado antes de iniciar la aplicación
 document.addEventListener('DOMContentLoaded', () => {
-    App.init(); // Llama al método de inicialización del objeto App
+    // Asigna el objeto App al ámbito global (window) para que App.showBrowseView sea accesible globalmente
+    window.App = App; // <-- Asegura que App esté disponible globalmente ANTES de init
+    App.init();
 });
-
-/* --- END OF FILE script.js --- */
