@@ -49,7 +49,6 @@ const App = {
         sortBy: 'name-asc',
         currentPage: 1,
         termsPerPage: 12,
-        activeMuscle: 'all', // Nuevo estado para el filtro por músculo
     },
 
 
@@ -148,8 +147,6 @@ const App = {
          if (!this.domElements.athleteStatsContainer) console.error("DOM Element #athleteStatsContainer not found!");
         this.domElements.athleteStats = document.getElementById('athleteStats');
          if (!this.domElements.athleteStats) console.error("DOM Element #athleteStats not found!");
-        this.domElements.muscleFilterSelect = document.getElementById('muscleFilterSelect');
-         if (!this.domElements.muscleFilterSelect) console.error("DOM Element #muscleFilterSelect not found!");
     },
 
     bindEvents: function() {
@@ -196,13 +193,6 @@ const App = {
         if (this.domElements.sortSelect) {
             this.domElements.sortSelect.addEventListener('change', () => {
                 this.updateStateForSort(this.domElements.sortSelect.value);
-            });
-        }
-
-        // Selector de Filtro por Músculo: Usa arrow function
-        if (this.domElements.muscleFilterSelect) {
-            this.domElements.muscleFilterSelect.addEventListener('change', () => {
-                this.updateStateForMuscleFilter(this.domElements.muscleFilterSelect.value);
             });
         }
 
@@ -343,7 +333,6 @@ const App = {
                  this.state.currentPage = 1;
              }
              this.state.sortBy = params.get('sort') || 'name-asc';
-             this.state.activeMuscle = params.get('muscle') || 'all'; // Leer filtro de músculo de la URL
              this.state.selectedTermId = null;
 
 
@@ -404,10 +393,7 @@ const App = {
              }
               if (this.state.sortBy !== 'name-asc') {
                  url.searchParams.set('sort', this.state.sortBy);
-              }
-              if (this.state.activeMuscle !== 'all') { // Añadir filtro de músculo a la URL
-                 url.searchParams.set('muscle', this.state.activeMuscle);
-              }
+             }
 
          } else if (this.state.view === 'detail') {
              if (this.state.selectedTermId !== null) {
@@ -461,15 +447,10 @@ const App = {
               );
          }
 
-         // 3. Filtrar por músculo (solo para términos con propiedad muscles)
-         if (this.state.activeMuscle !== 'all') {
-              terms = terms.filter(term => term.muscles && term.muscles.includes(this.state.activeMuscle));
-         }
-
          const totalItems = terms.length;
          const totalPages = Math.ceil(totalItems / this.state.termsPerPage);
 
-         // 4. Aplicar ordenación
+         // 3. Aplicar ordenación
          switch(this.state.sortBy) {
              case 'name-asc':
                  terms.sort((a, b) => (a.fullName || a.name).localeCompare(b.fullName || b.name));
@@ -589,19 +570,6 @@ const App = {
         }
         this.state.searchTerm = '';
         this.state.sortBy = sortBy;
-        this.state.view = 'browse';
-        this.state.currentPage = 1;
-        this.updateUrlFromState();
-        this.renderUI();
-    },
-
-     updateStateForMuscleFilter: function(muscle) {
-        if (this.crossfitTerms.length === 0) {
-             console.warn("Datos no cargados, no se puede actualizar el estado del filtro por músculo.");
-             return;
-        }
-        this.state.searchTerm = '';
-        this.state.activeMuscle = muscle;
         this.state.view = 'browse';
         this.state.currentPage = 1;
         this.updateUrlFromState();
@@ -740,18 +708,6 @@ const App = {
                      this.domElements.termDetail.innerHTML = '<p class="text-center text-red-600 text-xl py-8">Error al renderizar el detalle del término.</p>';
                  }
             }
-        }
-
-        if (this.domElements.muscleFilterSelect) {
-             if (this.state.view === 'browse') {
-                this.domElements.muscleFilterSelect.value = this.state.activeMuscle;
-                this.domElements.muscleFilterSelect.disabled = false;
-                this.domElements.muscleFilterSelect.classList.remove('opacity-50');
-             } else {
-                this.domElements.muscleFilterSelect.value = 'all';
-                this.domElements.muscleFilterSelect.disabled = true;
-                this.domElements.muscleFilterSelect.classList.add('opacity-50');
-             }
         }
     },
 

@@ -8,8 +8,7 @@
         "video": "https://www.youtube.com/embed/7gX5qNo4JS0",
         "muscles": [],
         "variations": [],
-        "related": ["EMOM", "For Time", "Chipper", "WOD", "Time Cap"],
-        "tags": ["wod", "tiempo"]
+        "related": ["EMOM", "For Time", "Chipper", "WOD", "Time Cap"]
     },
     {
         "id": 2,
@@ -20,8 +19,7 @@
         "video": "https://www.youtube.com/embed/TU8Q_bWd-E",
         "muscles": ["Cuádriceps", "Isquiosurales", "Pectorales", "Hombros", "Core"],
         "variations": ["Burpee Saltando", "Burpee Box Jump Over", "Bar-facing Burpee"],
-        "related": ["Thruster", "Box Jump", "Push-up"],
-        "tags": ["cuerpo completo", "cardio", "gimnástico"]
+        "related": ["Thruster", "Box Jump", "Push-up"]
     },
     {
         "id": 3,
