@@ -244,7 +244,7 @@
     "definition": "Profesional cualificado en el manejo de máquinas pesadas de mantenimiento de vía (bateadoras, esmeriladoras, limpiadoras de balasto).",
     "category": "Personnel",
     "key_components": [],
-    "functions": ["Operar maquinaria pesada de vía", "Realizar mantenimiento básico de la máquina", "Seguir planes de trabajo"],
+    "functions": ["Operar ria pesada de vía", "Realizar mantenimiento básico de la máquina", "Seguir planes de trabajo"],
     "maintenance_considerations": "Requiere formación y certificación específica para cada máquina. Trabajo a menudo de noche y en condiciones exigentes.",
     "related_terms": ["tamping_machine", "rail_grinding_machine", "ballast_cleaner", "heavy_machinery_operation"],
     "media": { "images": [], "videos": [], "pdfs": [] },
@@ -2001,7 +2001,7 @@
     "maintenance_considerations": "Mantenimiento y ajuste de arados y cepillos. Inspección de la unidad de estabilización. Lubricación. Limpieza regular del balasto.",
     "related_terms": ["track_work", "ballast", "tamping_machine", "track_geometry", "track_machine_operator"],
     "media": {
-      "images": [],
+      "images": ["https://www.acygs.es/wp-content/uploads/2021/05/Perfiladora-Sorema-ps-2003.jpg"],
       "videos": [],
       "pdfs": []
     },
@@ -2054,7 +2054,7 @@
     "maintenance_considerations": "Sustitución y ajuste de muelas. Mantenimiento del sistema de captación de residuos. Inspección de sistemas hidráulicos y eléctricos. Calibración del ángulo de esmerilado. Requiere precauciones contra incendios.",
     "related_terms": ["rail", "rail_wear", "reprofiling", "track_maintenance", "track_machine_operator"],
     "media": {
-      "images": [],
+      "images": ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv-bOd2d5sXAP5BHAV8gwGZrmo_AN-TOmrvA&s"],
       "videos": [],
       "pdfs": []
     },
@@ -2104,7 +2104,7 @@
     "maintenance_considerations": "Inspección y sustitución de elementos de la cadena cortadora. Mantenimiento de transportadores y sistemas hidráulicos. Limpieza de balasto. Requiere coordinación para el trabajo en línea.",
     "related_terms": ["track_work", "ballast_cleaner", "track_renewal_train", "track_machine_operator"],
     "media": {
-      "images": [],
+      "images": ["https://www.plassertheurer.com/fileadmin/_processed_/c/3/csm_rmw1500-3_9a24cbf262.jpg"],
       "videos": [],
       "pdfs": []
     },
@@ -2138,10 +2138,10 @@
   {
     "id": "track_renewal_train",
     "term": "Tren de Renovación de Vía",
-    "definition": "Conjunto de maquinaria interconectada (a menudo incluye desguarnecedora, limpiadora, pone-traviesas/carriles, perfiladora) capaz de realizar una renovación completa de vía (balasto, traviesas, carriles) en una sola pasada.",
+    "definition": "Conjunto de ria interconectada (a menudo incluye desguarnecedora, limpiadora, pone-traviesas/carriles, perfiladora) capaz de realizar una renovación completa de vía (balasto, traviesas, carriles) en una sola pasada.",
     "category": "Machines & Tools",
     "key_components": [
-      "Múltiples módulos de maquinaria",
+      "Múltiples módulos de ria",
       "Sistema de control centralizado",
       "Sistema de transporte interno"
     ],
@@ -2274,7 +2274,7 @@
     "functions": [
       "Mover material remolcado",
       "Formar/deshacer trenes de trabajo",
-      "Posicionar maquinaria en zonas de mantenimiento"
+      "Posicionar ria en zonas de mantenimiento"
     ],
     "maintenance_considerations": "Mantenimiento del motor y transmisión. Inspección y mantenimiento de sistemas de frenado y acopladores. Mantenimiento de bogies y ejes montados. Operación segura en zonas de bajo movimiento o bloqueadas.",
     "related_terms": ["rolling_stock", "depot_work", "workshop_work", "auxiliary_vehicle_driver", "bogie", "wheelset"],
@@ -3471,7 +3471,7 @@
   {
     "id": "hydraulic_fluid",
     "term": "Fluido Hidráulico",
-    "definition": "Líquido incompresible (base aceite mineral o sintética) que transmite potencia en sistemas hidráulicos (frenos, suspensión activa, maquinaria de vía, gatos).",
+    "definition": "Líquido incompresible (base aceite mineral o sintética) que transmite potencia en sistemas hidráulicos (frenos, suspensión activa, ria de vía, gatos).",
     "category": "Materials",
     "key_components": ["Aceite base", "Aditivos (antidesgaste, anti-espuma, índice de viscosidad)"],
     "functions": ["Transmitir fuerza", "Lubricar componentes del sistema", "Refrigerar"],
