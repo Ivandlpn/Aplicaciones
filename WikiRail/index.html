@@ -1,1 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiRail - Dicionario Ferroviario</title>
 
+    <!-- SEO: Meta Description (Translated) -->
+    <meta name="description" content="Diccionario visual completo de términos técnicos clave, herramientas, materiales y técnicas utilizados en el mantenimiento de ferrocarriles de alta velocidad en España.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0065BD', // PANTONE 7687 C
+                        secondary: '#C8102E', // PANTONE 485 C
+                        accent: '#003B5C',
+                        light: '#F5F7FA',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .search-bar {
+            box-shadow: 0 4px 20px rgba(0, 101, 189, 0.2);
+        }
+        .term-card {
+            transition: all 0.3s ease;
+            cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+        }
+        .term-card img {
+            width: 96px; /* 24rem = 96px */
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .term-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        .mobile-menu {
+            transition: all 0.3s ease;
+        }
+        .hero-pattern {
+            background-image: radial-gradient(circle, rgba(0,101,189,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        /* Basic styling for modal */
+        .fixed { position: fixed; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .bg-black { --tw-bg-opacity: 1; background-color: rgb(0 0 0 / var(--tw-bg-opacity)); }
+        .bg-opacity-50 { --tw-bg-opacity: 0.5; }
+        .z-50 { z-index: 50; }
+        .hidden { display: none; }
+        .cursor-pointer { cursor: pointer; }
+         /* Style for active filter links */
+        .filter-link.bg-opacity-20 {
+             font-weight: 600; /* Semi-bold */
+        }
+         /* Style for active gallery image in modal */
+        #term-detail-gallery img.ring-2 {
+            border-width: 2px;
+            border-color: #0065BD; /* primary color */
+        }
+
+        /* Custom list style for modal */
+        .term-detail-list li {
+            position: relative;
+            padding-left: 1.5em; /* Space for the custom bullet/icon */
+            margin-bottom: 0.5em; /* Space between list items */
+        }
+        .term-detail-list li::before {
+            content: '\f061'; /* Font Awesome arrow right icon code */
+            font-family: 'Font Awesome 6 Free'; /* Specify font family */
+            font-weight: 900; /* Solid icon weight */
+            position: absolute;
+            left: 0;
+            top: 0.2em; /* Adjust vertical alignment */
+            color: #0065BD; /* Primary color */
+            font-size: 0.8em; /* Adjust size */
+        }
+         #term-detail-document-list li::before {
+             content: '\f1c1'; /* Font Awesome file-pdf icon */
+         }
+
+        /* Print styles - Hide elements not needed for printing */
+        /* This is crucial for making window.print() work for the modal */
+        @media print {
+            /* Hide everything in the body except the modal itself */
+            body > *:not(#term-detail) {
+                display: none !important;
+            }
+            /* Make the modal visible and static for printing */
+            #term-detail {
+                position: static !important;
+                width: auto !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                background-color: white;
+                display: block !important; /* Ensure it's visible */
+                padding: 0 !important; /* Remove padding */
+            }
+             /* Adjust inner modal container */
+             #term-detail > div {
+                 box-shadow: none !important;
+                 max-width: none !important;
+                 width: auto !important;
+                 max-height: none !important;
+                 overflow: visible !important;
+                 border: none !important;
+                 border-radius: 0 !important;
+             }
+             /* Disable sticky header/footer in print */
+             #term-detail .sticky {
+                 position: static !important;
+                 border-bottom: none !important;
+                 padding: 0 !important;
+             }
+              #term-detail .sticky h2 {
+                 margin-bottom: 0 !important;
+             }
+             /* Hide close button in print */
+             #term-detail .sticky button {
+                 display: none !important;
+             }
+             /* Hide print/share buttons in print footer */
+             #term-detail .flex-col.sm\:flex-row {
+                 display: none !important;
+             }
+             /* Adjust main media image in print */
+             #term-detail-main-media img {
+                 max-width: 100%;
+                 height: auto !important;
+                 object-fit: contain !important;
+                 margin-bottom: 1rem;
+             }
+             /* Hide placeholder icons/gallery in print if they appear */
+             #term-detail-main-media .fas, #term-detail-gallery {
+                 display: none !important;
+             }
+              /* Ensure main media area is block in print even if no image was present */
+            #term-detail-main-media {
+                 display: block !important;
+                 height: auto !important; /* Auto height for placeholder text */
+                 min-height: 0 !important;
+                 padding: 1rem !important; /* Add some padding */
+                 text-align: center !important; /* Center placeholder text */
+            }
+             /* Adjust content padding */
+             #term-detail-content {
+                 padding: 1rem !important;
+             }
+              #term-detail-content .gap-8 {
+                 gap: 1rem !important;
+             }
+             #term-detail-content .mb-6 {
+                 margin-bottom: 1rem !important;
+             }
+             /* Ensure all sections are visible and styled for print */
+             #term-detail-left-column,
+             #term-detail-right-column {
+                 display: block !important;
+                 width: 100% !important;
+                 flex: none !important;
+                 margin-bottom: 1rem; /* Add space between sections */
+             }
+             .term-detail-section:not(.hidden) {
+                 display: block !important; /* Ensure hidden sections become visible if needed */
+             }
+              .term-detail-list {
+                 list-style: disc !important; /* Use standard bullets for print */
+                 padding-left: 20px !important;
+                 margin-top: 0.5rem !important; /* Add space after title */
+             }
+              .term-detail-list li::before {
+                 content: none !important; /* Hide custom bullets */
+              }
+              .term-detail-list li {
+                padding-left: 0 !important; /* Remove custom padding */
+                margin-bottom: 0.2em !important; /* Reduce space between list items in print */
+              }
+               .term-detail-section h3 {
+                 margin-bottom: 0.5rem !important;
+               }
+        }
+
+
+    </style>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
+                    <i class="fas fa-train text-white text-xl" aria-hidden="true"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-primary">Wiki<span class="text-secondary">Rail</span></h1>
+            </div>
+
+            <div class="hidden md:flex items-center text-gray-700 font-medium">
+                Diccionario de Términos Ferroviarios
+            </div>
+
+            <button id="mobile-menu-button" class="md:hidden text-gray-700" aria-label="Abrir menú móvil" aria-expanded="false">
+                <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu hidden md:hidden bg-white border-t">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+                <a href="#" class="text-gray-700 hover:text-primary font-medium py-2">Inicio</a>
+                <a href="#" class="text-gray-700 hover:text-primary font-medium py-2">Sobre nosotros</a>
+                <a href="#" class="text-gray-700 hover:text-primary font-medium py-2">Contacto</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Search -->
+    <section class="hero-pattern py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Diccionario de Mantenimiento Ferroviario de Alta Velocidad</h2>
+                <p class="text-xl text-gray-600 mb-10">Encuentra definiciones, explicaciones y referencias visuales para todos los términos relacionados con el mantenimiento ferroviario de alta velocidad</p>
+
+                <!-- Search Bar -->
+                <div class="search-bar relative max-w-2xl mx-auto rounded-full overflow-hidden">
+                    <label for="search-input" class="sr-only">Buscar términos, materiales, herramientas...</label>
+                    <input id="search-input" type="text" placeholder="Buscar términos, materiales, herramientas..."
+                           class="w-full py-4 px-6 rounded-full border-2 border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-lg">
+                    <button id="search-button" class="absolute right-2 top-2 bg-primary text-white p-2 rounded-full hover:bg-secondary transition" aria-label="Realizar búsqueda">
+                        <i class="fas fa-search text-xl" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <!-- Quick Filters (These still act as category filters) -->
+                <div class="mt-8 flex flex-wrap justify-center gap-3">
+                    <span class="text-gray-600 font-medium inline-flex items-center">Filtros Rápidos:</span>
+                    <a href="#" class="filter-link px-4 py-2 bg-primary bg-opacity-10 text-primary rounded-full hover:bg-opacity-20 transition" data-filter="Materials">Materiales</a>
+                    <a href="#" class="filter-link px-4 py-2 bg-primary bg-opacity-10 text-primary rounded-full hover:bg-opacity-20 transition" data-filter="Machines & Tools">Máquinas y Herramientas</a>
+                    <a href="#" class="filter-link px-4 py-2 bg-primary bg-opacity-10 text-primary rounded-full hover:bg-opacity-20 transition" data-filter="Components">Componentes</a>
+                    <a href="#" class="filter-link px-4 py-2 bg-primary bg-opacity-10 text-primary rounded-full hover:bg-opacity-20 transition" data-filter="Techniques">Técnicas</a>
+                    <a href="#" class="filter-link px-4 py-2 bg-primary bg-opacity-10 text-primary rounded-full hover:bg-opacity-20 transition" data-filter="Personnel">Personal</a>
+                     <a href="#" class="filter-link px-4 py-2 bg-primary bg-opacity-10 text-primary rounded-full hover:bg-opacity-20 transition" data-filter="Infrastructure">Infraestructura</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms List Section -->
+    <section class="py-16 bg-gray-50 featured-terms-section" aria-labelledby="terms-list-title">
+        <div class="container mx-auto px-4">
+            <h2 id="terms-list-title" class="text-3xl font-bold text-gray-800 mb-12 text-center hidden"></h2>
+
+            <div id="terms-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Term Cards rendered here -->
+            </div>
+
+             <div id="initial-empty-message" class="text-center text-gray-600 mt-12 p-8 rounded-lg bg-white shadow-md max-w-lg mx-auto">
+                 <i class="fas fa-search text-primary text-6xl mb-4 opacity-50" aria-hidden="true"></i>
+                 <h3 class="text-2xl font-semibold text-gray-800 mb-2">Bienvenido a WikiRail</h3>
+                 <p class="text-gray-700">Explora nuestro diccionario de términos de mantenimiento ferroviario de alta velocidad. Utiliza la barra de búsqueda o los filtros rápidos para empezar.</p>
+             </div>
+
+            <div id="show-all-terms-button" class="text-center mt-12 hidden">
+                <a href="#" class="inline-block px-8 py-3 bg-primary text-white font-medium rounded-full hover:bg-secondary transition" role="button">Mostrar todos los términos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Term Detail Modal -->
+    <div id="term-detail" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" aria-modal="true" role="dialog" aria-labelledby="term-detail-title">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+            <div class="sticky top-0 bg-white p-4 border-b flex flex-col sm:flex-row sm:justify-between sm:items-center z-10">
+                 <div>
+                     <h2 id="term-detail-title" class="text-2xl font-bold text-gray-800">Cargando término...</h2>
+                     <span id="term-detail-category" class="bg-primary bg-opacity-10 text-primary text-sm font-medium px-3 py-1 rounded-full mt-2 inline-block">Categoría</span> <!-- Added category element -->
+                 </div>
+                <button id="close-detail" class="absolute top-4 right-4 sm:static text-gray-500 hover:text-gray-700 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300" aria-label="Cerrar detalles del término">
+                    <i class="fas fa-times text-2xl" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div id="term-detail-content" class="p-6">
+                 <!-- Adjusted structure for flexible columns -->
+                 <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Left Column (Media or Placeholder) -->
+                    <div id="term-detail-left-column" class="lg:w-1/2">
+                        <!-- Main Media Area - Will show image or enhanced placeholder -->
+                        <div id="term-detail-main-media" class="bg-gray-100 rounded-lg h-64 flex flex-col items-center justify-center mb-4 text-primary opacity-30 text-8xl" aria-label="Medio principal del término">
+                             <i class="fas fa-image mb-2" aria-hidden="true"></i>
+                             <span class="text-sm text-gray-500">Sin imagen disponible</span> <!-- Added explanatory text -->
+                        </div>
+                        <!-- Gallery Area - Hidden if no additional images -->
+                        <div id="term-detail-gallery" class="grid grid-cols-2 gap-4 mb-6" role="group" aria-label="Galería de imágenes del término">
+                            <!-- Gallery thumbnails populated by JS, or placeholders -->
+                             <div class="bg-gray-100 rounded-lg h-32 flex items-center justify-center text-primary opacity-30 text-4xl" aria-hidden="true">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="bg-gray-100 rounded-lg h-32 flex items-center justify-center text-primary opacity-30 text-4xl" aria-hidden="true">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        </div>
+                         <!-- Documents Area - Hidden if no PDFs -->
+                         <div id="term-detail-documents" class="mb-6 hidden term-detail-section">
+                              <h3 class="text-lg font-semibold text-gray-800 mb-2"><i class="fas fa-file-pdf mr-2 text-secondary" aria-hidden="true"></i>Documentos</h3> <!-- Added Icon -->
+                              <ul id="term-detail-document-list" class="list-disc pl-5 text-gray-700 space-y-1 term-detail-list">
+                                   <!-- Document links populated by JS -->
+                              </ul>
+                         </div>
+                    </div>
+
+                    <!-- Right Column (Text Content - Definition, Lists) -->
+                    <div id="term-detail-right-column" class="lg:w-1/2">
+                        <div id="term-detail-definition" class="mb-6 term-detail-section">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><i class="fas fa-book-open mr-2 text-secondary" aria-hidden="true"></i>Definición</h3> <!-- Added Icon -->
+                            <p class="text-gray-700">Cargando definición...</p>
+                        </div>
+
+                        <div id="term-detail-components" class="mb-6 hidden term-detail-section">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><i class="fas fa-cogs mr-2 text-secondary" aria-hidden="true"></i>Componentes Clave</h3> <!-- Added Icon -->
+                            <ul id="term-detail-component-list" class="list-disc pl-5 text-gray-700 space-y-1 term-detail-list">
+                                <!-- Components list populated by JS -->
+                            </ul>
+                        </div>
+
+                        <div id="term-detail-functions" class="mb-6 hidden term-detail-section">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><i class="fas fa-wrench mr-2 text-secondary" aria-hidden="true"></i>Funciones</h3> <!-- Added Icon -->
+                            <ul id="term-detail-function-list" class="list-disc pl-5 text-gray-700 space-y-1 term-detail-list">
+                                <!-- Functions list populated by JS -->
+                            </ul>
+                        </div>
+
+                        <div id="term-detail-maintenance" class="mb-6 hidden term-detail-section">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><i class="fas fa-tools mr-2 text-secondary" aria-hidden="true"></i>Consideraciones de Mantenimiento</h3> <!-- Added Icon -->
+                            <p class="text-gray-700"></p> <!-- Content populated by JS -->
+                        </div>
+
+                        <div id="term-detail-related" class="hidden term-detail-section">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2"><i class="fas fa-link mr-2 text-secondary" aria-hidden="true"></i>Términos Relacionados</h3> <!-- Added Icon -->
+                            <div id="term-detail-related-list" class="flex flex-wrap gap-2">
+                                <!-- Related terms populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t flex flex-col sm:flex-row justify-between items-center sticky bottom-0 bg-white z-10">
+                <!-- Removed Last Updated div -->
+                <!-- <div id="term-detail-last-updated" class="text-sm text-gray-500 mb-2 sm:mb-0">...</div> -->
+
+                <div class="flex space-x-2">
+                    <!-- Added IDs to buttons -->
+                    <button id="print-button" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        <i class="fas fa-print mr-2" aria-hidden="true"></i> Imprimir
+                    </button>
+                    <button id="share-button" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        <i class="fas fa-share-alt mr-2" aria-hidden="true"></i> Compartir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">© 2025 Web realizada por Iván de la Paz Notario.</p>
+                <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                    <img src="ineco_logo.png" alt="Logo de Ineco" class="h-8"> <!-- Ajusta h-8 según necesites -->
+                    <a href="mailto:ivan.delapaz@ineco.com" class="text-gray-400 hover:text-white" aria-label="Enviar correo electrónico"><i class="fas fa-envelope text-xl" aria-hidden="true"></i></a>
+                    <a href="https://www.linkedin.com/in/ivanpaznotario/" class="text-gray-400 hover:text-white" aria-label="Visítanos en LinkedIn"><i class="fab fa-linkedin text-xl" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Link to your external JavaScript file -->
+    <script src="script.js" defer></script>
+
+    <!-- Script to manage modal accessibility - Focus trapping and aria-hidden background -->
+     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('term-detail');
+             if (!modal) { // Check if the modal element exists
+                 console.error("Modal element #term-detail not found. Accessibility script cannot run.");
+                 return; // Exit if modal is not found
+            }
+
+            const focusableElementsString = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
+            let firstFocusableElement;
+            let lastFocusableElement;
+            let elementBeforeModalOpened; // Store the element that had focus before opening
+
+            const setModalFocus = () => {
+                 elementBeforeModalOpened = document.activeElement; // Store current focus
+                const focusableElements = modal.querySelectorAll(focusableElementsString);
+                if (focusableElements.length > 0) {
+                     // Filter out elements that are visually hidden or not interactive
+                     const visibleFocusableElements = Array.from(focusableElements).filter(el => el.offsetWidth > 0 || el.offsetHeight > 0 || el === modal);
+
+                    if (visibleFocusableElements.length > 0) {
+                         firstFocusableElement = visibleFocusableElements[0];
+                         lastFocusableElement = visibleFocusableElements[visibleFocusableElements.length - 1];
+                         // Find a more appropriate element to focus initially, e.g., the close button or modal title (if focusable)
+                         const initialFocusElement = modal.querySelector('#close-detail') || firstFocusableElement;
+                         initialFocusElement.focus(); // Set focus to the chosen initial element
+                    }
+                }
+            };
+
+             const restoreFocusAfterModalClosed = () => {
+                 if (elementBeforeModalOpened) {
+                     elementBeforeModalOpened.focus(); // Return focus to the element that opened the modal
+                     elementBeforeModalOpened = null; // Clear stored element
+                 }
+             };
+
+
+            modal.addEventListener('keydown', function(e) {
+                // Ensure tab is pressed and the modal is visible
+                if ((e.key === 'Tab' || e.keyCode === 9) && !modal.classList.contains('hidden')) {
+
+                    const focusableElements = modal.querySelectorAll(focusableElementsString);
+                    // Re-find elements just in case modal content changed (e.g., navigated to related term)
+                    const visibleFocusableElements = Array.from(focusableElements).filter(el => el.offsetWidth > 0 || el.offsetHeight > 0 || el === modal);
+
+                    if (visibleFocusableElements.length === 0) {
+                         e.preventDefault(); // Prevent tabbing out if nothing is focusable
+                         return;
+                    }
+                    firstFocusableElement = visibleFocusableElements[0];
+                    lastFocusableElement = visibleFocusableElements[visibleFocusableElements.length - 1];
+
+
+                    if (e.shiftKey) { // Shift + Tab
+                        if (document.activeElement === firstFocusableElement) {
+                            lastFocusableElement.focus();
+                            e.preventDefault();
+                        }
+                    } else { // Tab
+                        if (document.activeElement === lastFocusableElement) {
+                            firstFocusableElement.focus();
+                            e.preventDefault();
+                        }
+                    }
+                }
+            });
+
+            // Use a MutationObserver to watch for when the modal becomes visible
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    if (mutation.attributeName === 'class') {
+                        const isModalVisible = !modal.classList.contains('hidden');
+                        // Select all top-level siblings of the modal to hide them
+                        const appContent = document.querySelectorAll('body > *:not(#term-detail)');
+
+                        if (isModalVisible) {
+                            // Add a small delay before setting focus to allow modal transition to finish
+                             setTimeout(setModalFocus, 50); // Delay focus trap activation slightly
+
+                             // Hide main content from screen readers when modal is open
+                            appContent.forEach(el => {
+                                if (el.id !== 'term-detail') { // Double check it's not the modal itself
+                                     el.setAttribute('aria-hidden', 'true');
+                                }
+                             });
+                        } else {
+                            // Show main content to screen readers when modal is closed
+                             appContent.forEach(el => {
+                                  if (el.id !== 'term-detail') {
+                                     el.removeAttribute('aria-hidden');
+                                  }
+                             });
+                             // Add a small delay before restoring focus
+                             setTimeout(restoreFocusAfterModalClosed, 50);
+                        }
+                    }
+                });
+            });
+
+            observer.observe(modal, { attributes: true });
+
+
+             // Initial check in case the modal is somehow visible on load (it shouldn't be)
+             // This part might be redundant if displayTerms hides it on load, but good as a fallback
+             const isModalVisibleInitially = !modal.classList.contains('hidden');
+             const appContent = document.querySelectorAll('body > *:not(#term-detail)');
+              if (isModalVisibleInitially) {
+                   appContent.forEach(el => el.setAttribute('aria-hidden', 'true'));
+               } else {
+                    appContent.forEach(el => el.removeAttribute('aria-hidden'));
+               }
+
+        });
+    </script>
+
+</body>
+</html>
