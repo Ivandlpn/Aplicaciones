@@ -657,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Load Dictionary Data ---
-    fetch('/terms.json')
+    fetch('./terms.json')
         .then(response => {
             if (!response.ok) {
                  if (response.status === 404) {
