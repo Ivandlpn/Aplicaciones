@@ -657,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Load Dictionary Data ---
-    fetch('/terms.json')
+    fetch('Aplicaciones/WikiRail/terms.json')
         .then(response => {
             if (!response.ok) {
                  if (response.status === 404) {
