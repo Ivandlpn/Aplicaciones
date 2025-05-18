@@ -62,16 +62,16 @@ function renderTermCard(term) {
 
     const mainIconClass = getCategoryIcon(term.category);
     const displayCategory = getDisplayCategoryName(term.category); // Obtener nombre traducido
-    const showAvatar = term.category === "Personnel" && term.media && term.media.images && term.media.images.length > 0;
-    const avatarPath = showAvatar ? term.media.images[0] : '';
+    const hasMainImage = term.media && term.media.images && term.media.images.length > 0;
+    const mainImagePath = hasMainImage ? term.media.images[0] : '';
 
     return `
         <div class="term-card bg-white rounded-xl overflow-hidden shadow-md" data-term-id="${term.id}">
-            <div class="h-48 bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
-                ${showAvatar ? `
-                    <img src="${avatarPath}" alt="${term.term}" class="w-24 h-24 rounded-full object-cover" aria-hidden="true">
+            <div class="h-48 bg-gradient-to-r from-primary to-secondary">
+                ${hasMainImage ? `
+                    <img src="${mainImagePath}" alt="${term.term}" class="w-full h-full object-cover" aria-hidden="true">
                 ` : `
-                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center h-full">
                         <i class="${mainIconClass} text-white text-6xl opacity-70" aria-hidden="true"></i>
                     </div>
                 `}
