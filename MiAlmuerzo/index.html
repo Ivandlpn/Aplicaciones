@@ -30,12 +30,11 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
-            overscroll-behavior-y: contain; /* Evita el "pull-to-refresh" en móviles */
+            overscroll-behavior-y: contain; 
         }
 
-        /* --- Contenedor Principal --- */
         #app-container {
-            max-width: 500px; /* Optimizado para móviles */
+            max-width: 500px; 
             margin: 0 auto;
             background-color: var(--card-bg-color);
             min-height: 100vh;
@@ -68,12 +67,11 @@
         main {
             flex-grow: 1;
             padding: 20px;
-            overflow-y: auto; /* Para scroll si el contenido es largo */
+            overflow-y: auto; 
         }
 
-        /* --- Secciones de Pasos --- */
         .step-section {
-            display: none; /* Ocultar por defecto */
+            display: none; 
             animation: fadeIn 0.5s ease-out;
         }
         .step-section.active {
@@ -97,7 +95,6 @@
             font-size: 1.3em;
         }
 
-        /* --- Categorías y Items --- */
         .category-block {
             background-color: #fff;
             padding: 15px;
@@ -113,33 +110,45 @@
             padding-bottom: 5px;
         }
 
-        .item-grid {
+        .item-grid { 
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
             gap: 10px;
         }
+        #ingredients-grid.item-grid {
+             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+        }
+
 
         .item-button, .ingredient-button, .modal-option-button {
             background-color: var(--bg-color);
             color: var(--text-color);
             border: 2px solid transparent;
-            padding: 12px 10px;
+            padding: 10px;
             border-radius: var(--border-radius);
             cursor: pointer;
             text-align: center;
             font-weight: 400;
             transition: all 0.2s ease-in-out;
-            font-size: 0.9em;
+            font-size: 0.85em; 
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            align-items: center; 
             justify-content: center;
-            min-height: 60px;
+            min-height: 50px; 
+            line-height: 1.2; 
         }
-        .item-button .item-icon, .ingredient-button .item-icon {
+        .item-button .item-icon { 
             font-size: 1.5em;
-            margin-bottom: 5px;
+            margin-bottom: 5px; 
         }
+         .ingredient-button .ingredient-icon { 
+            margin-right: 6px; 
+            font-size: 1.1em; 
+        }
+        .item-button[data-type="drink"] {
+            flex-direction: column;
+        }
+
 
         .item-button:hover, .ingredient-button:hover, .modal-option-button:hover {
             transform: translateY(-2px);
@@ -153,6 +162,7 @@
             font-weight: 600;
             transform: scale(1.05);
         }
+         .ingredient-button.selected .ingredient-icon { }
         
         .item-button.added-feedback {
             animation: pulseFeedback 0.5s ease-out;
@@ -163,8 +173,6 @@
             100% { transform: scale(1); background-color: var(--bg-color); color: var(--text-color);}
         }
 
-
-        /* Food specific */
         .food-type-selector {
             display: flex;
             justify-content: space-around;
@@ -213,7 +221,7 @@
             margin-top: 20px;
             text-align: center;
         }
-        .action-button {
+        .action-button { /* Estilo genérico para botones de acción */
             background-color: var(--primary-color);
             color: white;
             padding: 12px 25px;
@@ -227,10 +235,16 @@
         .action-button:hover {
             background-color: #E55A5A;
         }
+        /* Botón de confirmar pedido específico */
+        #confirm-order-final-btn {
+            background-color: var(--accent-color); /* Verde para confirmar */
+        }
+        #confirm-order-final-btn:hover {
+            background-color: #05B288; /* Verde más oscuro */
+        }
 
 
-        /* --- Resumen (General y en Pasos) --- */
-        #summary-list, #drinks-summary-list-step1, #food-summary-list-step2 { /* Estilos comunes para listas de resumen */
+        #summary-list, #drinks-summary-list-step1, #food-summary-list-step2 { 
             list-style: none;
             padding: 0;
         }
@@ -253,11 +267,11 @@
 
         #summary-list li strong, 
         #drinks-summary-list-step1 li strong,
-        #food-summary-list-step2 li strong { /* Si se usa strong en los resúmenes de paso */
+        #food-summary-list-step2 li strong { 
             color: var(--primary-color);
         }
 
-        #summary-list .summary-category { /* Solo para el resumen final */
+        #summary-list .summary-category { 
             font-size: 1.1em;
             font-weight: 600;
             margin-top: 15px;
@@ -272,8 +286,8 @@
         }
 
         #summary-list .item-details,
-        #drinks-summary-list-step1 .item-details { /* Detalles también para resumen de bebidas */
-            font-size: 0.85em; /* Un poco más pequeño para detalles */
+        #drinks-summary-list-step1 .item-details { 
+            font-size: 0.85em; 
             color: #555;
             display: block;
             padding-left: 10px;
@@ -292,14 +306,12 @@
             color: #E55A5A;
         }
 
-
-        /* --- Navegación Inferior --- */
         nav {
-            padding: 15px 20px;
+            padding: 10px;
             background-color: #fff;
             border-top: 1px solid #eee;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around; 
             align-items: center;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             position: sticky;
@@ -310,33 +322,29 @@
             background-color: var(--secondary-color);
             color: var(--text-color);
             border: none;
-            padding: 12px 20px;
+            padding: 10px 15px;
             border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.9em; 
             font-weight: 600;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            transition: all 0.2s ease;
+            flex-grow: 1; 
+            margin: 0 5px; 
+            text-align: center;
         }
         .nav-button:hover {
             background-color: #F0C150;
+            transform: translateY(-1px);
         }
         .nav-button:active {
             transform: scale(0.95);
         }
-        .nav-button#confirm-order-btn {
-            background-color: var(--accent-color);
+        .nav-button.active-section { 
+            background-color: var(--primary-color);
             color: white;
         }
-        .nav-button#confirm-order-btn:hover {
-            background-color: #05B288;
-        }
-        .nav-button:disabled {
-            background-color: #ccc;
-            color: #888;
-            cursor: not-allowed;
-        }
 
-        /* --- Modal --- */
+
         .modal {
             display: none; 
             position: fixed;
@@ -412,7 +420,6 @@
             margin-top: 15px;
         }
 
-        /* Message Modal Styles */
         #message-modal .modal-content {
             text-align: center;
         }
@@ -438,8 +445,8 @@
 
         <main>
             <!-- Paso 1: Bebidas -->
-            <section id="step-drinks" class="step-section active">
-                <h2 class="step-title"><span class="icon">🥤</span>Paso 1: Bebidas</h2>
+            <section id="step-drinks" class="step-section active" data-step-index="0">
+                <h2 class="step-title"><span class="icon">🥤</span>Bebidas</h2>
                 
                 <div class="category-block">
                     <h3>Cafés</h3>
@@ -452,7 +459,6 @@
                         <button class="item-button" data-type="drink" data-name="Capuchino" data-is-coffee="true"><span class="item-icon">☕</span>Capuchino</button>
                     </div>
                 </div>
-
                 <div class="category-block">
                     <h3>Refrescos</h3>
                     <div class="item-grid">
@@ -466,7 +472,6 @@
                         <button class="item-button" data-type="drink" data-name="Tónica"><span class="item-icon">🍸</span>Tónica</button>
                     </div>
                 </div>
-
                 <div class="category-block">
                     <h3>Agua</h3>
                     <div class="item-grid">
@@ -475,7 +480,6 @@
                         <button class="item-button" data-type="drink" data-name="Agua con Gas"><span class="item-icon">💧</span>Con Gas</button>
                     </div>
                 </div>
-
                 <div class="category-block">
                     <h3>Alcohólicas</h3>
                     <div class="item-grid">
@@ -488,8 +492,6 @@
                         <button class="item-button" data-type="drink" data-name="Vermut"><span class="item-icon">🥃</span>Vermut</button>
                     </div>
                 </div>
-
-                <!-- Resumen de Bebidas en Paso 1 -->
                 <div id="current-drinks-order-summary" class="category-block" style="margin-top: 20px;">
                     <h3>Bebidas añadidas:</h3>
                     <ul id="drinks-summary-list-step1">
@@ -498,26 +500,20 @@
                 </div>
             </section>
 
-            <!-- Paso 2: Comida -->
-            <section id="step-food" class="step-section">
-                <h2 class="step-title"><span class="icon">🥪</span>Paso 2: Comida</h2>
-                
+            <section id="step-food" class="step-section" data-step-index="1">
+                <h2 class="step-title"><span class="icon">🥪</span>Comida</h2>
                 <div class="food-type-selector">
                     <button class="food-type-button" data-food-category="Tostada">Tostada</button>
                     <button class="food-type-button" data-food-category="Bocadillo">Bocadillo</button>
                     <button class="food-type-button" data-food-category="Medio Bocadillo">Medio Bocadillo</button>
                 </div>
-
                 <div id="ingredients-container" class="hidden">
                     <h4 id="current-food-item-title">Selecciona ingredientes para: </h4>
-                    <div class="item-grid" id="ingredients-grid">
-                        <!-- Ingredientes se cargarán aquí por JS -->
-                    </div>
+                    <div id="ingredients-grid" class="item-grid"></div> 
                     <div class="action-buttons">
                         <button id="add-food-item-btn" class="action-button">Añadir <span id="current-food-type-btn-label"></span> a la comanda</button>
                     </div>
                 </div>
-
                 <div id="current-food-order-summary" class="category-block" style="margin-top: 20px;">
                     <h3>Comida añadida:</h3>
                     <ul id="food-summary-list-step2">
@@ -526,28 +522,26 @@
                 </div>
             </section>
 
-            <!-- Paso 3: Resumen y Confirmación -->
-            <section id="step-summary" class="step-section">
-                <h2 class="step-title"><span class="icon">🧾</span>Paso 3: Resumen de la Comanda</h2>
-                <ul id="summary-list">
-                    <!-- Resumen se cargará aquí por JS -->
-                </ul>
+            <section id="step-summary" class="step-section" data-step-index="2">
+                <h2 class="step-title"><span class="icon">🧾</span>Resumen de la Comanda</h2>
+                <ul id="summary-list"></ul>
+                 <div class="action-buttons" style="margin-top: 30px;">
+                    <button id="confirm-order-final-btn" class="action-button">Confirmar Pedido</button>
+                </div>
             </section>
         </main>
 
         <nav>
-            <button id="prev-step-btn" class="nav-button" disabled>Anterior</button>
-            <button id="next-step-btn" class="nav-button">Siguiente</button>
-            <button id="confirm-order-btn" class="nav-button hidden">Confirmar Pedido</button>
+            <button id="nav-bebidas-btn" class="nav-button">🥤 Bebidas</button>
+            <button id="nav-comidas-btn" class="nav-button">🥪 Comida</button>
+            <button id="nav-resumen-btn" class="nav-button">🧾 Resumen</button>
         </nav>
     </div>
 
-    <!-- Modal para Opciones de Café -->
     <div id="coffee-options-modal" class="modal"> 
         <div class="modal-content">
             <span id="close-coffee-modal-btn" class="close-modal-button">×</span>
             <h3 id="coffee-modal-title">Personaliza tu Café</h3>
-            
             <div id="milk-options-container" class="coffee-option-group">
                 <h4>Tipo de Leche:</h4>
                 <div class="options-grid" id="milk-options-grid"></div>
@@ -560,12 +554,10 @@
                 <h4>Temperatura:</h4>
                 <div class="options-grid" id="temperature-options-grid"></div>
             </div>
-            
             <button id="add-custom-coffee-btn" class="action-button">Añadir Café a la Comanda</button>
         </div>
     </div>
 
-    <!-- Modal para Mensajes Generales -->
     <div id="message-modal" class="modal"> 
         <div class="modal-content">
             <span id="close-message-modal-btn" class="close-modal-button">×</span>
@@ -577,8 +569,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Estado de la Aplicación ---
-            let currentStep = 0;
+            let currentStepIndex = 0; 
             const order = {
                 drinks: [], 
                 food: []    
@@ -594,14 +585,17 @@
                 temp: null
             };
 
-            // --- Selectores del DOM ---
             const stepSections = document.querySelectorAll('.step-section');
-            const prevStepBtn = document.getElementById('prev-step-btn');
-            const nextStepBtn = document.getElementById('next-step-btn');
-            const confirmOrderBtn = document.getElementById('confirm-order-btn');
+            // Nuevos botones de navegación y el de confirmar final
+            const navBebidasBtn = document.getElementById('nav-bebidas-btn');
+            const navComidasBtn = document.getElementById('nav-comidas-btn');
+            const navResumenBtn = document.getElementById('nav-resumen-btn');
+            const confirmOrderFinalBtn = document.getElementById('confirm-order-final-btn'); // Botón en el resumen
+
+            const allNavButtons = [navBebidasBtn, navComidasBtn, navResumenBtn]; // Para manejar el estado activo
+
 
             const drinkButtons = document.querySelectorAll('.item-button[data-type="drink"]');
-
             const foodTypeButtons = document.querySelectorAll('.food-type-button');
             const ingredientsContainer = document.getElementById('ingredients-container');
             const ingredientsGrid = document.getElementById('ingredients-grid');
@@ -610,15 +604,9 @@
             const currentFoodTypeBtnLabel = document.getElementById('current-food-type-btn-label');
             const foodSummaryListStep2 = document.getElementById('food-summary-list-step2');
             let placeholderFoodItem = foodSummaryListStep2.querySelector('.placeholder-food-item');
-
-            // Resumen de bebidas en Paso 1
             const drinksSummaryListStep1 = document.getElementById('drinks-summary-list-step1');
             let placeholderDrinkItem = drinksSummaryListStep1.querySelector('.placeholder-drink-item');
-
-
             const summaryList = document.getElementById('summary-list');
-
-            // Modals
             const coffeeModal = document.getElementById('coffee-options-modal');
             const coffeeModalTitle = document.getElementById('coffee-modal-title');
             const closeCoffeeModalBtn = document.getElementById('close-coffee-modal-btn');
@@ -627,21 +615,31 @@
             const cupOptionsGrid = document.getElementById('cup-options-grid');
             const temperatureOptionsGrid = document.getElementById('temperature-options-grid');
             const addCustomCoffeeBtn = document.getElementById('add-custom-coffee-btn');
-
             const messageModal = document.getElementById('message-modal');
             const messageModalTitle = document.getElementById('message-modal-title');
             const messageModalText = document.getElementById('message-modal-text');
             const closeMessageModalBtn = document.getElementById('close-message-modal-btn');
             const messageModalOkBtn = document.getElementById('message-modal-ok-btn');
 
-            // --- Datos ---
-            const ingredientsList = [
-                "Jamón Serrano", "Jamón York", "Queso Curado", "Queso Fresco", "Queso Brie", "Queso Cabra",
-                "Tomate Rodajas", "Tomate Triturado", "Aceite de Oliva", "Mantequilla", "Mermelada",
-                "Tortilla Española", "Tortilla Francesa", "Bacon Crujiente", "Lomo Adobado",
-                "Pechuga de Pollo Plancha", "Pechuga de Pollo Empanada", "Pimientos Verdes Fritos", "Pimientos Rojos Asados",
-                "Atún", "Anchoas", "Salmón Ahumado", "Lechuga", "Cebolla Caramelizada", "Cebolla Cruda",
-                "Huevo Frito", "Huevo Duro", "Mayonesa", "Alioli", "Mostaza y Miel", "Hummus", "Aguacate", "Vegetal Variado"
+            const categorizedIngredients = [
+                { name: "Jamón Serrano", category: "Carnes y Embutidos", emoji: "🍖" }, { name: "Jamón York", category: "Carnes y Embutidos", emoji: "🍖" },
+                { name: "Bacon Crujiente", category: "Carnes y Embutidos", emoji: "🥓" }, { name: "Lomo Adobado", category: "Carnes y Embutidos", emoji: "🥩" },
+                { name: "Pechuga Pollo", category: "Carnes y Embutidos", emoji: "🍗" }, { name: "Pechuga Empanada", category: "Carnes y Embutidos", emoji: "🍗" },
+                { name: "Atún", category: "Pescados", emoji: "🐟" }, { name: "Anchoas", category: "Pescados", emoji: "🐟" },
+                { name: "Salmón Ahumado", category: "Pescados", emoji: "🍣" },
+                { name: "Queso Curado", category: "Quesos", emoji: "🧀" }, { name: "Queso Fresco", category: "Quesos", emoji: "🧀" },
+                { name: "Queso Brie", category: "Quesos", emoji: "🧀" }, { name: "Queso Cabra", category: "Quesos", emoji: "🧀" },
+                { name: "Tortilla Española", category: "Huevos", emoji: "🍳" }, { name: "Tortilla Francesa", category: "Huevos", emoji: "🍳" },
+                { name: "Huevo Frito", category: "Huevos", emoji: "🍳" }, { name: "Huevo Duro", category: "Huevos", emoji: "🥚" },
+                { name: "Tomate Rodajas", category: "Verduras y Hortalizas", emoji: "🍅" }, { name: "Tomate Triturado", category: "Verduras y Hortalizas", emoji: "🍅" },
+                { name: "Lechuga", category: "Verduras y Hortalizas", emoji: "🥬" }, { name: "Pimientos Verdes", category: "Verduras y Hortalizas", emoji: "🫑" },
+                { name: "Pimientos Rojos", category: "Verduras y Hortalizas", emoji: "🌶️" }, { name: "Cebolla Caramelizada", category: "Verduras y Hortalizas", emoji: "🧅" },
+                { name: "Cebolla Cruda", category: "Verduras y Hortalizas", emoji: "🧅" }, { name: "Aguacate", category: "Verduras y Hortalizas", emoji: "🥑" },
+                { name: "Vegetal", category: "Verduras y Hortalizas", emoji: "🥕" },
+                { name: "Aceite de Oliva", category: "Salsas y Condimentos", emoji: "🫒" }, { name: "Mantequilla", category: "Salsas y Condimentos", emoji: "🧈" },
+                { name: "Mermelada", category: "Salsas y Condimentos", emoji: "🍓" }, { name: "Mayonesa", category: "Salsas y Condimentos", emoji: "🥣" },
+                { name: "Alioli", category: "Salsas y Condimentos", emoji: "🥣" }, { name: "Mostaza Miel", category: "Salsas y Condimentos", emoji: "🍯" },
+                { name: "Hummus", category: "Salsas y Condimentos", emoji: "🥣" },
             ];
 
             const coffeeOptionsData = {
@@ -654,63 +652,51 @@
                 noMilkCoffees: ["Café Solo", "Americano"]
             };
 
-            // --- Funciones de Modal ---
-            function showModal(modalElement) {
-                modalElement.classList.add('visible');
-            }
-            function hideModal(modalElement) {
-                modalElement.classList.remove('visible');
-            }
+            function showModal(modalElement) { modalElement.classList.add('visible'); }
+            function hideModal(modalElement) { modalElement.classList.remove('visible'); }
             
-            // --- Lógica de Navegación ---
-            function updateNavigation() {
+            // --- Lógica de Navegación por Secciones ---
+            function navigateToStep(stepIndex) {
+                currentStepIndex = stepIndex;
                 stepSections.forEach((section, index) => {
-                    section.classList.toggle('active', index === currentStep);
+                    section.classList.toggle('active', index === currentStepIndex);
                 });
-                prevStepBtn.disabled = currentStep === 0;
-                nextStepBtn.classList.toggle('hidden', currentStep === stepSections.length - 1);
-                confirmOrderBtn.classList.toggle('hidden', currentStep !== stepSections.length - 1);
-                if (currentStep === 2) renderSummary();
+                // Actualizar estado activo de botones de navegación
+                allNavButtons.forEach(btn => btn.classList.remove('active-section'));
+                if (stepIndex === 0) navBebidasBtn.classList.add('active-section');
+                else if (stepIndex === 1) navComidasBtn.classList.add('active-section');
+                else if (stepIndex === 2) navResumenBtn.classList.add('active-section');
+
+                if (currentStepIndex === 2) { // Si vamos al resumen, lo renderizamos
+                    renderSummary();
+                }
             }
 
-            nextStepBtn.addEventListener('click', () => {
-                if (currentStep < stepSections.length - 1) {
-                    currentStep++;
-                    updateNavigation();
-                }
-            });
-
-            prevStepBtn.addEventListener('click', () => {
-                if (currentStep > 0) {
-                    currentStep--;
-                    updateNavigation();
-                }
-            });
+            navBebidasBtn.addEventListener('click', () => navigateToStep(0));
+            navComidasBtn.addEventListener('click', () => navigateToStep(1));
+            navResumenBtn.addEventListener('click', () => navigateToStep(2));
             
             function resetApp() {
                 order.drinks = [];
                 order.food = [];
                 currentFoodSelection = { type: null, ingredients: [] };
                 currentCoffeeCustomization = { name: null, milk: null, cup: null, temp: null };
-                
                 document.querySelectorAll('.modal-option-button.selected').forEach(btn => btn.classList.remove('selected'));
                 foodTypeButtons.forEach(btn => btn.classList.remove('active'));
                 ingredientsContainer.classList.add('hidden');
                 document.querySelectorAll('.ingredient-button.selected').forEach(btn => btn.classList.remove('selected'));
-                
-                renderDrinksSummaryStep1(); // Limpiar resumen de bebidas en paso 1
+                renderDrinksSummaryStep1(); 
                 renderFoodSummaryStep2(); 
-                if(currentStep === 2) renderSummary(); 
-                currentStep = 0;
-                updateNavigation();
+                navigateToStep(0); // Volver al paso de bebidas
             }
 
-            confirmOrderBtn.addEventListener('click', () => {
+            confirmOrderFinalBtn.addEventListener('click', () => { // Listener para el nuevo botón
                 let modalSummaryText = '';
                 if (order.drinks.length > 0) {
                     modalSummaryText += 'Bebidas:\n';
                     order.drinks.forEach(drink => {
-                        let drinkDetails = `- ${drink.name}`;
+                        let prefix = drink.quantity > 1 ? `${drink.quantity} x ` : '';
+                        let drinkDetails = `- ${prefix}${drink.name}`;
                         if (drink.milk && drink.milk !== "No Aplica") drinkDetails += `, Leche: ${drink.milk}`;
                         if (drink.cup) drinkDetails += `, Vaso: ${drink.cup}`;
                         if (drink.temp) drinkDetails += `, Temp: ${drink.temp}`;
@@ -720,10 +706,10 @@
                 if (order.food.length > 0) {
                     modalSummaryText += '\nComida:\n';
                     order.food.forEach(f => {
-                        modalSummaryText += `- ${f.type} con ${f.ingredients.join(', ') || 'nada'}\n`;
+                        let prefix = f.quantity > 1 ? `${f.quantity} x ` : '';
+                        modalSummaryText += `- ${prefix}${f.type} con ${f.ingredients.join(', ') || 'nada'}\n`;
                     });
                 }
-
                 if (modalSummaryText.trim() === '') {
                     modalSummaryText = 'La comanda está vacía. Nada que confirmar.';
                      showMessageModalAlert('Comanda Vacía', modalSummaryText);
@@ -733,72 +719,94 @@
                 }
             });
 
-            // --- Lógica de Bebidas ---
             function giveAddedFeedback(buttonElement) {
                 buttonElement.classList.add('added-feedback');
-                setTimeout(() => {
-                    buttonElement.classList.remove('added-feedback');
-                }, 500); 
+                setTimeout(() => buttonElement.classList.remove('added-feedback'), 500); 
+            }
+            
+            function findMatchingDrink(newDrink) {
+                return order.drinks.find(existingDrink => {
+                    if (existingDrink.name !== newDrink.name) return false;
+                    if (newDrink.milk || newDrink.cup || newDrink.temp) { 
+                        return existingDrink.milk === newDrink.milk &&
+                               existingDrink.cup === newDrink.cup &&
+                               existingDrink.temp === newDrink.temp;
+                    }
+                    return true; 
+                });
+            }
+
+            function getFoodItemKey(foodItem) {
+                const sortedIngredients = [...(foodItem.ingredients || [])].sort().join(',');
+                return `${foodItem.type}|${sortedIngredients}`;
+            }
+
+            function findMatchingFood(newFood) {
+                const newFoodKey = getFoodItemKey(newFood);
+                return order.food.find(existingFood => getFoodItemKey(existingFood) === newFoodKey);
             }
             
             drinkButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const name = button.dataset.name;
                     const isCoffee = button.dataset.isCoffee === "true";
-
                     if (isCoffee) {
                         openCoffeeOptionsModal(name);
                     } else {
-                        order.drinks.push({ id: Date.now(), name: name, type: 'drink' });
+                        const newDrink = { name: name, type: 'drink' };
+                        const existingDrink = findMatchingDrink(newDrink);
+                        if (existingDrink) {
+                            existingDrink.quantity = (existingDrink.quantity || 1) + 1;
+                        } else {
+                            order.drinks.push({ ...newDrink, quantity: 1 });
+                        }
                         giveAddedFeedback(button);
-                        renderDrinksSummaryStep1(); // Actualizar resumen de bebidas en Paso 1
+                        renderDrinksSummaryStep1();
                     }
                 });
             });
 
-            // --- Resumen de Bebidas en Paso 1 ---
             function renderDrinksSummaryStep1() {
-                drinksSummaryListStep1.innerHTML = ''; // Limpiar lista
+                drinksSummaryListStep1.innerHTML = '';
                 if (!placeholderDrinkItem && drinksSummaryListStep1.parentElement) { 
                     placeholderDrinkItem = document.createElement('li');
                     placeholderDrinkItem.classList.add('placeholder-drink-item');
                     placeholderDrinkItem.textContent = "Aún no has añadido bebidas.";
                 }
-
                 if (order.drinks.length === 0) {
                     if (placeholderDrinkItem) {
                         placeholderDrinkItem.classList.remove('hidden');
-                        if (!drinksSummaryListStep1.contains(placeholderDrinkItem)) {
-                            drinksSummaryListStep1.appendChild(placeholderDrinkItem);
-                        }
+                        if (!drinksSummaryListStep1.contains(placeholderDrinkItem)) drinksSummaryListStep1.appendChild(placeholderDrinkItem);
                     }
                 } else {
                     if (placeholderDrinkItem) placeholderDrinkItem.classList.add('hidden');
-
                     order.drinks.forEach(drink => {
                         const li = document.createElement('li');
                         const textSpan = document.createElement('span');
                         textSpan.classList.add('item-text-content');
-                        
-                        let mainText = `<strong>${drink.name}</strong>`;
+                        let prefix = drink.quantity > 1 ? `${drink.quantity} x ` : '';
+                        let mainText = `<strong>${prefix}${drink.name}</strong>`;
                         let detailsText = '';
                         if (drink.milk && drink.milk !== "No Aplica") detailsText += `Leche: ${drink.milk}, `;
                         if (drink.cup) detailsText += `Vaso: ${drink.cup}, `;
                         if (drink.temp) detailsText += `Temp: ${drink.temp}`;
-                        
-                        if (detailsText) {
-                            mainText += `<span class="item-details">${detailsText.replace(/, $/, '')}</span>`;
-                        }
+                        if (detailsText) mainText += `<span class="item-details">${detailsText.replace(/, $/, '')}</span>`;
                         textSpan.innerHTML = mainText;
                         li.appendChild(textSpan);
-
                         const removeBtn = document.createElement('button');
                         removeBtn.textContent = '🗑️';
                         removeBtn.classList.add('remove-item-btn');
                         removeBtn.onclick = () => {
-                            order.drinks = order.drinks.filter(d => d.id !== drink.id);
-                            renderDrinksSummaryStep1(); // Re-renderizar este resumen
-                            if (currentStep === 2) renderSummary(); // Si estamos en resumen final, actualizarlo también
+                            const drinkIndex = order.drinks.findIndex(d => d.name === drink.name && d.milk === drink.milk && d.cup === drink.cup && d.temp === drink.temp);
+                            if (drinkIndex > -1) {
+                                if (order.drinks[drinkIndex].quantity > 1) {
+                                    order.drinks[drinkIndex].quantity -= 1;
+                                } else {
+                                    order.drinks.splice(drinkIndex, 1);
+                                }
+                            }
+                            renderDrinksSummaryStep1();
+                            if (currentStepIndex === 2) renderSummary(); // Actualizar resumen final si está visible
                         };
                         li.appendChild(removeBtn);
                         drinksSummaryListStep1.appendChild(li);
@@ -806,13 +814,9 @@
                 }
             }
 
-
-            // --- Lógica del Modal de Café ---
             function populateModalOptionsGrid(gridElement, optionsArray, propertyToUpdate, coffeeName) {
                 gridElement.innerHTML = ''; 
-                
                 const shouldHideMilkGroup = propertyToUpdate === 'milk' && coffeeOptionsData.noMilkCoffees.includes(coffeeName);
-                
                 if (propertyToUpdate === 'milk') {
                     milkOptionsContainer.classList.toggle('hidden', shouldHideMilkGroup);
                     if (shouldHideMilkGroup) {
@@ -820,17 +824,12 @@
                         return; 
                     }
                 }
-                
                 optionsArray.forEach(optionText => {
                     const btn = document.createElement('button');
                     btn.classList.add('modal-option-button');
                     btn.textContent = optionText;
                     btn.dataset.value = optionText;
-                    
-                    if (currentCoffeeCustomization[propertyToUpdate] === optionText) {
-                        btn.classList.add('selected');
-                    }
-
+                    if (currentCoffeeCustomization[propertyToUpdate] === optionText) btn.classList.add('selected');
                     btn.addEventListener('click', () => {
                         gridElement.querySelectorAll('.modal-option-button.selected').forEach(b => b.classList.remove('selected'));
                         btn.classList.add('selected');
@@ -838,9 +837,7 @@
                     });
                     gridElement.appendChild(btn);
                 });
-
-                if (!currentCoffeeCustomization[propertyToUpdate] && gridElement.firstChild && 
-                    !(propertyToUpdate === 'milk' && currentCoffeeCustomization.milk === "No Aplica")) {
+                if (!currentCoffeeCustomization[propertyToUpdate] && gridElement.firstChild && !(propertyToUpdate === 'milk' && currentCoffeeCustomization.milk === "No Aplica")) {
                      gridElement.firstChild.click();
                 }
             }
@@ -848,61 +845,47 @@
             function openCoffeeOptionsModal(coffeeName) {
                 currentCoffeeCustomization = { name: coffeeName, milk: null, cup: null, temp: null };
                 coffeeModalTitle.textContent = `Personaliza tu ${coffeeName}`;
-                milkOptionsContainer.classList.remove('hidden'); // Asegurar que esté visible por defecto
-
+                milkOptionsContainer.classList.remove('hidden');
                 populateModalOptionsGrid(milkOptionsGrid, coffeeOptionsData.milkTypes, 'milk', coffeeName);
                 populateModalOptionsGrid(cupOptionsGrid, coffeeOptionsData.cupTypes, 'cup', coffeeName);
                 populateModalOptionsGrid(temperatureOptionsGrid, coffeeOptionsData.temperatures, 'temp', coffeeName);
-                
                 showModal(coffeeModal);
             }
             
             closeCoffeeModalBtn.addEventListener('click', () => hideModal(coffeeModal));
-            coffeeModal.addEventListener('click', (event) => { 
-                if (event.target === coffeeModal) {
-                    hideModal(coffeeModal);
-                }
-            });
+            coffeeModal.addEventListener('click', (event) => { if (event.target === coffeeModal) hideModal(coffeeModal); });
 
             addCustomCoffeeBtn.addEventListener('click', () => {
                 const isMilkRequired = !coffeeOptionsData.noMilkCoffees.includes(currentCoffeeCustomization.name);
-                const isMilkSelectedOrNotApplicable = 
-                    (isMilkRequired && currentCoffeeCustomization.milk && currentCoffeeCustomization.milk !== "No Aplica") ||
-                    !isMilkRequired;
-
-                if (currentCoffeeCustomization.name && 
-                    isMilkSelectedOrNotApplicable && 
-                    currentCoffeeCustomization.cup && 
-                    currentCoffeeCustomization.temp) {
-                    
-                    order.drinks.push({ id: Date.now(), ...currentCoffeeCustomization, type: 'drink' });
+                const isMilkSelectedOrNotApplicable = (isMilkRequired && currentCoffeeCustomization.milk && currentCoffeeCustomization.milk !== "No Aplica") || !isMilkRequired;
+                if (currentCoffeeCustomization.name && isMilkSelectedOrNotApplicable && currentCoffeeCustomization.cup && currentCoffeeCustomization.temp) {
+                    const newCoffee = { ...currentCoffeeCustomization, type: 'drink' };
+                    const existingCoffee = findMatchingDrink(newCoffee);
+                    if (existingCoffee) {
+                        existingCoffee.quantity = (existingCoffee.quantity || 1) + 1;
+                    } else {
+                        order.drinks.push({ ...newCoffee, quantity: 1 });
+                    }
                     hideModal(coffeeModal);
-                    renderDrinksSummaryStep1(); // Actualizar resumen de bebidas en Paso 1
-
+                    renderDrinksSummaryStep1();
                     const originalCoffeeButton = Array.from(drinkButtons).find(btn => btn.dataset.name === currentCoffeeCustomization.name);
                     if (originalCoffeeButton) giveAddedFeedback(originalCoffeeButton);
-
                 } else {
                     let errorFields = [];
-                    if (isMilkRequired && (!currentCoffeeCustomization.milk || currentCoffeeCustomization.milk === "No Aplica")) {
-                         errorFields.push('Tipo de Leche');
-                    }
+                    if (isMilkRequired && (!currentCoffeeCustomization.milk || currentCoffeeCustomization.milk === "No Aplica")) errorFields.push('Tipo de Leche');
                     if (!currentCoffeeCustomization.cup) errorFields.push('Tipo de Vaso');
                     if (!currentCoffeeCustomization.temp) errorFields.push('Temperatura');
                     showMessageModalAlert('Selección Incompleta', `Por favor, selecciona: ${errorFields.join(', ')}.`);
                 }
             });
 
-            // --- Lógica de Comida ---
             foodTypeButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const foodCategory = button.dataset.foodCategory;
                     currentFoodSelection.type = foodCategory;
                     currentFoodSelection.ingredients = []; 
-
                     foodTypeButtons.forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    
                     currentFoodItemTitle.textContent = `Ingredientes para: ${foodCategory}`;
                     currentFoodTypeBtnLabel.textContent = foodCategory;
                     ingredientsContainer.classList.remove('hidden');
@@ -912,27 +895,39 @@
 
             function renderIngredients() {
                 ingredientsGrid.innerHTML = ''; 
-                ingredientsList.forEach(ingredient => {
-                    const btn = document.createElement('button');
-                    btn.classList.add('ingredient-button');
-                    btn.textContent = ingredient;
-                    btn.dataset.name = ingredient;
-
-                    if (currentFoodSelection.ingredients.includes(ingredient)) {
-                        btn.classList.add('selected');
+                const groupedIngredients = categorizedIngredients.reduce((acc, ingredient) => {
+                    const category = ingredient.category || "Otros";
+                    if (!acc[category]) acc[category] = [];
+                    acc[category].push(ingredient);
+                    return acc;
+                }, {});
+                const categoryOrder = ["Carnes y Embutidos", "Pescados", "Quesos", "Huevos", "Verduras y Hortalizas", "Salsas y Condimentos", "Otros"];
+                categoryOrder.forEach(categoryName => {
+                    if (groupedIngredients[categoryName]) {
+                        const categoryTitle = document.createElement('h5');
+                        categoryTitle.textContent = categoryName;
+                        categoryTitle.style.cssText = "grid-column: 1 / -1; margin-top: 15px; margin-bottom: 8px; color: var(--primary-color); border-bottom: 1px solid var(--secondary-color); padding-bottom: 5px;";
+                        if (ingredientsGrid.childNodes.length === 0) categoryTitle.style.marginTop = "0px";
+                        ingredientsGrid.appendChild(categoryTitle);
+                        groupedIngredients[categoryName].forEach(ingredientObj => {
+                            const btn = document.createElement('button');
+                            btn.classList.add('ingredient-button');
+                            const emoji = ingredientObj.emoji || "➕"; 
+                            btn.innerHTML = `<span class="ingredient-icon">${emoji}</span> ${ingredientObj.name}`; 
+                            btn.dataset.name = ingredientObj.name;
+                            if (currentFoodSelection.ingredients.includes(ingredientObj.name)) btn.classList.add('selected');
+                            btn.addEventListener('click', () => {
+                                btn.classList.toggle('selected');
+                                const ingredientName = btn.dataset.name;
+                                if (btn.classList.contains('selected')) {
+                                    if (!currentFoodSelection.ingredients.includes(ingredientName)) currentFoodSelection.ingredients.push(ingredientName);
+                                } else {
+                                    currentFoodSelection.ingredients = currentFoodSelection.ingredients.filter(i => i !== ingredientName);
+                                }
+                            });
+                            ingredientsGrid.appendChild(btn);
+                        });
                     }
-                    btn.addEventListener('click', () => {
-                        btn.classList.toggle('selected');
-                        const ingredientName = btn.dataset.name;
-                        if (btn.classList.contains('selected')) {
-                            if (!currentFoodSelection.ingredients.includes(ingredientName)) {
-                                currentFoodSelection.ingredients.push(ingredientName);
-                            }
-                        } else {
-                            currentFoodSelection.ingredients = currentFoodSelection.ingredients.filter(i => i !== ingredientName);
-                        }
-                    });
-                    ingredientsGrid.appendChild(btn);
                 });
             }
 
@@ -941,13 +936,19 @@
                     showMessageModalAlert('Selección Incompleta', 'Por favor, selecciona un tipo de comida.');
                     return;
                 }
-                order.food.push({ id: Date.now(), ...currentFoodSelection });
+                const newFood = { ...currentFoodSelection };
+                const existingFood = findMatchingFood(newFood);
+                if (existingFood) {
+                    existingFood.quantity = (existingFood.quantity || 1) + 1;
+                } else {
+                    order.food.push({ ...newFood, quantity: 1 });
+                }
                 renderFoodSummaryStep2();
-
                 currentFoodSelection.type = null;
                 currentFoodSelection.ingredients = [];
                 foodTypeButtons.forEach(btn => btn.classList.remove('active'));
                 ingredientsContainer.classList.add('hidden');
+                document.querySelectorAll('#ingredients-grid .ingredient-button.selected').forEach(b => b.classList.remove('selected'));
             });
 
             function renderFoodSummaryStep2() {
@@ -957,33 +958,36 @@
                     placeholderFoodItem.classList.add('placeholder-food-item');
                     placeholderFoodItem.textContent = "Aún no has añadido comida.";
                 }
-
                 if (order.food.length === 0) {
                     if(placeholderFoodItem) {
                         placeholderFoodItem.classList.remove('hidden'); 
-                        if (!foodSummaryListStep2.contains(placeholderFoodItem)) { 
-                           foodSummaryListStep2.appendChild(placeholderFoodItem);
-                        }
+                        if (!foodSummaryListStep2.contains(placeholderFoodItem)) foodSummaryListStep2.appendChild(placeholderFoodItem);
                     }
                 } else {
                     if(placeholderFoodItem) placeholderFoodItem.classList.add('hidden');
-
                     order.food.forEach((item) => {
                         const li = document.createElement('li');
-                        const textSpan = document.createElement('span'); // Contenedor para el texto
+                        const textSpan = document.createElement('span');
                         textSpan.classList.add('item-text-content');
-
+                        let prefix = item.quantity > 1 ? `${item.quantity} x ` : '';
                         const ingredientsText = item.ingredients.length > 0 ? item.ingredients.join(', ') : 'sola';
-                        textSpan.innerHTML = `<strong>${item.type}</strong> con ${ingredientsText}`; // Usar strong para el tipo
+                        textSpan.innerHTML = `<strong>${prefix}${item.type}</strong> con ${ingredientsText}`;
                         li.appendChild(textSpan);
-                        
                         const removeBtn = document.createElement('button');
                         removeBtn.textContent = '🗑️';
                         removeBtn.classList.add('remove-item-btn'); 
                         removeBtn.onclick = () => {
-                            order.food = order.food.filter(foodItem => foodItem.id !== item.id); 
+                            const foodKey = getFoodItemKey(item);
+                            const foodIndex = order.food.findIndex(f => getFoodItemKey(f) === foodKey);
+                            if (foodIndex > -1) {
+                                if (order.food[foodIndex].quantity > 1) {
+                                    order.food[foodIndex].quantity -= 1;
+                                } else {
+                                    order.food.splice(foodIndex, 1);
+                                }
+                            }
                             renderFoodSummaryStep2(); 
-                            if(currentStep === 2) renderSummary();
+                            if(currentStepIndex === 2) renderSummary();
                         };
                         li.appendChild(removeBtn);
                         foodSummaryListStep2.appendChild(li);
@@ -991,79 +995,83 @@
                 }
             }
 
-            // --- Lógica de Resumen Final ---
             function renderSummary() {
                 summaryList.innerHTML = ''; 
-
                 if (order.drinks.length === 0 && order.food.length === 0) {
                     const li = document.createElement('li');
                     li.textContent = 'Tu comanda está vacía. ¡Añade algo delicioso!';
                     summaryList.appendChild(li);
                     return;
                 }
-
                 if (order.drinks.length > 0) {
                     const drinksCategory = document.createElement('li');
                     drinksCategory.classList.add('summary-category');
                     drinksCategory.innerHTML = '<strong><span class="icon">🥤</span>Bebidas:</strong>';
                     summaryList.appendChild(drinksCategory);
-
                     order.drinks.forEach(drink => {
                         const li = document.createElement('li');
                         const textSpan = document.createElement('span');
                         textSpan.classList.add('item-text-content');
-
-                        let mainText = `<strong>${drink.name}</strong>`;
+                        let prefix = drink.quantity > 1 ? `${drink.quantity} x ` : '';
+                        let mainText = `<strong>${prefix}${drink.name}</strong>`;
                         let detailsText = '';
                         if (drink.milk && drink.milk !== "No Aplica") detailsText += `Leche: ${drink.milk}, `;
                         if (drink.cup) detailsText += `Vaso: ${drink.cup}, `;
                         if (drink.temp) detailsText += `Temp: ${drink.temp}`;
-                        
-                        if (detailsText) {
-                            mainText += `<span class="item-details">${detailsText.replace(/, $/, '')}</span>`;
-                        }
+                        if (detailsText) mainText += `<span class="item-details">${detailsText.replace(/, $/, '')}</span>`;
                         textSpan.innerHTML = mainText;
                         li.appendChild(textSpan);
-
                         const removeBtn = document.createElement('button');
                         removeBtn.textContent = '🗑️';
                         removeBtn.classList.add('remove-item-btn');
                         removeBtn.onclick = () => {
-                            order.drinks = order.drinks.filter(d => d.id !== drink.id);
+                             const drinkIndex = order.drinks.findIndex(d => d.name === drink.name && d.milk === drink.milk && d.cup === drink.cup && d.temp === drink.temp);
+                            if (drinkIndex > -1) {
+                                if (order.drinks[drinkIndex].quantity > 1) {
+                                    order.drinks[drinkIndex].quantity -= 1;
+                                } else {
+                                    order.drinks.splice(drinkIndex, 1);
+                                }
+                            }
                             renderSummary(); 
-                            renderDrinksSummaryStep1(); // Actualizar resumen del paso 1 también
+                            renderDrinksSummaryStep1();
                         };
                         li.appendChild(removeBtn);
                         summaryList.appendChild(li);
                     });
                 }
-
                 if (order.food.length > 0) {
                     const foodCategory = document.createElement('li');
                     foodCategory.classList.add('summary-category');
                     foodCategory.innerHTML = '<strong><span class="icon">🥪</span>Comida:</strong>';
                     summaryList.appendChild(foodCategory);
-
                     order.food.forEach(f_item => { 
                         const li = document.createElement('li');
                         const textSpan = document.createElement('span');
                         textSpan.classList.add('item-text-content');
-
-                        textSpan.innerHTML = `<strong>${f_item.type}</strong>`;
+                        let prefix = f_item.quantity > 1 ? `${f_item.quantity} x ` : '';
+                        textSpan.innerHTML = `<strong>${prefix}${f_item.type}</strong>`;
                         if (f_item.ingredients.length > 0) {
                             textSpan.innerHTML += `<span class="item-details">Ingredientes: ${f_item.ingredients.join(', ')}</span>`;
                         } else {
                             textSpan.innerHTML += `<span class="item-details">(sola/sin ingredientes extra)</span>`;
                         }
                         li.appendChild(textSpan);
-
                         const removeBtn = document.createElement('button');
                         removeBtn.textContent = '🗑️';
                         removeBtn.classList.add('remove-item-btn');
                         removeBtn.onclick = () => {
-                            order.food = order.food.filter(foodItm => foodItm.id !== f_item.id);
+                            const foodKey = getFoodItemKey(f_item);
+                            const foodIndex = order.food.findIndex(f => getFoodItemKey(f) === foodKey);
+                            if (foodIndex > -1) {
+                                if (order.food[foodIndex].quantity > 1) {
+                                    order.food[foodIndex].quantity -= 1;
+                                } else {
+                                    order.food.splice(foodIndex, 1);
+                                }
+                            }
                             renderSummary();
-                            renderFoodSummaryStep2(); // Actualizar resumen del paso 2 también
+                            renderFoodSummaryStep2();
                         };
                         li.appendChild(removeBtn);
                         summaryList.appendChild(li);
@@ -1071,33 +1079,20 @@
                 }
             }
 
-            // --- Custom Message Modal ---
             function showMessageModalAlert(title, message, callback = null) {
                 messageModalTitle.textContent = title;
                 messageModalText.innerHTML = message.replace(/\n/g, '<br>');
-                
                 const newOkBtn = messageModalOkBtn.cloneNode(true);
                 messageModalOkBtn.parentNode.replaceChild(newOkBtn, messageModalOkBtn);
                 messageModalOkBtn = newOkBtn;
-
                 const newCloseMessageBtn = closeMessageModalBtn.cloneNode(true);
                 closeMessageModalBtn.parentNode.replaceChild(newCloseMessageBtn, closeMessageModalBtn);
                 closeMessageModalBtn = newCloseMessageBtn;
-                
-                const handleOk = () => {
-                    hideModal(messageModal);
-                    if (callback) callback();
-                };
-                const handleClose = () => {
-                    hideModal(messageModal);
-                };
-                
+                const handleOk = () => { hideModal(messageModal); if (callback) callback(); };
+                const handleClose = () => { hideModal(messageModal); };
                 messageModalOkBtn.addEventListener('click', handleOk, { once: true });
                 closeMessageModalBtn.addEventListener('click', handleClose, { once: true });
-
-                if (messageModal._outsideClickListener) {
-                    messageModal.removeEventListener('click', messageModal._outsideClickListener);
-                }
+                if (messageModal._outsideClickListener) messageModal.removeEventListener('click', messageModal._outsideClickListener);
                 messageModal._outsideClickListener = (event) => {
                     if (event.target === messageModal) {
                        handleClose();
@@ -1111,9 +1106,8 @@
             // --- Inicialización ---
             hideModal(coffeeModal);
             hideModal(messageModal);
-
-            updateNavigation(); 
-            renderDrinksSummaryStep1(); // Renderizar resumen de bebidas al inicio
+            navigateToStep(0); // Iniciar en la sección de bebidas
+            renderDrinksSummaryStep1();
             renderFoodSummaryStep2(); 
         });
     </script>
