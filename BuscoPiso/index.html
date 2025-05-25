@@ -246,65 +246,24 @@
             border-color: var(--color-primary-blue);
         }
 
-        /* Carga de Archivos (Fotos) */
-        .form-group input[type="file"] {
-            padding: 10px;
-            border: 1px dashed var(--color-primary-blue); /* Borde punteado */
-            background-color: rgba(var(--color-primary-blue-rgb), 0.05);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        .form-group input[type="file"]::file-selector-button {
-            background-color: var(--color-primary-blue);
-            color: var(--color-text-light);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-right: 10px;
-        }
-        .form-group input[type="file"]::file-selector-button:hover {
-            background-color: var(--color-accent-terracota);
-        }
-
-        /* Contenedor del mapa incrustado */
-        .map-container {
-            grid-column: 1 / -1; /* Ocupa todas las columnas del grid */
-            width: 100%;
-            height: 300px; /* Altura fija para el mapa */
-            background-color: var(--color-border);
-            border-radius: 8px;
-            overflow: hidden; /* Asegura que el iframe no desborde los bordes redondeados */
-            border: 1px solid var(--color-border);
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); /* Sombra interna sutil */
-            margin-bottom: 20px;
-        }
-
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none; /* Eliminar borde del iframe */
-        }
-
         /* Mensajes de formulario */
         #formMessage {
             grid-column: 1 / -1;
-            padding: 15px;
+            padding: 0px;
             margin-top: 20px;
             border-radius: 8px;
             font-weight: 600;
             text-align: center;
-            transition: opacity 0.5s ease-in-out;
-            opacity: 0; /* Oculto por defecto */
-            height: 0; /* No ocupa espacio por defecto */
+            transition: opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
+            opacity: 0;
+            height: auto;
             overflow: hidden;
+            max-height: 0; /* Para la transición de altura */
         }
         #formMessage.show {
             opacity: 1;
-            height: auto; /* Muestra el contenido */
-            padding: 15px; /* Restablece el padding */
+            padding: 15px;
+            max-height: 100px; /* Ajusta si el contenido es más largo */
         }
         #formMessage.success {
             background-color: hsl(120, 40%, 90%);
@@ -319,7 +278,7 @@
 
         /* Botón de Envío */
         .submit-button {
-            grid-column: 1 / -1; /* Ocupa todas las columnas del grid */
+            grid-column: 1 / -1;
             text-align: center;
             margin-top: 20px;
         }
@@ -328,21 +287,21 @@
             color: var(--color-text-light);
             padding: 15px 30px;
             border: none;
-            border-radius: 30px; /* Botón muy redondeado */
+            border-radius: 30px;
             font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 6px 12px rgba(var(--color-accent-terracota-rgb), 0.3); /* Sombra del botón */
+            box-shadow: 0 6px 12px rgba(var(--color-accent-terracota-rgb), 0.3);
         }
 
         button[type="submit"]:hover {
             background-color: var(--color-accent-terracota-dark);
-            transform: translateY(-2px); /* Pequeño levantamiento en hover */
+            transform: translateY(-2px);
             box-shadow: 0 8px 15px rgba(var(--color-accent-terracota-rgb), 0.4);
         }
         button[type="submit"]:active {
-            transform: translateY(0); /* Vuelve a su posición original al hacer clic */
+            transform: translateY(0);
             box-shadow: 0 4px 8px rgba(var(--color-accent-terracota-rgb), 0.2);
         }
         button[type="submit"]:disabled {
@@ -363,8 +322,8 @@
             color: var(--color-text-light);
             text-align: center;
             padding: 25px 20px;
-            margin-top: 50px; /* Espacio superior */
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1); /* Sombra superior */
+            margin-top: 50px;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
         }
 
         footer p {
@@ -377,11 +336,29 @@
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease;
+            /* Estilos para el enlace de Telegram con icono */
+            display: inline-flex; /* Para alinear el icono y el texto */
+            align-items: center; /* Alinear verticalmente */
+            gap: 8px; /* Espacio entre icono y texto */
         }
 
         footer a:hover {
             color: var(--color-accent-terracota); /* Cambio de color en hover */
         }
+
+        /* Estilos para el icono SVG de Telegram */
+        .telegram-icon {
+            width: 24px; /* Tamaño del icono */
+            height: 24px;
+            fill: currentColor; /* El icono tomará el color del texto del enlace */
+            transition: fill 0.3s ease; /* Transición suave para el color del icono */
+        }
+
+        /* Asegurarse de que el color del icono cambie al hacer hover en el enlace */
+        footer a:hover .telegram-icon {
+            fill: var(--color-accent-terracota);
+        }
+
 
         /*
         ---------------------------------------------------------
@@ -390,7 +367,7 @@
         */
         @media (max-width: 768px) {
             .section-presentation, .section-form {
-                padding: 20px; /* Menos padding en pantallas más pequeñas */
+                padding: 20px;
             }
 
             header h1 {
@@ -423,7 +400,7 @@
 
         @media (max-width: 480px) {
             .container {
-                padding: 15px; /* Menos padding general en móviles pequeños */
+                padding: 15px;
             }
             header {
                 padding: 30px 15px;
@@ -434,45 +411,30 @@
             /* Los checkboxes se apilan verticalmente en pantallas muy pequeñas */
             .checkbox-group {
                 flex-direction: column;
-                align-items: flex-start; /* Alinearlos a la izquierda */
+                align-items: flex-start;
             }
             .checkbox-group label {
-                width: 100%; /* Ancho completo para facilitar el toque */
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Iván busca hogar en la costa</h1>
+        <h1>Cuidado garantizado: Mi sueño junto al mar</h1>
     </header>
 
     <main class="container">
         <section class="section-presentation">
-            <!--
-                INSTRUCCIONES PARA EL USUARIO:
-                *************************************************************************************************
-                Por favor, REEMPLAZA el 'src' de la siguiente etiqueta <img> con la URL de la imagen
-                hiperrealista generada por IA que cumpla con la descripción solicitada.
-
-                Descripción para la IA:
-                "Crea una imagen hiperrealista de un niño de 5 años, rubio y con ojos azules, sonriendo cálidamente a la cámara
-                en una playa al atardecer. Debe transmitir seguridad, calidez e inocencia. La fotografía debe tener la estética,
-                la paleta de colores y la resolución típica de una foto analógica tomada en 1988, con un ligero grano y los
-                tonos cálidos del atardecer reflejándose suavemente en el agua y en su piel. El enfoque debe estar en el niño,
-                con el fondo de la playa ligeramente desenfocado para destacar su expresión."
-
-                Mientras tanto, se ha utilizado una imagen de ejemplo de Unsplash que se asemeja.
-                *************************************************************************************************
-            -->
-            <img src="https://images.unsplash.com/photo-1543877960-9d0a1b6c1615?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+            <!-- La imagen ahora apunta a yo.png en la misma carpeta -->
+            <img src="yo.png"
                  alt="Niño rubio de 5 años sonriendo en una playa al atardecer, con estética de foto analógica de 1988, que evoca seguridad y calidez."
                  class="presentation-image">
 
             <div class="presentation-text">
                 <h2>Mi sueño, tu hogar en buenas manos.</h2>
                 <p>Desde pequeño, el mar ha sido mi vida, mi forma de ser. Ahora, busco un hogar temporal en la costa para volver a conectar con esa pasión.</p>
-                <p>Soy Iván, ingeniero de 40 años, responsable y solvente. Me comprometo a cuidar tu piso con el mismo cariño que si fuera mío, a cambio de disfrutar de las maravillosas vistas al mar desde <strong>septiembre hasta mayo</strong>.</p>
+                <p>Soy Iván, ingeniero de 40 años, responsable y solvente. Me comprometo a cuidar tu piso con el mismo cariño que si fuera mío, a cambio de disfrutar de las maravillosas vistas al mar desde <strong>septiembre hasta junio</strong>.</p>
                 <p>Estoy abierto a hablar del precio del alquiler para que sea justo para ambos y así pueda vivir cerca del mar. ¡Imagina tu hogar en buenas manos mientras yo vivo mi sueño junto al mar!</p>
             </div>
         </section>
@@ -485,11 +447,11 @@
                 IMPORTANTE: Reemplaza "YOUR_FORMSPREE_URL" con la URL de tu formulario de Formspree.
                 Ejemplo: https://formspree.io/f/abcdefg
             -->
-            <form id="proposalForm" action="https://formspree.io/f/xvgajrko" method="POST" enctype="multipart/form-data">
+            <form id="proposalForm" action="https://formspree.io/f/xvgajrko" method="POST">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="name">Nombre <span style="color:var(--color-accent-terracota)">*</span></label>
-                        <input type="text" id="name" name="Nombre" required placeholder="Tu nombre y apellidos">
+                        <input type="text" id="name" name="Nombre" required placeholder="Tu nombre">
                     </div>
                     <div class="form-group">
                         <label for="email">Correo Electrónico</label>
@@ -504,11 +466,6 @@
                         <input type="url" id="adLink" name="Enlace_Anuncio" placeholder="https://tuweb.com/anuncio-del-piso">
                     </div>
                     <div class="form-group">
-                        <label for="photos">Adjuntar Fotos (múltiples)</label>
-                        <!-- 'name' de files debe terminar en [] para que Formspree acepte múltiples archivos -->
-                        <input type="file" id="photos" name="Fotos[]" multiple accept="image/*">
-                    </div>
-                    <div class="form-group">
                         <label for="exactAddress">Dirección Exacta (opcional)</label>
                         <input type="text" id="exactAddress" name="Direccion_Exacta" placeholder="Calle, número, CP, ciudad, provincia">
                     </div>
@@ -519,30 +476,6 @@
                     <div class="form-group">
                         <label for="availabilityTo">Disponible Hasta</label>
                         <input type="date" id="availabilityTo" name="Disponibilidad_Hasta">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Ubicación Aproximada del Piso</label>
-                    <!--
-                        NOTA IMPORTANTE PARA EL USUARIO SOBRE EL MAPA:
-                        *************************************************************************************************
-                        Para mantener el código en un único archivo y la simplicidad, se utiliza un mapa estático de Google Maps incrustado.
-                        Un "mini-mapa interactivo con capacidad de pinchar o arrastrar un marcador para indicar la ubicación exacta"
-                        requeriría una integración avanzada con la API de Google Maps y JavaScript, que normalmente
-                        necesita una clave de API y un backend para procesar los datos del marcador. Esto excede el
-                        alcance de un archivo HTML/CSS/JS simple sin un servidor.
-
-                        Por favor, MODIFICA el 'src' del iframe con la URL de la ubicación deseada.
-                        Puedes generar estos iframes directamente desde Google Maps:
-                        1. Ve a Google Maps y busca la dirección deseada.
-                        2. Haz clic en "Compartir" (el icono de flecha).
-                        3. Selecciona la pestaña "Insertar un mapa".
-                        4. Copia el código que te proporciona Google Maps y pégalo aquí, reemplazando el 'src' actual.
-                        *************************************************************************************************
-                    -->
-                    <div class="map-container">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2938.868078333202!2d-3.8055620999999994!3d40.407945399999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd42287e07a65b4b%3A0x67393b3f2b3e4d4e!2sPlaya%20de%20la%20Concha!5e0!3m2!1ses!2ses!4v1701234567890!5m2!1ses!2ses" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
 
@@ -585,7 +518,16 @@
 
     <footer>
         <p>¡Gracias por tu interés!</p>
-        <p>Contacto: <a href="https://t.me/Opcionale" target="_blank">Telegram: @Opcionale</a></p>
+        <p>
+            Contacto:
+            <a href="https://t.me/Opcionale" target="_blank">
+                <!-- Icono SVG de Telegram -->
+                <svg class="telegram-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.35L8.5 15.1c-.2.2-.4.2-.6 0l-2.4-1.8c-.2-.15-.4-.15-.6-.05l-2.5 1.7c-.2.15-.3.15-.3.05V10.2c0-.1.05-.2.15-.25L15 6.3c.2-.15.4-.1.6 0l.7.35c.1.05.15.15.15.25v.1c0 .05-.05.1-.1.15z"/>
+                </svg>
+                <span>Escríbeme por Telegram</span>
+            </a>
+        </p>
         <p id="copyright"></p>
     </footer>
 
@@ -596,57 +538,95 @@
         ---------------------------------------------------------
         */
         document.addEventListener('DOMContentLoaded', () => {
-            // Establece el año actual en el copyright del pie de página
             const currentYear = new Date().getFullYear();
             document.getElementById('copyright').textContent = `© ${currentYear} Iván. Todos los derechos reservados.`;
 
-            // Manejo del envío del formulario con Formspree
             const proposalForm = document.getElementById('proposalForm');
             const submitBtn = document.getElementById('submitBtn');
             const formMessage = document.getElementById('formMessage');
 
+            function showFormMessage(message, type = 'info', timeout = 5000) {
+                formMessage.textContent = message;
+                formMessage.className = '';
+                formMessage.classList.add('show', type);
+
+                if (timeout > 0) {
+                    setTimeout(() => {
+                        formMessage.classList.remove('show');
+                        setTimeout(() => {
+                            formMessage.textContent = '';
+                            formMessage.className = '';
+                        }, 500);
+                    }, timeout);
+                }
+            }
+
             proposalForm.addEventListener('submit', async function(event) {
-                event.preventDefault(); // Previene el envío del formulario por defecto
+                event.preventDefault();
 
-                // Limpia y oculta mensajes anteriores
-                formMessage.textContent = '';
                 formMessage.classList.remove('show', 'success', 'error');
+                formMessage.textContent = '';
 
-                // Deshabilita el botón y muestra un estado de envío
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Enviando...';
 
-                // Recopila los datos del formulario
                 const formData = new FormData(this);
 
                 try {
-                    // Envía los datos a Formspree usando fetch
                     const response = await fetch(proposalForm.action, {
                         method: proposalForm.method,
                         body: formData,
-                        // Formspree no requiere un Content-Type cuando se usa FormData directamente
-                        // headers: { 'Accept': 'application/json' } // Esto es opcional, Formspree lo infiere
+                        headers: {
+                            'Accept': 'application/json' // Crucial para obtener respuesta JSON de Formspree
+                        }
                     });
 
                     if (response.ok) {
-                        // Éxito: muestra un mensaje y limpia el formulario
-                        formMessage.textContent = '¡Propuesta enviada con éxito! Te responderé pronto.';
-                        formMessage.classList.add('show', 'success');
+                        showFormMessage('¡Propuesta enviada con éxito! Te responderé pronto.', 'success');
                         proposalForm.reset();
                     } else {
-                        // Error: intenta leer la respuesta de Formspree si hay un mensaje de error
-                        const data = await response.json(); // Formspree envía JSON en caso de error
-                        let errorMessage = data.errors ? data.errors.map(err => err.message).join(', ') : 'Ha ocurrido un error al enviar la propuesta.';
-                        formMessage.textContent = `Error: ${errorMessage}`;
-                        formMessage.classList.add('show', 'error');
+                        // El servidor respondió con un código de error (por ejemplo, 400, 422, 500)
+                        let errorMessage = `Error ${response.status}: Ha ocurrido un problema al enviar la propuesta.`;
+                        let isVerificationOrClientError = false;
+
+                        // Verifica si la respuesta es JSON antes de intentar parsearla
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            try {
+                                const data = await response.json();
+                                if (data.errors && data.errors.length > 0) {
+                                    errorMessage = data.errors.map(err => err.message).join('; ');
+                                } else if (data.message) {
+                                    errorMessage = data.message;
+                                }
+                                if (response.status === 400 || response.status === 422) {
+                                    isVerificationOrClientError = true;
+                                }
+                            } catch (jsonParseError) {
+                                console.warn('Formspree JSON parsing failed or unexpected structure:', jsonParseError, response);
+                                errorMessage = `Error ${response.status}: El servidor respondió con un error, pero el mensaje JSON no pudo ser leído.`;
+                            }
+                        } else {
+                            const responseText = await response.text();
+                            console.warn('Formspree responded with non-JSON content (unexpected). Response text:', responseText);
+                            errorMessage = `Error ${response.status}: El servidor devolvió una respuesta inesperada.`;
+                            if (response.status === 400 || response.status === 422) {
+                                isVerificationOrClientError = true;
+                            }
+                        }
+
+                        if (isVerificationOrClientError) {
+                            errorMessage += ' Si es tu primera vez enviando, por favor, revisa tu email de Formspree para verificar la cuenta. *La propuesta puede haber llegado al correo de Iván a pesar de este mensaje.*';
+                        } else {
+                            errorMessage += ' Por favor, revisa los datos e inténtalo de nuevo.';
+                        }
+
+                        showFormMessage(errorMessage, 'error', 0);
                     }
-                } catch (error) {
-                    // Error de red u otro error inesperado
-                    formMessage.textContent = 'Error de conexión. Por favor, intenta de nuevo más tarde.';
-                    formMessage.classList.add('show', 'error');
-                    console.error('Error al enviar el formulario:', error);
+                } catch (networkError) {
+                    showFormMessage('Parece que hay un problema de conexión. Por favor, revisa tu internet e inténtalo de nuevo.', 'error', 0);
+                    console.error('Error de red al enviar el formulario:', networkError);
                 } finally {
-                    // Vuelve a habilitar el botón y restablece su texto
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Enviar Propuesta';
                 }
