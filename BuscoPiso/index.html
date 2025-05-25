@@ -1,1 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iván busca hogar en la costa</title>
+    <!-- Google Fonts para tipografía: Montserrat (títulos) y Open Sans (cuerpo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /*
+        ---------------------------------------------------------
+        1. ESTILOS GENERALES Y VARIABLES CSS
+        ---------------------------------------------------------
+        */
+        :root {
+            /* Colores */
+            --color-primary-blue: hsl(200, 70%, 65%); /* Azul suave del mar */
+            --color-secondary-blue: hsl(200, 60%, 75%); /* Azul más claro para acentos */
+            --color-sand: hsl(40, 30%, 96%); /* Arena/beige muy claro para fondos */
+            --color-beige: hsl(40, 20%, 92%); /* Beige base del fondo de la página */
+            --color-accent-terracota: hsl(20, 60%, 55%); /* Terracota para botones y acentos cálidos */
+            --color-accent-terracota-dark: hsl(20, 70%, 45%); /* Terracota más oscuro para hover */
+            --color-text-dark: hsl(0, 0%, 25%); /* Gris oscuro para el texto principal */
+            --color-text-light: hsl(0, 0%, 98%); /* Casi blanco para texto sobre fondos oscuros */
+            --color-border: hsl(0, 0%, 85%); /* Gris claro para bordes */
 
+            /* Tipografía */
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Open Sans', sans-serif;
+
+            /* Variables RGB para sombras con alpha (compatibilidad) */
+            --color-primary-blue-rgb: 77, 182, 204;
+            --color-accent-terracota-rgb: 217, 107, 77;
+        }
+
+        /* Reset Básico de CSS */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth; /* Desplazamiento suave */
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--color-text-dark);
+            background-color: var(--color-beige);
+            min-height: 100vh; /* Ocupa al menos el alto de la ventana */
+            display: flex;
+            flex-direction: column; /* Para que el footer se quede abajo */
+        }
+
+        /* Contenedor principal para centrar el contenido */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%; /* Asegura que ocupe todo el ancho disponible en móvil */
+        }
+
+        /*
+        ---------------------------------------------------------
+        2. CABECERA (HEADER)
+        ---------------------------------------------------------
+        */
+        header {
+            background-color: var(--color-primary-blue);
+            color: var(--color-text-light);
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 5vw, 3.5rem); /* Tamaño de fuente responsivo */
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /*
+        ---------------------------------------------------------
+        3. SECCIÓN DE PRESENTACIÓN (MAIN CONTENT)
+        ---------------------------------------------------------
+        */
+        main {
+            flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
+            padding-top: 30px; /* Espacio desde la cabecera */
+        }
+
+        .section-presentation, .section-form {
+            background-color: var(--color-sand);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--color-border);
+        }
+
+        .section-presentation h2, .section-form h2, .section-form h3 {
+            font-family: var(--font-heading);
+            color: var(--color-primary-blue);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+        }
+        .section-form h3 {
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            margin-bottom: 20px;
+        }
+
+        /* Imagen de presentación */
+        .presentation-image {
+            display: block;
+            max-width: 100%;
+            width: 650px; /* Ancho máximo para pantallas grandes */
+            height: auto;
+            margin: 0 auto 30px auto; /* Centrar y añadir margen inferior */
+            border-radius: 15px; /* Bordes redondeados */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Sombra suave */
+            border: 4px solid var(--color-secondary-blue); /* Borde que enmarca la imagen */
+            object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+            object-position: center; /* Centra el contenido de la imagen */
+        }
+
+        /* Texto de presentación */
+        .presentation-text p {
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
+            line-height: 1.8;
+            color: var(--color-text-dark);
+            max-width: 700px; /* Ancho máximo para legibilidad */
+            margin-left: auto;
+            margin-right: auto; /* Centrar párrafos */
+        }
+
+        .presentation-text strong {
+            color: var(--color-accent-terracota); /* Resaltar el texto de fechas */
+            font-weight: 700;
+        }
+
+        /*
+        ---------------------------------------------------------
+        4. SECCIÓN DEL FORMULARIO (FORM)
+        ---------------------------------------------------------
+        */
+        .form-grid {
+            display: grid;
+            gap: 20px; /* Espacio entre los campos */
+            grid-template-columns: 1fr; /* Una columna por defecto en móviles */
+        }
+
+        /* Diseño de 2 columnas para pantallas medianas */
+        @media (min-width: 600px) {
+            .form-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Dos columnas */
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--color-primary-blue);
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="url"],
+        .form-group input[type="date"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--color-text-dark);
+            background-color: white;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave en foco */
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--color-accent-terracota);
+            box-shadow: 0 0 0 3px rgba(var(--color-accent-terracota-rgb), 0.2); /* Sombra de foco */
+            outline: none; /* Quitar contorno por defecto del navegador */
+        }
+
+        textarea {
+            resize: vertical; /* Permitir redimensionar solo verticalmente */
+            min-height: 100px;
+        }
+
+        /* Grupo de Checkboxes (Características del Piso) */
+        .checkbox-group {
+            grid-column: 1 / -1; /* Ocupa todas las columnas del grid */
+            display: flex;
+            flex-wrap: wrap; /* Envuelve los elementos si no caben */
+            gap: 15px; /* Espacio entre checkboxes */
+            margin-bottom: 20px;
+            justify-content: center; /* Centrar los checkboxes */
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 400;
+            color: var(--color-text-dark);
+            background-color: white;
+            padding: 10px 15px;
+            border-radius: 20px; /* Bordes muy redondeados */
+            border: 1px solid var(--color-border);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2); /* Checkbox ligeramente más grande */
+            accent-color: var(--color-primary-blue); /* Color del checkbox moderno */
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + span {
+            color: var(--color-text-light); /* Texto blanco cuando está marcado */
+            font-weight: 600;
+        }
+        .checkbox-group label:has(input[type="checkbox"]:checked) {
+            background-color: var(--color-primary-blue); /* Fondo azul cuando marcado */
+            border-color: var(--color-primary-blue);
+            color: var(--color-text-light);
+        }
+        .checkbox-group label:hover {
+            background-color: var(--color-secondary-blue); /* Efecto hover */
+            border-color: var(--color-primary-blue);
+        }
+
+        /* Carga de Archivos (Fotos) */
+        .form-group input[type="file"] {
+            padding: 10px;
+            border: 1px dashed var(--color-primary-blue); /* Borde punteado */
+            background-color: rgba(var(--color-primary-blue-rgb), 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .form-group input[type="file"]::file-selector-button {
+            background-color: var(--color-primary-blue);
+            color: var(--color-text-light);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+        }
+        .form-group input[type="file"]::file-selector-button:hover {
+            background-color: var(--color-accent-terracota);
+        }
+
+        /* Contenedor del mapa incrustado */
+        .map-container {
+            grid-column: 1 / -1; /* Ocupa todas las columnas del grid */
+            width: 100%;
+            height: 300px; /* Altura fija para el mapa */
+            background-color: var(--color-border);
+            border-radius: 8px;
+            overflow: hidden; /* Asegura que el iframe no desborde los bordes redondeados */
+            border: 1px solid var(--color-border);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); /* Sombra interna sutil */
+            margin-bottom: 20px;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none; /* Eliminar borde del iframe */
+        }
+
+        /* Mensajes de formulario */
+        #formMessage {
+            grid-column: 1 / -1;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0; /* Oculto por defecto */
+            height: 0; /* No ocupa espacio por defecto */
+            overflow: hidden;
+        }
+        #formMessage.show {
+            opacity: 1;
+            height: auto; /* Muestra el contenido */
+            padding: 15px; /* Restablece el padding */
+        }
+        #formMessage.success {
+            background-color: hsl(120, 40%, 90%);
+            color: hsl(120, 60%, 30%);
+            border: 1px solid hsl(120, 50%, 80%);
+        }
+        #formMessage.error {
+            background-color: hsl(0, 70%, 90%);
+            color: hsl(0, 80%, 40%);
+            border: 1px solid hsl(0, 80%, 80%);
+        }
+
+        /* Botón de Envío */
+        .submit-button {
+            grid-column: 1 / -1; /* Ocupa todas las columnas del grid */
+            text-align: center;
+            margin-top: 20px;
+        }
+        button[type="submit"] {
+            background-color: var(--color-accent-terracota);
+            color: var(--color-text-light);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px; /* Botón muy redondeado */
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 6px 12px rgba(var(--color-accent-terracota-rgb), 0.3); /* Sombra del botón */
+        }
+
+        button[type="submit"]:hover {
+            background-color: var(--color-accent-terracota-dark);
+            transform: translateY(-2px); /* Pequeño levantamiento en hover */
+            box-shadow: 0 8px 15px rgba(var(--color-accent-terracota-rgb), 0.4);
+        }
+        button[type="submit"]:active {
+            transform: translateY(0); /* Vuelve a su posición original al hacer clic */
+            box-shadow: 0 4px 8px rgba(var(--color-accent-terracota-rgb), 0.2);
+        }
+        button[type="submit"]:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+
+        /*
+        ---------------------------------------------------------
+        5. PIE DE PÁGINA (FOOTER)
+        ---------------------------------------------------------
+        */
+        footer {
+            background-color: var(--color-primary-blue);
+            color: var(--color-text-light);
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: 50px; /* Espacio superior */
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1); /* Sombra superior */
+        }
+
+        footer p {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--color-text-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--color-accent-terracota); /* Cambio de color en hover */
+        }
+
+        /*
+        ---------------------------------------------------------
+        6. AJUSTES RESPONSIVOS (MEDIA QUERIES)
+        ---------------------------------------------------------
+        */
+        @media (max-width: 768px) {
+            .section-presentation, .section-form {
+                padding: 20px; /* Menos padding en pantallas más pequeñas */
+            }
+
+            header h1 {
+                font-size: clamp(1.8rem, 8vw, 2.5rem);
+            }
+
+            .presentation-image {
+                margin-bottom: 20px;
+            }
+
+            .presentation-text p {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .form-grid {
+                gap: 15px;
+            }
+
+            .form-group input, .form-group textarea {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+
+            button[type="submit"] {
+                padding: 12px 25px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px; /* Menos padding general en móviles pequeños */
+            }
+            header {
+                padding: 30px 15px;
+            }
+            .section-presentation h2, .section-form h2, .section-form h3 {
+                margin-bottom: 15px;
+            }
+            /* Los checkboxes se apilan verticalmente en pantallas muy pequeñas */
+            .checkbox-group {
+                flex-direction: column;
+                align-items: flex-start; /* Alinearlos a la izquierda */
+            }
+            .checkbox-group label {
+                width: 100%; /* Ancho completo para facilitar el toque */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Iván busca hogar en la costa</h1>
+    </header>
+
+    <main class="container">
+        <section class="section-presentation">
+            <!--
+                INSTRUCCIONES PARA EL USUARIO:
+                *************************************************************************************************
+                Por favor, REEMPLAZA el 'src' de la siguiente etiqueta <img> con la URL de la imagen
+                hiperrealista generada por IA que cumpla con la descripción solicitada.
+
+                Descripción para la IA:
+                "Crea una imagen hiperrealista de un niño de 5 años, rubio y con ojos azules, sonriendo cálidamente a la cámara
+                en una playa al atardecer. Debe transmitir seguridad, calidez e inocencia. La fotografía debe tener la estética,
+                la paleta de colores y la resolución típica de una foto analógica tomada en 1988, con un ligero grano y los
+                tonos cálidos del atardecer reflejándose suavemente en el agua y en su piel. El enfoque debe estar en el niño,
+                con el fondo de la playa ligeramente desenfocado para destacar su expresión."
+
+                Mientras tanto, se ha utilizado una imagen de ejemplo de Unsplash que se asemeja.
+                *************************************************************************************************
+            -->
+            <img src="https://images.unsplash.com/photo-1543877960-9d0a1b6c1615?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+                 alt="Niño rubio de 5 años sonriendo en una playa al atardecer, con estética de foto analógica de 1988, que evoca seguridad y calidez."
+                 class="presentation-image">
+
+            <div class="presentation-text">
+                <h2>Mi sueño, tu hogar en buenas manos.</h2>
+                <p>Desde pequeño, el mar ha sido mi vida, mi forma de ser. Ahora, busco un hogar temporal en la costa para volver a conectar con esa pasión.</p>
+                <p>Soy Iván, ingeniero de 40 años, responsable y solvente. Me comprometo a cuidar tu piso con el mismo cariño que si fuera mío, a cambio de disfrutar de las maravillosas vistas al mar desde <strong>septiembre hasta mayo</strong>.</p>
+                <p>Estoy abierto a hablar del precio del alquiler para que sea justo para ambos y así pueda vivir cerca del mar. ¡Imagina tu hogar en buenas manos mientras yo vivo mi sueño junto al mar!</p>
+            </div>
+        </section>
+
+        <section class="section-form">
+            <h2>Si tienes un piso que encaja con lo que busco, ¡no dudes en escribirme!</h2>
+            <h3>Te responderé lo antes posible, porque estoy deseando encontrar mi hogar junto al mar.</h3>
+
+            <!--
+                IMPORTANTE: Reemplaza "YOUR_FORMSPREE_URL" con la URL de tu formulario de Formspree.
+                Ejemplo: https://formspree.io/f/abcdefg
+            -->
+            <form id="proposalForm" action="https://formspree.io/f/xvgajrko" method="POST" enctype="multipart/form-data">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Nombre <span style="color:var(--color-accent-terracota)">*</span></label>
+                        <input type="text" id="name" name="Nombre" required placeholder="Tu nombre y apellidos">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" name="Email" placeholder="ejemplo@dominio.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Teléfono</label>
+                        <input type="tel" id="phone" name="Telefono" placeholder="+34 123 456 789">
+                    </div>
+                    <div class="form-group">
+                        <label for="adLink">Enlace al Anuncio (si lo tienes)</label>
+                        <input type="url" id="adLink" name="Enlace_Anuncio" placeholder="https://tuweb.com/anuncio-del-piso">
+                    </div>
+                    <div class="form-group">
+                        <label for="photos">Adjuntar Fotos (múltiples)</label>
+                        <!-- 'name' de files debe terminar en [] para que Formspree acepte múltiples archivos -->
+                        <input type="file" id="photos" name="Fotos[]" multiple accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label for="exactAddress">Dirección Exacta (opcional)</label>
+                        <input type="text" id="exactAddress" name="Direccion_Exacta" placeholder="Calle, número, CP, ciudad, provincia">
+                    </div>
+                    <div class="form-group">
+                        <label for="availabilityFrom">Disponible Desde</label>
+                        <input type="date" id="availabilityFrom" name="Disponibilidad_Desde">
+                    </div>
+                    <div class="form-group">
+                        <label for="availabilityTo">Disponible Hasta</label>
+                        <input type="date" id="availabilityTo" name="Disponibilidad_Hasta">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Ubicación Aproximada del Piso</label>
+                    <!--
+                        NOTA IMPORTANTE PARA EL USUARIO SOBRE EL MAPA:
+                        *************************************************************************************************
+                        Para mantener el código en un único archivo y la simplicidad, se utiliza un mapa estático de Google Maps incrustado.
+                        Un "mini-mapa interactivo con capacidad de pinchar o arrastrar un marcador para indicar la ubicación exacta"
+                        requeriría una integración avanzada con la API de Google Maps y JavaScript, que normalmente
+                        necesita una clave de API y un backend para procesar los datos del marcador. Esto excede el
+                        alcance de un archivo HTML/CSS/JS simple sin un servidor.
+
+                        Por favor, MODIFICA el 'src' del iframe con la URL de la ubicación deseada.
+                        Puedes generar estos iframes directamente desde Google Maps:
+                        1. Ve a Google Maps y busca la dirección deseada.
+                        2. Haz clic en "Compartir" (el icono de flecha).
+                        3. Selecciona la pestaña "Insertar un mapa".
+                        4. Copia el código que te proporciona Google Maps y pégalo aquí, reemplazando el 'src' actual.
+                        *************************************************************************************************
+                    -->
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2938.868078333202!2d-3.8055620999999994!3d40.407945399999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd42287e07a65b4b%3A0x67393b3f2b3e4d4e!2sPlaya%20de%20la%20Concha!5e0!3m2!1ses!2ses!4v1701234567890!5m2!1ses!2ses" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Características del Piso:</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="Caracteristicas[]" value="Vistas al mar">
+                            <span>Vistas al mar</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="Caracteristicas[]" value="Garaje">
+                            <span>Garaje</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="Caracteristicas[]" value="Piscina">
+                            <span>Piscina</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="Caracteristicas[]" value="Amueblado">
+                            <span>Amueblado</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="comments">Otros comentarios:</label>
+                    <textarea id="comments" name="Comentarios" placeholder="Añade cualquier detalle adicional sobre el piso o tu oferta (precio deseado, etc.)..."></textarea>
+                </div>
+
+                <!-- Mensaje de estado del formulario -->
+                <div id="formMessage"></div>
+
+                <div class="submit-button">
+                    <button type="submit" id="submitBtn">Enviar Propuesta</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>¡Gracias por tu interés!</p>
+        <p>Contacto: <a href="https://t.me/Opcionale" target="_blank">Telegram: @Opcionale</a></p>
+        <p id="copyright"></p>
+    </footer>
+
+    <script>
+        /*
+        ---------------------------------------------------------
+        JAVASCRIPT
+        ---------------------------------------------------------
+        */
+        document.addEventListener('DOMContentLoaded', () => {
+            // Establece el año actual en el copyright del pie de página
+            const currentYear = new Date().getFullYear();
+            document.getElementById('copyright').textContent = `© ${currentYear} Iván. Todos los derechos reservados.`;
+
+            // Manejo del envío del formulario con Formspree
+            const proposalForm = document.getElementById('proposalForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const formMessage = document.getElementById('formMessage');
+
+            proposalForm.addEventListener('submit', async function(event) {
+                event.preventDefault(); // Previene el envío del formulario por defecto
+
+                // Limpia y oculta mensajes anteriores
+                formMessage.textContent = '';
+                formMessage.classList.remove('show', 'success', 'error');
+
+                // Deshabilita el botón y muestra un estado de envío
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Enviando...';
+
+                // Recopila los datos del formulario
+                const formData = new FormData(this);
+
+                try {
+                    // Envía los datos a Formspree usando fetch
+                    const response = await fetch(proposalForm.action, {
+                        method: proposalForm.method,
+                        body: formData,
+                        // Formspree no requiere un Content-Type cuando se usa FormData directamente
+                        // headers: { 'Accept': 'application/json' } // Esto es opcional, Formspree lo infiere
+                    });
+
+                    if (response.ok) {
+                        // Éxito: muestra un mensaje y limpia el formulario
+                        formMessage.textContent = '¡Propuesta enviada con éxito! Te responderé pronto.';
+                        formMessage.classList.add('show', 'success');
+                        proposalForm.reset();
+                    } else {
+                        // Error: intenta leer la respuesta de Formspree si hay un mensaje de error
+                        const data = await response.json(); // Formspree envía JSON en caso de error
+                        let errorMessage = data.errors ? data.errors.map(err => err.message).join(', ') : 'Ha ocurrido un error al enviar la propuesta.';
+                        formMessage.textContent = `Error: ${errorMessage}`;
+                        formMessage.classList.add('show', 'error');
+                    }
+                } catch (error) {
+                    // Error de red u otro error inesperado
+                    formMessage.textContent = 'Error de conexión. Por favor, intenta de nuevo más tarde.';
+                    formMessage.classList.add('show', 'error');
+                    console.error('Error al enviar el formulario:', error);
+                } finally {
+                    // Vuelve a habilitar el botón y restablece su texto
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Enviar Propuesta';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
