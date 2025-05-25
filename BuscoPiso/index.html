@@ -68,19 +68,56 @@
         ---------------------------------------------------------
         */
         header {
-            background-color: var(--color-primary-blue);
+            background: linear-gradient(135deg, var(--color-primary-blue), var(--color-secondary-blue));
             color: var(--color-text-light);
-            padding: 40px 20px;
+            padding: 60px 20px 50px;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--color-accent-terracota);
         }
 
         header h1 {
             font-family: var(--font-heading);
-            font-size: clamp(2rem, 5vw, 3.5rem); /* Tamaño de fuente responsivo */
-            margin: 0;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            font-size: clamp(2.2rem, 6vw, 3.8rem);
+            margin: 0 0 15px 0;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            font-weight: 700;
+            line-height: 1.2;
+            position: relative;
+            display: inline-block;
+        }
+
+        header h1::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--color-accent-terracota);
+            margin: 15px auto 0;
+            border-radius: 3px;
+        }
+
+        header p.subtitle {
+            font-family: var(--font-heading);
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            margin: 20px auto 0;
+            max-width: 700px;
+            font-weight: 400;
+            line-height: 1.4;
+            opacity: 0.95;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
         }
 
         /*
@@ -421,7 +458,10 @@
 </head>
 <body>
     <header>
-        <h1>Cuidado garantizado: Mi sueño junto al mar</h1>
+        <div class="container">
+            <h1>Cuidado Garantizado</h1>
+            <p class="subtitle">Mi búsqueda de un hogar junto al mar</p>
+        </div>
     </header>
 
     <main class="container">
@@ -432,16 +472,15 @@
                  class="presentation-image">
 
             <div class="presentation-text">
-                <h2>Mi sueño, tu hogar en buenas manos.</h2>
-                <p>Desde pequeño, el mar ha sido mi vida, mi forma de ser. Ahora, busco un hogar temporal en la costa para volver a conectar con esa pasión.</p>
-                <p>Soy Iván, ingeniero de 40 años, responsable y solvente. Me comprometo a cuidar tu piso con el mismo cariño que si fuera mío, a cambio de disfrutar de las maravillosas vistas al mar desde <strong>septiembre hasta junio</strong>.</p>
-                <p>Estoy abierto a hablar del precio del alquiler para que sea justo para ambos y así pueda vivir cerca del mar. ¡Imagina tu hogar en buenas manos mientras yo vivo mi sueño junto al mar!</p>
+                <h2>Hay pasiones que nos definen...</h2>
+                <p>Hay pasiones que nos definen, y para mí, esa es el mar. Desde mi infancia, su inmensidad ha marcado mi vida, y ahora, busco ese hogar temporal en la costa que me permita reconectar con su energía vital.</p>
+                <p>Mi nombre es Iván, soy un ingeniero de 40 años, serio y con la solvencia necesaria. Te ofrezco mi compromiso inquebrantable: tu piso será cuidado con el respeto y el cariño que merece, mientras yo disfruto de la brisa marina entre <strong>septiembre y junio</strong>.</p>
+                <p>Valoro la transparencia y estoy abierto a negociar un precio justo para que ambos salgamos ganando. Confía tu hogar en alguien que lo valorará tanto como tú; juntos, haremos posible mi sueño de vivir frente al mar.</p>
             </div>
         </section>
 
         <section class="section-form">
             <h2>Si tienes un piso que encaja con lo que busco, ¡no dudes en escribirme!</h2>
-            <h3>Te responderé lo antes posible, porque estoy deseando encontrar mi hogar junto al mar.</h3>
 
             <!--
                 IMPORTANTE: Reemplaza "YOUR_FORMSPREE_URL" con la URL de tu formulario de Formspree.
@@ -466,7 +505,7 @@
                         <input type="url" id="adLink" name="Enlace_Anuncio" placeholder="https://tuweb.com/anuncio-del-piso">
                     </div>
                     <div class="form-group">
-                        <label for="exactAddress">Dirección Exacta (opcional)</label>
+                        <label for="exactAddress">Dirección Aproximada (opcional)</label>
                         <input type="text" id="exactAddress" name="Direccion_Exacta" placeholder="Calle, número, CP, ciudad, provincia">
                     </div>
                     <div class="form-group">
@@ -503,7 +542,7 @@
 
                 <div class="form-group">
                     <label for="comments">Otros comentarios:</label>
-                    <textarea id="comments" name="Comentarios" placeholder="Añade cualquier detalle adicional sobre el piso o tu oferta (precio deseado, etc.)..."></textarea>
+                    <textarea id="comments" name="Comentarios" placeholder="Añade cualquier detalle adicional sobre el piso (caracteristicas, habitaciones, baños, etc.) o tu oferta (precio deseado, etc.)..."></textarea>
                 </div>
 
                 <!-- Mensaje de estado del formulario -->
@@ -519,7 +558,6 @@
     <footer>
         <p>¡Gracias por tu interés!</p>
         <p>
-            Contacto:
             <a href="https://t.me/Opcionale" target="_blank">
                 <!-- Icono SVG de Telegram -->
                 <svg class="telegram-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -528,7 +566,6 @@
                 <span>Escríbeme por Telegram</span>
             </a>
         </p>
-        <p id="copyright"></p>
     </footer>
 
     <script>
@@ -538,8 +575,6 @@
         ---------------------------------------------------------
         */
         document.addEventListener('DOMContentLoaded', () => {
-            const currentYear = new Date().getFullYear();
-            document.getElementById('copyright').textContent = `© ${currentYear} Iván. Todos los derechos reservados.`;
 
             const proposalForm = document.getElementById('proposalForm');
             const submitBtn = document.getElementById('submitBtn');
