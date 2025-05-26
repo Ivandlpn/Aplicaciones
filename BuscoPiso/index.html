@@ -383,7 +383,39 @@
 
         /*
         ---------------------------------------------------------
-        5. PIE DE PÁGINA (FOOTER)
+        5. LANGUAGE TOGGLE
+        ---------------------------------------------------------
+        */
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .language-toggle button {
+            background: var(--color-accent-terracota);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .language-toggle button:hover {
+            background: var(--color-accent-terracota-dark);
+            transform: translateY(-2px);
+        }
+
+        /*
+        ---------------------------------------------------------
+        6. PIE DE PÁGINA (FOOTER)
         ---------------------------------------------------------
         */
         footer {
@@ -491,6 +523,9 @@
 <body>
     <header>
         <div class="container">
+            <div class="language-toggle">
+                <button id="languageToggle" data-lang="es">English</button>
+            </div>
             <h1>Iván:<br>El inquilino perfecto</h1>
             <p class="subtitle">Tu casa en las mejores manos</p>
         </div>
@@ -527,6 +562,7 @@
                     <div class="form-group">
                         <label for="email">Correo Electrónico</label>
                         <input type="email" id="email" name="Email" placeholder="ejemplo@dominio.com">
+                        <small class="form-hint">Al menos un método de contacto es obligatorio (email o teléfono)</small>
                     </div>
                     <div class="form-group">
                         <label for="phone">Teléfono</label>
@@ -590,24 +626,147 @@
     <footer>
         <p>¡Gracias por tu interés!</p>
         <p>
-            <a href="https://t.me/Opcionale" target="_blank">
-                <!-- Icono SVG de Telegram -->
-                <svg class="telegram-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.35L8.5 15.1c-.2.2-.4.2-.6 0l-2.4-1.8c-.2-.15-.4-.15-.6-.05l-2.5 1.7c-.2.15-.3.15-.3.05V10.2c0-.1.05-.2.15-.25L15 6.3c.2-.15.4-.1.6 0l.7.35c.1.05.15.15.15.25v.1c0 .05-.05.1-.1.15z"/>
-                </svg>
-                <span>Escríbeme por Telegram</span>
-            </a>
-        </p>
-    </footer>
+    <a href="https://t.me/Opcionale" target="_blank">
+        <!-- Icono SVG de Telegram -->
+        <svg class="telegram-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.35L8.5 15.1c-.2.2-.4.2-.6 0l-2.4-1.8c-.2-.15-.4-.15-.6-.05l-2.5 1.7c-.2.15-.3.15-.3.05V10.2c0-.1.05-.2.15-.25L15 6.3c.2-.15.4-.1.6 0l.7.35c.1.05.15.15.15.25v.1c0 .05-.05.1-.1.15z"/>
+        </svg>
+        <span id="telegram-link-text">Escríbeme por Telegram</span>
+    </a>
+</p>
 
-    <script>
+<script>
         /*
         ---------------------------------------------------------
         JAVASCRIPT
         ---------------------------------------------------------
         */
         document.addEventListener('DOMContentLoaded', () => {
+            // Language content
+            const translations = {
+                es: {
+                    title: "Iván:\nEl inquilino perfecto",
+                    subtitle: "Tu casa en las mejores manos",
+                    heading1: "Hay pasiones que nos definen...",
+                    paragraph1: "Hay pasiones que nos definen, y para mí, esa es el mar. Desde mi infancia, su inmensidad ha marcado mi vida, y ahora, busco ese hogar temporal en la costa que me permita reconectar con su energía vital.",
+                    paragraph2: "Mi nombre es Iván, soy un ingeniero de 40 años, serio y con la solvencia necesaria. Te ofrezco mi compromiso inquebrantable: tu piso será cuidado con el respeto y el cariño que merece, mientras yo disfruto de la brisa marina entre <strong>septiembre y junio</strong>.",
+                    paragraph3: "Valoro la transparencia y estoy abierto a negociar un precio justo para una relación beneficiosa para ambos. Si el alquiler pudiera extenderse a los meses de verano, ¡estaría encantado! Tu hogar estará perfectamente cuidado incluso en tu ausencia, brindándote total tranquilidad. Confía tu hogar a alguien que lo valorará tanto como tú.",
+                    formTitle: "Si tienes un piso que encaja con lo que busco, ¡no dudes en escribirme!",
+                    nameLabel: "Nombre",
+                    emailLabel: "Correo Electrónico",
+                    phoneLabel: "Teléfono",
+                    adLinkLabel: "Enlace al Anuncio (si lo tienes)",
+                    addressLabel: "Dirección Aproximada (opcional)",
+                    availableFrom: "Disponible Desde",
+                    availableTo: "Disponible Hasta",
+                    featuresLabel: "Características del Piso:",
+                    feature1: "Vistas al mar",
+                    feature2: "Garaje",
+                    feature3: "Piscina",
+                    feature4: "Amueblado",
+                    commentsLabel: "Otros comentarios:",
+                    commentsPlaceholder: "Añade cualquier detalle adicional sobre el piso (caracteristicas, habitaciones, baños, etc.) o tu oferta (precio deseado, etc.)...",
+                    submitButton: "Enviar Propuesta",
+                    sending: "Enviando...",
+                    successMessage: "¡Propuesta enviada con éxito! Te responderé pronto.",
+                    errorMessage: "Por favor, proporciona al menos un correo electrónico o un número de teléfono",
+                    emailError: "Por favor, introduce un correo electrónico válido",
+                    telegramText: "Escríbeme por Telegram"
+                },
+                en: {
+                    title: "Iván:\nThe Perfect Tenant",
+                    subtitle: "Your home in the best hands",
+                    heading1: "There are passions that define us...",
+                    paragraph1: "There are passions that define us, and for me, that's the sea. Since my childhood, its immensity has marked my life, and now, I'm looking for that temporary home on the coast that allows me to reconnect with its vital energy.",
+                    paragraph2: "My name is Iván, I'm a 40-year-old engineer, serious and with the necessary financial means. I offer you my unwavering commitment: your apartment will be cared for with the respect and affection it deserves, while I enjoy the sea breeze between <strong>September and June</strong>.",
+                    paragraph3: "I value transparency and I'm open to negotiating a fair price for a mutually beneficial relationship. If the rental could be extended to the summer months, I'd be delighted! Your home will be perfectly cared for even in your absence, giving you complete peace of mind. Trust your home to someone who will value it as much as you do.",
+                    formTitle: "If you have an apartment that fits what I'm looking for, don't hesitate to write to me!",
+                    nameLabel: "Name",
+                    emailLabel: "Email",
+                    phoneLabel: "Phone",
+                    adLinkLabel: "Ad Link (if available)",
+                    addressLabel: "Approximate Address (optional)",
+                    availableFrom: "Available From",
+                    availableTo: "Available Until",
+                    featuresLabel: "Apartment Features:",
+                    feature1: "Sea view",
+                    feature2: "Garage",
+                    feature3: "Swimming pool",
+                    feature4: "Furnished",
+                    commentsLabel: "Other comments:",
+                    commentsPlaceholder: "Add any additional details about the apartment (features, bedrooms, bathrooms, etc.) or your offer (desired price, etc.)...",
+                    submitButton: "Send Proposal",
+                    sending: "Sending...",
+                    successMessage: "Proposal sent successfully! I'll get back to you soon.",
+                    errorMessage: "Please provide at least an email or phone number",
+                    emailError: "Please enter a valid email address",
+                    telegramText: "Message me on Telegram"
+                }
+            };
 
+            // Set initial language from localStorage or default to Spanish
+            let currentLang = localStorage.getItem('userLanguage') || 'es';
+            const languageToggle = document.getElementById('languageToggle');
+
+            // Function to update UI elements with translations
+            function updateContent(lang) {
+                const t = translations[lang];
+                document.querySelector('html').lang = lang;
+                document.querySelector('h1').innerHTML = t.title.replace('\n', '<br>');
+                document.querySelector('.subtitle').textContent = t.subtitle;
+                document.querySelector('.presentation-text h2').textContent = t.heading1;
+                const paragraphs = document.querySelectorAll('.presentation-text p');
+                paragraphs[0].textContent = t.paragraph1;
+                paragraphs[1].innerHTML = t.paragraph2;
+                paragraphs[2].innerHTML = t.paragraph3;
+                document.querySelector('.section-form h2').textContent = t.formTitle;
+                
+                // Update form labels and placeholders
+                document.querySelector('label[for="name"]').innerHTML = `${t.nameLabel} <span style="color:var(--color-accent-terracota)">*</span>`;
+                document.querySelector('label[for="email"]').textContent = t.emailLabel;
+                document.querySelector('label[for="phone"]').textContent = t.phoneLabel;
+                document.querySelector('label[for="adLink"]').textContent = t.adLinkLabel;
+                document.querySelector('label[for="exactAddress"]').textContent = t.addressLabel;
+                document.querySelector('label[for="availabilityFrom"]').textContent = t.availableFrom;
+                document.querySelector('label[for="availabilityTo"]').textContent = t.availableTo;
+                document.querySelector('.form-group > label:first-child').textContent = t.featuresLabel;
+                
+                // Update feature checkboxes
+                const features = document.querySelectorAll('.checkbox-group label span');
+                features[0].textContent = t.feature1;
+                features[1].textContent = t.feature2;
+                features[2].textContent = t.feature3;
+                features[3].textContent = t.feature4;
+                
+                // Update comments section
+                document.querySelector('label[for="comments"]').textContent = t.commentsLabel;
+                document.querySelector('#comments').placeholder = t.commentsPlaceholder;
+                
+                // Update submit button
+                document.querySelector('#submitBtn').textContent = t.submitButton;
+                
+                // Update Telegram link text
+                document.querySelector('#telegram-link-text').textContent = t.telegramText;
+                
+                // Update button text
+                languageToggle.textContent = lang === 'es' ? 'English' : 'Español';
+                languageToggle.setAttribute('data-lang', lang === 'es' ? 'en' : 'es');
+                
+                // Save language preference
+                localStorage.setItem('userLanguage', lang);
+                currentLang = lang;
+            }
+
+            // Language toggle event listener
+            languageToggle.addEventListener('click', () => {
+                const newLang = languageToggle.getAttribute('data-lang');
+                updateContent(newLang);
+            });
+
+            // Initialize with saved language or default to Spanish
+            updateContent(currentLang);
+
+            
             const proposalForm = document.getElementById('proposalForm');
             const submitBtn = document.getElementById('submitBtn');
             const formMessage = document.getElementById('formMessage');
@@ -628,14 +787,36 @@
                 }
             }
 
+
             proposalForm.addEventListener('submit', async function(event) {
                 event.preventDefault();
+                
+                // Validate that at least one contact field is filled
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                
+                if (!email && !phone) {
+                    showFormMessage(translations[currentLang].errorMessage, 'error');
+                    document.getElementById('email').focus();
+                    return;
+                }
+                
+                if (email) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        showFormMessage(translations[currentLang].emailError, 'error');
+                        document.getElementById('email').focus();
+                        return;
+                    }
+                }
+
 
                 formMessage.classList.remove('show', 'success', 'error');
                 formMessage.textContent = '';
 
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Enviando...';
+                submitBtn.textContent = translations[currentLang].sending;
+
 
                 const formData = new FormData(this);
 
@@ -648,15 +829,16 @@
                         }
                     });
 
+
                     if (response.ok) {
-                        showFormMessage('¡Propuesta enviada con éxito! Te responderé pronto.', 'success');
+                        showFormMessage(translations[currentLang].successMessage, 'success');
                         proposalForm.reset();
                     } else {
-                        // El servidor respondió con un código de error (por ejemplo, 400, 422, 500)
-                        let errorMessage = `Error ${response.status}: Ha ocurrido un problema al enviar la propuesta.`;
+                        // Handle error responses
+                        let errorMessage = `Error ${response.status}: ${translations[currentLang].errorMessage}`;
                         let isVerificationOrClientError = false;
 
-                        // Verifica si la respuesta es JSON antes de intentar parsearla
+                        // Check if response is JSON before parsing
                         const contentType = response.headers.get('content-type');
                         if (contentType && contentType.includes('application/json')) {
                             try {
@@ -671,31 +853,38 @@
                                 }
                             } catch (jsonParseError) {
                                 console.warn('Formspree JSON parsing failed or unexpected structure:', jsonParseError, response);
-                                errorMessage = `Error ${response.status}: El servidor respondió con un error, pero el mensaje JSON no pudo ser leído.`;
+                                errorMessage = `Error ${response.status}: ${translations[currentLang].errorMessage}`;
                             }
                         } else {
                             const responseText = await response.text();
                             console.warn('Formspree responded with non-JSON content (unexpected). Response text:', responseText);
-                            errorMessage = `Error ${response.status}: El servidor devolvió una respuesta inesperada.`;
+                            errorMessage = `Error ${response.status}: ${translations[currentLang].errorMessage}`;
                             if (response.status === 400 || response.status === 422) {
                                 isVerificationOrClientError = true;
                             }
                         }
 
                         if (isVerificationOrClientError) {
-                            errorMessage += ' Si es tu primera vez enviando, por favor, revisa tu email de Formspree para verificar la cuenta. *La propuesta puede haber llegado al correo de Iván a pesar de este mensaje.*';
+                            errorMessage += ' ' + (currentLang === 'es' 
+                                ? 'Si es tu primera vez enviando, por favor, revisa tu email de Formspree para verificar la cuenta. *La propuesta puede haber llegado al correo de Iván a pesar de este mensaje.*'
+                                : 'If this is your first time submitting, please check your Formspree email to verify your account. *The proposal might have reached Iván\'s email despite this message.*');
                         } else {
-                            errorMessage += ' Por favor, revisa los datos e inténtalo de nuevo.';
+                            errorMessage += ' ' + (currentLang === 'es' 
+                                ? 'Por favor, revisa los datos e inténtalo de nuevo.'
+                                : 'Please check your data and try again.');
                         }
 
                         showFormMessage(errorMessage, 'error', 0);
                     }
                 } catch (networkError) {
-                    showFormMessage('Parece que hay un problema de conexión. Por favor, revisa tu internet e inténtalo de nuevo.', 'error', 0);
+                    const errorMsg = currentLang === 'es'
+                        ? 'Parece que hay un problema de conexión. Por favor, revisa tu internet e inténtalo de nuevo.'
+                        : 'There seems to be a connection issue. Please check your internet and try again.';
+                    showFormMessage(errorMsg, 'error', 0);
                     console.error('Error de red al enviar el formulario:', networkError);
                 } finally {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Enviar Propuesta';
+                    submitBtn.textContent = translations[currentLang].submitButton;
                 }
             });
         });
