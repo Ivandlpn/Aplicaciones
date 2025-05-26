@@ -1,0 +1,7 @@
+{
+  "name": "Asistente Ferroviario IA",
+  "description": "Un asistente virtual experto en ferrocarriles de alta velocidad. Conversa con él usando tu voz o teclado para aprender sobre máquinas, personal, herramientas, sistemas de seguridad y más. Utiliza explicaciones claras y didácticas.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
