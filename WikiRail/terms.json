@@ -2088,7 +2088,7 @@
   },
   {
     "id": "track_undercutter",
-    "term": "Máquina guarnecedora",
+    "term": "Máquina Desguarnecedora",
     "definition": "Máquina ferroviaria que excava y retira el balasto sucio de debajo de la vía y entre traviesas, a menudo como paso previo a una limpieza de balasto profunda o una renovación de vía.",
     "category": "Machines & Tools",
     "key_components": [
