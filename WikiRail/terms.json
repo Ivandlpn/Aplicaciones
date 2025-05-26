@@ -2088,7 +2088,7 @@
   },
   {
     "id": "track_undercutter",
-    "term": "Máquina Desguarnecedora",
+    "term": "Máquina guarnecedora",
     "definition": "Máquina ferroviaria que excava y retira el balasto sucio de debajo de la vía y entre traviesas, a menudo como paso previo a una limpieza de balasto profunda o una renovación de vía.",
     "category": "Machines & Tools",
     "key_components": [
@@ -2104,7 +2104,7 @@
     "maintenance_considerations": "Inspección y sustitución de elementos de la cadena cortadora. Mantenimiento de transportadores y sistemas hidráulicos. Limpieza de balasto. Requiere coordinación para el trabajo en línea.",
     "related_terms": ["track_work", "ballast_cleaner", "track_renewal_train", "track_machine_operator"],
     "media": {
-      "images": ["https://www.plassertheurer.com/fileadmin/_processed_/c/3/csm_rmw1500-3_9a24cbf262.jpg"],
+      "images": ["https://www.plasser.es/pics/maquinas-sistemas/1140/bettungsreinigung-3.jpg"],
       "videos": [],
       "pdfs": []
     },
@@ -2138,7 +2138,7 @@
   {
     "id": "track_renewal_train",
     "term": "Tren de Renovación de Vía",
-    "definition": "Conjunto de ria interconectada (a menudo incluye desguarnecedora, limpiadora, pone-traviesas/carriles, perfiladora) capaz de realizar una renovación completa de vía (balasto, traviesas, carriles) en una sola pasada.",
+    "definition": "Conjunto de ria interconectada (a menudo incluye arnecedora, limpiadora, pone-traviesas/carriles, perfiladora) capaz de realizar una renovación completa de vía (balasto, traviesas, carriles) en una sola pasada.",
     "category": "Machines & Tools",
     "key_components": [
       "Múltiples módulos de ria",
