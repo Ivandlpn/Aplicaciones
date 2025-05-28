@@ -1,1 +1,864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso Bitcoin ¡Divertido y Visual!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Reset Básico y Fuentes --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        :root {
+            --bitcoin-orange: #F7931A;
+            --deep-blue: #0A192F; /* Un azul más oscuro y moderno */
+            --light-blue: #17A2B8; /* Un azul verdoso para acentos */
+            --text-primary: #3D3D3D;
+            --text-secondary: #5A5A5A;
+            --bg-light: #F9FAFB; /* Fondo ligeramente más frío */
+            --bg-card: #FFFFFF;
+            --border-color: #E5E7EB;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevenir scroll horizontal accidental */
+        }
+
+        /* --- Contenedor Principal y Layout --- */
+        .container {
+            width: 95%;
+            max-width: 1450px; /* Un poco más ancho */
+            margin: 0 auto;
+            padding: 30px 20px;
+            flex-grow: 1;
+        }
+
+        /* --- Cabecera --- */
+        header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #102A43 100%);
+            color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 8px solid var(--bitcoin-orange);
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden; /* Para pseudo-elementos */
+        }
+        /* Decoración sutil en cabecera */
+        header::before {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 10%;
+            width: 150px;
+            height: 150px;
+            background: rgba(247, 147, 26, 0.1);
+            border-radius: 50%;
+            transform: rotate(45deg);
+            z-index: 0;
+        }
+         header::after {
+            content: '₿'; /* Símbolo de Bitcoin */
+            font-family: Arial, sans-serif;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 80px;
+            color: rgba(255, 255, 255, 0.05);
+            transform: rotate(-15deg);
+            z-index: 0;
+        }
+
+        header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.2em;
+            margin-bottom: 15px;
+            font-weight: 600; /* Un poco más de peso */
+            letter-spacing: 1px;
+            position: relative; /* Para z-index */
+            z-index: 1;
+        }
+
+        header p {
+            font-size: 1.25em;
+            font-weight: 300;
+            opacity: 0.9;
+            position: relative; /* Para z-index */
+            z-index: 1;
+        }
+
+        /* --- Navegación / Tabla de Contenidos --- */
+        .main-layout {
+            display: flex;
+            gap: 35px;
+        }
+
+        nav {
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            align-self: flex-start;
+            flex-basis: 300px; /* Ancho base incrementado */
+            min-width: 240px;
+            max-width: 350px;
+            height: calc(100vh - 40px);
+            transition: box-shadow 0.3s ease;
+        }
+        nav:hover {
+             box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        nav h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.7em;
+            margin-bottom: 20px;
+            color: var(--deep-blue);
+            border-bottom: 3px solid var(--bitcoin-orange); /* Borde más grueso */
+            padding-bottom: 15px;
+            font-weight: 600;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            max-height: calc(100% - 75px); /* Ajustar según h2 */
+            overflow-y: auto;
+        }
+        /* Custom scrollbar for nav */
+        nav ul::-webkit-scrollbar { width: 6px; }
+        nav ul::-webkit-scrollbar-track { background: var(--bg-light); border-radius:3px;}
+        nav ul::-webkit-scrollbar-thumb { background: var(--light-blue); border-radius:3px; }
+        nav ul::-webkit-scrollbar-thumb:hover { background: #138496; }
+
+
+        nav ul li {
+            margin-bottom: 10px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            display: flex; /* Para alinear icono si se añade */
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        nav ul li a::before { /* Efecto de fondo al hacer hover */
+            content: '';
+            position: absolute;
+            top:0; left: -100%;
+            width:100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(247, 147, 26, 0.1));
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        nav ul li a:hover::before, nav ul li a.active::before {
+            left: 0;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--bitcoin-orange);
+            background-color: rgba(247, 147, 26, 0.05); /* Fondo muy sutil */
+            transform: translateX(5px); /* Pequeño desplazamiento */
+            box-shadow: 0 2px 5px rgba(247, 147, 26, 0.1);
+        }
+
+        /* --- Secciones del Curso --- */
+        .course-section {
+            background-color: var(--bg-card);
+            padding: 35px 40px; /* Más padding */
+            margin-bottom: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            opacity: 0;
+            transform: translateY(30px); /* Animación de entrada más pronunciada */
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .course-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .course-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.4em;
+            color: var(--deep-blue);
+            margin-bottom: 30px;
+            padding-bottom: 18px;
+            border-bottom: 3px solid var(--bitcoin-orange);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        .course-section h2 .section-icon {
+            width: 36px; /* Iconos de sección más grandes */
+            height: 36px;
+            margin-right: 18px;
+            color: var(--bitcoin-orange); /* Iconos de sección en naranja */
+            transition: transform 0.3s ease;
+        }
+        .course-section h2:hover .section-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .course-section h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6em;
+            color: var(--deep-blue);
+            margin-top: 35px;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        .course-section p, .course-section li {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 1.05em; /* Texto ligeramente más grande */
+        }
+
+        .course-section ul, .course-section ol {
+            margin-left: 30px;
+            padding-left: 20px;
+        }
+
+        .course-section strong {
+            color: var(--deep-blue);
+            font-weight: 600;
+        }
+
+        .course-section code {
+            background-color: #E9ECEF;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            color: #C7254E; /* Color de código más vivo */
+            font-size: 0.95em;
+        }
+
+        .course-section .highlight {
+            background-color: rgba(247, 147, 26, 0.08); /* Naranja más sutil */
+            padding: 25px;
+            border-left: 6px solid var(--bitcoin-orange);
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+        }
+        
+        .course-section .highlight p {
+            margin-bottom: 0;
+            color: #A15C0E; /* Texto más oscuro para el highlight */
+            font-weight: 500;
+        }
+
+        /* Layout de Dos Columnas */
+        .two-column-layout {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            margin: 30px 0;
+        }
+        .two-column-layout > div { flex: 1; }
+        .text-content { max-width: 100%; }
+        .visual-content { display: flex; justify-content: center; align-items: center; }
+        .two-column-layout.reverse { flex-direction: row-reverse; }
+
+        @media (max-width: 850px) { /* Breakpoint ajustado */
+            .two-column-layout { flex-direction: column !important; }
+            .two-column-layout > div { width: 100%; }
+            .visual-content { margin-top: 25px; }
+        }
+
+        /* --- Estilos para Diagramas SVG --- */
+        .diagram-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: #fff; /* Fondo blanco para resaltar diagramas */
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .diagram-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+        /* Animación en elementos SVG al hacer hover en el contenedor */
+        .diagram-container:hover .svg-block { fill: var(--light-blue); }
+        .diagram-container:hover .svg-arrow { stroke: var(--deep-blue); }
+
+
+        .diagram-caption {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .svg-block { fill: #A9D6E5; stroke: #468FAF; stroke-width:1.5; transition: fill 0.3s ease; }
+        .svg-text { font-family: 'Roboto', 'Segoe UI', sans-serif; fill: var(--deep-blue); }
+        .svg-arrow { stroke: var(--bitcoin-orange); stroke-width:1.5; marker-end: url(#arrowhead); transition: stroke 0.3s ease;}
+        .svg-node { fill: var(--bitcoin-orange); stroke: #C6760A; }
+
+        /* Caracteristicas en tarjetas */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .feature-card {
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid var(--light-blue);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .feature-card .feature-icon {
+            width: 32px; height: 32px;
+            margin-bottom: 15px;
+            color: var(--light-blue);
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+        .feature-card h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25em;
+            color: var(--deep-blue);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .feature-card p {
+            font-size: 0.95em;
+            margin-bottom: 0;
+            flex-grow: 1;
+            color: var(--text-secondary);
+        }
+
+        /* --- Tabla Comparativa --- */
+        .course-section .comparison-table {
+            width: 100%;
+            border-collapse: separate; /* Para usar border-spacing */
+            border-spacing: 0; /* Resetear */
+            margin-top: 30px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden; /* Para que el border-radius afecte a las celdas */
+        }
+        .course-section .comparison-table th,
+        .course-section .comparison-table td {
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 18px;
+            text-align: left;
+        }
+        .course-section .comparison-table th {
+            background-color: var(--deep-blue);
+            color: #fff;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+        }
+        .course-section .comparison-table td {
+            background-color: var(--bg-card);
+        }
+        .course-section .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        .course-section .comparison-table tr:hover td {
+            background-color: #f1f5f9; /* Un hover sutil para filas */
+        }
+
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 35px;
+            background: var(--deep-blue);
+            color: #A0AEC0; /* Gris más claro */
+            margin-top: auto;
+            font-size: 0.95em;
+            border-top: 5px solid var(--light-blue);
+        }
+        footer p { margin: 0; }
+
+        /* --- Scrollbar General --- */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: var(--bg-light); }
+        ::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 6px; border: 2px solid var(--bg-light); }
+        ::-webkit-scrollbar-thumb:hover { background: #A0AEC0; }
+
+        /* --- Responsividad General --- */
+        @media (max-width: 1024px) {
+            .main-layout { flex-direction: column; }
+            nav {
+                position: static; width: 100%;
+                flex-basis: auto; max-width: none;
+                height: auto; max-height: 350px; /* Aumentar altura scroll nav móvil */
+                margin-bottom: 30px;
+            }
+            nav ul { max-height: 280px; }
+        }
+
+        @media (max-width: 768px) {
+            .container { width: 95%; padding: 25px 15px; }
+            header h1 { font-size: 2.6em; }
+            header p { font-size: 1.1em; }
+            .course-section h2 { font-size: 2em; }
+            .course-section { padding: 30px 25px; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+        
+        @keyframes fadeInPage { from { opacity: 0; } to { opacity: 1; } }
+        body { animation: fadeInPage 0.7s ease-in-out; }
+    </style>
+</head>
+<body>
+    <!-- Definiciones SVG para marcadores y iconos (sin cambios) -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--bitcoin-orange)" />
+        </marker>
+        <symbol id="icon-info" viewBox="0 0 24 24"> <path fill="currentColor" d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></symbol>
+        <symbol id="icon-history" viewBox="0 0 24 24"><path fill="currentColor" d="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3"/></symbol>
+        <symbol id="icon-cog" viewBox="0 0 24 24"><path fill="currentColor" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.5,21.92 9.27,21.8L7.76,21.36C6.22,23.13 4.87,22.62 4.27,22L3.73,21.73C3.38,21.54 3,21.21 3,20.73V19.03L1.96,17.46C1.05,16.8 1.05,15.71 1.96,15.04L3,13.97V10.03L1.96,8.96C1.05,8.29 1.05,7.2 1.96,6.54L3,5.03V3.27C3,2.79 3.38,2.46 3.73,2.27L4.27,2C4.87,1.38 6.22,1.88 7.76,2.64L9.27,2.2C9.5,2.08 9.75,2 10,2H14C14.25,2 14.5,2.08 14.73,2.2L16.24,2.64C17.78,1.88 19.13,1.38 19.73,2L20.27,2.27C20.62,2.46 21,2.79 21,3.27V5.03L22.04,6.54C22.95,7.2 22.95,8.29 22.04,8.96L21,10.03V13.97L22.04,15.04C22.95,15.71 22.95,16.8 22.04,17.46L21,19.03V20.73C21,21.21 20.62,21.54 20.27,21.73L19.73,22C19.13,22.62 17.78,22.12 16.24,21.36L14.73,21.8C14.5,21.92 14.25,22 14,22H10Z" /></symbol>
+        <symbol id="icon-users" viewBox="0 0 24 24"><path fill="currentColor" d="M16 17V19H2V17S2 13 9 13S16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4.04A3.5 3.5 0 0 1 15 11H13A5.5 5.5 0 0 0 13 0A5.5 5.5 0 0 0 7.5 5.5A5.5 5.5 0 0 0 13 11H15V4.04Z"/></symbol>
+        <symbol id="icon-chart-bar" viewBox="0 0 24 24"><path fill="currentColor" d="M22,21H2V3H4V19H6V10H10V19H12V6H16V19H18V14H22V21Z" /></symbol>
+        <symbol id="icon-bulb" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z" /></symbol>
+        <symbol id="icon-rocket" viewBox="0 0 24 24"><path fill="currentColor" d="M13.15,2.72L15.27,4.84L12,8.11L8.73,4.84L10.85,2.72L12,1.57L13.15,2.72M5.23,6.12L8.1,8.99L9.53,7.55L6.66,4.68L5.23,6.12M18.77,6.12L17.34,4.68L14.47,7.55L15.9,8.99L18.77,6.12M12,9.5L15.27,12.77L13.84,14.19L12.73,13.08L5.81,20L4,18.19L10.92,11.27L9.5,9.84L12,7.34L12,9.5M12,15.41L14.47,17.89L12,20.36L9.53,17.89L12,15.41M7.38,11.2L3,15.59L4.41,17L8.8,12.62L7.38,11.2M16.62,11.2L15.2,12.62L19.59,17L21,15.59L16.62,11.2Z" /></symbol>
+         <symbol id="icon-check-circle" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></symbol>
+      </defs>
+    </svg>
+
+    <header>
+        <h1>Curso Bitcoin ¡A Tope! 🚀</h1>
+        <p>Tu aventura visual y divertida para entender la cripto-revolución.</p>
+    </header>
+
+    <div class="container">
+        <div class="main-layout">
+            <nav id="table-of-contents">
+                <h2>¡Explora! 👇</h2>
+                <ul>
+                    <li><a href="#introduccion" class="nav-link">1. ¿Qué es Bitcoin? 🤔</a></li>
+                    <li><a href="#historia" class="nav-link">2. El Viaje de Bitcoin 📜</a></li>
+                    <li><a href="#como-funciona" class="nav-link">3. Magia Técnica ✨</a></li>
+                    <li><a href="#casos-de-uso" class="nav-link">4. Usos Increíbles 💡</a></li>
+                    <li><a href="#comparativa" class="nav-link">5. Bitcoin vs. Otros 💪</a></li>
+                    <li><a href="#personajes" class="nav-link">6. Los Protagonistas 🌟</a></li>
+                    <li><a href="#datos-curiosos" class="nav-link">7. ¡Wow! Datos Curiosos 🤯</a></li>
+                    <li><a href="#futuro" class="nav-link">8. El Futuro es Ahora 🔮</a></li>
+                    <li><a href="#conclusion" class="nav-link">9. ¡Sigue Aprendiendo! 🎓</a></li>
+                </ul>
+            </nav>
+
+            <main class="main-content">
+                <section id="introduccion" class="course-section">
+                    <h2><svg class="section-icon"><use xlink:href="#icon-info"></use></svg>1. ¿Qué es Bitcoin? 🤔</h2>
+                    <p>Bitcoin es como <strong>dinero mágico de internet</strong> 🧙‍♂️: digital, sin un jefe central (bancos o gobiernos), y creado en 2009 por el misterioso "Satoshi Nakamoto". ¡Permite enviar valor directamente entre personas!</p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <svg class="feature-icon"><use xlink:href="#icon-users"></use></svg>
+                            <h4>Descentralizado Total</h4>
+                            <p>Nadie lo controla, ¡el poder es de la red y sus usuarios!</p>
+                        </div>
+                         <div class="feature-card">
+                            <svg class="feature-icon"><use xlink:href="#icon-cog"></use></svg>
+                            <h4>Directo y sin Rollos (P2P)</h4>
+                            <p>Transacciones de tú a tú, ¡adiós intermediarios!</p>
+                        </div>
+                        <div class="feature-card">
+                             <svg class="feature-icon"><use xlink:href="#icon-check-circle"></use></svg>
+                            <h4>Claro como el Agua (y Privado)</h4>
+                            <p>Todo se ve en la Blockchain, pero tu identidad real está a salvo.</p>
+                        </div>
+                        <div class="feature-card">
+                            <svg class="feature-icon"><use xlink:href="#icon-rocket"></use></svg>
+                            <h4>¡Sin Fronteras!</h4>
+                            <p>Bitcoin viaja por el mundo más rápido que un cohete.</p>
+                        </div>
+                         <div class="feature-card">
+                             <svg class="feature-icon"><use xlink:href="#icon-chart-bar"></use></svg>
+                            <h4>No se Fabrican Más (Escaso)</h4>
+                            <p>Solo 21 millones. ¡Como oro digital, pero más cool!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="diagram-container" style="margin-top: 30px;">
+                        <svg viewBox="0 0 350 120" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="60" cy="60" r="45" fill="var(--bitcoin-orange)"/>
+                            <text x="60" y="68" font-family="Arial Black, Gadget, sans-serif" font-size="40" fill="white" text-anchor="middle">₿</text>
+                            <text x="210" y="40" class="svg-text" font-size="18" text-anchor="middle" font-weight="bold">Bitcoin: Dinero Digital</text>
+                            <text x="210" y="65" class="svg-text" font-size="14" text-anchor="middle">✓ Descentralizado</text>
+                            <text x="210" y="85" class="svg-text" font-size="14" text-anchor="middle">✓ Peer-to-Peer</text>
+                            <text x="210" y="105" class="svg-text" font-size="14" text-anchor="middle">✓ Suministro Finito</text>
+                        </svg>
+                        <p class="diagram-caption">Bitcoin: una moneda digital P2P sin una autoridad central y con escasez programada.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>En pocas palabras:</strong> Bitcoin es dinero digital libre, seguro y con un límite. ¡Una pasada!</p>
+                    </div>
+                </section>
+
+                <!-- ... Resto de las secciones ... 
+                Aplica un tono similar y aprovecha los nuevos estilos.
+                Por ejemplo, en la sección de Historia podrías usar un icono de un pergamino o reloj.
+                En "Cómo Funciona", podrías usar un icono de engranajes o una varita mágica.
+                Adapta los títulos del nav y de las secciones para que sean más llamativos.
+                -->
+
+                <section id="historia" class="course-section">
+                    <h2><svg class="section-icon"><use xlink:href="#icon-history"></use></svg>2. El Viaje de Bitcoin 📜</h2>
+                    <p>La aventura de Bitcoin empezó hace ya un tiempo, ¡y qué aventura!</p>
+                    <ul>
+                        <li><strong>2008 (Agosto):</strong> ¡Nace la idea! Se registra <code>bitcoin.org</code>.</li>
+                        <li><strong>2008 (Octubre):</strong> Satoshi Nakamoto (¿quién será?) publica el plan maestro: <em>"Bitcoin: A Peer-to-Peer Electronic Cash System"</em>.</li>
+                        <li><strong>2009 (Enero):</strong> ¡Arranca la red! Se mina el primer bloque (Bloque Génesis) con un mensaje secreto anti-bancos. Hal Finney recibe los primeros bitcoins de Satoshi. ¡Historia pura!</li>
+                        <li><strong>2010 (Mayo):</strong> El famoso "Bitcoin Pizza Day" 🍕. ¡10,000 BTC por dos pizzas! Hoy serían millones... ¡ouch!</li>
+                        <li><strong>2010-2011:</strong> Satoshi se esfuma como un ninja 🥷, dejando Bitcoin en manos de la comunidad.</li>
+                        <li><strong>Y después...:</strong> ¡A crecer! Subidas, bajadas, exchanges, y un montón de gente hablando de ello.</li>
+                    </ul>
+                     <div class="diagram-container" style="margin-top: 30px;">
+                        <svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="20" y1="50" x2="380" y2="50" stroke="var(--border-color)" stroke-width="2" stroke-dasharray="5,5"/>
+                            <circle cx="50" cy="50" r="10" fill="var(--bitcoin-orange)"/> <text x="50" y="75" text-anchor="middle" font-size="10" class="svg-text">2008</text>
+                            <circle cx="130" cy="50" r="10" fill="var(--bitcoin-orange)"/> <text x="130" y="75" text-anchor="middle" font-size="10" class="svg-text">2009</text>
+                            <circle cx="210" cy="50" r="10" fill="var(--bitcoin-orange)"/> <text x="210" y="75" text-anchor="middle" font-size="10" class="svg-text">2010</text>
+                            <circle cx="290" cy="50" r="10" fill="var(--bitcoin-orange)"/> <text x="290" y="75" text-anchor="middle" font-size="10" class="svg-text">2011</text>
+                            <text x="350" y="55" font-size="20" class="svg-text">...</text>
+                        </svg>
+                        <p class="diagram-caption">Línea de tiempo simplificada de los inicios de Bitcoin.</p>
+                    </div>
+                </section>
+
+                <section id="como-funciona" class="course-section">
+                    <h2><svg class="section-icon"><use xlink:href="#icon-cog"></use></svg>3. Magia Técnica (¡Fácil!) ✨</h2>
+                    <p>No necesitas ser un genio para pillar cómo va esto. ¡Vamos a desmitificarlo!</p>
+                    
+                    <div class="two-column-layout">
+                        <div class="text-content">
+                            <h3>La Blockchain: El Gran Libro Mágico 📖</h3>
+                            <p>Piensa en la Blockchain como un <strong>libro de contabilidad digital indestructible y compartido</strong>. Cada "hoja" (bloque) tiene un montón de transacciones. Una vez escrita, ¡no se puede borrar ni cambiar! Súper seguro y transparente.</p>
+                        </div>
+                        <div class="visual-content">
+                            <div class="diagram-container">
+                                <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+                                    <defs><linearGradient id="blockGradFun" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#80caff"/><stop offset="100%" stop-color="#007bff"/></linearGradient></defs>
+                                    <rect x="10" y="40" width="90" height="60" rx="8" style="fill:url(#blockGradFun);" class="svg-block"/>
+                                    <text x="55" y="73" class="svg-text" fill="white" text-anchor="middle" font-size="12">Bloque A</text>
+                                    <line x1="100" y1="70" x2="130" y2="70" class="svg-arrow"/>
+                                    <rect x="130" y="40" width="90" height="60" rx="8" style="fill:url(#blockGradFun);" class="svg-block"/>
+                                    <text x="175" y="73" class="svg-text" fill="white" text-anchor="middle" font-size="12">Bloque B</text>
+                                    <line x1="220" y1="70" x2="250" y2="70" class="svg-arrow"/>
+                                    <rect x="250" y="40" width="90" height="60" rx="8" style="fill:url(#blockGradFun);" class="svg-block"/>
+                                    <text x="295" y="73" class="svg-text" fill="white" text-anchor="middle" font-size="12">Bloque C</text>
+                                    <text x="200" y="125" class="svg-text" text-anchor="middle" font-size="13">¡Bloques encadenados para siempre!</text>
+                                </svg>
+                                <p class="diagram-caption">La Blockchain: como un tren de bloques de información.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="two-column-layout reverse">
+                        <div class="text-content">
+                            <h3>Minería: ¡A Picar Código! ⛏️💻</h3>
+                            <p>Los <strong>mineros</strong> son los currantes de Bitcoin. Usan ordenadores potentes para resolver acertijos matemáticos. Al hacerlo, confirman transacciones, crean nuevos bloques (y nuevos bitcoins) y se llevan una recompensa. ¡Así se mantiene la red segura y se crean BTC!</p>
+                        </div>
+                         <div class="visual-content">
+                            <div class="diagram-container">
+                                <svg viewBox="0 0 350 180" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="20" y="20" width="100" height="30" rx="3" fill="#FFF3CD"/><text x="70" y="40" class="svg-text" text-anchor="middle" font-size="10">Transacciones</text>
+                                    <line x1="120" y1="35" x2="150" y2="75" class="svg-arrow"/>
+                                    <path d="M160 70 Q195 50 230 70 Q195 130 160 70 Z" fill="#C3E6CB"/> <!-- Forma de pico minero o gema -->
+                                    <text x="195" y="88" class="svg-text" text-anchor="middle" font-size="12">Minero</text>
+                                    <text x="195" y="103" class="svg-text" text-anchor="middle" font-size="9">(¡Eureka!)</text>
+                                    <line x1="235" y1="90" x2="260" y2="125" class="svg-arrow"/>
+                                    <rect x="250" y="120" width="80" height="45" rx="5" class="svg-block" style="fill:url(#blockGradFun);"/>
+                                    <text x="290" y="145" class="svg-text" fill="white" text-anchor="middle" font-size="10">Nuevo Bloque</text>
+                                </svg>
+                                <p class="diagram-caption">Mineros: los héroes que validan y aseguran la red.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Resto de la sección "Cómo Funciona" adaptada -->
+                </section>
+
+                <!-- SEGUIR ADAPTANDO LAS DEMÁS SECCIONES CON ESTE ESTILO -->
+                <!-- ... (resto de las secciones adaptadas como en el ejemplo anterior) ... -->
+                 <section id="casos-de-uso" class="course-section">
+                    <h2><svg class="section-icon"><use xlink:href="#icon-bulb"></use></svg>4. Usos Increíbles 💡</h2>
+                    <p>Bitcoin no es solo para geeks, ¡tiene usos súper prácticos!</p>
+                    <div class="features-grid">
+                        <div class="feature-card"><h4>Escudo Anti-Inflación</h4><p>Como un cofre del tesoro digital para guardar valor.</p></div>
+                        <div class="feature-card"><h4>Paga tus Cosas</h4><p>¡Cada vez más tiendas aceptan Bitcoin! 🛍️</p></div>
+                        <div class="feature-card"><h4>Dinero sin Fronteras</h4><p>Envía pasta a la otra punta del mundo, ¡rápido y barato!</p></div>
+                        <div class="feature-card"><h4>Libertad Financiera</h4><p>En sitios con mucho control, Bitcoin te da alas. 🕊️</p></div>
+                        <div class="feature-card"><h4>Ayuda Transparente</h4><p>Donaciones que llegan directas, ¡sin líos!</p></div>
+                    </div>
+                </section>
+
+                <section id="comparativa" class="course-section">
+                     <h2><svg class="section-icon"><use xlink:href="#icon-chart-bar"></use></svg>5. Bitcoin vs. Otros 💪</h2>
+                    <p>¿Cómo se mide Bitcoin con el dinero de toda la vida o el oro? ¡Veamos!</p>
+                    <div style="overflow-x:auto;">
+                        <table class="comparison-table">
+                            <thead><tr><th>Característica</th><th>Bitcoin 🚀</th><th>Oro 🏰</th><th>Dinero Fiat 🏦</th><th>Acciones 📈</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>¿Quién manda?</strong></td><td>¡Nadie y todos!</td><td>El mercado</td><td>Los Bancos</td><td>La empresa</td></tr>
+                                <tr><td><strong>¿Cuántos hay?</strong></td><td>¡Solo 21M!</td><td>Limitado</td><td>¡Infinitos!</td><td>Depende</td></tr>
+                                <tr><td><strong>¿Fácil de llevar?</strong></td><td>Súper fácil (digital)</td><td>Un rollo (pesa)</td><td>Fácil</td><td>Súper fácil</td></tr>
+                                <tr><td><strong>¿Se puede dividir?</strong></td><td>Millones de trocitos</td><td>Algo</td><td>Céntimos</td><td>A veces</td></tr>
+                                <tr><td><strong>¿Sube y baja mucho?</strong></td><td>¡Montaña rusa! 🎢</td><td>Más tranqui</td><td>Poco (pero se devalúa)</td><td>Depende</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="personajes" class="course-section">
+                    <h2><svg class="section-icon"><use xlink:href="#icon-users"></use></svg>6. Los Protagonistas 🌟</h2>
+                    <p>Aunque Bitcoin es de todos, ¡algunas caras son más conocidas!</p>
+                    <ul>
+                        <li><strong>Satoshi Nakamoto:</strong> El/La/Los genio(s) fantasma. ¡Nadie sabe quién es! 👻</li>
+                        <li><strong>Hal Finney:</strong> Un crack de la criptografía, ¡el primero en recibir BTC!</li>
+                        <li><strong>Gavin Andresen:</strong> El que tomó el relevo de Satoshi.</li>
+                        <li><strong>Andreas M. Antonopoulos:</strong> El profe de Bitcoin, ¡explica genial!</li>
+                        <li><strong>Michael Saylor:</strong> Un jefazo que apostó fuerte por Bitcoin con su empresa.</li>
+                    </ul>
+                </section>
+
+                <section id="datos-curiosos" class="course-section">
+                    <h2><svg class="section-icon"><use xlink:href="#icon-bulb"></use></svg>7. ¡Wow! Datos Curiosos 🤯</h2>
+                    <div class="two-column-layout">
+                        <div class="text-content">
+                            <ul>
+                                <li><strong>Solo 21M de Bitcoins:</strong> ¡Ni uno más! El último se minará por el año 2140.</li>
+                                <li><strong>Halving Party:</strong> Cada 4 años, ¡fiesta! La creación de nuevos BTC se reduce a la mitad. 🥳</li>
+                                <li><strong>Satoshi = Millonésima:</strong> 1 BTC son 100 millones de "satoshis".</li>
+                                <li><strong>Pizzas Carísimas:</strong> ¡10.000 BTC por dos pizzas en 2010! Hoy serían una fortuna.</li>
+                                <li><strong>¡Cuidado con las claves!:</strong> Millones de BTC perdidos por olvidar contraseñas. 😱</li>
+                            </ul>
+                        </div>
+                        <div class="visual-content">
+                            <div class="diagram-container">
+                                 <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="150" cy="75" r="60" fill="var(--bitcoin-orange)" opacity="0.2"/>
+                                    <text x="150" y="85" font-family="Arial Black" font-size="70" fill="var(--bitcoin-orange)" text-anchor="middle">₿</text>
+                                    <text x="150" y="40" text-anchor="middle" font-size="12" class="svg-text" fill="var(--deep-blue)">21 Millones MÁXIMO</text>
+                                    <text x="70" y="120" text-anchor="middle" font-size="10" class="svg-text">Pizza Day: 10k BTC!</text>
+                                    <text x="230" y="120" text-anchor="middle" font-size="10" class="svg-text">Halving c/4 años!</text>
+                                </svg>
+                                <p class="diagram-caption">Algunos datos clave y curiosos de Bitcoin.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="futuro" class="course-section">
+                    <h2><svg class="section-icon"><use xlink:href="#icon-rocket"></use></svg>8. El Futuro es Ahora 🔮</h2>
+                    <p>Bitcoin no para de evolucionar. ¿Qué nos espera?</p>
+                     <div class="two-column-layout reverse">
+                        <div class="text-content">
+                            <h4>A la Vista:</h4>
+                            <ul>
+                                <li><strong>Lightning Network:</strong> ¡Pagos con BTC a la velocidad del rayo! ⚡</li>
+                                <li><strong>Más Empresas y Países:</strong> ¡Subiéndose al carro de Bitcoin!</li>
+                                <li><strong>Nuevas Reglas:</strong> Los gobiernos están viendo cómo encajarlo.</li>
+                            </ul>
+                            <h4>Retos en el Camino:</h4>
+                            <ul>
+                                <li>¡Hacerlo aún más rápido y para todos!</li>
+                                <li>Que el precio no sea una montaña rusa. 🎢</li>
+                                <li>Minería más eco-friendly. 🌳</li>
+                            </ul>
+                        </div>
+                        <div class="visual-content">
+                            <div class="diagram-container">
+                                <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M 50 100 Q 150 20 250 100" stroke="var(--bitcoin-orange)" stroke-width="3" fill="none" stroke-dasharray="5,5"/>
+                                    <circle cx="50" cy="100" r="8" fill="var(--light-blue)"/>
+                                    <circle cx="150" cy="40" r="15" fill="var(--bitcoin-orange)"/> <text x="150" y="45" fill="white" font-size="12" text-anchor="middle">LN</text>
+                                    <circle cx="250" cy="100" r="8" fill="var(--light-blue)"/>
+                                    <text x="150" y="130" text-anchor="middle" class="svg-text" font-size="12">Escalabilidad con Lightning Network</text>
+                                </svg>
+                                <p class="diagram-caption">El futuro de Bitcoin: más rápido y adoptado.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="highlight">
+                        <p><strong>Ojo:</strong> El futuro es emocionante pero incierto. ¡Siempre con cabeza!</p>
+                    </div>
+                </section>
+
+                <section id="conclusion" class="course-section">
+                    <h2><svg class="section-icon"><use xlink:href="#icon-check-circle"></use></svg>9. ¡Sigue Aprendiendo! 🎓</h2>
+                    <p>¡Enhorabuena, explorador de Bitcoin! Ya tienes las bases. ¿Listo para más?</p>
+                    <h4>Recuerda Estos Tesoros:</h4>
+                    <ul>
+                        <li>Bitcoin: <strong>digital, libre, limitado</strong>.</li>
+                        <li>La magia: <strong>Blockchain</strong> y <strong>Minería</strong>.</li>
+                        <li>¡Tu <strong>clave privada</strong> es TU tesoro! 🔑</li>
+                        <li>Puede ser oro digital o dinero para el día a día.</li>
+                    </ul>
+                    <h4>Tu Próxima Aventura:</h4>
+                    <ol>
+                        <li><strong>Investiga a fondo:</strong> ¡Hay un universo por descubrir!</li>
+                        <li><strong>Prueba un poquito (¡con cuidado!):</strong> La práctica hace al maestro.</li>
+                        <li><strong>No te despistes:</strong> ¡Esto va rápido!</li>
+                        <li><strong>¡Conoce los riesgos!:</strong> Bitcoin es emocionante, pero invierte con coco.</li>
+                    </ol>
+                    <div class="highlight" style="background-color: #d1e7dd; border-left-color: #198754;"> <!-- Un highlight verde para la conclusión -->
+                        <p style="color: #0f5132;"><strong>Aviso Final:</strong> Esto es para aprender, no un consejo para hacerte rico rápido. ¡Investiga siempre por tu cuenta (DYOR)!</p>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <footer>
+        <p>© <span id="currentYear"></span> Curso Bitcoin ¡A Tope! - Creado con ❤️ y código.</p>
+    </footer>
+
+    <script>
+    // JavaScript (sin cambios significativos, ya es funcional)
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const navLinks = document.querySelectorAll('nav ul li a');
+        const navElement = document.querySelector('nav');
+        const mainLayoutElement = document.querySelector('.main-layout');
+        
+        let navHeight = navElement ? navElement.offsetHeight : 0;
+        let stickyNavOffset = 20;
+
+        function isNavLateral() {
+            return window.getComputedStyle(mainLayoutElement).flexDirection === 'row';
+        }
+
+        new ResizeObserver(() => {
+            navHeight = navElement ? navElement.offsetHeight : 0;
+        }).observe(navElement);
+
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    let offsetTop = targetElement.offsetTop;
+                    
+                    if (window.getComputedStyle(navElement).position === 'sticky') {
+                        if (isNavLateral()) { 
+                            offsetTop -= stickyNavOffset; 
+                        } else { 
+                             offsetTop -= (navHeight + stickyNavOffset);
+                        }
+                    } else { 
+                         offsetTop -= 20; 
+                    }
+                    
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                }
+            });
+        });
+
+        const sections = document.querySelectorAll('.course-section');
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => sectionObserver.observe(section));
+        
+        if (navLinks.length > 0) navLinks[0].classList.add('active');
+
+        window.addEventListener('scroll', () => {
+            let currentSectionId = '';
+            let scrollPosition = window.pageYOffset;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                let effectiveSectionTop = sectionTop;
+                let activationPoint = sectionHeight * 0.3; // Activar cuando el 30% superior de la sección es visible
+
+                if (window.getComputedStyle(navElement).position === 'sticky') {
+                    if (isNavLateral()) {
+                         effectiveSectionTop -= (stickyNavOffset + activationPoint); 
+                    } else {
+                         effectiveSectionTop -= (navHeight + stickyNavOffset + activationPoint); 
+                    }
+                } else {
+                     effectiveSectionTop -= (60 + activationPoint);
+                }
+                // Activar si el punto de activación está dentro de la vista Y no hemos pasado más del 70% de la sección
+                if (scrollPosition >= effectiveSectionTop && scrollPosition < (sectionTop + sectionHeight * 0.7) ) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (currentSectionId && link.getAttribute('href').substring(1) === currentSectionId) {
+                    link.classList.add('active');
+                }
+            });
+            if (!currentSectionId && scrollPosition < sections[0].offsetTop * 0.5 && navLinks.length > 0) {
+                 navLinks.forEach(link => link.classList.remove('active'));
+                navLinks[0].classList.add('active');
+            }
+        });
+    });
+    </script>
+</body>
+</html>
