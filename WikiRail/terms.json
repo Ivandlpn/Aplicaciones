@@ -111,7 +111,7 @@
     "maintenance_considerations": "Inspección de la regleta colectora para detectar desgaste y daños. Comprobación regular del mecanismo de elevación/descenso y del estado de la banda de carbono.",
     "related_terms": ["catenary", "overhead_line", "contact_strip"],
     "media": {
-        "images": ["/images/pantograph.jpg"],
+        "images": ["https://static.wikia.nocookie.net/ferrocarriles/images/5/56/Panto252_1.JPG/revision/latest?cb=20080207010012"],
         "videos": [],
         "pdfs": []
     },
@@ -584,7 +584,7 @@
     "functions": ["Recibir energía", "Transformar tensión/corriente", "Alimentar catenaria", "Proteger red ferroviaria"],
     "maintenance_considerations": "Inspección y pruebas de transformadores, aparamenta y sistemas de protección. Análisis de aceite dieléctrico. Mantenimiento de sistemas de refrigeración y puesta a tierra. Pruebas de aislamiento.",
     "related_terms": ["substation", "power_supply", "catenary", "switchgear", "transformer_traction"],
-    "media": { "images": [], "videos": [], "pdfs": [] },
+    "media": { "images": ["https://www.adifaltavelocidad.es/documents/34745/0/0103+Np+adjudicaci%C3%B3n+obras+conexi%C3%B3n+subestaci%C3%B3n+de+tracci%C3%B3n+de+Casatejada.jpg/0228db5e-bfbf-bade-c1d0-7c3533d91370?t=1646127978143"], "videos": [], "pdfs": [] },
     "last_updated": "2023-09-05"
   },
   {
@@ -704,7 +704,7 @@
     "functions": ["Soportar el hilo de contacto desde el sustentador", "Mantener la altura del hilo de contacto"],
     "maintenance_considerations": "Inspección visual de rotura, deformación, desgaste o conexiones deficientes. La rotura de péndolas puede causar irregularidades en la altura del hilo de contacto.",
     "related_terms": ["catenary", "contact_wire", "messenger_wire"],
-    "media": { "images": [], "videos": [], "pdfs": [] },
+    "media": { "images": ["https://www.mapensa.net/pen/mapen01.jpg"], "videos": [], "pdfs": [] },
     "last_updated": "2023-09-05"
   },
   {
@@ -1197,7 +1197,7 @@
     "functions": ["Comunicación de voz entre personal (maquinistas, mantenedores, control)", "Comunicación de datos para sistemas de seguridad (ETCS)"],
     "maintenance_considerations": "Mantenimiento de estaciones base y equipos de red. Monitorización de la cobertura y calidad de la señal. Ciberseguridad. Mantenimiento de terminales (teléfonos, equipos embarcados). Crucial para la operación moderna y los sistemas de seguridad.",
     "related_terms": ["etcs", "communication_system", "rbc"],
-    "media": { "images": [], "videos": [], "pdfs": [] },
+    "media": { "images": ["https://fonon.eu/wp-content/uploads/2023/07/Fonon_Schemat_GSM-R_EN.jpg"], "videos": [], "pdfs": [] },
     "last_updated": "2023-09-07"
   },
   {
