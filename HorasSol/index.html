@@ -1,1 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizonte Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --color-amanecer-inicio: #ffc371; --color-amanecer-medio: #ff9b44; --color-anochecer-medio: #ff5f6d;
+            --color-anochecer-fin: #86295c; --color-noche: #2c3e50; --color-texto-principal: #ffffff;
+            --color-sol: #f1c40f; --color-luna: #e0e0e0; --color-duracion: #e67e22; --color-positivo: #2ecc71;
+            --color-negativo: #e74c3c; --color-fondo-tarjeta: rgba(255, 255, 255, 0.1); --blur-tarjeta: 10px;
+            --sombra-tarjeta: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        body {
+            font-family: 'Lato', sans-serif; margin: 0; padding: 20px 0; color: var(--color-texto-principal);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-amanecer-inicio), var(--color-amanecer-medio) 25%, var(--color-anochecer-medio) 75%, var(--color-noche));
+            background-size: 400% 400%; animation: gradientAnimation 15s ease infinite; overflow-x: hidden;
+        }
+        @keyframes gradientAnimation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; font-weight: 700; }
+        .header { text-align: center; margin-bottom: 20px; padding: 0 20px; }
+        .header h1 { font-size: 3.5em; margin-bottom: 5px; text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+        #location-name { font-size: 1.5em; font-weight: 400; font-family: 'Lato', sans-serif; margin: 0 0 15px 0; color: rgba(255, 255, 255, 0.9); min-height: 27px; }
+        .status-message { font-size: 1.1em; font-style: italic; color: rgba(255, 255, 255, 0.8); min-height: 20px; }
+        
+        #sky-animation-container {
+            width: 90%; max-width: 500px; height: 250px; margin: 20px auto;
+            position: relative; overflow: hidden; display: none;
+        }
+        #sky-path {
+            width: 100%; height: 500px; border: 3px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 50%; position: absolute; bottom: 0; left: 50%;
+            transform: translateX(-50%); box-sizing: border-box;
+        }
+        .celestial-body {
+            position: absolute; top: 0; left: 50%; width: 50px; height: 250px; /* Alto igual al radio */
+            margin-left: -25px; transform-origin: bottom center;
+            transition: transform 1s linear, opacity 1s ease;
+        }
+        .celestial-body i {
+            position: absolute; top: 0; left: 0;
+            font-size: 2.5em; width: 50px; text-align: center;
+        }
+        #sun-icon i { color: var(--color-sol); text-shadow: 0 0 15px var(--color-sol); }
+        #moon-icon i { color: var(--color-luna); text-shadow: 0 0 15px var(--color-luna); }
 
+        .results-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; width: 90%; max-width: 1200px; margin-top: 20px; }
+        .info-card { background: var(--color-fondo-tarjeta); backdrop-filter: blur(var(--blur-tarjeta)); border-radius: 15px; box-shadow: var(--sombra-tarjeta); padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; transition: opacity 0.5s ease, transform 0.5s ease; opacity: 0; transform: translateY(20px); }
+        .info-card.visible { opacity: 1; transform: translateY(0); }
+        .card-content { display: flex; flex-direction: column; align-items: center; height: 100%; }
+        .icon-container { font-size: 3em; margin-bottom: 15px; } .icon-container i { color: var(--color-sol); }
+        .icon-container .fa-moon { color: var(--color-luna); } .icon-container .fa-hourglass-half { color: var(--color-duracion); }
+        .card-label { font-size: 1.2em; font-weight: 600; margin-bottom: 10px; color: rgba(255, 255, 255, 0.9); }
+        .card-value { font-size: 2.5em; font-weight: 700; margin-bottom: 10px; }
+        #main-weather-card { grid-column: 1 / -1; justify-self: center; width: 100%; max-width: 400px; flex-direction: row; align-items: center; justify-content: center; gap: 20px; padding: 20px;}
+        #main-weather-icon { font-size: 4em; }
+        #main-weather-temp { font-size: 2.5em; font-weight: 600;}
+        .main-buttons-container { grid-column: 1 / -1; justify-self: center; display: flex; gap: 20px; margin-top: 10px; }
+        .main-buttons-container button { background-color: var(--color-duracion); color: var(--color-texto-principal); border: none; border-radius: 50px; padding: 15px 30px; font-family: 'Poppins', sans-serif; font-size: 1em; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: background-color 0.3s, transform 0.3s; }
+        .main-buttons-container button:hover { background-color: #d35400; transform: translateY(-2px); }
+        #load-favorite-btn { background-color: var(--color-positivo); }
+        #load-favorite-btn:hover { background-color: #27ae60; }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); animation: fadeIn 0.5s; }
+        .modal-content { background: #34495e; margin: 5% auto; padding: 30px; border-radius: 15px; width: 90%; max-width: 950px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); position: relative; }
+        .close-btn { color: #aaa; position: absolute; top: 15px; right: 25px; font-size: 35px; font-weight: bold; cursor: pointer; transition: color 0.3s; }
+        .close-btn:hover { color: white; }
+        #city-inputs-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .city-input-row { display: flex; gap: 10px; align-items: center; }
+        .city-input-wrapper { position: relative; flex-grow: 1; }
+        .city-input { padding: 12px; border: 2px solid #7f8c8d; border-radius: 8px; background: #2c3e50; color: white; font-size: 1em; width: 100%; box-sizing: border-box; }
+        .remove-city-btn { background: var(--color-negativo); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+        .remove-city-btn:disabled { background: #7f8c8d; cursor: not-allowed; }
+        #add-city-btn { background: none; border: 2px dashed #7f8c8d; color: #7f8c8d; padding: 10px; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        #add-city-btn:hover { background: #7f8c8d; color: white; }
+        .comparator-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        #compare-btn, #save-comparison-btn { padding: 12px 25px; border-radius: 8px; border: none; font-size: 1em; font-weight: 600; cursor: pointer; }
+        #compare-btn { background-color: var(--color-positivo); color: white; }
+        #save-comparison-btn { background-color: var(--color-duracion); color: white; }
+        #date-input { padding: 12px; border: 2px solid #7f8c8d; border-radius: 8px; background: #2c3e50; color: white; font-size: 1em; }
+        .autocomplete-suggestions { position: absolute; background: #4a6580; border: 1px solid #7f8c8d; border-top: none; border-radius: 0 0 8px 8px; z-index: 1001; width: 100%; max-height: 200px; overflow-y: auto; }
+        .autocomplete-suggestions div { padding: 10px; cursor: pointer; } .autocomplete-suggestions div:hover { background: #5d7e9e; }
+        #comparison-summary { text-align: center; margin: 20px 0; font-size: 1.2em; font-weight: bold; min-height: 25px; }
+        #comparison-results { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-around; }
+        .city-result-column { flex: 1; min-width: 300px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 10px; opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .city-result-column.visible { opacity: 1; transform: translateY(0); }
+        .city-result-column h3 { font-size: 1.8em; margin-top: 0; text-align: center; }
+        .city-result-column .data-point { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; font-size: 1.1em; text-align: left; }
+        .data-point i { margin-right: 15px; width: 20px; text-align: center; }
+        .city-result-column .data-point.weather { border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; margin-top: 10px; }
+        .city-result-column .weather-icon { font-size: 1.5em; }
+        #comparison-timeline-container { flex-basis: 100%; order: -1; margin-bottom: 20px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 10px; opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        #comparison-timeline-container.visible { opacity: 1; transform: translateY(0); }
+        .timeline-row { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+        .timeline-label { width: 100px; text-align: right; font-weight: bold; font-size: 0.9em; flex-shrink: 0; }
+        .timeline-track { position: relative; height: 25px; background: #2c3e50; border-radius: 5px; flex-grow: 1; }
+        .sunlight-bar { position: absolute; top: 0; height: 100%; border-radius: 5px; }
+        .timeline-axis { display: flex; justify-content: space-between; padding-left: 115px; margin-top: 10px; border-top: 1px solid #7f8c8d; padding-top: 5px; }
+        .timeline-axis span { font-size: 0.8em; color: #bdc3c7; }
+        .spinner { border: 4px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 4px solid white; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 900px) { .comparator-form { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .header h1 { font-size: 2.5em; } #location-name { font-size: 1.2em; } .results-container { flex-direction: column; align-items: center; width: 80%; } .info-card { width: 90%; max-width: 350px; } .modal-content { margin: 10% auto; } .timeline-label { width: 80px; font-size: 0.8em; } .timeline-axis { padding-left: 95px; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Horizonte Digital</h1>
+        <h2 id="location-name"></h2>
+        <p class="status-message">Solicitando permiso de ubicación...</p>
+    </header>
+    <div id="sky-animation-container">
+        <div id="sky-path"></div>
+        <div id="sun-icon" class="celestial-body"><i class="fas fa-sun"></i></div>
+        <div id="moon-icon" class="celestial-body"><i class="fas fa-moon"></i></div>
+    </div>
+    <main class="results-container">
+        <div class="info-card" id="main-weather-card"></div>
+        <div class="info-card" id="amanecer-card"></div>
+        <div class="info-card" id="duracion-card"></div>
+        <div class="info-card" id="anochecer-card"></div>
+        <div class="main-buttons-container">
+            <button id="open-comparator-btn"><i class="fas fa-city"></i> Comparar Ciudades</button>
+            <button id="load-favorite-btn" style="display: none;"><i class="fas fa-star"></i> Cargar Favorita</button>
+        </div>
+    </main>
+    <div id="comparator-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal-btn">&times;</span>
+            <h2>Comparador Avanzado</h2>
+            <div id="city-inputs-container"></div>
+            <button id="add-city-btn"><i class="fas fa-plus"></i> Añadir otra ciudad</button>
+            <hr style="border-color: #7f8c8d; margin: 20px 0;">
+            <div class="comparator-controls">
+                <input type="date" id="date-input">
+                <button id="compare-btn">Comparar</button>
+                <button id="save-comparison-btn" style="display: none;">Guardar</button>
+            </div>
+            <div class="spinner" id="comparator-spinner"></div>
+            <div id="comparison-summary"></div>
+            <div id="comparison-results"></div>
+        </div>
+    </div>
+
+<script>
+// --- Selectores y Constantes ---
+const locationNameElement = document.getElementById('location-name');
+const statusMessageElement = document.querySelector('.status-message');
+const mainWeatherCard = document.getElementById('main-weather-card');
+const mainContainer = document.querySelector('.results-container');
+const skyContainer = document.getElementById('sky-animation-container');
+const sunIcon = document.getElementById('sun-icon');
+const moonIcon = document.getElementById('moon-icon');
+let skyAnimationInterval = null;
+
+const modal = {
+    element: document.getElementById('comparator-modal'),
+    openBtn: document.getElementById('open-comparator-btn'),
+    closeBtn: document.getElementById('close-modal-btn'),
+    loadBtn: document.getElementById('load-favorite-btn'),
+    saveBtn: document.getElementById('save-comparison-btn'),
+    compareBtn: document.getElementById('compare-btn'),
+    dateInput: document.getElementById('date-input'),
+    inputsContainer: document.getElementById('city-inputs-container'),
+    addCityBtn: document.getElementById('add-city-btn'),
+    resultsContainer: document.getElementById('comparison-results'),
+    summary: document.getElementById('comparison-summary'),
+    spinner: document.getElementById('comparator-spinner'),
+};
+let lastSuccessfulComparison = [];
+const FAVORITE_KEY = 'horizonteDigital_favorite';
+const CITY_COLORS = ['#f1c40f', '#e67e22', '#3498db', '#9b59b6', '#2ecc71', '#e74c3c', '#1abc9c', '#f39c12'];
+const OPEN_METEO_API_URL = 'https://api.open-meteo.com/v1/forecast';
+const GEOCODING_API_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+const REVERSE_GEOCODING_URL = 'https://nominatim.openstreetmap.org/reverse';
+
+// --- Funciones de Utilidad ---
+const formatTime = (d) => new Date(d).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+const formatDuration = (s) => `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m`;
+function formatDurationForSentence(s) { const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); const parts = []; if (h > 0) parts.push(`${h} ${h === 1 ? 'hora' : 'horas'}`); if (m > 0) parts.push(`${m} ${m === 1 ? 'minuto' : 'minutos'}`); return parts.length === 0 ? null : parts.join(' y '); }
+const debounce = (func, delay) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => func.apply(this, a), delay); }; };
+
+function getWeatherIcon(weatherCode) {
+    const icons = {
+        0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 53: 'fa-cloud-rain', 55: 'fa-cloud-showers-heavy', 56: 'fa-snowflake', 57: 'fa-snowflake', 61: 'fa-cloud-rain', 63: 'fa-cloud-rain', 65: 'fa-cloud-showers-heavy', 66: 'fa-snowflake', 67: 'fa-snowflake', 71: 'fa-snowflake', 73: 'fa-snowflake', 75: 'fa-snowflake', 77: 'fa-snowflake', 80: 'fa-cloud-showers-heavy', 81: 'fa-cloud-showers-heavy', 82: 'fa-cloud-showers-heavy', 85: 'fa-snowflake', 86: 'fa-snowflake', 95: 'fa-bolt', 96: 'fa-bolt', 99: 'fa-bolt',
+    };
+    return `<i class="fas ${icons[weatherCode] || 'fa-question'}"></i>`;
+}
+
+// --- Lógica de la App ---
+async function fetchCombinedData(lat, lng, dateStr) {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const url = `${OPEN_METEO_API_URL}?latitude=${lat}&longitude=${lng}&daily=sunrise,sunset,daylight_duration&current_weather=true&timezone=${timezone}&start_date=${dateStr}&end_date=${dateStr}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('No se pudo obtener la información del tiempo y sol.');
+    const data = await response.json();
+    if (data.error) throw new Error(data.reason);
+    return {
+        sunData: { sunrise: data.daily.sunrise[0], sunset: data.daily.sunset[0], day_length: data.daily.daylight_duration[0] },
+        weatherData: data.current_weather
+    };
+}
+
+async function reverseGeocode(lat, lng) {
+    const url = `${REVERSE_GEOCODING_URL}?format=json&lat=${lat}&lon=${lng}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Respuesta de red no fue ok.');
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        const { city, town, village, country } = data.address;
+        const cityName = city || town || village || 'Ubicación desconocida';
+        return `${cityName}, ${country}`;
+    } catch (error) {
+        console.error("Error en geocodificación inversa:", error);
+        return `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
+    }
+}
+
+// --- Lógica de Animación (CORREGIDA) ---
+function updateSkyAnimation(sunriseStr, sunsetStr) {
+    if (skyAnimationInterval) clearInterval(skyAnimationInterval);
+    const updatePosition = () => {
+        const now = new Date();
+        const sunrise = new Date(sunriseStr);
+        const sunset = new Date(sunsetStr);
+        const isDayTime = now >= sunrise && now <= sunset;
+
+        sunIcon.style.opacity = isDayTime ? '1' : '0';
+        moonIcon.style.opacity = isDayTime ? '0' : '1';
+
+        let angle;
+        if (isDayTime) {
+            const totalDaylight = sunset.getTime() - sunrise.getTime();
+            const elapsed = now.getTime() - sunrise.getTime();
+            const progress = totalDaylight > 0 ? elapsed / totalDaylight : 0;
+            angle = -90 + (progress * 180);
+            sunIcon.style.transform = `rotate(${angle}deg)`;
+        } else {
+            let previousSunset = new Date(sunset);
+            let nextSunrise = new Date(sunrise);
+            if (now < sunrise) { // Antes del amanecer de hoy
+                previousSunset.setDate(previousSunset.getDate() - 1);
+            } else { // Después del anochecer de hoy
+                nextSunrise.setDate(nextSunrise.getDate() + 1);
+            }
+            const totalNight = nextSunrise.getTime() - previousSunset.getTime();
+            const elapsed = now.getTime() - previousSunset.getTime();
+            const progress = totalNight > 0 ? elapsed / totalNight : 0;
+            angle = -90 + (progress * 180);
+            moonIcon.style.transform = `rotate(${angle}deg)`;
+        }
+    };
+    updatePosition();
+    skyAnimationInterval = setInterval(updatePosition, 60000);
+}
+
+async function initApp() {
+    mainWeatherCard.innerHTML = `<div id="main-weather-icon"></div><div><div id="main-weather-temp">--°C</div></div>`;
+    document.getElementById('amanecer-card').innerHTML = `<div class="card-content"><div class="icon-container"><i class="fas fa-sun"></i></div><p class="card-label">Amanecer</p><p class="card-value" id="amanecer-time">--:--</p></div>`;
+    document.getElementById('duracion-card').innerHTML = `<div class="card-content"><div class="icon-container"><i class="fas fa-hourglass-half"></i></div><p class="card-label">Horas de Sol</p><p class="card-value" id="duracion-day">--h --m</p></div>`;
+    document.getElementById('anochecer-card').innerHTML = `<div class="card-content"><div class="icon-container"><i class="fas fa-moon"></i></div><p class="card-label">Anochecer</p><p class="card-value" id="anochecer-time">--:--</p></div>`;
+    checkFavoriteExists();
+    if (!navigator.geolocation) { statusMessageElement.textContent = 'Error: Tu navegador no soporta geolocalización.'; return; }
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            try {
+                const { latitude, longitude } = position.coords;
+                statusMessageElement.textContent = `Identificando tu ubicación...`;
+                const locationName = await reverseGeocode(latitude, longitude);
+                locationNameElement.textContent = locationName;
+                statusMessageElement.textContent = `Obteniendo datos para ${locationName}...`;
+                const todayStr = new Date().toISOString().split('T')[0];
+                const { sunData, weatherData } = await fetchCombinedData(latitude, longitude, todayStr);
+                document.getElementById('amanecer-time').textContent = formatTime(sunData.sunrise);
+                document.getElementById('anochecer-time').textContent = formatTime(sunData.sunset);
+                document.getElementById('duracion-day').textContent = formatDuration(sunData.day_length);
+                mainWeatherCard.querySelector('#main-weather-icon').innerHTML = getWeatherIcon(weatherData.weathercode);
+                mainWeatherCard.querySelector('#main-weather-temp').textContent = `${Math.round(weatherData.temperature)}°C`;
+                skyContainer.style.display = 'block';
+                updateSkyAnimation(sunData.sunrise, sunData.sunset);
+                mainContainer.querySelectorAll('.info-card').forEach(el => el.classList.add('visible'));
+                statusMessageElement.textContent = `Datos cargados correctamente.`;
+            } catch (error) {
+                statusMessageElement.textContent = `Error al cargar datos: ${error.message}`;
+            }
+        },
+        () => { statusMessageElement.textContent = 'Error: No se pudo obtener la ubicación.'; }
+    );
+}
+
+function addCityInput(cityData = null) {
+    const newRow = document.createElement('div'); newRow.className = 'city-input-row';
+    newRow.innerHTML = `<div class="city-input-wrapper"><input type="text" class="city-input" placeholder="Escribe una ciudad..." autocomplete="off"><div class="autocomplete-suggestions"></div></div><button class="remove-city-btn" aria-label="Eliminar ciudad">&times;</button>`;
+    const input = newRow.querySelector('.city-input');
+    if (cityData) { input.value = cityData.name; input.dataset.lat = cityData.lat; input.dataset.lng = cityData.lng; input.dataset.name = cityData.name; }
+    modal.inputsContainer.appendChild(newRow); input.addEventListener('input', handleAutocomplete); checkRemoveButtons();
+}
+function checkRemoveButtons() { const rows = modal.inputsContainer.querySelectorAll('.city-input-row'); rows.forEach(row => { row.querySelector('.remove-city-btn').disabled = (rows.length <= 2); }); }
+async function geocodeCity(query) { const cacheKey = `geocode_${query.toLowerCase()}`; const cached = sessionStorage.getItem(cacheKey); if (cached) return JSON.parse(cached); const response = await fetch(`${GEOCODING_API_URL}?name=${encodeURIComponent(query)}&count=5&language=es&format=json`); const data = await response.json(); const results = data.results || []; if (results.length > 0) sessionStorage.setItem(cacheKey, JSON.stringify(results)); return results; }
+const handleAutocomplete = debounce(async (e) => { const input = e.target; const suggestionsContainer = input.nextElementSibling; const query = input.value; if (query.length < 3) { suggestionsContainer.style.display = 'none'; return; } const suggestions = await geocodeCity(query); displayAutocomplete(suggestions, suggestionsContainer, input); }, 300);
+function displayAutocomplete(suggestions, container, input) { container.innerHTML = ''; if (!suggestions.length) { container.style.display = 'none'; return; } suggestions.forEach(city => { const div = document.createElement('div'); div.textContent = `${city.name}, ${city.admin1 || ''} (${city.country_code})`; div.onclick = () => { input.value = city.name; input.dataset.lat = city.latitude; input.dataset.lng = city.longitude; input.dataset.name = city.name; container.style.display = 'none'; }; container.appendChild(div); }); container.style.display = 'block'; }
+function createResultColumn(cityResult, color) { const column = document.createElement('div'); column.className = 'city-result-column'; if (cityResult.status === 'rejected') { column.innerHTML = `<h3 class="error-column">Error</h3><p class="error-column">${cityResult.reason.message}</p>`; return column; } const { name, sunData, weatherData } = cityResult.value; column.innerHTML = `<h3 style="color:${color}">${name}</h3><p class="data-point"><i class="fas fa-sun" style="color:${color}"></i> Amanecer: <span>${formatTime(sunData.sunrise)}</span></p><p class="data-point"><i class="fas fa-moon" style="color:#bdc3c7"></i> Anochecer: <span>${formatTime(sunData.sunset)}</span></p><p class="data-point"><i class="fas fa-hourglass-half" style="color:#e67e22"></i> Horas de Sol: <span>${formatDuration(sunData.day_length)}</span></p><div class="data-point weather"><span class="weather-icon">${getWeatherIcon(weatherData.weathercode)}</span><span>${Math.round(weatherData.temperature)}°C</span></div>`; return column; }
+function createUnifiedTimeline(results) { const container = document.createElement('div'); container.id = 'comparison-timeline-container'; let timelineHTML = ''; const fulfilledResults = results.filter(r => r.status === 'fulfilled'); fulfilledResults.forEach((result, i) => { const { name, sunData } = result.value; const color = CITY_COLORS[i % CITY_COLORS.length]; const sunrise = new Date(sunData.sunrise); const sunrisePercent = (sunrise.getUTCHours() * 60 + sunrise.getUTCMinutes()) / 1440 * 100; const daylightPercent = sunData.day_length / 86400 * 100; timelineHTML += `<div class="timeline-row"><div class="timeline-label" style="color:${color}">${name}</div><div class="timeline-track"><div class="sunlight-bar" style="background:${color}; left:${sunrisePercent.toFixed(2)}%; width:${daylightPercent.toFixed(2)}%;"></div></div></div>`; }); if (timelineHTML) { container.innerHTML = timelineHTML + `<div class="timeline-axis"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>`; } return container; }
+function displayComparisonSummary(results) { const fulfilled = results.filter(r => r.status === 'fulfilled').map(r => r.value); if (fulfilled.length < 2) { modal.summary.textContent = 'Se necesitan al menos dos ciudades para comparar.'; return; } fulfilled.sort((a, b) => b.sunData.day_length - a.sunData.day_length); const longest = fulfilled[0]; const shortest = fulfilled[fulfilled.length - 1]; const diffSeconds = longest.sunData.day_length - shortest.sunData.day_length; if (diffSeconds < 60) { modal.summary.innerHTML = 'Todas las ciudades tienen prácticamente la misma duración del día.'; return; } const diffFormatted = formatDurationForSentence(diffSeconds); modal.summary.innerHTML = `<strong>${longest.name}</strong> tiene <strong>${diffFormatted}</strong> más de sol que <strong>${shortest.name}</strong>.`; }
+async function handleCompareClick() { const inputs = modal.inputsContainer.querySelectorAll('.city-input'); const citiesToCompare = []; inputs.forEach(input => { if (input.dataset.lat && input.dataset.lng) { citiesToCompare.push({ lat: input.dataset.lat, lng: input.dataset.lng, name: input.dataset.name || input.value }); } }); if (citiesToCompare.length < 2) { modal.summary.textContent = "Por favor, selecciona al menos dos ciudades válidas."; return; } modal.spinner.style.display = 'block'; modal.resultsContainer.innerHTML = ''; modal.summary.innerHTML = ''; lastSuccessfulComparison = []; modal.saveBtn.style.display = 'none'; const dateStr = modal.dateInput.value; const promises = citiesToCompare.map(city => fetchCombinedData(city.lat, city.lng, dateStr).then(data => ({ ...city, ...data }))); const results = await Promise.allSettled(promises); const timelineElement = createUnifiedTimeline(results); modal.resultsContainer.appendChild(timelineElement); results.forEach((result, i) => { const color = CITY_COLORS[i % CITY_COLORS.length]; const column = createResultColumn(result, color); modal.resultsContainer.appendChild(column); }); displayComparisonSummary(results); const successfulCities = results.filter(r => r.status === 'fulfilled').map(r => r.value); if (successfulCities.length > 1) { lastSuccessfulComparison = successfulCities.map(c => ({ name: c.name, lat: c.lat, lng: c.lng })); modal.saveBtn.style.display = 'inline-block'; } modal.spinner.style.display = 'none'; setTimeout(() => { document.querySelectorAll('#comparison-timeline-container, .city-result-column').forEach(el => el.classList.add('visible')); }, 50); }
+function checkFavoriteExists() { if (localStorage.getItem(FAVORITE_KEY)) { modal.loadBtn.style.display = 'inline-block'; } else { modal.loadBtn.style.display = 'none'; } }
+function handleSaveClick() { if (!lastSuccessfulComparison || lastSuccessfulComparison.length === 0) return; localStorage.setItem(FAVORITE_KEY, JSON.stringify(lastSuccessfulComparison)); modal.saveBtn.textContent = 'Guardado ✓'; setTimeout(() => { modal.saveBtn.textContent = 'Guardar'; }, 2000); checkFavoriteExists(); }
+async function handleLoadClick() { const savedData = localStorage.getItem(FAVORITE_KEY); if (!savedData) return; const cities = JSON.parse(savedData); if (!cities || cities.length === 0) return; modal.element.style.display = 'block'; modal.inputsContainer.innerHTML = ''; cities.forEach(city => addCityInput(city)); await new Promise(resolve => setTimeout(resolve, 0)); handleCompareClick(); }
+
+// --- Event Listeners ---
+modal.openBtn.addEventListener('click', () => { modal.element.style.display = 'block'; modal.dateInput.value = new Date().toISOString().split('T')[0]; if (modal.inputsContainer.childElementCount === 0) { addCityInput(); addCityInput(); } });
+modal.closeBtn.addEventListener('click', () => modal.element.style.display = 'none');
+modal.addCityBtn.addEventListener('click', addCityInput);
+modal.inputsContainer.addEventListener('click', (e) => { if (e.target.classList.contains('remove-city-btn')) { e.target.closest('.city-input-row').remove(); checkRemoveButtons(); } });
+modal.compareBtn.addEventListener('click', handleCompareClick);
+modal.saveBtn.addEventListener('click', handleSaveClick);
+modal.loadBtn.addEventListener('click', handleLoadClick);
+window.addEventListener('click', (e) => { if (e.target === modal.element) modal.element.style.display = 'none'; });
+
+initApp();
+</script>
+</body>
+</html>
