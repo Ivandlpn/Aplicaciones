@@ -35,7 +35,6 @@
         #toggle-edit-btn.active { background-color: var(--edit-mode-color); }
 
         .add-habit-form { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
-        /* ... Estilos del formulario sin cambios ... */
         .add-habit-form input { border: 2px solid #e0e0e0; border-radius: 8px; padding: 0.8rem; font-size: 1rem; transition: border-color 0.3s; flex-grow: 1; }
         .add-habit-form input:focus { outline: none; border-color: var(--accent-color); }
         .add-habit-form .input-emoji { flex-grow: 0; width: 60px; text-align: center; font-size: 1.5rem; }
@@ -53,27 +52,54 @@
         .action-btn { background: none; border: none; cursor: pointer; font-size: 1.5rem; padding: 0.2rem; transition: transform 0.2s, color 0.3s; }
         .action-btn:hover { transform: scale(1.15); }
         
-        /* Estilos Modo Normal */
         .complete-btn { color: var(--secondary-text); }
         .habit-card.done { background-color: var(--done-bg); border-left: 4px solid var(--done-accent); }
         .habit-card.done .habit-name { text-decoration: line-through; color: var(--secondary-text); }
         .habit-card.done .complete-btn { color: var(--done-accent); }
 
-        /* --- Estilos para el modo Edición --- */
         .edit-mode .habit-card { cursor: grab; }
         .edit-mode .habit-card:active { cursor: grabbing; }
-        .edit-btn { color: var(--secondary-text); }
-        .edit-btn:hover { color: var(--accent-hover); }
-        .delete-btn { color: var(--secondary-text); }
-        .delete-btn:hover { color: var(--delete-color); }
+        .edit-btn { color: var(--secondary-text); } .edit-btn:hover { color: var(--accent-hover); }
+        .delete-btn { color: var(--secondary-text); } .delete-btn:hover { color: var(--delete-color); }
         .habit-card.dragging { opacity: 0.5; }
         .dragging-over { border-top: 3px solid var(--edit-mode-color) !important; }
 
         #empty-state { text-align: center; color: var(--secondary-text); padding: 2rem 0; }
 
-        /* ... (CSS de modales sin cambios) ... */
-        .modal-overlay, .modal-content, .calendar-modal, .calendar-header, .calendar-nav-btn, .close-modal-btn,
-        .calendar-grid-container, .calendar-day-name, .calendar-day, .celebration-modal { /* estilos sin cambios */ }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);
+            display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s; z-index: 1000;
+        }
+        .modal-overlay.visible { opacity: 1; visibility: visible; }
+        
+        .modal-content {
+            background: var(--card-color); border-radius: 15px; padding: 2rem; width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: scale(0.95); transition: transform 0.3s;
+        }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+
+        .calendar-modal { max-width: 450px; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .calendar-header h3 { font-size: 1.2rem; margin: 0; }
+        .calendar-nav-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--primary-text); }
+        .close-modal-btn { font-size: 1.5rem; color: var(--secondary-text); }
+        .calendar-grid-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .calendar-day-name { font-weight: 600; color: var(--secondary-text); padding-bottom: 0.5rem; }
+        .calendar-day {
+            height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px;
+            background-color: var(--calendar-day-bg); transition: background 0.3s, border 0.3s; font-weight: 500;
+        }
+        .calendar-day.today { box-shadow: 0 0 0 2px var(--accent-color); }
+        .calendar-day.full-completion { background: var(--done-accent); border: 2px solid var(--done-accent-dark); font-size: 1.5rem; line-height: 1; }
+
+        .celebration-modal {
+            max-width: 400px; background: var(--celebrate-bg); color: var(--celebrate-text);
+            text-align: center; padding: 3rem 2rem;
+        }
+        .celebration-modal h2 { font-size: 3rem; margin-bottom: 1rem; }
+        .celebration-modal p { font-size: 1.2rem; margin-bottom: 2rem; }
+        .celebration-modal button { background-color: var(--accent-color); color: white; border: none; border-radius: 8px; padding: 0.8rem 2rem; font-size: 1rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -97,9 +123,27 @@
         </main>
     </div>
 
-    <!-- Modales (HTML sin cambios) -->
-    <div class="modal-overlay" id="calendar-modal-overlay"></div>
-    <div class="modal-overlay" id="celebration-modal-overlay"></div>
+    <!-- Modales Completos -->
+    <div class="modal-overlay" id="calendar-modal-overlay">
+        <div class="modal-content calendar-modal">
+            <div class="calendar-header">
+                <button class="calendar-nav-btn" id="prev-month-btn">&lt;</button>
+                <h3 id="calendar-month-year"></h3>
+                <button class="calendar-nav-btn" id="next-month-btn">&gt;</button>
+                <button class="calendar-nav-btn close-modal-btn" id="close-calendar-btn">✕</button>
+            </div>
+            <div class="calendar-grid-container" id="calendar-weekdays"></div>
+            <div class="calendar-grid-container" id="calendar-grid"></div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="celebration-modal-overlay">
+        <div class="modal-content celebration-modal">
+            <h2>🎉 ¡Día Completado! 🎉</h2>
+            <p id="motivation-message"></p>
+            <button id="close-celebration-btn">Cerrar</button>
+        </div>
+    </div>
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -108,12 +152,26 @@
         const habitInputName = document.getElementById('habit-name');
         const habitInputEmoji = document.getElementById('habit-emoji');
         const habitsList = document.getElementById('habits-list');
-        const openCalendarBtn = document.getElementById('open-calendar-btn');
         const toggleEditBtn = document.getElementById('toggle-edit-btn');
+        // Calendario
+        const openCalendarBtn = document.getElementById('open-calendar-btn');
+        const calendarModalOverlay = document.getElementById('calendar-modal-overlay');
+        const closeCalendarBtn = document.getElementById('close-calendar-btn');
+        const prevMonthBtn = document.getElementById('prev-month-btn');
+        const nextMonthBtn = document.getElementById('next-month-btn');
+        const calendarMonthYear = document.getElementById('calendar-month-year');
+        const calendarGrid = document.getElementById('calendar-grid');
+        const calendarWeekdays = document.getElementById('calendar-weekdays');
+        // Celebración
+        const celebrationModalOverlay = document.getElementById('celebration-modal-overlay');
+        const motivationMessage = document.getElementById('motivation-message');
+        const closeCelebrationBtn = document.getElementById('close-celebration-btn');
         
         // --- ESTADO ---
         let habits = JSON.parse(localStorage.getItem('simpleHabitsApp')) || [];
+        let calendarDate = new Date();
         let isEditMode = false;
+        const motivationMessages = ["¡Lo lograste!", "¡Día perfecto!", "¡Excelente trabajo!", "¡Enhorabuena!", "¡Sigue así!"];
 
         // --- FUNCIONES ---
         const getFormattedDate = (date) => {
@@ -152,7 +210,6 @@
                         <button class="action-btn complete-btn" title="Marcar como hecho">${isDoneToday ? '✔️' : '⚪'}</button>
                     `;
                 }
-
                 habitCard.innerHTML = `
                     <span class="habit-emoji">${habit.emoji}</span>
                     <p class="habit-name">${habit.name}</p>
@@ -162,7 +219,16 @@
             });
         };
 
-        const addHabit = (e) => { /* ... (Sin cambios) ... */ };
+        const addHabit = (e) => {
+            e.preventDefault();
+            const name = habitInputName.value.trim();
+            const emoji = habitInputEmoji.value.trim() || '✨';
+            if (!name) return;
+            habits.push({ id: Date.now(), name, emoji, completedDates: [] });
+            saveHabits();
+            renderHabitsList();
+            form.reset();
+        };
         
         const handleHabitListClick = (e) => {
             const card = e.target.closest('.habit-card');
@@ -171,28 +237,18 @@
             const habit = habits.find(h => h.id === habitId);
 
             if (isEditMode) {
-                // --- Acciones en Modo Edición ---
                 if (e.target.closest('.edit-btn')) {
                     const newName = prompt('Edita el nombre del hábito:', habit.name);
-                    if (newName !== null && newName.trim() !== '') {
-                        habit.name = newName.trim();
-                    }
+                    if (newName !== null && newName.trim() !== '') habit.name = newName.trim();
                     const newEmoji = prompt('Edita el emoji:', habit.emoji);
-                    if (newEmoji !== null && newEmoji.trim() !== '') {
-                        habit.emoji = newEmoji.trim();
-                    }
-                    saveHabits();
-                    renderHabitsList();
+                    if (newEmoji !== null && newEmoji.trim() !== '') habit.emoji = newEmoji.trim();
                 }
                 if (e.target.closest('.delete-btn')) {
                     if (confirm(`¿Seguro que quieres eliminar el hábito "${habit.name}"?`)) {
                         habits = habits.filter(h => h.id !== habitId);
-                        saveHabits();
-                        renderHabitsList();
                     }
                 }
             } else {
-                // --- Acciones en Modo Normal ---
                 if (e.target.closest('.complete-btn')) {
                     const todayStr = getFormattedDate(new Date());
                     const dateIndex = habit.completedDates.indexOf(todayStr);
@@ -200,12 +256,12 @@
                         habit.completedDates.splice(dateIndex, 1);
                     } else {
                         habit.completedDates.push(todayStr);
-                        checkAllHabitsCompleted(); // Solo comprobar al marcar, no al desmarcar
+                        checkAllHabitsCompleted();
                     }
-                    saveHabits();
-                    renderHabitsList();
                 }
             }
+            saveHabits();
+            renderHabitsList();
         };
 
         const toggleEditMode = () => {
@@ -216,14 +272,8 @@
         };
 
         // --- LÓGICA DE DRAG & DROP ---
-        habitsList.addEventListener('dragstart', (e) => {
-            if (!isEditMode) return;
-            e.target.classList.add('dragging');
-        });
-        habitsList.addEventListener('dragend', (e) => {
-            if (!isEditMode) return;
-            e.target.classList.remove('dragging');
-        });
+        habitsList.addEventListener('dragstart', (e) => { if (!isEditMode) return; e.target.classList.add('dragging'); });
+        habitsList.addEventListener('dragend', (e) => { if (!isEditMode) return; e.target.classList.remove('dragging'); });
         habitsList.addEventListener('dragover', (e) => {
             if (!isEditMode) return;
             e.preventDefault();
@@ -248,27 +298,13 @@
                 const [movedItem] = habits.splice(draggedIndex, 1);
                 habits.splice(targetIndex, 0, movedItem);
                 saveHabits();
-                renderHabitsList();
             }
             document.querySelectorAll('.dragging-over').forEach(el => el.classList.remove('dragging-over'));
+            renderHabitsList();
         });
 
-        // --- EVENT LISTENERS ---
-        form.addEventListener('submit', (e) => { e.preventDefault(); addHabit(e); });
-        habitsList.addEventListener('click', handleHabitListClick);
-        toggleEditBtn.addEventListener('click', toggleEditMode);
-        
-        // --- INICIALIZACIÓN ---
-        renderHabitsList();
-        
-        // --- LÓGICA DE MODALES (Para evitar errores) ---
-        // Se asume que el HTML y las funciones de los modales (calendario, celebración) 
-        // existen y son correctas como en la versión anterior.
-        const celebrationModalOverlay = document.getElementById('celebration-modal-overlay');
-        const motivationMessage = document.getElementById('motivation-message');
-        const motivationMessages = ["¡Lo lograste! Cada paso cuenta.", "¡Día perfecto! La constancia es tu superpoder.", "Has cumplido con todos tus propósitos de hoy. ¡Excelente trabajo!", "¡Enhorabuena! Estás construyendo la mejor versión de ti.", "Un día más, un paso más cerca de tus metas. ¡Sigue así!"];
-
-        function checkAllHabitsCompleted() {
+        // --- LÓGICA DE MODALES ---
+        const checkAllHabitsCompleted = () => {
             const todayStr = getFormattedDate(new Date());
             const celebrationShown = localStorage.getItem('celebration_shown_' + todayStr);
             if (celebrationShown) return;
@@ -280,9 +316,87 @@
                 confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
                 localStorage.setItem('celebration_shown_' + todayStr, 'true');
             }
-        }
-        document.getElementById('close-celebration-btn').addEventListener('click', () => celebrationModalOverlay.classList.remove('visible'));
-        // ... Lógica del calendario aquí ...
+        };
+
+        const renderCalendar = () => {
+            calendarGrid.innerHTML = '';
+            const month = calendarDate.getMonth();
+            const year = calendarDate.getFullYear();
+            calendarMonthYear.textContent = calendarDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const startDay = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
+            const completionsByDate = {};
+            habits.forEach(habit => {
+                habit.completedDates.forEach(date => {
+                    completionsByDate[date] = (completionsByDate[date] || 0) + 1;
+                });
+            });
+
+            for (let i = 0; i < startDay; i++) { calendarGrid.appendChild(document.createElement('div')); }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.classList.add('calendar-day');
+                const dayStr = getFormattedDate(new Date(year, month, day));
+                
+                dayEl.innerHTML = '';
+                dayEl.style.background = '';
+                
+                if (dayStr === getFormattedDate(new Date())) dayEl.classList.add('today');
+
+                const completionCount = completionsByDate[dayStr] || 0;
+                let percentage = 0;
+                if (habits.length > 0) {
+                    percentage = Math.round((completionCount / habits.length) * 100);
+                }
+
+                if (percentage === 100) {
+                    dayEl.classList.add('full-completion');
+                    dayEl.innerHTML = '🤩';
+                } else if (percentage > 0) {
+                    dayEl.textContent = day;
+                    dayEl.style.background = `linear-gradient(to top, var(--done-accent) ${percentage}%, var(--calendar-day-bg) ${percentage}%)`;
+                } else {
+                    dayEl.textContent = day;
+                }
+                
+                calendarGrid.appendChild(dayEl);
+            }
+        };
+        
+        const setupCalendarWeekdays = () => {
+            calendarWeekdays.innerHTML = '';
+            const weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+            weekdays.forEach(day => {
+                const dayNameEl = document.createElement('div');
+                dayNameEl.className = 'calendar-day-name';
+                dayNameEl.textContent = day;
+                calendarWeekdays.appendChild(dayNameEl);
+            });
+        };
+
+        // --- EVENT LISTENERS ---
+        form.addEventListener('submit', addHabit);
+        habitsList.addEventListener('click', handleHabitListClick);
+        toggleEditBtn.addEventListener('click', toggleEditMode);
+        
+        openCalendarBtn.addEventListener('click', () => {
+            calendarDate = new Date();
+            renderCalendar();
+            calendarModalOverlay.classList.add('visible');
+        });
+        closeCalendarBtn.addEventListener('click', () => calendarModalOverlay.classList.remove('visible'));
+        calendarModalOverlay.addEventListener('click', (e) => {
+            if (e.target === calendarModalOverlay) calendarModalOverlay.classList.remove('visible');
+        });
+        prevMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(); });
+        nextMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(); });
+        closeCelebrationBtn.addEventListener('click', () => celebrationModalOverlay.classList.remove('visible'));
+
+        // --- INICIALIZACIÓN ---
+        setupCalendarWeekdays();
+        renderHabitsList();
     });
     </script>
 </body>
