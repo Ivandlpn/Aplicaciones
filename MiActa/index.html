@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardiActas</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #4B6C9B; /* PANTONE 7687 C */
+            --secondary-color: #DA291C; /* PANTONE 485 C */
+            --light-color: #f8f9fa;
+            --dark-color: #2c3e50;
+            --success-color: #28a745;
+            --text-color: #495057;
+            --border-color: #dee2e6;
+            --share-btn-color: #6c757d; /* Color para botón Compartir */
+            --share-btn-hover-color: #5a6268;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('fondo.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 10px 20px 20px;
+             background-color: rgba(255, 255, 255, 0.9);
+             border-radius: 8px;
+             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 3.6rem;
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            margin-top: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        h1 small {
+            font-size: 0.6em;
+            display: block;
+            color: var(--secondary-color);
+            margin-top: 2px;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        .week-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 100%;
+            max-width: 480px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .week-number {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: 400;
+            display: block;
+            margin-top: 3px;
+        }
+
+        .week-range {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .card-body {
+            flex-grow: 1;
+            padding-bottom: 15px;
+        }
+
+        .data-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 18px;
+            gap: 15px;
+        }
+
+        .data-label {
+            flex: 0 0 160px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+            padding-top: 9px;
+            display: inline-block;
+            text-align: right;
+        }
+
+        .data-value-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-value {
+            display: block;
+            padding: 8px 12px;
+            background-color: var(--light-color);
+            border-radius: 6px;
+            flex-grow: 1;
+            border: 1px solid var(--border-color);
+            font-size: 1.1rem;
+            min-height: 24px;
+            line-height: 1.4;
+            box-sizing: border-box;
+            word-wrap: break-word;
+        }
+
+        .data-input,
+        .data-select {
+            display: none;
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border 0.3s;
+            box-sizing: border-box;
+        }
+
+        .data-input:focus,
+        .data-select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(75, 108, 155, 0.2);
+        }
+
+        .editing .data-value { display: none; }
+        .editing .data-input, .editing .data-select { display: block; }
+        .editing .edit-btn:not(.save-btn):not(.share-btn) { display: none; }
+        .editing .share-btn { display: none; }
+        .editing .save-btn { display: block; }
+        .editing .share-guard-btn { display: none; }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: auto;
+            gap: 10px;
+            padding-top: 10px;
+        }
+
+        .edit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .edit-btn svg {
+            width: 1em;
+            height: 1em;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+
+        .edit-btn:hover { transform: translateY(-2px); }
+        .edit-btn:not(.save-btn):not(.share-btn) { background-color: var(--primary-color); }
+        .edit-btn:not(.save-btn):not(.share-btn):hover { background-color: #3a5a80; }
+        .save-btn { background-color: var(--success-color); display: none; }
+        .save-btn:hover { background-color: #218838; }
+        .share-btn { background-color: var(--share-btn-color); }
+        .share-btn:hover { background-color: var(--share-btn-hover-color); }
+        .share-btn:disabled, .share-guard-btn:disabled {
+            background-color: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .copied-feedback {
+            background-color: var(--success-color) !important;
+            color: white !important;
+            cursor: default !important;
+        }
+        .copied-feedback svg { display: none; }
+
+        .share-guard-btn {
+            padding: 4px 6px;
+            background-color: var(--share-btn-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background-color 0.3s;
+            line-height: 1;
+        }
+        .share-guard-btn svg { width: 0.9em; height: 0.9em; margin-right: 0; }
+        .share-guard-btn:hover { background-color: var(--share-btn-hover-color); }
+        .share-guard-btn.copied-feedback { background-color: var(--success-color) !important; cursor: default !important; }
+
+        .current-week { background-color: rgb(200, 220, 255); }
+        .next-week { background-color: rgb(255, 200, 200); }
+
+        .sync-status {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #6c757d;
+            background-color: rgba(248, 249, 250, 0.85);
+            padding: 12px;
+            border-radius: 6px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sync-status strong { color: var(--dark-color); }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+            background-color: rgba(248, 249, 250, 0.9);
+            border-radius: 0 0 8px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .footer-logo {
+            height: 50px;
+            margin-bottom: 10px;
+        }
+        .footer-text {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        
+        /* --- ESTILO PARA EL CONTENEDOR DE BOTONES DEL FOOTER --- */
+        .footer-actions {
+            display: flex;
+            gap: 15px; /* Espacio entre los botones */
+            margin-top: 10px; /* Espacio sobre el grupo de botones */
+        }
+
+        .pidame-btn { background-color: #066337; }
+        .pidame-btn:hover { background-color: #044a27; }
+        #historyBtn { background-color: #6c757d; }
+        #historyBtn:hover { background-color: #5a6268; }
+
+        .header-image {
+            display: block;
+            width: 100%;
+            max-width: 990px;
+            height: auto;
+            margin: 20px auto 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+        .modal-hidden { opacity: 0; pointer-events: none; }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-close:hover { color: #333; }
+        #historyListContainer ul { list-style-type: none; padding: 0; margin-top: 20px; }
+        #historyListContainer li {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        #historyListContainer li:last-child { border-bottom: none; }
+        #historyListContainer li span { color: var(--dark-color); font-weight: 500; }
+        #historyListContainer li strong { color: var(--primary-color); }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px; background-color: rgba(255, 255, 255, 0.95); }
+            h1 { font-size: 2.8rem; }
+            .card { padding: 20px; max-width: 100%; }
+            .week-cards { gap: 20px; }
+            .data-item { flex-direction: column; align-items: stretch; gap: 5px; }
+            .data-label { flex-basis: auto; width: 100%; text-align: left; padding-top: 0; }
+            .data-value-container { width: 100%; }
+            .card-actions { flex-wrap: wrap; justify-content: center; gap: 8px; }
+            .edit-btn { padding: 8px 12px; font-size: 0.9rem; }
+            .sync-status { max-width: 95%; }
+            .footer-actions { flex-wrap: wrap; justify-content: center; } /* Para que en móvil se puedan apilar si no caben */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ENCABEZADO CON IMAGEN -->
+        <img src="cabecera.png" alt="GuardiActas BM Monforte - Cabecera" class="header-image">
+
+        <div class="week-cards">
+            <!-- Tarjeta Semana Actual -->
+            <div class="card current-week" id="currentWeekCard">
+                <div class="card-header">
+                    <h2 class="card-title">Semana Actual
+                        <span class="week-number" id="currentWeekNumber">Semana ?</span>
+                    </h2>
+                    <div class="week-range" id="currentWeekRange">Calculando...</div>
+                </div>
+                <div class="card-body">
+                     <div class="data-item">
+                        <span class="data-label">🚄 Nº Acta ILT</span>
+                        <div class="data-value-container">
+                            <span class="data-value" id="currentIlt">Cargando...</span>
+                            <input type="text" class="data-input" id="currentIltInput">
+                        </div>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">🚆 Nº Acta Estaciones</span>
+                        <div class="data-value-container">
+                            <span class="data-value" id="currentStations">Cargando...</span>
+                            <input type="text" class="data-input" id="currentStationsInput">
+                        </div>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">📞 Técnico Guardia</span>
+                        <div class="data-value-container">
+                            <span class="data-value" id="currentGuard">Cargando...</span>
+                            <select class="data-select" id="currentGuardSelect">
+                                <option value="">Seleccionar...</option>
+                                <option value="Ana">Ana</option>
+                                <option value="Ernesto">Ernesto</option>
+                                <option value="Raúl">Raúl</option>
+                                <option value="Edu">Edu</option>
+                                <option value="Manuel">Manuel</option>
+                                <option value="Pepe">Pepe</option>
+                                <option value="Iván">Iván</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                     <button class="edit-btn share-btn" onclick="shareWeekData('currentWeekCard')" title="Compartir datos de la semana actual">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
+                        Compartir
+                    </button>
+                    <button class="edit-btn" onclick="toggleEdit('currentWeekCard')" title="Editar datos">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>
+                        Editar
+                    </button>
+                    <button class="edit-btn save-btn" onclick="saveData('currentWeekCard')" title="Guardar cambios">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+            <!-- Tarjeta Próxima Semana -->
+            <div class="card next-week" id="nextWeekCard">
+                 <div class="card-header">
+                    <h2 class="card-title">Próxima Semana
+                        <span class="week-number" id="nextWeekNumber">Semana ?</span>
+                    </h2>
+                    <div class="week-range" id="nextWeekRange">Calculando...</div>
+                </div>
+                <div class="card-body">
+                     <div class="data-item">
+                        <span class="data-label">🚄 Nº Acta ILT</span>
+                        <div class="data-value-container">
+                            <span class="data-value" id="nextIlt">Cargando...</span>
+                            <input type="text" class="data-input" id="nextIltInput">
+                        </div>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">🚆 Nº Acta Estaciones</span>
+                         <div class="data-value-container">
+                            <span class="data-value" id="nextStations">Cargando...</span>
+                            <input type="text" class="data-input" id="nextStationsInput">
+                        </div>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">📞 Técnico Guardia</span>
+                         <div class="data-value-container">
+                            <span class="data-value" id="nextGuard">Cargando...</span>
+                            <select class="data-select" id="nextGuardSelect">
+                                <option value="">Seleccionar...</option>
+                                <option value="Ana">Ana</option>
+                                <option value="Ernesto">Ernesto</option>
+                                <option value="Raúl">Raúl</option>
+                                <option value="Edu">Edu</option>
+                                <option value="Manuel">Manuel</option>
+                                <option value="Pepe">Pepe</option>
+                                <option value="Iván">Iván</option>
+                            </select>
+                            <button class="share-guard-btn" id="shareNextGuardBtn" onclick="shareNextGuard(event)" title="Compartir Técnico Guardia Próxima Semana" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="edit-btn share-btn" onclick="shareWeekData('nextWeekCard')" title="Compartir datos de la próxima semana">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
+                        Compartir
+                    </button>
+                    <button class="edit-btn" onclick="toggleEdit('nextWeekCard')" title="Editar datos">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>
+                        Editar
+                    </button>
+                    <button class="edit-btn save-btn" onclick="saveData('nextWeekCard')" title="Guardar cambios">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="sync-status" id="syncStatus"></div>
+        <footer class="footer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Logo-Ineco.png"
+                 alt="Logo INECO"
+                 class="footer-logo">
+            <div class="footer-text">Gestión de Actas y Guardias Semanales de la Técnica e IyV de la BM Monforte del Cid</div>
+            
+            <!-- CONTENEDOR PARA LOS BOTONES -->
+            <div class="footer-actions">
+                <button id="pidameBtn" class="edit-btn pidame-btn" title="Abrir PIDAME">🟢 PIDAME</button>
+                <button id="historyBtn" class="edit-btn" title="Ver historial de guardias">📅 Histórico</button>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Modal para el Histórico -->
+    <div id="historyModal" class="modal-overlay modal-hidden">
+        <div class="modal-content">
+            <span class="modal-close" id="historyModalClose">×</span>
+            <h2>Historial de Guardias (Últimas 10 Semanas)</h2>
+            <div id="historyListContainer">
+                <p>Cargando historial...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD034fyj8J0vxxwaU5X5TTPtZK8W2jeKKw", // ¡Recuerda asegurar tus reglas de Firebase!
+            authDomain: "actas-36978.firebaseapp.com",
+            databaseURL: "https://actas-36978-default-rtdb.firebaseio.com",
+            projectId: "actas-36978",
+            storageBucket: "actas-36978.appspot.com",
+            messagingSenderId: "219077840369",
+            appId: "1:219077840369:web:c228979e27253f53608850",
+            measurementId: "G-E7MZV5X0D5"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- FUNCIONES HELPER ---
+        function formatFullDate(date) {
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+            return new Intl.DateTimeFormat('es-ES', options).format(date);
+        }
+
+        function getWeekInfoWithYear(weekOffset = 0) {
+            const now = new Date();
+            const date = new Date(now);
+            date.setDate(date.getDate() + (weekOffset * 7));
+            const currentDayOfWeek = date.getDay();
+            const diffToMonday = date.getDate() - currentDayOfWeek + (currentDayOfWeek === 0 ? -6 : 1);
+            const monday = new Date(date.getFullYear(), date.getMonth(), diffToMonday);
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            const targetDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayOfWeekISO = targetDate.getUTCDay() === 0 ? 7 : targetDate.getUTCDay();
+            targetDate.setUTCDate(targetDate.getUTCDate() + 4 - dayOfWeekISO);
+            const yearStart = new Date(Date.UTC(targetDate.getUTCFullYear(), 0, 1));
+            const weekNumber = Math.ceil((((targetDate - yearStart) / 86400000) + 1) / 7);
+            const year = targetDate.getUTCFullYear();
+            const optionsDayMonth = { day: 'numeric', month: 'long' };
+            const mondayStr = monday.toLocaleDateString('es-ES', optionsDayMonth);
+            const sundayStr = sunday.toLocaleDateString('es-ES', optionsDayMonth);
+            const yearStr = monday.getFullYear();
+            let rangeStr = (monday.getMonth() === sunday.getMonth()) ? `Del ${monday.getDate()} al ${sundayStr} de ${yearStr}` :
+                (monday.getFullYear() !== sunday.getFullYear()) ? `Del ${monday.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric'})} al ${sunday.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric'})}` :
+                `Del ${mondayStr} al ${sundayStr} de ${yearStr}`;
+            return { year, weekNumber, range: rangeStr };
+        }
+
+        // --- LÓGICA DE LA APLICACIÓN ---
+        function loadWeekData() {
+            const syncStatus = document.getElementById('syncStatus');
+            syncStatus.style.color = "#6c757d";
+            const currentWeekInfo = getWeekInfoWithYear(0);
+            const nextWeekInfo = getWeekInfoWithYear(1);
+            const currentCard = document.getElementById('currentWeekCard');
+            currentCard.dataset.year = currentWeekInfo.year;
+            currentCard.dataset.week = currentWeekInfo.weekNumber;
+            const nextCard = document.getElementById('nextWeekCard');
+            nextCard.dataset.year = nextWeekInfo.year;
+            nextCard.dataset.week = nextWeekInfo.weekNumber;
+            document.getElementById('currentWeekNumber').textContent = `Semana ${currentWeekInfo.weekNumber}`;
+            document.getElementById('currentWeekRange').textContent = currentWeekInfo.range;
+            document.getElementById('nextWeekNumber').textContent = `Semana ${nextWeekInfo.weekNumber}`;
+            document.getElementById('nextWeekRange').textContent = nextWeekInfo.range;
+            const currentWeekPath = `weekData/${currentWeekInfo.year}/${currentWeekInfo.weekNumber}`;
+            const nextWeekPath = `weekData/${nextWeekInfo.year}/${nextWeekInfo.weekNumber}`;
+            Promise.all([db.ref(currentWeekPath).get(), db.ref(nextWeekPath).get()])
+                .then(([currentSnapshot, nextSnapshot]) => {
+                    const currentData = currentSnapshot.val() || {};
+                    const nextData = nextSnapshot.val() || {};
+                    updateUICard('current', currentData);
+                    updateUICard('next', nextData);
+                    syncStatus.innerHTML = currentData.lastUpdated ? `Últimos datos cargados el ${formatFullDate(new Date(currentData.lastUpdated))}` : 'Últimos datos cargados el .....';
+                    document.querySelectorAll('.share-btn, .share-guard-btn').forEach(btn => btn.disabled = false);
+                }).catch((error) => {
+                    console.error("Error al leer datos:", error);
+                    syncStatus.textContent = "Error al sincronizar: " + error.message;
+                    syncStatus.style.color = "#dc3545";
+                    updateUICard('current', {});
+                    updateUICard('next', {});
+                    document.querySelectorAll('.share-btn, .share-guard-btn').forEach(btn => btn.disabled = true);
+                });
+        }
+        
+        function updateUICard(prefix, weekData) {
+            document.getElementById(`${prefix}Ilt`).textContent = weekData.ilt || '-';
+            document.getElementById(`${prefix}Stations`).textContent = weekData.stations || '-';
+            document.getElementById(`${prefix}Guard`).textContent = weekData.guard || '-';
+            document.getElementById(`${prefix}IltInput`).value = weekData.ilt || '';
+            document.getElementById(`${prefix}StationsInput`).value = weekData.stations || '';
+            const selectElement = document.getElementById(`${prefix}GuardSelect`);
+            const guardValue = weekData.guard || '';
+            selectElement.value = Array.from(selectElement.options).some(opt => opt.value === guardValue) ? guardValue : "";
+        }
+
+        function toggleEdit(cardId) {
+            const card = document.getElementById(cardId);
+            const isEditing = card.classList.toggle('editing');
+            if (isEditing) {
+                 const prefix = cardId === 'currentWeekCard' ? 'current' : 'next';
+                 document.getElementById(`${prefix}IltInput`).value = document.getElementById(`${prefix}Ilt`).textContent.replace('-', '').trim();
+                 document.getElementById(`${prefix}StationsInput`).value = document.getElementById(`${prefix}Stations`).textContent.replace('-', '').trim();
+                 const guardValue = document.getElementById(`${prefix}Guard`).textContent;
+                 const selectElement = document.getElementById(`${prefix}GuardSelect`);
+                 selectElement.value = (guardValue !== '-' && Array.from(selectElement.options).some(opt => opt.value === guardValue)) ? guardValue : "";
+            }
+        }
+        
+        function saveData(cardId) {
+            const card = document.getElementById(cardId);
+            const { year, week } = card.dataset;
+            if (!year || !week) return;
+            const syncStatus = document.getElementById('syncStatus');
+            syncStatus.textContent = "Guardando cambios...";
+            syncStatus.style.color = "#fd7e14";
+            const prefix = cardId === 'currentWeekCard' ? 'current' : 'next';
+            const weekData = {
+                ilt: document.getElementById(`${prefix}IltInput`).value.trim(),
+                stations: document.getElementById(`${prefix}StationsInput`).value.trim(),
+                guard: document.getElementById(`${prefix}GuardSelect`).value,
+                lastUpdated: firebase.database.ServerValue.TIMESTAMP
+            };
+            updateUICard(prefix, weekData);
+            const firebasePath = `weekData/${year}/${week}`;
+            db.ref(firebasePath).set(weekData)
+                .then(() => {
+                    syncStatus.textContent = `Datos guardados el ${formatFullDate(new Date())}`;
+                    syncStatus.style.color = "#28a745";
+                })
+                .catch((error) => {
+                    console.error(`Error al guardar datos:`, error);
+                    syncStatus.textContent = "Error al guardar: " + error.message;
+                    syncStatus.style.color = "#dc3545";
+                });
+            card.classList.remove('editing');
+        }
+
+        async function shareOperation(shareButton, shareText, shareTitle) {
+            const shareData = { title: shareTitle, text: shareText };
+            if (navigator.share) {
+                try { await navigator.share(shareData); } catch (err) { if (err.name !== 'AbortError') console.error('Error al compartir:', err); }
+            } else if (navigator.clipboard?.writeText) {
+                try {
+                    await navigator.clipboard.writeText(shareText);
+                    const originalHTML = shareButton.innerHTML;
+                    const feedbackText = shareButton.classList.contains('share-guard-btn') ? '✓' : '¡Copiado!';
+                    shareButton.innerHTML = feedbackText;
+                    shareButton.classList.add('copied-feedback');
+                    setTimeout(() => { shareButton.innerHTML = originalHTML; shareButton.classList.remove('copied-feedback'); }, 1500);
+                } catch (err) { console.error('Error al copiar:', err); }
+            } else {
+                alert('Tu navegador no soporta compartir. Copia el texto:\n\n' + shareText);
+            }
+        }
+
+        async function shareWeekData(cardId) {
+            const cardElement = document.getElementById(cardId);
+            const shareButton = cardElement.querySelector('.share-btn');
+            const prefix = cardId === 'currentWeekCard' ? 'current' : 'next';
+            const weekTitleText = cardId === 'currentWeekCard' ? "Semana Actual" : "Próxima Semana";
+            const formattedText = `*${weekTitleText} (${document.getElementById(`${prefix}WeekNumber`).textContent.trim()})*\n_${document.getElementById(`${prefix}WeekRange`).textContent.trim()}_\n🚄 Nº Acta ILT: ${document.getElementById(`${prefix}Ilt`).textContent.trim()}\n🚆 Nº Acta Estaciones: ${document.getElementById(`${prefix}Stations`).textContent.trim()}\n📞 Técnico Guardia: ${document.getElementById(`${prefix}Guard`).textContent.trim()}`;
+            await shareOperation(shareButton, formattedText, `GuardiActas - ${weekTitleText}`);
+        }
+
+        async function shareNextGuard(event) {
+            event.stopPropagation();
+            const shareButton = document.getElementById('shareNextGuardBtn');
+            const guardValue = document.getElementById('nextGuard').textContent.trim();
+            if (!guardValue || guardValue === '-' || guardValue === 'Cargando...') return;
+            const shareText = `Próxima Semana - *${document.getElementById('nextWeekNumber').textContent.trim()}*\n📞 Técnico Guardia: ${guardValue}`;
+            await shareOperation(shareButton, shareText, `GuardiActas - Técnico Guardia Próxima Semana`);
+        }
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const historyModal = document.getElementById('historyModal');
+            const historyBtn = document.getElementById('historyBtn');
+            const historyCloseBtn = document.getElementById('historyModalClose');
+            const historyListContainer = document.getElementById('historyListContainer');
+
+            const showHistoryModal = () => {
+                historyModal.classList.remove('modal-hidden');
+                fetchAndShowHistory();
+            };
+            const hideHistoryModal = () => historyModal.classList.add('modal-hidden');
+            
+            historyBtn.addEventListener('click', showHistoryModal);
+            historyCloseBtn.addEventListener('click', hideHistoryModal);
+            historyModal.addEventListener('click', (event) => { if (event.target === historyModal) hideHistoryModal(); });
+
+            async function fetchAndShowHistory() {
+                historyListContainer.innerHTML = '<p>Cargando historial...</p>';
+                const promises = [];
+                const weekInfos = [];
+                for (let i = 0; i < 10; i++) {
+                    const weekInfo = getWeekInfoWithYear(-i);
+                    weekInfos.push(weekInfo);
+                    promises.push(db.ref(`weekData/${weekInfo.year}/${weekInfo.weekNumber}`).get());
+                }
+                try {
+                    const snapshots = await Promise.all(promises);
+                    let html = '<ul>';
+                    snapshots.forEach((snapshot, index) => {
+                        const data = snapshot.val();
+                        const guard = data?.guard || '<em>No asignado</em>';
+                        const weekInfo = weekInfos[index];
+                        html += `<li><span>Semana ${weekInfo.weekNumber} (${weekInfo.year})</span><strong>${guard}</strong></li>`;
+                    });
+                    historyListContainer.innerHTML = html + '</ul>';
+                } catch (error) {
+                    console.error("Error al cargar el historial:", error);
+                    historyListContainer.innerHTML = '<p style="color: red;">Error al cargar el historial.</p>';
+                }
+            }
+
+            document.querySelectorAll('.share-btn, .share-guard-btn').forEach(btn => btn.disabled = true);
+            loadWeekData();
+            document.getElementById('pidameBtn').addEventListener('click', () => window.location.href = 'http://pidame.adif/start.php?');
+        });
+    </script>
+</body>
+</html>

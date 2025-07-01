@@ -1,0 +1,20 @@
+{
+  "name": "GuardiActas BM Monforte",
+  "short_name": "GuardiActas",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#4B6C9B",
+  "theme_color": "#4B6C9B"
+}
