@@ -205,20 +205,40 @@
             if (!icon) return;
             const row = icon.closest('.table-row');
             const week = parseInt(row.dataset.week);
+            
             if (icon.classList.contains('icon-edit')) {
                 const currentlyEditing = document.querySelector('.table-row.is-editing');
-                if (currentlyEditing) currentlyEditing.classList.remove('is-editing');
+                if (currentlyEditing) {
+                    // Si se está editando otra fila, se cancela esa edición primero
+                    const originalValue = currentlyEditing.querySelector('.acta-value').textContent;
+                    currentlyEditing.querySelector('.acta-input').value = originalValue;
+                    currentlyEditing.classList.remove('is-editing');
+                }
                 row.classList.add('is-editing');
                 const input = row.querySelector('.acta-input');
                 input.focus();
                 input.select();
             }
+
             if (icon.classList.contains('icon-save')) {
                 const newValue = row.querySelector('.acta-input').value;
+
+                // **[CORRECCIÓN]** Actualización optimista de la UI:
+                // Actualizamos el texto visible (span) inmediatamente.
+                row.querySelector('.acta-value').textContent = newValue;
+                
+                // Enviamos el cambio a Firebase.
                 updateActaInDb(week, newValue);
+
+                // Salimos del modo edición. La UI ya muestra el valor correcto.
                 row.classList.remove('is-editing');
             }
+
             if (icon.classList.contains('icon-cancel')) {
+                // **[MEJORA]** Revertimos el valor del input al original.
+                const originalValue = row.querySelector('.acta-value').textContent;
+                row.querySelector('.acta-input').value = originalValue;
+                
                 row.classList.remove('is-editing');
             }
         }
@@ -255,4 +275,4 @@
     });
     </script>
 </body>
-</html>S
+</html>
