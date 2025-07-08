@@ -115,15 +115,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <script>
+    // --- ESTA ES LA CONFIGURACIÓN DE TU NUEVO PROYECTO ---
     const firebaseConfig = {
-      apiKey: "AIzaSyAp-yyjD_Du7mdmT5imq4wnH17tpyBZBzg",
-      authDomain: "actas-ineco-lav4.firebaseapp.com",
-      projectId: "actas-ineco-lav4",
-      storageBucket: "actas-ineco-lav4.appspot.com",
-      messagingSenderId: "1043968671762",
-      appId: "1:1043968671762:web:08cebe9ca7adbcaab658cb"
+      apiKey: "AIzaSyAEDLq5GQsnqd0SupbnAACvBZa4k-EN4io",
+      authDomain: "actas-ineco-final.firebaseapp.com",
+      projectId: "actas-ineco-final",
+      storageBucket: "actas-ineco-final.appspot.com",
+      messagingSenderId: "1038303827279",
+      appId: "1:1038303827279:web:cf84943e14153b4229213a"
     };
 
+    // Inicializamos Firebase (método de la versión 8, que es la que usas)
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
@@ -209,7 +211,6 @@
             if (icon.classList.contains('icon-edit')) {
                 const currentlyEditing = document.querySelector('.table-row.is-editing');
                 if (currentlyEditing) {
-                    // Si se está editando otra fila, se cancela esa edición primero
                     const originalValue = currentlyEditing.querySelector('.acta-value').textContent;
                     currentlyEditing.querySelector('.acta-input').value = originalValue;
                     currentlyEditing.classList.remove('is-editing');
@@ -222,23 +223,14 @@
 
             if (icon.classList.contains('icon-save')) {
                 const newValue = row.querySelector('.acta-input').value;
-
-                // **[CORRECCIÓN]** Actualización optimista de la UI:
-                // Actualizamos el texto visible (span) inmediatamente.
                 row.querySelector('.acta-value').textContent = newValue;
-                
-                // Enviamos el cambio a Firebase.
                 updateActaInDb(week, newValue);
-
-                // Salimos del modo edición. La UI ya muestra el valor correcto.
                 row.classList.remove('is-editing');
             }
 
             if (icon.classList.contains('icon-cancel')) {
-                // **[MEJORA]** Revertimos el valor del input al original.
                 const originalValue = row.querySelector('.acta-value').textContent;
                 row.querySelector('.acta-input').value = originalValue;
-                
                 row.classList.remove('is-editing');
             }
         }
