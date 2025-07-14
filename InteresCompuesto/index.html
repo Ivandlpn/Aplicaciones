@@ -1,1 +1,1680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Interés Compuesto Fiel</title>
+    <!-- Carga de Chart.js para los gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* --- Estilos Generales --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9; /* Fondo claro */
+            color: #333; /* Color de texto principal */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ocupa al menos el alto de la ventana */
+        }
 
+        .container {
+            width: 100%;
+            max-width: 900px; /* Ancho máximo del contenedor */
+            background-color: #ffffff;
+            border-radius: 12px; /* Bordes redondeados */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            padding: 30px;
+            box-sizing: border-box; /* Incluye padding y borde en el ancho/alto */
+        }
+
+        header h1 {
+            text-align: center;
+            color: #2c3e50; /* Color oscuro para el título */
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        /* --- Estilos del Formulario --- */
+        .calculator-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Dos columnas */
+            gap: 20px; /* Espacio entre elementos */
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+            display: flex; /* Para alinear el texto y el icono de información */
+            align-items: center;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s; /* Transición suave al enfocar */
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #27ae60; /* Borde verde al enfocar */
+        }
+        
+        /* Estilo para el nuevo icono de información */
+        .info-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 18px; /* Tamaño del círculo */
+            height: 18px; /* Tamaño del círculo */
+            border-radius: 50%; /* Hacerlo circular */
+            background-color: #5b8def; /* Color de fondo del círculo - AHORA AZUL */
+            color: white; /* Color del texto 'i' */
+            font-size: 12px; /* Tamaño de la 'i' */
+            font-weight: bold;
+            margin-left: 5px; /* Espacio entre el texto y el icono */
+            cursor: help; /* Cursor de ayuda para el tooltip */
+            transition: background-color 0.2s;
+        }
+
+        .info-icon:hover {
+            background-color: #4a7fd6; /* Un azul ligeramente más oscuro al pasar el ratón */
+        }
+
+        .calculate-btn, .compare-btn, .goals-btn, .sensitivity-btn, .export-btn { /* Clase añadida para el nuevo botón */
+            grid-column: 1 / -1; /* Ocupa ambas columnas */
+            padding: 12px;
+            background-color: #27ae60; /* Color verde */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px; /* Espacio entre botones si están apilados */
+        }
+
+        .calculate-btn:hover, .compare-btn:hover, .goals-btn:hover, .sensitivity-btn:hover, .export-btn:hover {
+            background-color: #219150; /* Verde más oscuro al pasar el ratón */
+        }
+
+        /* --- Estilos de la Sección de Resultados --- */
+        #results-section {
+            display: none; /* Oculto por defecto, se muestra con JS */
+            border-top: 1px solid #eee; /* Línea divisoria */
+            padding-top: 25px;
+            opacity: 0; /* Inicialmente transparente para la transición */
+            transition: opacity 0.5s ease-in-out; /* Transición de opacidad */
+        }
+
+        #results-section.visible {
+            opacity: 1; /* Completamente visible */
+        }
+
+        .results-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Columnas adaptables */
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background-color: #f8f9fa; /* Fondo claro para las tarjetas */
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef; /* Borde sutil */
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Transiciones para la tarjeta */
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .summary-card .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            transition: transform 0.3s ease; /* Transición para el icono */
+        }
+        
+        /* Iconos específicos para las tarjetas de resumen */
+        .summary-card:nth-child(1) .icon { content: '💰'; } /* Capital final */
+        .summary-card:nth-child(2) .icon { content: '👛'; } /* Capital inicial */
+        .summary-card:nth-child(3) .icon { content: '💵'; } /* Aportaciones periódicas */
+        .summary-card:nth-child(4) .icon { content: '📈'; } /* Intereses */
+        /* El icono de rentabilidad se maneja con JS */
+
+        .summary-card .label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .summary-card .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+            transition: color 0.3s ease, font-size 0.3s ease; /* Transición para el valor */
+        }
+        
+        .summary-card .value.positive { color: #27ae60; } /* Verde para valores positivos */
+        .summary-card .value.negative { color: #e74c3c; } /* Rojo para valores negativos */
+
+        .investment-summary-text {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #e6f7ed; /* Un fondo suave para el texto */
+            border-left: 5px solid #27ae60; /* Borde verde para destacar */
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            opacity: 0; /* Inicialmente transparente para la transición */
+            transition: opacity 0.5s ease-in-out; /* Transición de opacidad */
+        }
+
+        .investment-summary-text.visible {
+            opacity: 1; /* Completamente visible */
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* Gráfico de pastel más pequeño, de barras más grande */
+            gap: 30px;
+            margin-bottom: 30px;
+            align-items: center; /* Centra verticalmente los gráficos */
+        }
+
+        /* Ajuste de altura para los contenedores de gráficos */
+        .chart-box {
+            position: relative; /* Necesario para que el canvas se ajuste */
+            height: 300px; /* Altura fija para ambos gráficos */
+            display: flex; /* Para centrar el canvas si es necesario */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .table-container {
+            max-height: 400px; /* Altura máxima para la tabla con scroll */
+            overflow-y: auto; /* Scroll vertical si excede la altura */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px; /* Espacio antes del botón de exportar */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Elimina el espacio entre celdas */
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: right; /* Alineación de texto a la derecha para números */
+            border-bottom: 1px solid #ddd;
+        }
+
+        thead th {
+            background-color: #e9ecef; /* Fondo para el encabezado de la tabla */
+            position: sticky; /* Encabezado fijo al hacer scroll */
+            top: 0;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa; /* Color de fila alternado */
+        }
+
+        tbody tr:hover {
+            background-color: #e2e6ea; /* Resaltar fila al pasar el ratón */
+        }
+
+        /* --- Sección de Recursos Educativos --- */
+        #educational-resources {
+            display: none; /* Oculto por defecto */
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #educational-resources.visible {
+            opacity: 1;
+        }
+
+        #educational-resources h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        #educational-resources p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #555;
+            text-align: justify;
+        }
+
+        #educational-resources .resource-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #educational-resources .resource-link button {
+            padding: 10px 20px;
+            background-color: #3498db; /* Un azul diferente para este botón */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #educational-resources .resource-link button:hover {
+            background-color: #2980b9;
+        }
+
+
+        /* --- Modal Styling (reused) --- */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Oculto por defecto */
+            justify-content: center;
+            align-items: center;
+            opacity: 0; /* Inicialmente transparente para la transición */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal.visible {
+            display: flex; /* Se muestra con JS */
+            opacity: 1; /* Completamente visible */
+        }
+        
+        .modal-content {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px; /* Ajuste para el modal de comparación */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateY(30px); /* Inicialmente un poco desplazado para la animación */
+            transition: transform 0.3s ease-out; /* Transición para el desplazamiento */
+        }
+        
+        .modal.visible .modal-content {
+            transform: translateY(0); /* Vuelve a su posición original al ser visible */
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .form-actions button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        .form-actions button:hover {
+            background-color: #bdbdbd;
+        }
+        .form-actions button.primary {
+            background-color: #27ae60;
+            color: white;
+        }
+        .form-actions button.primary:hover {
+            background-color: #219150;
+        }
+
+        .goals-options, .sensitivity-options, .comparison-options { /* Añadido .comparison-options */
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .goals-options button, .sensitivity-options button, .comparison-options button { /* Añadido .comparison-options button */
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .goals-options button.active, .sensitivity-options button.active, .comparison-options button.active { /* Añadido .comparison-options button.active */
+            background-color: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .goals-options button:hover:not(.active), .sensitivity-options button:hover:not(.active), .comparison-options button:hover:not(.active) { /* Añadido .comparison-options button:hover:not(.active) */
+            background-color: #e0e0e0;
+        }
+
+        .goals-input-group, .sensitivity-input-group, .comparison-input-group { /* Añadido .comparison-input-group */
+            margin-bottom: 15px;
+        }
+
+        .goals-input-group label, .sensitivity-input-group label, .comparison-input-group label { /* Añadido .comparison-input-group label */
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .goals-input-group input,
+        .goals-input-group select,
+        .sensitivity-input-group input,
+        .sensitivity-input-group select,
+        .comparison-input-group input,
+        .comparison-input-group select { /* Añadido .comparison-input-group input, select */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .goals-result, .sensitivity-result { /* Añadido .sensitivity-result */
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e6f7ed;
+            border-left: 5px solid #27ae60;
+            border-radius: 8px;
+            font-size: 1.1em;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .sensitivity-chart-container, .comparison-chart-container { /* Unificado para ambos gráficos */
+            height: 350px; /* Altura para el gráfico de sensibilidad y comparación */
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sensitivity-parameters {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            border: 1px solid #e0e0e0;
+        }
+        .sensitivity-parameters strong {
+            color: #2c3e50;
+        }
+
+        /* --- Comparison Modal Specific Styles --- */
+        .comparison-scenario-grid { /* Usar grid para los dos escenarios */
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .comparison-scenario {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f8f8f8;
+        }
+        .comparison-scenario h3 {
+            text-align: center;
+            color: #34495e;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        /* .comparison-chart-container ya está definido arriba */
+
+
+        /* --- Estilos para pantallas pequeñas (responsive) --- */
+        @media (max-width: 768px) {
+            .calculator-form {
+                grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+            }
+            .charts-container {
+                grid-template-columns: 1fr; /* Una columna para los gráficos */
+            }
+            .container {
+                padding: 20px; /* Menos padding en pantallas pequeñas */
+            }
+            .modal-content {
+                padding: 1.5rem;
+            }
+            .comparison-scenario-grid {
+                grid-template-columns: 1fr; /* Una columna en pantallas pequeñas para comparación */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Calculadora de Interés Compuesto</h1>
+    </header>
+
+    <form id="compound-interest-form">
+        <div class="calculator-form">
+            <div class="form-group">
+                <label for="initial-capital">Capital inicial (€) <span class="info-icon" title="La cantidad de dinero con la que empiezas tu inversión.">i</span></label>
+                <input type="number" id="initial-capital" value="1000" step="100" required>
+            </div>
+            <div class="form-group">
+                <label for="periodic-contribution">Aportación periódica (€) <span class="info-icon" title="Importe a aportar en cada período. Usa un número negativo para simular retiradas.">i</span></label>
+                <input type="number" id="periodic-contribution" value="50" step="10">
+            </div>
+            <div class="form-group">
+                <label for="frequency">Frecuencia <span class="info-icon" title="La periodicidad de las aportaciones o retiradas.">i</span></label>
+                <select id="frequency">
+                    <option value="1" selected>Anual</option>
+                    <option value="2">Semestral</option>
+                    <option value="4">Trimestral</option>
+                    <option value="12">Mensual</option>
+                    <option value="52">Semanal</option>
+                    <option value="365">Diaria</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="contribution-moment">Momento de la aportación <span class="info-icon" title="Si la aportación se realiza antes o después de la capitalización de intereses.">i</span></label>
+                <select id="contribution-moment">
+                    <option value="start" selected>Comienzo del período</option>
+                    <option value="end">Fin del período</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="interest-rate">Interés anual (%) <span class="info-icon" title="Tasa de interés anual esperada. Usa un número negativo para simular el efecto de la inflación.">i</span></label>
+                <input type="number" id="interest-rate" value="5" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="years">Número de años <span class="info-icon" title="La duración total en años de la inversión.">i</span></label>
+                <input type="number" id="years" value="25" step="1" required> <!-- Valor por defecto cambiado a 25 -->
+            </div>
+            <button type="submit" class="calculate-btn">Calcular</button>
+            <button type="button" class="compare-btn" id="compare-scenarios-btn">Comparar Escenarios</button>
+            <button type="button" class="goals-btn" id="goals-btn">Objetivos de Ahorro</button>
+            <button type="button" class="sensitivity-btn" id="sensitivity-analysis-btn">Análisis de Sensibilidad</button> <!-- Nuevo botón -->
+        </div>
+    </form>
+
+    <div id="results-section">
+        <div class="results-summary">
+            <div class="summary-card">
+                <div class="icon">💰</div>
+                <div class="label">Capital final</div>
+                <div class="value" id="final-capital-result"></div>
+            </div>
+            <div class="summary-card">
+                <div class="icon">👛</div>
+                <div class="label">Capital inicial</div>
+                <div class="value" id="initial-capital-result"></div>
+            </div>
+            <div class="summary-card">
+                <div class="icon">💵</div>
+                <div class="label">Aportaciones periódicas</div>
+                <div class="value" id="contributions-result"></div>
+            </div>
+            <div class="summary-card">
+                <div class="icon">📈</div>
+                <div class="label">Intereses</div>
+                <div class="value" id="interest-result"></div>
+            </div>
+            <div class="summary-card">
+                <div class="icon" id="rentabilidad-icon"></div>
+                <div class="label">Rentabilidad media <span class="info-icon" title="Rentabilidad media anualizada de la inversión. [(Patrimonio final - capital total aportado) / capital total aportado] / n° de años. Esta fórmula es una simplificación; la rentabilidad real puede variar.">i</span></div>
+                <div class="value" id="average-return-result"></div>
+            </div>
+        </div>
+
+        <div id="investment-summary-text" class="investment-summary-text">
+            <!-- El texto de resumen se insertará aquí -->
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-box">
+                <canvas id="distribution-chart"></canvas>
+            </div>
+            <div class="chart-box">
+                <canvas id="evolution-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Año</th>
+                        <th>Aportación periódica</th>
+                        <th>Aportaciones acum.</th>
+                        <th>Intereses</th>
+                        <th>Intereses acum.</th>
+                        <th>Capital total</th>
+                    </tr>
+                </thead>
+                <tbody id="results-table-body">
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="export-btn" id="export-data-btn">Exportar Datos a CSV</button> <!-- Botón de exportar -->
+
+        <!-- Sección de Recursos Educativos -->
+        <div id="educational-resources">
+            <h2>Recursos Educativos: Entendiendo el Interés Compuesto</h2>
+            <p>
+                El <strong>interés compuesto</strong> es el interés que se calcula no solo sobre el capital inicial, sino también sobre los intereses acumulados de períodos anteriores. Es lo que Albert Einstein supuestamente llamó la "octava maravilla del mundo" o "la fuerza más poderosa del universo". En términos simples, es "interés sobre interés".
+            </p>
+            <p>
+                <strong>¿Por qué es tan importante?</strong> El poder del interés compuesto reside en su capacidad para generar un crecimiento exponencial a largo plazo. Cuanto antes empieces a invertir y más tiempo dejes que tus inversiones crezcan, mayor será el impacto del interés compuesto en tu patrimonio. Incluso pequeñas cantidades invertidas regularmente pueden convertirse en sumas considerables con el tiempo.
+            </p>
+            <h3>Consejos de Inversión Básicos:</h3>
+            <ul>
+                <li><strong>Empieza temprano:</strong> El tiempo es tu mayor aliado con el interés compuesto.</li>
+                <li><strong>Sé constante:</strong> Las aportaciones regulares, aunque sean pequeñas, marcan una gran diferencia.</li>
+                <li><strong>Invierte a largo plazo:</strong> Evita la tentación de retirar tus fondos prematuramente.</li>
+                <li><strong>Diversifica:</strong> No pongas todos tus huevos en la misma canasta.</li>
+                <li><strong>Infórmate:</strong> Entender dónde y cómo inviertes es clave.</li>
+            </ul>
+            <div class="resource-link">
+                <button onclick="window.open('https://es.wikipedia.org/wiki/Inter%C3%A9s_compuesto', '_blank')">Leer más sobre Interés Compuesto</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Comparación de Escenarios -->
+<div id="comparison-modal" class="modal">
+    <div class="modal-content">
+        <h2>Comparación de Escenarios</h2>
+        <div class="comparison-area">
+            <div class="comparison-options">
+                <button id="comp-type-final-capital" class="active">Capital Final</button>
+                <button id="comp-type-evolution">Evolución del Capital</button>
+            </div>
+
+            <div class="comparison-scenario-grid">
+                <div class="comparison-scenario">
+                    <h3>Escenario 1</h3>
+                    <div class="form-group">
+                        <label for="comp-initial-capital-1">Capital inicial (€)</label>
+                        <input type="number" id="comp-initial-capital-1" value="1000" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-periodic-contribution-1">Aportación periódica (€)</label>
+                        <input type="number" id="comp-periodic-contribution-1" value="50" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-frequency-1">Frecuencia</label>
+                        <select id="comp-frequency-1">
+                            <option value="1" selected>Anual</option>
+                            <option value="2">Semestral</option>
+                            <option value="4">Trimestral</option>
+                            <option value="12">Mensual</option>
+                            <option value="52">Semanal</option>
+                            <option value="365">Diaria</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-contribution-moment-1">Momento de la aportación</label>
+                        <select id="comp-contribution-moment-1">
+                            <option value="start" selected>Comienzo del período</option>
+                            <option value="end">Fin del período</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-interest-rate-1">Interés anual (%)</label>
+                        <input type="number" id="comp-interest-rate-1" value="5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-years-1">Número de años</label>
+                        <input type="number" id="comp-years-1" value="25" step="1">
+                    </div>
+                </div>
+
+                <div class="comparison-scenario">
+                    <h3>Escenario 2</h3>
+                    <div class="form-group">
+                        <label for="comp-initial-capital-2">Capital inicial (€)</label>
+                        <input type="number" id="comp-initial-capital-2" value="2000" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-periodic-contribution-2">Aportación periódica (€)</label>
+                        <input type="number" id="comp-periodic-contribution-2" value="30" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-frequency-2">Frecuencia</label>
+                        <select id="comp-frequency-2">
+                            <option value="1" selected>Anual</option>
+                            <option value="2">Semestral</option>
+                            <option value="4">Trimestral</option>
+                            <option value="12">Mensual</option>
+                            <option value="52">Semanal</option>
+                            <option value="365">Diaria</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-contribution-moment-2">Momento de la aportación</label>
+                        <select id="comp-contribution-moment-2">
+                            <option value="start" selected>Comienzo del período</option>
+                            <option value="end">Fin del período</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-interest-rate-2">Interés anual (%)</label>
+                        <input type="number" id="comp-interest-rate-2" value="6" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-years-2">Número de años</label>
+                        <input type="number" id="comp-years-2" value="20" step="1">
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" class="calculate-goal-btn primary" id="run-comparison-btn">Comparar</button>
+            <div class="comparison-chart-container">
+                <canvas id="comparison-chart"></canvas>
+            </div>
+            <div class="sensitivity-result" id="comparison-message" style="display: none;"></div>
+        </div>
+        <div class="form-actions">
+            <button type="button" id="close-comparison-modal-btn">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Objetivos de Ahorro -->
+<div id="goals-modal" class="modal">
+    <div class="modal-content">
+        <h2>Objetivos de Ahorro</h2>
+        <div class="goals-area">
+            <div class="goals-options">
+                <button id="calc-contribution-btn" class="active">Calcular Aportación</button>
+                <button id="calc-years-btn">Calcular Años</button>
+            </div>
+
+            <div id="calculate-contribution-section">
+                <h3>Calcular Aportación Periódica Necesaria</h3>
+                <div class="goals-input-group">
+                    <label for="goal-target-capital-contrib">Capital Objetivo (€)</label>
+                    <input type="number" id="goal-target-capital-contrib" value="100000" step="1000" required>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-initial-capital-contrib">Capital Inicial (€)</label>
+                    <input type="number" id="goal-initial-capital-contrib" value="1000" step="100" required>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-interest-rate-contrib">Interés anual (%)</label>
+                    <input type="number" id="goal-interest-rate-contrib" value="5" step="0.1" required>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-years-contrib">Número de Años</label>
+                    <input type="number" id="goal-years-contrib" value="25" step="1" required>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-frequency-contrib">Frecuencia</label>
+                    <select id="goal-frequency-contrib">
+                        <option value="1" selected>Anual</option>
+                        <option value="2">Semestral</option>
+                        <option value="4">Trimestral</option>
+                        <option value="12">Mensual</option>
+                        <option value="52">Semanal</option>
+                        <option value="365">Diaria</option>
+                    </select>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-contribution-moment-contrib">Momento de la aportación</label>
+                    <select id="goal-contribution-moment-contrib">
+                        <option value="start" selected>Comienzo del período</option>
+                        <option value="end">Fin del período</option>
+                    </select>
+                </div>
+                <button type="button" class="calculate-goal-btn primary" id="calculate-contribution-value-btn">Calcular Aportación</button>
+                <div class="goals-result" id="required-contribution-result" style="display: none;"></div>
+            </div>
+
+            <div id="calculate-years-section" style="display: none;">
+                <h3>Calcular Años Necesarios</h3>
+                <div class="goals-input-group">
+                    <label for="goal-target-capital-years">Capital Objetivo (€)</label>
+                    <input type="number" id="goal-target-capital-years" value="100000" step="1000" required>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-initial-capital-years">Capital Inicial (€)</label>
+                    <input type="number" id="goal-initial-capital-years" value="1000" step="100" required>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-periodic-contribution-years">Aportación Periódica (€)</label>
+                    <input type="number" id="goal-periodic-contribution-years" value="50" step="10">
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-interest-rate-years">Interés anual (%)</label>
+                    <input type="number" id="goal-interest-rate-years" value="5" step="0.1" required>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-frequency-years">Frecuencia</label>
+                    <select id="goal-frequency-years">
+                        <option value="1" selected>Anual</option>
+                        <option value="2">Semestral</option>
+                        <option value="4">Trimestral</option>
+                        <option value="12">Mensual</option>
+                        <option value="52">Semanal</option>
+                        <option value="365">Diaria</option>
+                    </select>
+                </div>
+                <div class="goals-input-group">
+                    <label for="goal-contribution-moment-years">Momento de la aportación</label>
+                    <select id="goal-contribution-moment-years">
+                        <option value="start" selected>Comienzo del período</option>
+                        <option value="end">Fin del período</option>
+                    </select>
+                </div>
+                <button type="button" class="calculate-goal-btn primary" id="calculate-years-value-btn">Calcular Años</button>
+                <div class="goals-result" id="required-years-result" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="button" id="close-goals-modal-btn">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Nuevo Modal para Análisis de Sensibilidad -->
+<div id="sensitivity-modal" class="modal">
+    <div class="modal-content">
+        <h2>Análisis de Sensibilidad</h2>
+        <div class="sensitivity-area">
+            <div class="sensitivity-parameters">
+                <h3>Parámetros Base del Cálculo:</h3>
+                <p>Capital inicial: <strong id="sens-initial-capital"></strong></p>
+                <p>Aportación periódica: <strong id="sens-periodic-contribution"></strong></p>
+                <p>Frecuencia: <strong id="sens-frequency"></strong></p>
+                <p>Momento de la aportación: <strong id="sens-contribution-moment"></strong></p>
+                <p>Número de años: <strong id="sens-years"></strong></p>
+            </div>
+            <p>Analiza cómo el capital final varía al cambiar la tasa de interés.</p>
+            <div class="sensitivity-input-group">
+                <label for="sensitivity-rate-start">Tasa de Interés Inicial (%)</label>
+                <input type="number" id="sensitivity-rate-start" value="1" step="0.1" min="-100" max="100">
+            </div>
+            <div class="sensitivity-input-group">
+                <label for="sensitivity-rate-end">Tasa de Interés Final (%)</label>
+                <input type="number" id="sensitivity-rate-end" value="10" step="0.1" min="-100" max="100">
+            </div>
+            <div class="sensitivity-input-group">
+                <label for="sensitivity-rate-step">Paso (%)</label>
+                <input type="number" id="sensitivity-rate-step" value="0.5" step="0.1" min="0.1">
+            </div>
+            <button type="button" class="calculate-goal-btn primary" id="run-sensitivity-analysis-btn">Ejecutar Análisis</button>
+            <div class="sensitivity-chart-container">
+                <canvas id="sensitivity-chart"></canvas>
+            </div>
+            <div class="sensitivity-result" id="sensitivity-message" style="display: none;"></div>
+        </div>
+        <div class="form-actions">
+            <button type="button" id="close-sensitivity-modal-btn">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Variables globales para los gráficos para poder destruirlos antes de volver a renderizar
+    let distributionChartInstance = null;
+    let evolutionChartInstance = null;
+    let sensitivityChartInstance = null; // Nueva instancia para el gráfico de sensibilidad
+    let comparisonChartInstance = null; // Nueva instancia para el gráfico de comparación
+
+    // Función para formatear números a formato de moneda local (Euro)
+    function formatCurrency(number) {
+        return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(number);
+    }
+
+    // Función principal de cálculo de interés compuesto (reutilizable)
+    function calculateCompoundInterest(initialCapital, periodicContribution, frequency, contributionMoment, annualInterestRate, years) {
+        let balance = initialCapital;
+        let totalContributions = 0;
+        let totalInterestEarned = 0;
+
+        for (let year = 1; year <= years; year++) {
+            let yearlyInterest = 0;
+            let yearlyContribution = 0;
+
+            for (let period = 0; period < frequency; period++) {
+                const contributionThisPeriod = periodicContribution;
+
+                if (contributionMoment === 'start') {
+                    balance += contributionThisPeriod;
+                }
+
+                const interestThisPeriod = balance * (annualInterestRate / frequency);
+                balance += interestThisPeriod;
+                yearlyInterest += interestThisPeriod;
+
+                if (contributionMoment === 'end') {
+                    balance += contributionThisPeriod;
+                }
+                yearlyContribution += contributionThisPeriod;
+            }
+            totalContributions += yearlyContribution;
+            totalInterestEarned += yearlyInterest;
+        }
+        return {
+            finalCapital: balance,
+            totalContributions: totalContributions,
+            netInterest: balance - (initialCapital + totalContributions)
+        };
+    }
+
+    // Nueva función para obtener la evolución del capital por año
+    function calculateCompoundInterestEvolution(initialCapital, periodicContribution, frequency, contributionMoment, annualInterestRate, years) {
+        let balance = initialCapital;
+        const evolution = [{ year: 0, balance: initialCapital }]; // Capital inicial en el año 0
+
+        for (let year = 1; year <= years; year++) {
+            for (let period = 0; period < frequency; period++) {
+                const contributionThisPeriod = periodicContribution;
+
+                if (contributionMoment === 'start') {
+                    balance += contributionThisPeriod;
+                }
+
+                const interestThisPeriod = balance * (annualInterestRate / frequency);
+                balance += interestThisPeriod;
+
+                if (contributionMoment === 'end') {
+                    balance += contributionThisPeriod;
+                }
+            }
+            evolution.push({ year: year, balance: balance });
+        }
+        return evolution;
+    }
+    
+    document.getElementById('compound-interest-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita que la página se recargue
+
+        // 1. Recoger los datos del formulario principal
+        const initialCapital = parseFloat(document.getElementById('initial-capital').value) || 0;
+        const periodicContribution = parseFloat(document.getElementById('periodic-contribution').value) || 0;
+        const frequency = parseInt(document.getElementById('frequency').value);
+        const contributionMoment = document.getElementById('contribution-moment').value;
+        const annualInterestRate = parseFloat(document.getElementById('interest-rate').value) / 100;
+        const years = parseInt(document.getElementById('years').value);
+
+        // 2. Lógica de cálculo (reutilizando la función)
+        const results = calculateCompoundInterest(initialCapital, periodicContribution, frequency, contributionMoment, annualInterestRate, years);
+        const finalCapital = results.finalCapital;
+        const totalContributions = results.totalContributions;
+        const netInterest = results.netInterest;
+        const totalInvested = initialCapital + totalContributions;
+
+        // Cálculo de la rentabilidad media anualizada
+        let averageReturn = 0;
+        if (totalInvested > 0) {
+            averageReturn = (netInterest / totalInvested) / years * 100;
+        } else if (initialCapital > 0 && netInterest !== 0) { 
+            averageReturn = (netInterest / initialCapital) / years * 100;
+        }
+
+        // Datos para el gráfico de evolución (columnas apiladas)
+        const evolutionData = {
+            labels: [],
+            datasets: [
+                { label: 'Capital Inicial', data: [], backgroundColor: '#16a085' },
+                { label: 'Aportaciones Periódicas', data: [], backgroundColor: '#1abc9c' },
+                { label: 'Intereses', data: [], backgroundColor: '#5b8def' }
+            ]
+        };
+
+        // Recalcular para la tabla y el gráfico de evolución
+        let currentBalanceForEvolution = initialCapital;
+        let currentTotalContributionsForEvolution = 0;
+        let currentTotalInterestEarnedForEvolution = 0;
+
+        const tableBody = document.getElementById('results-table-body');
+        tableBody.innerHTML = ''; // Limpiar la tabla anterior
+
+        for (let year = 1; year <= years; year++) {
+            let yearlyInterest = 0;
+            let yearlyContribution = 0;
+
+            for (let period = 0; period < frequency; period++) {
+                const contributionThisPeriod = periodicContribution;
+
+                if (contributionMoment === 'start') {
+                    currentBalanceForEvolution += contributionThisPeriod;
+                }
+
+                const interestThisPeriod = currentBalanceForEvolution * (annualInterestRate / frequency);
+                currentBalanceForEvolution += interestThisPeriod;
+                yearlyInterest += interestThisPeriod;
+
+                if (contributionMoment === 'end') {
+                    currentBalanceForEvolution += contributionThisPeriod;
+                }
+                yearlyContribution += contributionThisPeriod;
+            }
+            currentTotalContributionsForEvolution += yearlyContribution;
+            currentTotalInterestEarnedForEvolution += yearlyInterest;
+            
+            evolutionData.labels.push(`Año ${year}`);
+            evolutionData.datasets[0].data.push(initialCapital);
+            evolutionData.datasets[1].data.push(currentTotalContributionsForEvolution);
+            evolutionData.datasets[2].data.push(currentTotalInterestEarnedForEvolution);
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${year}</td>
+                <td>${formatCurrency(yearlyContribution)}</td>
+                <td>${formatCurrency(initialCapital + currentTotalContributionsForEvolution)}</td>
+                <td>${formatCurrency(yearlyInterest)}</td>
+                <td>${formatCurrency(currentTotalInterestEarnedForEvolution)}</td>
+                <td><strong>${formatCurrency(currentBalanceForEvolution)}</strong></td>
+            `;
+            tableBody.appendChild(row);
+        }
+
+        // 3. Mostrar resultados en la sección de resumen con animación
+        const resultsSection = document.getElementById('results-section');
+        const investmentSummaryTextElement = document.getElementById('investment-summary-text');
+        const educationalResourcesSection = document.getElementById('educational-resources');
+
+        resultsSection.classList.remove('visible');
+        investmentSummaryTextElement.classList.remove('visible');
+        educationalResourcesSection.classList.remove('visible');
+
+        setTimeout(() => {
+            document.getElementById('final-capital-result').textContent = formatCurrency(finalCapital);
+            document.getElementById('initial-capital-result').textContent = formatCurrency(initialCapital);
+            document.getElementById('contributions-result').textContent = formatCurrency(totalContributions);
+            document.getElementById('interest-result').textContent = formatCurrency(netInterest);
+            
+            const avgReturnElem = document.getElementById('average-return-result');
+            const rentabilidadIcon = document.getElementById('rentabilidad-icon');
+
+            avgReturnElem.textContent = `${averageReturn.toFixed(2)}%`;
+            if(averageReturn >= 0) {
+                avgReturnElem.className = 'value positive';
+                rentabilidadIcon.textContent = '✅';
+            } else {
+                avgReturnElem.className = 'value negative';
+                rentabilidadIcon.textContent = '❌';
+            }
+
+            // 4. Generar y mostrar el texto de resumen de la inversión
+            let summaryText = `Con un capital inicial de <strong>${formatCurrency(initialCapital)}</strong>`;
+            if (periodicContribution > 0) {
+                summaryText += ` y aportaciones periódicas de <strong>${formatCurrency(periodicContribution)}</strong>`;
+            } else if (periodicContribution < 0) {
+                summaryText += ` y retiradas periódicas de <strong>${formatCurrency(Math.abs(periodicContribution))}</strong>`;
+            }
+            summaryText += ` durante <strong>${years} años</strong>, a una tasa de interés anual del <strong>${(annualInterestRate * 100).toFixed(2)}%</strong>, tu inversión alcanzaría un capital final de <strong>${formatCurrency(finalCapital)}</strong>.`;
+            
+            if (netInterest >= 0) {
+                summaryText += ` Esto representa un total de <strong>${formatCurrency(totalContributions)}</strong> en aportaciones (o retiradas netas) y <strong>${formatCurrency(netInterest)}</strong> en intereses ganados, con una rentabilidad media anualizada del <strong>${averageReturn.toFixed(2)}%</strong>.`;
+            } else {
+                summaryText += ` Esto representa un total de <strong>${formatCurrency(totalContributions)}</strong> en aportaciones (o retiradas netas) y una pérdida de <strong>${formatCurrency(Math.abs(netInterest))}</strong> en intereses, con una rentabilidad media anualizada del <strong>${averageReturn.toFixed(2)}%</strong>.`;
+            }
+            investmentSummaryTextElement.innerHTML = summaryText;
+
+
+            // 5. Renderizar los gráficos
+            renderDistributionChart(initialCapital, totalContributions, netInterest);
+            renderEvolutionChart(evolutionData);
+
+            resultsSection.style.display = 'block';
+            resultsSection.classList.add('visible');
+            investmentSummaryTextElement.classList.add('visible');
+            educationalResourcesSection.style.display = 'block';
+            educationalResourcesSection.classList.add('visible');
+            
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }, 50);
+    });
+
+    // Función para renderizar el gráfico de distribución (pastel)
+    function renderDistributionChart(initial, contributions, interest) {
+        if (distributionChartInstance) {
+            distributionChartInstance.destroy();
+        }
+        const ctx = document.getElementById('distribution-chart').getContext('2d');
+        distributionChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Capital inicial', 'Aportaciones periódicas', 'Intereses'],
+                datasets: [{
+                    data: [initial, contributions, interest > 0 ? interest : 0], 
+                    backgroundColor: ['#16a085', '#1abc9c', '#5b8def'],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribución del patrimonio'
+                    }
+                }
+            }
+        });
+    }
+
+    // Función para renderizar el gráfico de evolución (barras apiladas)
+    function renderEvolutionChart(data) {
+        if (evolutionChartInstance) {
+            evolutionChartInstance.destroy();
+        }
+        const ctx = document.getElementById('evolution-chart').getContext('2d');
+        evolutionChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [
+                    { label: 'Capital inicial', data: data.datasets[0].data, backgroundColor: '#16a085' },
+                    { label: 'Aportaciones periódicas', data: data.datasets[1].data, backgroundColor: '#1abc9c' },
+                    { label: 'Intereses', data: data.datasets[2].data, backgroundColor: '#5b8def' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Evolución del patrimonio'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true,
+                        ticks: {
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- Funcionalidad del Modal de Comparación ---
+    const compareScenariosBtn = document.getElementById('compare-scenarios-btn');
+    const comparisonModal = document.getElementById('comparison-modal');
+    const closeComparisonModalBtn = document.getElementById('close-comparison-modal-btn');
+    const runComparisonBtn = document.getElementById('run-comparison-btn');
+    const comparisonMessage = document.getElementById('comparison-message');
+
+    const compTypeFinalCapitalBtn = document.getElementById('comp-type-final-capital');
+    const compTypeEvolutionBtn = document.getElementById('comp-type-evolution');
+    let currentComparisonType = 'final_capital'; // Estado para el tipo de comparación
+
+    compareScenariosBtn.addEventListener('click', () => {
+        comparisonModal.classList.add('visible');
+        if (comparisonChartInstance) {
+            comparisonChartInstance.destroy();
+        }
+        comparisonMessage.style.display = 'none';
+        // Asegurarse de que el botón de Capital Final esté activo al abrir
+        compTypeFinalCapitalBtn.click(); 
+    });
+
+    closeComparisonModalBtn.addEventListener('click', () => {
+        comparisonModal.classList.remove('visible');
+    });
+
+    comparisonModal.addEventListener('click', (e) => {
+        if (e.target === comparisonModal) {
+            comparisonModal.classList.remove('visible');
+        }
+    });
+
+    compTypeFinalCapitalBtn.addEventListener('click', () => {
+        currentComparisonType = 'final_capital';
+        compTypeFinalCapitalBtn.classList.add('active');
+        compTypeEvolutionBtn.classList.remove('active');
+        if (comparisonChartInstance) { comparisonChartInstance.destroy(); }
+        comparisonMessage.style.display = 'none';
+    });
+
+    compTypeEvolutionBtn.addEventListener('click', () => {
+        currentComparisonType = 'evolution';
+        compTypeEvolutionBtn.classList.add('active');
+        compTypeFinalCapitalBtn.classList.remove('active');
+        if (comparisonChartInstance) { comparisonChartInstance.destroy(); }
+        comparisonMessage.style.display = 'none';
+    });
+
+
+    runComparisonBtn.addEventListener('click', () => {
+        // Recoger datos del Escenario 1
+        const sc1_initialCapital = parseFloat(document.getElementById('comp-initial-capital-1').value) || 0;
+        const sc1_periodicContribution = parseFloat(document.getElementById('comp-periodic-contribution-1').value) || 0;
+        const sc1_frequency = parseInt(document.getElementById('comp-frequency-1').value);
+        const sc1_contributionMoment = document.getElementById('comp-contribution-moment-1').value;
+        const sc1_interestRate = parseFloat(document.getElementById('comp-interest-rate-1').value) / 100;
+        const sc1_years = parseInt(document.getElementById('comp-years-1').value) || 0;
+
+        // Recoger datos del Escenario 2
+        const sc2_initialCapital = parseFloat(document.getElementById('comp-initial-capital-2').value) || 0;
+        const sc2_periodicContribution = parseFloat(document.getElementById('comp-periodic-contribution-2').value) || 0;
+        const sc2_frequency = parseInt(document.getElementById('comp-frequency-2').value);
+        const sc2_contributionMoment = document.getElementById('comp-contribution-moment-2').value;
+        const sc2_interestRate = parseFloat(document.getElementById('comp-interest-rate-2').value) / 100;
+        const sc2_years = parseInt(document.getElementById('comp-years-2').value) || 0;
+
+        // Validaciones básicas
+        if (sc1_years <= 0 || sc2_years <= 0) {
+            comparisonMessage.textContent = 'El número de años debe ser mayor que 0 para ambos escenarios.';
+            comparisonMessage.style.display = 'block';
+            if (comparisonChartInstance) {
+                comparisonChartInstance.destroy();
+            }
+            return;
+        }
+
+        if (currentComparisonType === 'final_capital') {
+            const result1 = calculateCompoundInterest(sc1_initialCapital, sc1_periodicContribution, sc1_frequency, sc1_contributionMoment, sc1_interestRate, sc1_years);
+            const result2 = calculateCompoundInterest(sc2_initialCapital, sc2_periodicContribution, sc2_frequency, sc2_contributionMoment, sc2_interestRate, sc2_years);
+            
+            renderComparisonChart('bar', ['Escenario 1', 'Escenario 2'], [result1.finalCapital, result2.finalCapital]);
+
+        } else if (currentComparisonType === 'evolution') {
+            const evolution1 = calculateCompoundInterestEvolution(sc1_initialCapital, sc1_periodicContribution, sc1_frequency, sc1_contributionMoment, sc1_interestRate, sc1_years);
+            const evolution2 = calculateCompoundInterestEvolution(sc2_initialCapital, sc2_periodicContribution, sc2_frequency, sc2_contributionMoment, sc2_interestRate, sc2_years);
+
+            // Asegurarse de que los labels de los años cubran ambos escenarios
+            const maxYears = Math.max(sc1_years, sc2_years);
+            const labels = Array.from({ length: maxYears + 1 }, (_, i) => `Año ${i}`);
+
+            const datasets = [
+                {
+                    label: 'Escenario 1',
+                    data: evolution1.map(e => e.balance),
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                    fill: false,
+                    tension: 0.1
+                },
+                {
+                    label: 'Escenario 2',
+                    data: evolution2.map(e => e.balance),
+                    borderColor: '#5b8def',
+                    backgroundColor: 'rgba(91, 141, 239, 0.2)',
+                    fill: false,
+                    tension: 0.1
+                }
+            ];
+            renderComparisonChart('line', labels, datasets);
+        }
+        
+        comparisonMessage.style.display = 'none';
+    });
+
+    function renderComparisonChart(chartType, labels, dataOrDatasets) {
+        if (comparisonChartInstance) {
+            comparisonChartInstance.destroy();
+        }
+        const ctx = document.getElementById('comparison-chart').getContext('2d');
+
+        let datasets = [];
+        let titleText = '';
+        let yAxisTitle = '';
+
+        if (chartType === 'bar') {
+            datasets = [{
+                label: 'Capital Final (€)',
+                data: dataOrDatasets, // En este caso, dataOrDatasets es un array de valores
+                backgroundColor: ['#27ae60', '#5b8def'],
+                borderColor: ['#219150', '#4a7fd6'],
+                borderWidth: 1
+            }];
+            titleText = 'Comparación de Capital Final entre Escenarios';
+            yAxisTitle = 'Capital Final (€)';
+        } else if (chartType === 'line') {
+            datasets = dataOrDatasets; // En este caso, dataOrDatasets ya es un array de datasets
+            titleText = 'Evolución del Capital entre Escenarios';
+            yAxisTitle = 'Capital (€)';
+        }
+
+        comparisonChartInstance = new Chart(ctx, {
+            type: chartType,
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: chartType === 'line' // Mostrar leyenda solo para el gráfico de líneas
+                    },
+                    title: {
+                        display: true,
+                        text: titleText
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: chartType === 'line' ? 'Año' : ''
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: yAxisTitle
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+    // --- Funcionalidad del Modal de Objetivos de Ahorro ---
+    const goalsBtn = document.getElementById('goals-btn');
+    const goalsModal = document.getElementById('goals-modal');
+    const closeGoalsModalBtn = document.getElementById('close-goals-modal-btn');
+    const calcContributionBtn = document.getElementById('calc-contribution-btn');
+    const calcYearsBtn = document.getElementById('calc-years-btn');
+    const calculateContributionSection = document.getElementById('calculate-contribution-section');
+    const calculateYearsSection = document.getElementById('calculate-years-section');
+    const requiredContributionResult = document.getElementById('required-contribution-result');
+    const requiredYearsResult = document.getElementById('required-years-result');
+
+    goalsBtn.addEventListener('click', () => {
+        goalsModal.classList.add('visible');
+        calcContributionBtn.click(); // Activar la sección de calcular aportación por defecto
+    });
+
+    closeGoalsModalBtn.addEventListener('click', () => {
+        goalsModal.classList.remove('visible');
+        requiredContributionResult.style.display = 'none';
+        requiredYearsResult.style.display = 'none';
+    });
+
+    goalsModal.addEventListener('click', (e) => {
+        if (e.target === goalsModal) {
+            goalsModal.classList.remove('visible');
+            requiredContributionResult.style.display = 'none';
+            requiredYearsResult.style.display = 'none';
+        }
+    });
+
+    calcContributionBtn.addEventListener('click', () => {
+        calcContributionBtn.classList.add('active');
+        calcYearsBtn.classList.remove('active');
+        calculateContributionSection.style.display = 'block';
+        calculateYearsSection.style.display = 'none';
+        requiredContributionResult.style.display = 'none';
+    });
+
+    calcYearsBtn.addEventListener('click', () => {
+        calcYearsBtn.classList.add('active');
+        calcContributionBtn.classList.remove('active');
+        calculateYearsSection.style.display = 'block';
+        calculateContributionSection.style.display = 'none';
+        requiredYearsResult.style.display = 'none';
+    });
+
+    // Lógica de Cálculo de Objetivos
+    document.getElementById('calculate-contribution-value-btn').addEventListener('click', () => {
+        const targetCapital = parseFloat(document.getElementById('goal-target-capital-contrib').value);
+        const initial = parseFloat(document.getElementById('goal-initial-capital-contrib').value);
+        const rate = parseFloat(document.getElementById('goal-interest-rate-contrib').value) / 100;
+        const numYears = parseInt(document.getElementById('goal-years-contrib').value);
+        const freq = parseInt(document.getElementById('goal-frequency-contrib').value);
+        const moment = document.getElementById('goal-contribution-moment-contrib').value;
+
+        let requiredContribution = 0;
+        if (targetCapital <= initial) {
+            requiredContribution = 0;
+        } else if (numYears === 0) {
+            requiredContribution = (targetCapital - initial); // Necesita cubrir la diferencia en el mismo periodo
+        } else {
+            const periods = numYears * freq;
+            const effectiveRate = rate / freq;
+            
+            let finalCapitalFromInitial = initial * Math.pow(1 + effectiveRate, periods);
+
+            if (finalCapitalFromInitial >= targetCapital) {
+                requiredContribution = 0;
+            } else {
+                const capitalNeededFromContributions = targetCapital - finalCapitalFromInitial;
+                if (effectiveRate > 0) {
+                    const factor = (Math.pow(1 + effectiveRate, periods) - 1) / effectiveRate;
+                    if (moment === 'start') {
+                        requiredContribution = capitalNeededFromContributions / (factor * (1 + effectiveRate));
+                    } else { // end
+                        requiredContribution = capitalNeededFromContributions / factor;
+                    }
+                } else { // Tasa de interés 0
+                     requiredContribution = capitalNeededFromContributions / periods;
+                }
+            }
+        }
+
+        requiredContributionResult.innerHTML = `Necesitarías aportar <strong>${formatCurrency(requiredContribution)}</strong> ${freq === 1 ? 'anualmente' : freq === 2 ? 'semestralmente' : freq === 4 ? 'trimestralmente' : freq === 12 ? 'mensualmente' : freq === 52 ? 'semanalmente' : 'diariamente'}.`;
+        requiredContributionResult.style.display = 'block';
+    });
+
+    document.getElementById('calculate-years-value-btn').addEventListener('click', () => {
+        const targetCapital = parseFloat(document.getElementById('goal-target-capital-years').value);
+        const initial = parseFloat(document.getElementById('goal-initial-capital-years').value);
+        const periodic = parseFloat(document.getElementById('goal-periodic-contribution-years').value);
+        const rate = parseFloat(document.getElementById('goal-interest-rate-years').value) / 100;
+        const freq = parseInt(document.getElementById('goal-frequency-years').value);
+        const moment = document.getElementById('goal-contribution-moment-years').value;
+
+        let yearsNeeded = 0;
+        
+        if (targetCapital <= initial) {
+            yearsNeeded = 0;
+        } else if (rate === 0 && periodic === 0) {
+            yearsNeeded = (targetCapital > initial) ? Infinity : 0;
+        } else {
+            let currentBalance = initial;
+            let yearsCount = 0;
+            const maxYears = 500; // Límite para evitar bucles infinitos
+            
+            const effectiveRate = rate / freq;
+
+            for (let i = 0; i < maxYears; i++) {
+                if (currentBalance >= targetCapital) {
+                    yearsNeeded = yearsCount;
+                    break;
+                }
+
+                yearsCount++;
+                for (let period = 0; period < freq; period++) {
+                    if (moment === 'start') {
+                        currentBalance += periodic;
+                    }
+                    currentBalance += currentBalance * effectiveRate;
+                    if (moment === 'end') {
+                        currentBalance += periodic;
+                    }
+                }
+            }
+            if (currentBalance < targetCapital) {
+                yearsNeeded = Infinity;
+            }
+        }
+
+        if (yearsNeeded === Infinity) {
+            requiredYearsResult.innerHTML = `El capital objetivo no se alcanzaría con estos parámetros.`;
+        } else {
+            requiredYearsResult.innerHTML = `Necesitarías <strong>${yearsNeeded} años</strong> para alcanzar tu capital objetivo.`;
+        }
+        requiredYearsResult.style.display = 'block';
+    });
+
+    // --- Funcionalidad del Modal de Análisis de Sensibilidad ---
+    const sensitivityAnalysisBtn = document.getElementById('sensitivity-analysis-btn');
+    const sensitivityModal = document.getElementById('sensitivity-modal');
+    const closeSensitivityModalBtn = document.getElementById('close-sensitivity-modal-btn');
+    const runSensitivityAnalysisBtn = document.getElementById('run-sensitivity-analysis-btn');
+    const sensitivityMessage = document.getElementById('sensitivity-message');
+
+    // Elementos para mostrar los parámetros base en el modal de sensibilidad
+    const sensInitialCapitalEl = document.getElementById('sens-initial-capital');
+    const sensPeriodicContributionEl = document.getElementById('sens-periodic-contribution');
+    const sensFrequencyEl = document.getElementById('sens-frequency');
+    const sensContributionMomentEl = document.getElementById('sens-contribution-moment');
+    const sensYearsEl = document.getElementById('sens-years');
+
+
+    sensitivityAnalysisBtn.addEventListener('click', () => {
+        // Obtener los parámetros actuales de la calculadora principal
+        const initialCapital = parseFloat(document.getElementById('initial-capital').value) || 0;
+        const periodicContribution = parseFloat(document.getElementById('periodic-contribution').value) || 0;
+        const frequency = document.getElementById('frequency').options[document.getElementById('frequency').selectedIndex].text; // Obtener texto
+        const contributionMoment = document.getElementById('contribution-moment').options[document.getElementById('contribution-moment').selectedIndex].text; // Obtener texto
+        const years = parseInt(document.getElementById('years').value);
+
+        // Actualizar los elementos en el modal de sensibilidad
+        sensInitialCapitalEl.textContent = formatCurrency(initialCapital);
+        sensPeriodicContributionEl.textContent = formatCurrency(periodicContribution);
+        sensFrequencyEl.textContent = frequency;
+        sensContributionMomentEl.textContent = contributionMoment;
+        sensYearsEl.textContent = years;
+
+        sensitivityModal.classList.add('visible');
+        // Limpiar el gráfico anterior si existe
+        if (sensitivityChartInstance) {
+            sensitivityChartInstance.destroy();
+        }
+        sensitivityMessage.style.display = 'none'; // Ocultar mensajes anteriores
+    });
+
+    closeSensitivityModalBtn.addEventListener('click', () => {
+        sensitivityModal.classList.remove('visible');
+    });
+
+    sensitivityModal.addEventListener('click', (e) => {
+        if (e.target === sensitivityModal) {
+            sensitivityModal.classList.remove('visible');
+        }
+    });
+
+    runSensitivityAnalysisBtn.addEventListener('click', () => {
+        const rateStart = parseFloat(document.getElementById('sensitivity-rate-start').value);
+        const rateEnd = parseFloat(document.getElementById('sensitivity-rate-end').value);
+        const rateStep = parseFloat(document.getElementById('sensitivity-rate-step').value);
+
+        if (isNaN(rateStart) || isNaN(rateEnd) || isNaN(rateStep) || rateStep <= 0 || rateStart > rateEnd) {
+            sensitivityMessage.textContent = 'Por favor, introduce valores válidos para el rango y el paso de la tasa de interés.';
+            sensitivityMessage.style.display = 'block';
+            if (sensitivityChartInstance) {
+                sensitivityChartInstance.destroy();
+            }
+            return;
+        }
+
+        // Obtener los parámetros actuales de la calculadora principal para el cálculo de sensibilidad
+        const initialCapital = parseFloat(document.getElementById('initial-capital').value) || 0;
+        const periodicContribution = parseFloat(document.getElementById('periodic-contribution').value) || 0;
+        const frequency = parseInt(document.getElementById('frequency').value); // Usar el valor numérico para el cálculo
+        const contributionMoment = document.getElementById('contribution-moment').value;
+        const years = parseInt(document.getElementById('years').value);
+
+        const labels = [];
+        const data = [];
+
+        // Iterar a través del rango de tasas de interés
+        for (let r = rateStart; r <= rateEnd; r += rateStep) {
+            const annualInterestRate = r / 100; // Convertir a decimal
+            const result = calculateCompoundInterest(initialCapital, periodicContribution, frequency, contributionMoment, annualInterestRate, years);
+            labels.push(`${r.toFixed(1)}%`);
+            data.push(result.finalCapital);
+        }
+
+        renderSensitivityChart(labels, data);
+        sensitivityMessage.style.display = 'none'; // Ocultar mensaje si el cálculo es exitoso
+    });
+
+    // Función para renderizar el gráfico de sensibilidad
+    function renderSensitivityChart(labels, data) {
+        if (sensitivityChartInstance) {
+            sensitivityChartInstance.destroy();
+        }
+        const ctx = document.getElementById('sensitivity-chart').getContext('2d');
+        sensitivityChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Capital Final (€)',
+                    data: data,
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Análisis de Sensibilidad: Capital Final vs. Tasa de Interés'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Capital Final: ${formatCurrency(context.raw)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Tasa de Interés Anual (%)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Capital Final (€)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- Funcionalidad de Exportar Datos ---
+    document.getElementById('export-data-btn').addEventListener('click', () => {
+        const table = document.querySelector('#results-table-body');
+        if (!table || table.rows.length === 0) {
+            alert('No hay datos en la tabla para exportar.');
+            return;
+        }
+
+        let csvContent = "Año;Aportación periódica;Aportaciones acum.;Intereses;Intereses acum.;Capital total\n"; // Encabezados CSV
+
+        // Recorrer las filas de la tabla
+        Array.from(table.rows).forEach(row => {
+            const rowData = [];
+            Array.from(row.cells).forEach(cell => {
+                // Limpiar el texto de moneda (€) y reemplazar comas por puntos para números
+                let cellText = cell.textContent.replace(/€/g, '').trim();
+                cellText = cellText.replace(/\./g, ''); // Eliminar puntos de miles
+                cellText = cellText.replace(/,/g, '.'); // Reemplazar coma decimal por punto
+                rowData.push(cellText);
+            });
+            csvContent += rowData.join(";") + "\n"; // Unir celdas con punto y coma
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        if (link.download !== undefined) { // Feature detection for download attribute
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'interes_compuesto_resultados.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert('Tu navegador no soporta la descarga directa de archivos. Por favor, copia el texto de la tabla manualmente.');
+        }
+    });
+
+
+    // Ejecutar el cálculo con los valores por defecto al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.calculate-btn').click();
+    });
+
+</script>
+
+</body>
+</html>
