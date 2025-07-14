@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Interés Compuesto: Multiplica tu Dinero y Alcanza tus Metas Financieras</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom styles for the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        .tab-active {
+            border-bottom: 3px solid #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+    <!-- Header/Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-chart-line text-blue-600 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gray-900">Finanzas Inteligentes</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="#que-es" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">¿Qué es?</a>
+                    <a href="#como-funciona" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">Cómo funciona</a>
+                    <a href="#formula" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">Fórmula</a>
+                    <a href="https://ivandlpn.github.io/Aplicaciones/InteresCompuesto/" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium" target="_blank">Calculadora</a>
+                    <a href="#estrategias" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">Estrategias</a>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#que-es" class="text-gray-900 hover:text-blue-600 block px-3 py-2 text-base font-medium">¿Qué es?</a>
+                <a href="#como-funciona" class="text-gray-900 hover:text-blue-600 block px-3 py-2 text-base font-medium">Cómo funciona</a>
+                <a href="#formula" class="text-gray-900 hover:text-blue-600 block px-3 py-2 text-base font-medium">Fórmula</a>
+                <a href="https://ivandlpn.github.io/Aplicaciones/InteresCompuesto/" class="text-gray-900 hover:text-blue-600 block px-3 py-2 text-base font-medium" target="_blank">Calculadora</a>
+                <a href="#estrategias" class="text-gray-900 hover:text-blue-600 block px-3 py-2 text-base font-medium">Estrategias</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">El Poder del Interés Compuesto</h1>
+                    <p class="text-xl mb-8">Descubre cómo tu dinero puede crecer exponencialmente con el tiempo y alcanza tus metas financieras más rápido.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <!-- Updated Calculadora button link -->
+                        <a href="https://ivandlpn.github.io/Aplicaciones/InteresCompuesto/" class="bg-white text-blue-600 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg text-center transition-all" target="_blank">Calculadora</a>
+                        <!-- "Aprende Más" button removed -->
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-6 shadow-2xl max-w-md">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-coins text-blue-600 text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">Ejemplo Práctico</h3>
+                                <p class="text-blue-100">$10,000 al 5% anual</p>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span>Año 5:</span>
+                                <span class="font-bold">$12,763</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Año 10:</span>
+                                <span class="font-bold">$16,289</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Año 20:</span>
+                                <span class="font-bold">$26,533</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Año 30:</span>
+                                <span class="font-bold">$43,219</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 text-sm text-blue-100">
+                            <p>El mismo capital crece mucho más con el tiempo gracias al interés compuesto.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- What is Compound Interest -->
+        <section id="que-es" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">¿Qué es el Interés Compuesto?</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="text-lg mb-6">El <span class="font-bold text-blue-600">interés compuesto</span> es un concepto financiero fundamental donde los intereses se calculan no solo sobre el monto inicial (principal), sino también sobre los intereses acumulados previamente.</p>
+                    <p class="mb-6">Esto significa que tus ganancias se reinvierten y generan aún más ganancias con el tiempo, creando un poderoso "efecto de bola de nieve" en tus inversiones.</p>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-lightbulb text-blue-600"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-blue-700">A diferencia del interés simple que solo se calcula sobre el capital inicial, el interés compuesto permite que tu dinero crezca exponencialmente.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p>Es una de las herramientas más poderosas para aumentar tus ahorros o inversiones a largo plazo y para tomar decisiones financieras más informadas y rentables.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <h3 class="text-xl font-bold mb-4 text-gray-900">Comparación: Interés Simple vs. Compuesto</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Año</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Simple ($)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compuesto ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10,500</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10,500</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12,500</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12,763</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">16,289</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">20</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">20,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">26,533</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">30</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">43,219</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <p>Ejemplo con $10,000 iniciales al 5% de interés anual.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it Works -->
+        <section id="como-funciona" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">¿Cómo Funciona el Interés Compuesto?</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="order-2 md:order-1">
+                    <h3 class="text-xl font-bold mb-4 text-gray-900">El Efecto Bola de Nieve</h3>
+                    <p class="mb-4">Los intereses generados se suman al capital inicial, incrementando la base sobre la cual se calculan los intereses en los períodos siguientes. Esto acelera el crecimiento del capital con el tiempo, volviéndolo exponencial en lugar de lineal.</p>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-6 card-hover transition-all">
+                        <h4 class="font-bold mb-2 text-blue-600">Ejemplo Ilustrativo</h4>
+                        <p class="mb-2">Si inviertes $10,000 con una tasa de interés compuesto anual del 5%:</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><span class="font-semibold">Año 1:</span> $500 de intereses → Total: $10,500</li>
+                            <li><span class="font-semibold">Año 2:</span> Interés sobre $10,500 = $525 → Total: $11,025</li>
+                            <li><span class="font-semibold">Año 3:</span> Interés sobre $11,025 = $551.25 → Total: $11,576.25</li>
+                            <li><span class="font-semibold">Año 4:</span> Interés sobre $11,576.25 = $578.81 → Total: $12,155.06</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Como puedes ver, cada año los intereses generados son mayores porque se calculan sobre un capital cada vez más grande. Este es el "efecto bola de nieve" que hace tan poderoso al interés compuesto.</p>
+                </div>
+                
+                <div class="order-1 md:order-2">
+                    <div class="bg-blue-50 p-6 rounded-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-snowflake text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">Visualización del Crecimiento</h3>
+                                <p class="text-blue-700">Comparación de $10,000 al 5% anual</p>
+                            </div>
+                        </div>
+                        
+                        <div class="relative h-64 mt-6">
+                            <div class="absolute bottom-0 left-0 w-full h-1 bg-gray-300"></div>
+                            
+                            <!-- Simple Interest Bars -->
+                            <div class="absolute bottom-0 left-0 flex space-x-1" style="height: 100%; width: 100%;">
+                                <div class="flex flex-col justify-end" style="width: 20%;">
+                                    <div class="bg-blue-300 rounded-t-sm" style="height: 20%;" title="Año 1: $10,500"></div>
+                                    <div class="text-xs text-center mt-1">1</div>
+                                </div>
+                                <div class="flex flex-col justify-end" style="width: 20%;">
+                                    <div class="bg-blue-300 rounded-t-sm" style="height: 25%;" title="Año 5: $12,500"></div>
+                                    <div class="text-xs text-center mt-1">5</div>
+                                </div>
+                                <div class="flex flex-col justify-end" style="width: 20%;">
+                                    <div class="bg-blue-300 rounded-t-sm" style="height: 50%;" title="Año 10: $15,000"></div>
+                                    <div class="text-xs text-center mt-1">10</div>
+                                </div>
+                                <div class="flex flex-col justify-end" style="width: 20%;">
+                                    <div class="bg-blue-300 rounded-t-sm" style="height: 100%;" title="Año 20: $20,000"></div>
+                                    <div class="text-xs text-center mt-1">20</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Compound Interest Bars -->
+                            <div class="absolute bottom-0 left-0 flex space-x-1" style="height: 100%; width: 100%;">
+                                <div class="flex flex-col justify-end" style="width: 20%;">
+                                    <div class="bg-blue-600 rounded-t-sm opacity-70" style="height: 21%;" title="Año 1: $10,500"></div>
+                                </div>
+                                <div class="flex flex-col justify-end" style="width: 20%;">
+                                    <div class="bg-blue-600 rounded-t-sm opacity-70" style="height: 28%;" title="Año 5: $12,763"></div>
+                                </div>
+                                <div class="flex flex-col justify-end" style="width: 20%;">
+                                    <div class="bg-blue-600 rounded-t-sm opacity-70" style="height: 63%;" title="Año 10: $16,289"></div>
+                                </div>
+                                <div class="flex flex-col justify-end" style="width: 20%;">
+                                    <div class="bg-blue-600 rounded-t-sm opacity-70" style="height: 100%;" title="Año 20: $26,533"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center mt-4 space-x-4">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-blue-300 mr-2"></div>
+                                <span class="text-xs">Interés Simple</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-blue-600 opacity-70 mr-2"></div>
+                                <span class="text-xs">Interés Compuesto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formula Section -->
+        <section id="formula" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">La Fórmula del Interés Compuesto</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div>
+                    <div class="bg-white p-6 rounded-xl shadow-md mb-6 card-hover transition-all">
+                        <h3 class="text-xl font-bold mb-4 text-gray-900">Fórmula Principal</h3>
+                        <div class="text-center py-4 bg-gray-50 rounded-lg mb-4">
+                            <p class="text-2xl font-mono font-bold text-blue-600">A = P(1 + r/n)<sup>nt</sup></p>
+                        </div>
+                        
+                        <h4 class="font-bold mb-2 text-gray-800">Desglose de Componentes:</h4>
+                        <ul class="space-y-2">
+                            <li><span class="font-semibold">A:</span> Monto total acumulado (valor futuro/capital final)</li>
+                            <li><span class="font-semibold">P:</span> Principal (cantidad inicial de dinero)</li>
+                            <li><span class="font-semibold">r:</span> Tasa de interés anual (en decimal, ej. 6% = 0.06)</li>
+                            <li><span class="font-semibold">n:</span> Número de veces que el interés se capitaliza por año</li>
+                            <li><span class="font-semibold">t:</span> Tiempo en años</li>
+                        </ul>
+                        
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-blue-800">Para obtener solo el interés compuesto generado, resta el capital inicial (P) del monto total acumulado (A).</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-gray-900">Ejemplos Prácticos</h3>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-bold mb-2 text-blue-600">Ejemplo 1: Inversión a 5 años</h4>
+                        <p class="mb-2">Inversión de $5,000 con una tasa anual del 6% capitalizable trimestralmente (n=4) durante 5 años.</p>
+                        <div class="bg-gray-50 p-3 rounded-lg overflow-x-auto">
+                            <code class="text-sm">
+                                A = 5000(1 + 0.06/4)<sup>(4*5)</sup><br>
+                                A = 5000(1 + 0.015)<sup>20</sup><br>
+                                A = 5000(1.015)<sup>20</sup><br>
+                                A = 5000 × 1.3478 ≈ $6,740
+                            </code>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-bold mb-2 text-blue-600">Ejemplo 2: Cálculo del tiempo</h4>
+                        <p class="mb-2">¿Cuánto tiempo se necesita para duplicar $1,000 al 8% anual compuesto mensualmente?</p>
+                        <div class="bg-gray-50 p-3 rounded-lg overflow-x-auto">
+                            <code class="text-sm">
+                                Usamos la fórmula: n = log(A/P) / [log(1 + r/n)]<br>
+                                Queremos A = 2P = $2,000<br>
+                                n = log(2000/1000) / [12 × log(1 + 0.08/12)]<br>
+                                n = log(2) / [12 × log(1.006667)]<br>
+                                n ≈ 0.3010 / (12 × 0.002885) ≈ 8.69 años
+                            </code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Factors -->
+        <section class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Factores Clave que Influyen en el Interés Compuesto</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-3xl mb-4">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Capital Inicial (P)</h3>
+                    <p class="text-gray-600">A mayor capital inicial, mayor será el monto final generado por el interés compuesto. Debe ser positivo y mayor que cero.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-3xl mb-4">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Tasa de Interés (r)</h3>
+                    <p class="text-gray-600">Un porcentaje más alto resulta en un mayor crecimiento del capital. Pequeñas diferencias en la tasa pueden generar grandes diferencias a largo plazo.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-3xl mb-4">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Tiempo (t)</h3>
+                    <p class="text-gray-600">Es el factor más influyente. Cuanto más largo sea el período, mayor será el impacto del interés compuesto, permitiendo un crecimiento exponencial.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-3xl mb-4">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Frecuencia de Capitalización (n)</h3>
+                    <p class="text-gray-600">Cuanto más frecuentemente se capitalicen los intereses (mensual vs. anual), mayor será el impacto del interés compuesto, acelerando el crecimiento.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pros and Cons -->
+        <section class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Ventajas y Desventajas del Interés Compuesto</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-6 text-green-600 flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i> Ventajas
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 text-green-500 mt-1">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Crecimiento Exponencial</p>
+                                <p class="text-gray-600">Permite que las inversiones crezcan de manera acelerada y significativa con el tiempo, generando "ganancias sobre ganancias".</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 text-green-500 mt-1">
+                                <i class="fas fa-piggy-bank"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Acumulación Acelerada de Riqueza</p>
+                                <p class="text-gray-600">Facilita la acumulación de patrimonio de forma más rápida y efectiva que con interés simple.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 text-green-500 mt-1">
+                                <i class="fas fa-couch"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Potencial de Ingresos Pasivos</p>
+                                <p class="text-gray-600">Los intereses generados pueden convertirse en un flujo de efectivo adicional sin trabajo activo.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 text-green-500 mt-1">
+                                <i class="fas fa-hourglass-start"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Aprovechamiento del Tiempo</p>
+                                <p class="text-gray-600">Cuanto antes se comience a invertir, más tiempo tendrá el interés compuesto para maximizar los retornos.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-6 text-red-600 flex items-center">
+                        <i class="fas fa-times-circle mr-2"></i> Desventajas
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 text-red-500 mt-1">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Complejidad en el Cálculo</p>
+                                <p class="text-gray-600">Puede ser difícil de entender y calcular para algunas personas sin las herramientas adecuadas.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 text-red-500 mt-1">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Riesgo en Deudas</p>
+                                <p class="text-gray-600">Si se aplica a préstamos o deudas, puede hacer que la deuda crezca rápidamente y sea financieramente perjudicial.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 text-red-500 mt-1">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Paciencia Requerida</p>
+                                <p class="text-gray-600">Los grandes retornos no se ven de inmediato; requiere tiempo y disciplina para ser rentable.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-5 w-5 text-red-500 mt-1">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Cargos e Impuestos</p>
+                                <p class="text-gray-600">Las inversiones suelen tener comisiones y las ganancias están sujetas a impuestos, reduciendo la rentabilidad real.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rule of 72 -->
+        <section class="mb-20">
+            <div class="bg-blue-50 rounded-xl p-8">
+                <div class="md:flex md:items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">La Regla del 72</h2>
+                        <p class="mb-4">Una fórmula matemática sencilla que estima el tiempo que tardará una inversión en duplicar su valor, dividiendo 72 entre la tasa de interés anual.</p>
+                        
+                        <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                            <p class="font-bold text-blue-600 mb-2">Fórmula:</p>
+                            <p class="text-xl font-mono">Tiempo para duplicar = 72 / tasa de interés anual</p>
+                        </div>
+                        
+                        <p class="mb-4">Ejemplo: Si recibes un interés anual del 6%, tu capital tardará aproximadamente 12 años en duplicarse (72 / 6 = 12).</p>
+                        <p>Es útil para comparar diferentes opciones de inversión y establecer objetivos realistas al visualizar el potencial de crecimiento a largo plazo.</p>
+                    </div>
+                    
+                    <div class="md:w-1/2 md:pl-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold mb-4 text-gray-900">Calculadora de la Regla del 72</h3>
+                            
+                            <div class="mb-4">
+                                <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">Tasa de interés anual (%)</label>
+                                <input type="number" id="interest-rate" class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej. 6">
+                            </div>
+                            
+                            <button id="calculate-72" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-all">
+                                Calcular
+                            </button>
+                            
+                            <div id="rule-72-result" class="mt-4 p-4 bg-blue-50 rounded-lg hidden">
+                                <p class="font-bold text-blue-600">Resultado:</p>
+                                <p id="result-text" class="text-lg mt-1"></p>
+                            </div>
+                            
+                            <div class="mt-4 text-sm text-gray-500">
+                                <p>Nota: Esta es una aproximación y no tiene en cuenta la inflación, los impuestos o las comisiones.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compound Interest Calculator section removed -->
+
+        <!-- Strategies -->
+        <section id="estrategias" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Estrategias para Maximizar los Beneficios del Interés Compuesto</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-2xl mb-4">
+                        <i class="fas fa-hourglass-start"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Iniciar lo antes posible</h3>
+                    <p class="text-gray-600">El tiempo es el factor más importante. Incluso pequeñas cantidades pueden crecer significativamente si se invierten temprano.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-2xl mb-4">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Mantener una tasa favorable</h3>
+                    <p class="text-gray-600">Busca inversiones con tasas competitivas. Pequeñas diferencias en porcentajes generan grandes diferencias a largo plazo.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-2xl mb-4">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Reinvertir los intereses</h3>
+                    <p class="text-gray-600">Evita retirar las ganancias para que se sumen al capital y continúen generando más intereses.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-2xl mb-4">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Capitalización frecuente</h3>
+                    <p class="text-gray-600">Prefiere inversiones con capitalización mensual o diaria en lugar de anual para maximizar el crecimiento.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-2xl mb-4">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Establecer metas claras</h3>
+                    <p class="text-gray-600">Define objetivos financieros específicos para mantener el enfoque y realizar inversiones adecuadas.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover transition-all">
+                    <div class="text-blue-600 text-2xl mb-4">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Mantenerse informado</h3>
+                    <p class="text-gray-600">Sigue aprendiendo sobre finanzas personales e inversiones para tomar decisiones sólidas y actualizadas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section class="mb-20">
+            <div class="bg-blue-50 rounded-xl p-8 md:p-12 text-center">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">Tu Camino Hacia la Independencia Financiera</h2>
+                <p class="text-lg mb-6 max-w-3xl mx-auto">El interés compuesto es una de las herramientas más poderosas para el crecimiento de ahorros e inversiones a largo plazo. Comprenderlo y aplicarlo correctamente puede marcar la diferencia entre alcanzar tus metas financieras o quedarte corto.</p>
+                
+                <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-sm mb-8">
+                    <p class="font-semibold mb-4">Recuerda estos principios clave:</p>
+                    <ul class="space-y-2 text-left">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Inicia tus inversiones lo más temprano posible para maximizar el efecto del tiempo</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Mantén la disciplina de reinvertir los intereses generados</span>
+                        </li>
+                        <li class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Diversifica tus inversiones para gestionar mejor los riesgos</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Revisa periódicamente tu estrategia para adaptarte a cambios en tus metas o en el mercado</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <p class="text-lg max-w-3xl mx-auto">El camino hacia la libertad financiera comienza con un primer paso. Usa el poder del interés compuesto a tu favor y observa cómo tu patrimonio crece exponencialmente con el tiempo.</p>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Preguntas Frecuentes</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <button class="faq-question w-full text-left p-4 md:p-6 focus:outline-none">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-bold text-lg">¿Cuál es la diferencia entre APR y APY?</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                        </button>
+                        <div class="faq-answer hidden px-4 md:px-6 pb-4 md:pb-6">
+                            <p class="text-gray-600">APR (Tasa Porcentual Anual) es la tasa de interés simple sin considerar la capitalización. APY (Rendimiento Porcentual Anual) incluye el efecto del interés compuesto, mostrando el rendimiento real que obtendrás. Siempre compara APY cuando evalúes opciones de inversión.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <button class="faq-question w-full text-left p-4 md:p-6 focus:outline-none">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-bold text-lg">¿Cómo afecta la inflación al interés compuesto?</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                        </button>
+                        <div class="faq-answer hidden px-4 md:px-6 pb-4 md:pb-6">
+                            <p class="text-gray-600">La inflación reduce el poder adquisitivo de tu dinero. Para que el interés compuesto sea efectivo, la tasa de retorno debe ser mayor que la tasa de inflación. Por ejemplo, un 5% de retorno con 3% de inflación da solo un 2% de crecimiento real.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <button class="faq-question w-full text-left p-4 md:p-6 focus:outline-none">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-bold text-lg">¿Es mejor el interés compuesto para ahorros o inversiones?</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                        </button>
+                        <div class="faq-answer hidden px-4 md:px-6 pb-4 md:pb-6">
+                            <p class="text-gray-600">El interés compuesto es más poderoso en inversiones a largo plazo (como fondos de retiro o acciones) que en cuentas de ahorro tradicionales, porque las tasas de interés suelen ser más altas. Sin embargo, cualquier producto financiero que ofrezca interés compuesto es mejor que uno con interés simple.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <button class="faq-question w-full text-left p-4 md:p-6 focus:outline-none">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-bold text-lg">¿Cómo puedo empezar a aprovechar el interés compuesto?</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                        </button>
+                        <div class="faq-answer hidden px-4 md:px-6 pb-4 md:pb-6">
+                            <p class="text-gray-600">Puedes comenzar con: 1) Una cuenta de ahorros con interés compuesto, 2) Fondos indexados o ETFs, 3) Planes de retiro con contribuciones periódicas. Lo más importante es empezar pronto, aunque sea con cantidades pequeñas, y ser constante.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Finanzas Inteligentes</h3>
+                    <p class="text-gray-400">Aprende a hacer crecer tu dinero con herramientas financieras poderosas como el interés compuesto.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Enlaces Rápidos</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#que-es" class="text-gray-400 hover:text-white transition-colors">¿Qué es el interés compuesto?</a></li>
+                        <li><a href="#como-funciona" class="text-gray-400 hover:text-white transition-colors">Cómo funciona</a></li>
+                        <li><a href="https://ivandlpn.github.io/Aplicaciones/InteresCompuesto/" class="text-gray-400 hover:text-white transition-colors" target="_blank">Calculadora</a></li>
+                        <li><a href="#estrategias" class="text-gray-400 hover:text-white transition-colors">Estrategias</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Recursos</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Calculadoras financieras</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Guías de inversión</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Glosario financiero</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contacto</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">info@finanzainteligente.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">+1 234 567 890</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-4 flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2023 Finanzas Inteligentes. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const answer = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                
+                // Toggle answer visibility
+                answer.classList.toggle('hidden');
+                
+                // Rotate icon
+                icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // Rule of 72 calculator
+        document.getElementById('calculate-72').addEventListener('click', function() {
+            const rate = parseFloat(document.getElementById('interest-rate').value);
+            
+            if (rate && rate > 0) {
+                const years = 72 / rate;
+                const resultElement = document.getElementById('rule-72-result');
+                const resultText = document.getElementById('result-text');
+                
+                resultText.textContent = `Tu inversión se duplicará en aproximadamente ${years.toFixed(1)} años con una tasa del ${rate}% anual.`;
+                resultElement.classList.remove('hidden');
+            }
+        });
+
+        // Removed the compound interest calculator JavaScript logic
+        // document.getElementById('calculate').addEventListener('click', function() { ... });
+        // function calculateCompoundInterest(...) { ... }
+        // function createChart(...) { ... }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
