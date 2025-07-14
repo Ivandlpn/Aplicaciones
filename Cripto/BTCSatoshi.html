@@ -1,1 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Bitcoin</title>
+    
+    <style>
+        /* --- CSS Integrado --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, BlinkMacMacFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: hsl(200, 30%, 95%); /* Fondo muy claro, azul-gris suave */
+            color: #333333; /* Color de texto principal más oscuro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
+        .container {
+            width: 100%;
+            max-width: 400px;
+            height: 95vh; /* Use viewport height to ensure it fits, allowing a small margin */
+            padding: 15px; /* Reduced padding */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around; /* Distribute space evenly */
+            background-color: #ffffff; /* Contenedor blanco */
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+        }
+
+        h1 {
+            /* Adjusted color for a more prominent header */
+            color: hsl(220, 70%, 25%); /* Darker, richer blue for main title */
+            text-align: center;
+            margin-bottom: 20px; /* Reduced margin */
+            font-size: 2.2rem; /* Increased font size for main title */
+            font-weight: 700; /* Bolder font weight */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Increased gap for the symbol */
+            padding-bottom: 5px; /* Small padding at the bottom */
+            border-bottom: 2px solid hsl(220, 60%, 80%); /* Subtle underline */
+        }
+
+        h2 {
+            color: hsl(220, 50%, 40%); /* Azul índigo para títulos de sección */
+            text-align: center;
+            margin-bottom: 20px; /* Reduced margin */
+            font-size: 1.6rem; /* Slightly reduced font size */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px; /* Reduced gap */
+        }
+
+        .input-group {
+            margin-bottom: 15px; /* Reduced margin */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px; /* Reduced margin */
+            font-size: 0.9rem; /* Slightly reduced font size */
+            color: hsl(210, 20%, 45%); /* Azul-gris mutado para etiquetas */
+            display: flex;
+            align-items: center;
+            gap: 4px; /* Reduced gap */
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px; /* Reduced padding */
+            border: 1px solid hsl(200, 50%, 85%); /* Borde azul claro */
+            border-radius: 8px;
+            background-color: hsl(200, 10%, 98%); /* Blanco roto para inputs */
+            color: #333333;
+            font-size: 1.1rem; /* Slightly reduced font size */
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: hsl(220, 60%, 50%); /* Borde azul al enfocar */
+            box-shadow: 0 0 0 3px hsla(220, 60%, 50%, 0.2); /* Sombra suave al enfocar */
+        }
+
+        /* Oculta las flechas de los inputs numéricos */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+
+        .projection-section {
+            border-top: 1px solid hsl(200, 40%, 80%); /* Borde superior más claro y azulado */
+            padding-top: 15px; /* Reduced padding */
+        }
+
+        .current-value p, .future-value label {
+            font-size: 0.9rem; /* Slightly reduced font size */
+            color: hsl(210, 20%, 45%);
+        }
+
+        h3 {
+            margin-top: 8px; /* Reduced margin */
+            font-size: 1.4rem; /* Slightly reduced font size */
+            color: hsl(220, 50%, 20%); /* Color oscuro para valores importantes */
+            display: flex;
+            align-items: center;
+            gap: 6px; /* Reduced gap */
+        }
+
+        /* Styles for the input field with datalist */
+        #future-price-input {
+            width: 100%;
+            padding: 10px; /* Reduced padding */
+            border-radius: 8px;
+            background-color: hsl(200, 10%, 98%); /* Blanco roto para input */
+            color: #333333;
+            font-size: 1rem; /* Slightly reduced font size */
+            border: 1px solid hsl(200, 50%, 85%); /* Borde azul claro */
+            margin-top: 8px; /* Reduced margin */
+            box-sizing: border-box; /* Ensure padding and border are included in width */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #future-price-input:focus {
+            outline: none;
+            border-color: hsl(220, 60%, 50%);
+            box-shadow: 0 0 0 3px hsla(220, 60%, 50%, 0.2);
+        }
+
+        .currency-value { /* Nueva clase para los spans de valor monetario */
+            color: hsl(140, 70%, 40%); /* Verde vibrante para valores monetarios */
+            font-weight: bold;
+        }
+
+        #currency-toggle-btn {
+            padding: 6px 12px; /* Reduced padding */
+            border: none;
+            border-radius: 5px;
+            background-color: hsl(220, 60%, 50%); /* Azul para el botón de moneda */
+            color: white;
+            cursor: pointer;
+            font-size: 0.85rem; /* Slightly reduced font size */
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #currency-toggle-btn:hover {
+            background-color: hsl(220, 60%, 40%); /* Azul más oscuro al pasar el ratón */
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px; /* Further reduced padding for very small screens */
+                height: 98vh; /* Maximize height on small screens */
+            }
+            h1 {
+                font-size: 1.8rem; /* Adjusted for smaller screens */
+            }
+            h2 {
+                font-size: 1.3rem;
+            }
+            .input-group input {
+                font-size: 0.95rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            #currency-toggle-btn {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora Bitcoin ₿</h1>
+
+        <!-- Sección Superior: Conversor -->
+        <div class="converter-section">
+            <h2>Conversor BTC 🔄 Satoshi</h2>
+            <div class="input-group">
+                <label for="btc-input">BTC 🪙</label>
+                <input type="number" id="btc-input" placeholder="0.0">
+            </div>
+            <div class="input-group">
+                <label for="satoshi-input">Satoshis ✨</label>
+                <input type="text" id="satoshi-input" placeholder="0"> <!-- Cambiado a text para mejor formato -->
+            </div>
+        </div>
+
+        <!-- Sección Inferior: Proyección -->
+        <div class="projection-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Proyección de Inversión 📈</h2>
+                <button id="currency-toggle-btn">Cambiar a USD</button>
+            </div>
+            <div class="current-value">
+                <p>Hoy (<span id="current-date"></span>): <span id="current-price" class="currency-value"></span></p>
+                <h3>Valor Actual: <span id="wallet-value" class="currency-value">0.00</span></h3>
+            </div>
+            <div class="future-value">
+                <label for="future-price-input">Si 1 BTC alcanza:</label>
+                <input type="number" id="future-price-input" list="future-price-datalist" placeholder="Introduce una cifra o selecciona" value="">
+                <datalist id="future-price-datalist"></datalist>
+                <h3>Valor Futuro: <span id="future-wallet-value" class="currency-value">0.00</span></h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- JavaScript Integrado ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CONSTANTES Y VARIABLES ---
+            const SATOSHIS_PER_BTC = 100_000_000;
+            // Para una aplicación real, este valor debe obtenerse de una API.
+            const CURRENT_BTC_PRICE_USD = 122175; // Precio de ejemplo en USD
+            const USD_TO_EUR_RATE = 0.92; // Aproximadamente 1 USD = 0.92 EUR (Julio 2025)
+
+            let currentCurrency = 'EUR'; // Default currency changed to EUR
+
+            const btcInput = document.getElementById('btc-input');
+            const satoshiInput = document.getElementById('satoshi-input');
+            const currentDateSpan = document.getElementById('current-date');
+            const currentPriceSpan = document.getElementById('current-price');
+            const walletValueSpan = document.getElementById('wallet-value');
+            const futurePriceInput = document.getElementById('future-price-input'); 
+            const futurePriceDatalist = document.getElementById('future-price-datalist'); // Reference to datalist
+            const futureWalletValueSpan = document.getElementById('future-wallet-value');
+            const currencyToggleButton = document.getElementById('currency-toggle-btn');
+
+            // Predefined future prices in USD
+            const predefinedFuturePricesUSD = [
+                100000, 150000, 200000, 250000, 300000,
+                400000, 500000, 750000, 1000000, 2000000
+            ];
+
+            // --- FUNCIONES ---
+
+            // Formatear números para una mejor lectura (separadores de miles)
+            const formatNumber = (num) => new Intl.NumberFormat('es-ES').format(num);
+
+            // Formatear valores monetarios según la moneda actual
+            const formatValue = (num, currency) => {
+                if (currency === 'USD') {
+                    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+                } else if (currency === 'EUR') {
+                    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(num);
+                }
+                return num; // Fallback
+            };
+
+            // Actualizar todos los valores monetarios en la UI
+            function updateCurrencyDisplays() {
+                let displayPrice = CURRENT_BTC_PRICE_USD;
+                if (currentCurrency === 'EUR') {
+                    displayPrice = CURRENT_BTC_PRICE_USD * USD_TO_EUR_RATE;
+                    currencyToggleButton.textContent = 'Cambiar a USD'; // Update button text
+                } else {
+                    currencyToggleButton.textContent = 'Cambiar a EUR'; // Update button text
+                }
+                currentPriceSpan.textContent = formatValue(displayPrice, currentCurrency);
+
+                const btcValue = parseFloat(btcInput.value) || 0;
+                const currentWalletValue = btcValue * displayPrice;
+                walletValueSpan.textContent = formatValue(currentWalletValue, currentCurrency);
+
+                // Clear and re-populate datalist options with current currency formatting
+                futurePriceDatalist.innerHTML = ''; // Clear existing options
+                predefinedFuturePricesUSD.forEach(priceUSD => {
+                    const option = document.createElement('option');
+                    option.value = priceUSD; // Store USD value for calculation
+                    
+                    // Display formatted value in the dropdown
+                    let displayPriceOption = priceUSD;
+                    if (currentCurrency === 'EUR') {
+                        displayPriceOption = priceUSD * USD_TO_EUR_RATE;
+                    }
+                    option.label = formatValue(displayPriceOption, currentCurrency); // Use label for display
+                    
+                    futurePriceDatalist.appendChild(option);
+                });
+
+                // Get value directly from the input field for calculation
+                const futurePriceUSD = parseFloat(futurePriceInput.value) || 0; 
+                let futurePriceInCurrentCurrency = futurePriceUSD;
+                if (currentCurrency === 'EUR') {
+                    futurePriceInCurrentCurrency = futurePriceUSD * USD_TO_EUR_RATE;
+                }
+                const futureWalletValue = btcValue * futurePriceInCurrentCurrency;
+                futureWalletValueSpan.textContent = formatValue(futureWalletValue, currentCurrency);
+            }
+
+            // Actualizar valores de BTC/Satoshi y luego los monetarios
+            function updateValues(origin) {
+                let btcValue = 0;
+                const cleanSatoshiValue = satoshiInput.value.replace(/\./g, '');
+
+                if (origin === 'btc') {
+                    btcValue = parseFloat(btcInput.value) || 0;
+                    if (btcValue > 0) {
+                        satoshiInput.value = formatNumber(Math.round(btcValue * SATOSHIS_PER_BTC));
+                    } else {
+                        satoshiInput.value = '';
+                    }
+                } else if (origin === 'satoshi') {
+                    const satoshiValue = parseFloat(cleanSatoshiValue) || 0;
+                    if (satoshiValue > 0) {
+                        btcValue = satoshiValue / SATOSHIS_PER_BTC;
+                        btcInput.value = btcValue.toFixed(8);
+                    } else {
+                        btcInput.value = '';
+                    }
+                } else {
+                     btcValue = parseFloat(btcInput.value) || 0;
+                }
+
+                updateCurrencyDisplays();
+            }
+
+            // --- INICIALIZACIÓN Y EVENT LISTENERS ---
+
+            currentDateSpan.textContent = new Date().toLocaleDateString('es-ES');
+            
+            btcInput.addEventListener('input', () => updateValues('btc'));
+            
+            satoshiInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                e.target.value = formatNumber(value);
+                updateValues('satoshi');
+            });
+            
+            futurePriceInput.addEventListener('input', () => updateValues('futurePrice')); // Listen for input changes
+            
+            currencyToggleButton.addEventListener('click', () => {
+                if (currentCurrency === 'USD') {
+                    currentCurrency = 'EUR';
+                } else {
+                    currentCurrency = 'USD';
+                }
+                updateCurrencyDisplays();
+            });
+
+            // Initial call to set the UI state
+            updateValues('none'); 
+        });
+    </script>
+</body>
+</html>
