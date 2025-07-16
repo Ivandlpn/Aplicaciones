@@ -9,10 +9,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Playful Harmony -->
-    <!-- Application Structure Plan: A single-page application (SPA) using a view-switching mechanism. DIVs for each screen (main-menu, trivia-menu, trivia-player-selection, trivia-game, tictactoe-menu, tictactoe-player-selection, tictactoe-game, memory-menu, memory-player-selection, memory-game) are toggled between hidden/visible. This creates a fluid, app-like experience without page reloads, which is ideal for kids. The flow is: Main Menu -> Select Game Menu -> Select Player/Mode -> Play -> Return to Game Menu/Main Menu. High scores are now integrated directly into the game screens for single-player modes. This structure is user-friendly and technically simple for a single-file app. -->
-    <!-- Visualization & Content Choices: Main Menu uses large, animated HTML buttons with Unicode icons for intuitive navigation. Game menus (Trivia, Tic-Tac-Toe, Memory) allow mode selection (1 or 2 players). New player selection screens for Trivia, Tic-Tac-Toe, and Memory. Trivia uses HTML text blocks and a feedback modal for an interactive learning loop, now with turn-based scoring and player names for 2 players. Tic-Tac-Toe uses a CSS grid and animal emojis (🦁/🐵) for a thematic and asset-free experience, with player names for both 1-player (vs AI) and 2-player modes, now displaying 🤖 instead of IA. The Memory game uses a CSS grid with 3D flip animations on the cards for engagement, now with turn-based logic and player names for 2 players. Added a 'pop' animation for matched memory cards. High scores and current game scores are now directly visible on the game screen for single-player modes, styled with normal, clean scoreboards. All interactions are handled by Vanilla JS. -->
+    <!-- Application Structure Plan: A single-page application (SPA) using a view-switching mechanism. DIVs for each screen (main-menu, trivia-menu, trivia-player-selection, trivia-game, tictactoe-menu, tictactoe-player-selection, tictactoe-game, memory-menu, memory-player-selection, memory-game, guess-number-menu, guess-number-player-selection, guess-number-game, simon-menu, simon-player-selection, simon-game, paint-by-number-menu, paint-by-number-player-selection, paint-by-number-game) are toggled between hidden/visible. This creates a fluid, app-like experience without page reloads, which is ideal for kids. The flow is: Main Menu -> Select Game Menu -> Select Player/Mode -> Play -> Return to Game Menu/Main Menu. High scores are now integrated directly into the game screens for single-player modes. This structure is user-friendly and technically simple for a single-file app. -->
+    <!-- Visualization & Content Choices: Main Menu uses large, animated HTML buttons with Unicode icons for intuitive navigation. Game menus (Trivia, Tic-Tac-Toe, Memory, Guess the Number, Simon Says, Paint by Number) allow mode selection (1 or 2 players). New player selection screens for Trivia, Tic-Tac-Toe, Memory, Guess the Number, Simon Says, and Paint by Number. Trivia uses HTML text blocks and a feedback modal for an interactive learning loop, now with turn-based scoring and player names for 2 players. Tic-Tac-Toe uses a CSS grid and X/O symbols for a thematic and asset-free experience, with player names for both 1-player (vs AI) and 2-player modes, now displaying 🤖 instead of IA. The Memory game uses a CSS grid with 3D flip animations on the cards for engagement, now with turn-based logic and player names for 2 players. Added a 'pop' animation for matched memory cards. Guess the Number provides feedback and tracks attempts. Simon Says introduces a sequence of colored buttons for memory challenge. Paint by Number uses a grid and color palette for artistic play. High scores and current game scores are now directly visible on the game screen for single-player modes, styled with normal, clean scoreboards. All interactions are handled by Vanilla JS. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
+        /* Ensure UTF-8 encoding for proper character display */
+        @charset "UTF-8";
+
         body {
             font-family: 'Roboto', sans-serif;
             -webkit-tap-highlight-color: transparent;
@@ -103,6 +106,18 @@
         }
         .bg-memory-theme {
             background-color: #FFF1F2; /* rose-50, very light red */
+            transition: background-color 0.3s ease-in-out;
+        }
+        .bg-guess-number-theme {
+            background-color: #F0FDF4; /* green-50, very light green */
+            transition: background-color 0.3s ease-in-out;
+        }
+        .bg-simon-theme {
+            background-color: #FDF2F8; /* pink-50, very light pink */
+            transition: background-color 0.3s ease-in-out;
+        }
+        .bg-paint-by-number-theme {
+            background-color: #FDF6F0; /* orange-50, very light orange */
             transition: background-color 0.3s ease-in-out;
         }
 
@@ -248,6 +263,83 @@
             padding: 0.5rem;
             transition: background-color 0.3s ease-in-out;
         }
+
+        /* Simon Says specific styles */
+        .simon-button {
+            width: 100%;
+            height: 100%;
+            border-radius: 1rem; /* Rounded corners */
+            transition: background-color 0.2s ease-out, transform 0.1s ease-out, box-shadow 0.2s ease-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .simon-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .simon-button.highlight {
+            filter: brightness(1.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+        /* Specific colors for Simon buttons */
+        .simon-red { background-color: #EF4444; } /* Red */
+        .simon-green { background-color: #22C55E; } /* Green */
+        .simon-blue { background-color: #3B82F6; } /* Blue */
+        .simon-yellow { background-color: #F59E0B; } /* Yellow */
+
+        .simon-red.highlight { background-color: #F87171; }
+        .simon-green.highlight { background-color: #4ADE80; }
+        .simon-blue.highlight { background-color: #60A5FA; }
+        .simon-yellow.highlight { background-color: #FCD34D; }
+
+        /* Paint by Number specific styles */
+        .paint-grid-cell {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem; /* text-xs */
+            font-weight: bold;
+            border: 1px solid rgba(0,0,0,0.1);
+            background-color: #f3f4f6; /* gray-100 */
+            transition: background-color 0.1s ease-out;
+            cursor: pointer;
+        }
+        .paint-grid-cell.painted {
+            border: 1px solid rgba(0,0,0,0.2);
+            color: transparent; /* Hide number when painted */
+        }
+        .color-palette-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px; /* full rounded */
+            border: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.1s ease-out, border-color 0.1s ease-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .color-palette-button.selected {
+            border-color: #3B82F6; /* blue-500 */
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5); /* blue-500 with transparency */
+        }
+
+        /* New animation for completed paint cells */
+        @keyframes paint-cell-flash {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.3); } /* Brighter flash */
+            100% { filter: brightness(1); }
+        }
+        .paint-grid-cell.highlight-completed {
+            animation: paint-cell-flash 0.5s ease-out forwards; /* Quick flash */
+        }
     </style>
 </head>
 <body class="bg-amber-100 text-slate-800 min-h-screen flex items-center justify-center p-4 bg-pattern">
@@ -264,10 +356,19 @@
                     <span class="mr-3 text-3xl drop-shadow-md">❓</span> Preguntas y Respuestas
                 </button>
                 <button onclick="showScreen('tictactoe-menu')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3 text-3xl drop-shadow-md">🦁</span> Tres en Raya
+                    <span class="mr-3 text-3xl drop-shadow-md">❌</span> Tres en Raya
                 </button>
                 <button onclick="showScreen('memory-menu')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3 text-3xl drop-shadow-md">🃏</span> Memocartas
+                </button>
+                <button onclick="showScreen('guess-number-menu')" class="btn-game w-full bg-green-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3 text-3xl drop-shadow-md">🔢</span> Adivina el Número
+                </button>
+                <button onclick="showScreen('simon-menu')" class="btn-game w-full bg-fuchsia-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3 text-3xl drop-shadow-md">🧠</span> Simon Dice
+                </button>
+                <button onclick="showScreen('paint-by-number-menu')" class="btn-game w-full bg-orange-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3 text-3xl drop-shadow-md">🎨</span> Pintar por Números
                 </button>
             </div>
         </div>
@@ -439,6 +540,177 @@
             </div>
         </div>
 
+        <!-- Guess the Number Menu Screen -->
+        <div id="guess-number-menu" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-green-600">Adivina el Número</h2>
+            </div>
+            <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
+            <div class="space-y-4">
+                <button onclick="showScreen('guess-number-player-selection')" class="btn-game w-full bg-green-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">👤</span> 1 Jugador
+                </button>
+                <!-- For now, 2 players mode is not implemented for this game -->
+                <button class="btn-game w-full bg-gray-400 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display cursor-not-allowed opacity-70">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Próximamente)
+                </button>
+            </div>
+        </div>
+
+        <!-- Guess the Number Player Selection Screen -->
+        <div id="guess-number-player-selection" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="showScreen('guess-number-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-green-600">¿Quién juega?</h2>
+            </div>
+            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
+            <div class="space-y-4">
+                <button onclick="startGameGuessNumber('single', 'Hugo')" class="btn-game w-full bg-green-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    Hugo
+                </button>
+                <button onclick="startGameGuessNumber('single', 'Saúl')" class="btn-game w-full bg-lime-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    Saúl
+                </button>
+            </div>
+        </div>
+
+        <!-- Guess the Number Game Screen -->
+        <div id="guess-number-game" class="hidden p-6 md:p-8">
+            <div class="flex justify-between items-center mb-4">
+                <button onclick="showScreen('guess-number-menu')" class="text-slate-500 hover:text-amber-600 text-2xl active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-green-600">Adivina el Número</h2>
+                <div class="text-lg font-bold bg-green-100 text-green-800 px-3 py-1 rounded-full">
+                    Intentos: <span id="guess-number-attempts">0</span>
+                </div>
+            </div>
+            <div id="guess-number-highscore-display" class="text-center text-green-600 font-semibold mb-3">
+                Mejor: <span id="guess-number-highscore-value">N/A</span>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-inner mb-4 text-center">
+                <p class="text-lg font-semibold mb-2">Estoy pensando en un número entre 1 y 100.</p>
+                <p id="guess-number-feedback" class="text-xl font-bold text-slate-700 min-h-[2rem] flex items-center justify-center"></p>
+            </div>
+            <div class="flex space-x-2 mb-4">
+                <input type="number" id="guess-number-input" class="flex-grow p-3 rounded-lg border-2 border-green-300 focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 text-center text-2xl font-bold" placeholder="Tu número" min="1" max="100">
+                <button onclick="checkGuess()" class="bg-green-500 text-white p-3 rounded-lg shadow-md text-xl font-display active:scale-95 active:opacity-75 transition-all duration-100">¡Adivinar!</button>
+            </div>
+            <button onclick="resetGuessNumberGame()" class="w-full bg-gray-200 text-slate-700 p-2 rounded-lg active:scale-95 active:opacity-75 transition-all duration-100">Reiniciar Juego</button>
+        </div>
+
+        <!-- Simon Says Menu Screen -->
+        <div id="simon-menu" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-fuchsia-600">Simon Dice</h2>
+            </div>
+            <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
+            <div class="space-y-4">
+                <button onclick="showScreen('simon-player-selection')" class="btn-game w-full bg-fuchsia-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">👤</span> 1 Jugador
+                </button>
+                <button class="btn-game w-full bg-gray-400 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display cursor-not-allowed opacity-70">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Próximamente)
+                </button>
+            </div>
+        </div>
+
+        <!-- Simon Says Player Selection Screen -->
+        <div id="simon-player-selection" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="showScreen('simon-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-fuchsia-600">¿Quién juega?</h2>
+            </div>
+            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
+            <div class="space-y-4">
+                <button onclick="startSimonGame('single', 'Hugo')" class="btn-game w-full bg-fuchsia-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    Hugo
+                </button>
+                <button onclick="startSimonGame('single', 'Saúl')" class="btn-game w-full bg-pink-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    Saúl
+                </button>
+            </div>
+        </div>
+
+        <!-- Simon Says Game Screen -->
+        <div id="simon-game" class="hidden p-6 md:p-8">
+            <div class="flex justify-between items-center mb-4">
+                <button onclick="showScreen('simon-menu')" class="text-slate-500 hover:text-amber-600 text-2xl active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-fuchsia-600">Simon Dice</h2>
+                <div class="text-lg font-bold bg-fuchsia-100 text-fuchsia-800 px-3 py-1 rounded-full">
+                    Nivel: <span id="simon-level">0</span>
+                </div>
+            </div>
+            <div id="simon-highscore-display" class="text-center text-fuchsia-600 font-semibold mb-3">
+                Mejor: <span id="simon-highscore-value">N/A</span>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-inner mb-4 text-center aspect-square flex items-center justify-center flex-col">
+                <p id="simon-feedback" class="text-xl font-bold text-slate-700 min-h-[2rem] flex items-center justify-center mb-4">¡Pulsa "Empezar" para jugar!</p>
+                <div id="simon-buttons-container" class="grid grid-cols-2 gap-4 w-full max-w-xs aspect-square">
+                    <button id="simon-red" class="simon-button simon-red"></button>
+                    <button id="simon-green" class="simon-button simon-green"></button>
+                    <button id="simon-blue" class="simon-button simon-blue"></button>
+                    <button id="simon-yellow" class="simon-button simon-yellow"></button>
+                </div>
+                <button id="simon-start-button" onclick="startSimonRound()" class="mt-6 bg-fuchsia-500 text-white p-3 rounded-lg shadow-md text-xl font-display active:scale-95 active:opacity-75 transition-all duration-100">Empezar</button>
+            </div>
+            <button onclick="resetSimonGame()" class="w-full bg-gray-200 text-slate-700 p-2 rounded-lg active:scale-95 active:opacity-75 transition-all duration-100">Reiniciar Juego</button>
+        </div>
+
+        <!-- Paint by Number Menu Screen -->
+        <div id="paint-by-number-menu" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-orange-600">Pintar por Números</h2>
+            </div>
+            <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
+            <div class="space-y-4">
+                <button onclick="showScreen('paint-by-number-player-selection')" class="btn-game w-full bg-orange-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">👤</span> 1 Jugador
+                </button>
+                <button class="btn-game w-full bg-gray-400 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display cursor-not-allowed opacity-70">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Próximamente)
+                </button>
+            </div>
+        </div>
+
+        <!-- Paint by Number Player Selection Screen -->
+        <div id="paint-by-number-player-selection" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="showScreen('paint-by-number-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-orange-600">¿Quién juega?</h2>
+            </div>
+            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
+            <div class="space-y-4">
+                <button onclick="startPaintByNumberGame('single', 'Hugo')" class="btn-game w-full bg-orange-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    Hugo
+                </button>
+                <button onclick="startPaintByNumberGame('single', 'Saúl')" class="btn-game w-full bg-amber-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    Saúl
+                </button>
+            </div>
+        </div>
+
+        <!-- Paint by Number Game Screen -->
+        <div id="paint-by-number-game" class="hidden p-6 md:p-8">
+            <div class="flex justify-between items-center mb-4">
+                <button onclick="showScreen('paint-by-number-menu')" class="text-slate-500 hover:text-amber-600 text-2xl active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-orange-600">Pintar</h2>
+                <div class="text-lg font-bold bg-orange-100 text-orange-800 px-3 py-1 rounded-full">
+                    Progreso: <span id="paint-by-number-progress">0%</span>
+                </div>
+            </div>
+            <!-- Removed the high score display for Paint by Number -->
+            <div id="paint-grid-container" class="w-full aspect-square bg-white rounded-lg shadow-inner overflow-hidden mb-4 grid">
+                <!-- Grid cells will be generated by JS -->
+            </div>
+            <div id="color-palette" class="flex justify-center space-x-2 md:space-x-4 mb-4">
+                <!-- Color buttons will be generated by JS -->
+            </div>
+            <button onclick="resetPaintByNumberGame()" class="w-full bg-gray-200 text-slate-700 p-2 rounded-lg active:scale-95 active:opacity-75 transition-all duration-100">Reiniciar Imagen</button>
+        </div>
+
+
         <!-- Modal for Trivia Feedback -->
         <div id="trivia-modal" class="hidden absolute inset-0 bg-black/50 flex items-center justify-center p-4 fade-in">
             <div class="bg-white rounded-2xl shadow-xl p-6 text-center max-w-sm w-full">
@@ -474,6 +746,15 @@
             memoryMenu: document.getElementById('memory-menu'),
             memoryPlayerSelection: document.getElementById('memory-player-selection'),
             memoryGame: document.getElementById('memory-game'),
+            guessNumberMenu: document.getElementById('guess-number-menu'),
+            guessNumberPlayerSelection: document.getElementById('guess-number-player-selection'),
+            guessNumberGame: document.getElementById('guess-number-game'),
+            simonMenu: document.getElementById('simon-menu'),
+            simonPlayerSelection: document.getElementById('simon-player-selection'),
+            simonGame: document.getElementById('simon-game'),
+            paintByNumberMenu: document.getElementById('paint-by-number-menu'),
+            paintByNumberPlayerSelection: document.getElementById('paint-by-number-player-selection'),
+            paintByNumberGame: document.getElementById('paint-by-number-game'),
         };
         
         const modals = {
@@ -491,7 +772,7 @@
             const appContainer = document.getElementById('app-container'); // Get app container
 
             // Remove all specific theme classes from appContainer
-            appContainer.classList.remove('bg-trivia-theme', 'bg-tictactoe-theme', 'bg-memory-theme');
+            appContainer.classList.remove('bg-trivia-theme', 'bg-tictactoe-theme', 'bg-memory-theme', 'bg-guess-number-theme', 'bg-simon-theme', 'bg-paint-by-number-theme');
             // Re-add the default translucent white for screens that, that don't have a specific theme
             appContainer.classList.add('bg-white/70');
 
@@ -504,6 +785,15 @@
                 appContainer.classList.remove('bg-white/70');
             } else if (screenId.startsWith('memory')) { // Check if screenId starts with 'memory'
                 appContainer.classList.add('bg-memory-theme');
+                appContainer.classList.remove('bg-white/70');
+            } else if (screenId.startsWith('guess-number')) { // New theme for Guess the Number
+                appContainer.classList.add('bg-guess-number-theme');
+                appContainer.classList.remove('bg-white/70');
+            } else if (screenId.startsWith('simon')) { // New theme for Simon Says
+                appContainer.classList.add('bg-simon-theme');
+                appContainer.classList.remove('bg-white/70');
+            } else if (screenId.startsWith('paint-by-number')) { // New theme for Paint by Number
+                appContainer.classList.add('bg-paint-by-number-theme');
                 appContainer.classList.remove('bg-white/70');
             }
             // For 'main-menu', it will default back to bg-white/70 after removal above.
@@ -585,6 +875,31 @@
                         titleElement.classList.add('tie-animation');
                         messageElement.classList.add('tie-animation');
                     }
+                } else if (options.game === 'guess-number') {
+                    if (options.win) {
+                        titleElement.classList.add('win-animation');
+                        titleElement.style.color = '#16A34A'; /* green-600 */
+                    } else { // Should not happen in guess number, but for consistency
+                        titleElement.classList.add('lose-animation');
+                        titleElement.style.color = '#DC2626'; /* red-600 */
+                    }
+                } else if (options.game === 'simon') {
+                    if (options.win) { // Simon game win means reached a new high level
+                        titleElement.classList.add('win-animation');
+                        titleElement.style.color = '#C026D3'; /* fuchsia-600 */
+                    } else { // Simon game lose
+                        titleElement.classList.add('lose-animation');
+                        titleElement.style.color = '#DC2626'; /* red-600 */
+                    }
+                } else if (options.game === 'paint-by-number') {
+                    if (options.win) {
+                        titleElement.classList.add('win-animation');
+                        titleElement.style.color = '#F97316'; /* orange-600 */
+                    } else {
+                        // Not really a lose state for paint by number, but for consistency
+                        titleElement.classList.add('tie-animation');
+                        titleElement.style.color = '#FBBF24'; /* amber-500 */
+                    }
                 }
 
                 document.getElementById('gameover-restart-btn').onclick = options.restartCallback;
@@ -594,6 +909,9 @@
                     if (options.game === 'trivia') showScreen('trivia-menu');
                     else if (options.game === 'memory') showScreen('memory-menu');
                     else if (options.game === 'tictactoe') showScreen('tictactoe-menu');
+                    else if (options.game === 'guess-number') showScreen('guess-number-menu');
+                    else if (options.game === 'simon') showScreen('simon-menu');
+                    else if (options.game === 'paint-by-number') showScreen('paint-by-number-menu');
                     else showScreen('main-menu'); // Default fallback
                 };
             }
@@ -844,7 +1162,7 @@
                     modalOptions.title = `¡${triviaPlayer1Name} ha ganado!`;
                     modalOptions.win = true;
                 } else if (triviaPlayer2Score > triviaPlayer1Score) {
-                    finalMessage = `¡Felicidades ${triviaPlayer2Name}! Ganaste con ${triviaPlayer2Score} puntos contra ${triviaPlayer1Score}.`;
+                    finalMessage = `¡Felicidades ${triviaPlayer2Name}! Ganaste con ${triviaPlayer2Score} puntos contra ${trivia1Score}.`;
                     modalOptions.title = `¡${triviaPlayer2Name} ha ganado!`;
                     modalOptions.win = true;
                 } else {
@@ -899,7 +1217,7 @@
             if (ttt_board[index] !== '' || !ttt_gameActive) return;
 
             ttt_board[index] = ttt_currentPlayer === ttt_player1Name ? 'X' : 'O'; // Use X/O internally for logic
-            cell.textContent = ttt_currentPlayer === ttt_player1Name ? '🦁' : '🐵'; // Display emojis
+            cell.textContent = ttt_currentPlayer === ttt_player1Name ? '❌' : '⭕'; // Display emojis
             cell.classList.add('scale-up-center');
 
             const winCondition = checkWin();
@@ -981,9 +1299,9 @@
         // --- Memory Game Logic ---
         // Define different sets of emojis/symbols
         const memoryEmojiSets = {
-            sports: ['⚽️', '🏀', '🏈', '⚾️', '🎾', '🏐', '�', '🏓'],
+            sports: ['⚽️', '🏀', '🏈', '⚾️', '🎾', '🏐', '🎱', '🏓'],
             animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'],
-            symbols: ['❤️', '⭐️', '⚡️', '🌈', '💡', '💎', '💰', '🔑'],
+            symbols: ['❤️', '⭐️', '⚡️', '🌈', '�', '💎', '💰', '🔑'],
             flags: ['🇪🇸', '🇫🇷', '🇩🇪', '🇮🇹', '🇬🇧', '🇺🇸', '🇯🇵', '🇨🇳']
         };
         let memoryEmojis = []; // This will hold the randomly selected set for the current game
@@ -1222,9 +1540,9 @@
                 if (memoryPlayer1MatchedPairs > memoryPlayer2MatchedPairs) {
                     finalMessage = `¡Felicidades ${memoryPlayer1Name}! Ganaste con ${memoryPlayer1MatchedPairs} parejas contra ${memoryPlayer2MatchedPairs}.`;
                 } else if (memoryPlayer2MatchedPairs > memoryPlayer1MatchedPairs) {
-                    finalMessage = `¡Felicidades ${memoryPlayer2Name}! Ganaste con ${memoryPlayer2MatchedPairs} parejas contra ${memoryPlayer1MatchedPairs}.`;
+                    finalMessage = `¡Felicidades ${memoryPlayer2Name}! Ganaste con ${memory2MatchedPairs} parejas contra ${memory1MatchedPairs}.`;
                 } else {
-                    finalMessage = `¡Es un empate! Ambos jugadores encontraron ${memoryPlayer1MatchedPairs} parejas.`;
+                    finalMessage = `¡Es un empate! Ambos jugadores encontraron ${memory1MatchedPairs} parejas.`;
                 }
             }
 
@@ -1236,6 +1554,578 @@
             });
         }
 
+        // --- Guess the Number Game Logic ---
+        let guessNumberSecret;
+        let guessNumberAttempts;
+        let guessNumberPlayerName;
+        let guessNumberGameActive;
+
+        const guessNumberInput = document.getElementById('guess-number-input');
+        const guessNumberFeedback = document.getElementById('guess-number-feedback');
+        const guessNumberAttemptsDisplay = document.getElementById('guess-number-attempts');
+        const guessNumberHighscoreValue = document.getElementById('guess-number-highscore-value');
+
+        function startGameGuessNumber(mode, selectedPlayer) {
+            // For now, only single player is supported for this game
+            if (mode !== 'single') {
+                console.error("Modo de juego no soportado para Adivina el Número.");
+                return;
+            }
+            guessNumberPlayerName = selectedPlayer;
+            resetGuessNumberGame();
+            showScreen('guess-number-game');
+        }
+
+        function resetGuessNumberGame() {
+            guessNumberSecret = Math.floor(Math.random() * 100) + 1; // Number between 1 and 100
+            guessNumberAttempts = 0;
+            guessNumberGameActive = true;
+
+            guessNumberInput.value = '';
+            guessNumberFeedback.textContent = '';
+            guessNumberAttemptsDisplay.textContent = guessNumberAttempts;
+            guessNumberInput.disabled = false;
+            
+            // Load and display high score
+            const highscore = localStorage.getItem(`highscore_guess_number_${guessNumberPlayerName}`);
+            guessNumberHighscoreValue.textContent = highscore !== null ? highscore : 'N/A';
+            console.log(`[Adivina el Número] Nuevo juego iniciado. Número secreto: ${guessNumberSecret}`); // For debugging
+        }
+
+        function checkGuess() {
+            if (!guessNumberGameActive) return;
+
+            const guess = parseInt(guessNumberInput.value);
+
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                guessNumberFeedback.textContent = "Por favor, introduce un número entre 1 y 100.";
+                guessNumberFeedback.style.color = '#EF4444'; /* red-500 */
+                return;
+            }
+
+            guessNumberAttempts++;
+            guessNumberAttemptsDisplay.textContent = guessNumberAttempts;
+
+            if (guess === guessNumberSecret) {
+                guessNumberFeedback.textContent = `¡Correcto! Adivinaste el número ${guessNumberSecret}.`;
+                guessNumberFeedback.style.color = '#10B981'; /* emerald-600 */
+                guessNumberGameActive = false;
+                saveGuessNumberHighScore(guessNumberPlayerName, guessNumberAttempts);
+                setTimeout(() => {
+                    showModal('gameOver', {
+                        title: "¡Has ganado!",
+                        message: `¡Felicidades ${guessNumberPlayerName}! Adivinaste el número ${guessNumberSecret} en ${guessNumberAttempts} intentos.`,
+                        restartCallback: () => { closeModal('gameOver'); resetGuessNumberGame(); },
+                        game: 'guess-number',
+                        win: true
+                    });
+                }, 1000);
+            } else if (guess < guessNumberSecret) {
+                guessNumberFeedback.textContent = "¡Más alto!";
+                guessNumberFeedback.style.color = '#FBBF24'; /* amber-500 */
+            } else {
+                guessNumberFeedback.textContent = "¡Más bajo!";
+                guessNumberFeedback.style.color = '#FBBF24'; /* amber-500 */
+            }
+
+            guessNumberInput.value = ''; // Clear input for next guess
+        }
+
+        function saveGuessNumberHighScore(playerName, attempts) {
+            const key = `highscore_guess_number_${playerName}`;
+            const currentHighScore = parseInt(localStorage.getItem(key) || '999'); // Lower attempts is better
+            console.log(`[Adivina el Número] Guardando puntuación alta para ${playerName}. Intentos: ${attempts}, Mejor actual: ${currentHighScore}`);
+            if (attempts < currentHighScore) {
+                localStorage.setItem(key, attempts);
+                console.log(`[Adivina el Número] Nueva puntuación alta guardada: ${attempts} para ${playerName}`);
+            } else {
+                console.log(`[Adivina el Número] No hay nueva puntuación alta para ${playerName}. Intentos: ${attempts}, Mejor actual: ${currentHighScore}`);
+            }
+        }
+
+        // --- Simon Says Game Logic ---
+        const simonColors = ['red', 'green', 'blue', 'yellow'];
+        let simonSequence = [];
+        let playerSequence = [];
+        let simonLevel = 0;
+        let simonGameActive = false;
+        let simonPlayerName;
+        let simonButtonDelay = 800; // Initial delay for sequence playback
+        let simonPlaybackIndex = 0; // To track current position in sequence playback
+
+        const simonFeedback = document.getElementById('simon-feedback');
+        const simonLevelDisplay = document.getElementById('simon-level');
+        const simonHighscoreValue = document.getElementById('simon-highscore-value');
+        const simonStartButton = document.getElementById('simon-start-button');
+        const simonButtons = {
+            red: document.getElementById('simon-red'),
+            green: document.getElementById('simon-green'),
+            blue: document.getElementById('simon-blue'),
+            yellow: document.getElementById('simon-yellow')
+        };
+
+        // Add event listeners to Simon buttons
+        Object.values(simonButtons).forEach(button => {
+            button.addEventListener('click', (event) => handleSimonButtonClick(event.target.id.replace('simon-', '')));
+        });
+
+        function startSimonGame(mode, selectedPlayer) {
+            // For now, only single player is supported for this game
+            if (mode !== 'single') {
+                console.error("Modo de juego no soportado para Simon Dice.");
+                return;
+            }
+            simonPlayerName = selectedPlayer;
+            resetSimonGame();
+            showScreen('simon-game');
+        }
+
+        function resetSimonGame() {
+            simonSequence = [];
+            playerSequence = [];
+            simonLevel = 0;
+            simonGameActive = false;
+            simonButtonDelay = 800; // Reset speed
+            simonPlaybackIndex = 0;
+
+            simonLevelDisplay.textContent = simonLevel;
+            simonFeedback.textContent = '¡Pulsa "Empezar" para jugar!';
+            simonFeedback.style.color = 'inherit'; // Reset color
+            simonStartButton.disabled = false; // Enable start button
+            enableSimonButtons(false); // Disable game buttons initially
+
+            // Load and display high score
+            const highscore = localStorage.getItem(`highscore_simon_${simonPlayerName}`);
+            simonHighscoreValue.textContent = highscore !== null ? highscore : 'N/A';
+            console.log(`[Simon Dice] Juego reiniciado para ${simonPlayerName}.`);
+        }
+
+        // New function to start a round (generate and then play)
+        function startSimonRound() {
+            simonStartButton.disabled = true; // Disable start button once game starts
+            generateSimonSequence(); // Generate the first sequence
+            playSimonSequence(); // Play the generated sequence
+        }
+
+        function generateSimonSequence() {
+            const randomColor = simonColors[Math.floor(Math.random() * simonColors.length)];
+            simonSequence.push(randomColor);
+            simonLevel++;
+            simonLevelDisplay.textContent = simonLevel;
+            playerSequence = []; // Reset player's input for new round
+            simonFeedback.textContent = '¡Mira y recuerda!';
+            simonFeedback.style.color = 'inherit';
+            enableSimonButtons(false); // Disable player input during playback
+
+            // Adjust speed based on level
+            if (simonLevel > 4) simonButtonDelay = 600;
+            if (simonLevel > 8) simonButtonDelay = 400;
+            if (simonLevel > 12) simonButtonDelay = 300;
+        }
+
+        function playSimonSequence() {
+            if (simonPlaybackIndex < simonSequence.length) {
+                const colorToHighlight = simonSequence[simonPlaybackIndex];
+                const button = simonButtons[colorToHighlight];
+
+                button.classList.add('highlight');
+                // Play sound if implemented here
+
+                setTimeout(() => {
+                    button.classList.remove('highlight');
+                    simonPlaybackIndex++;
+                    setTimeout(playSimonSequence, 100); // Small delay between highlights
+                }, simonButtonDelay);
+            } else {
+                // Sequence playback finished, enable player input
+                simonPlaybackIndex = 0; // Reset for next playback
+                simonFeedback.textContent = '¡Tu turno!';
+                simonFeedback.style.color = '#1E40AF'; /* blue-800 */
+                enableSimonButtons(true);
+                simonGameActive = true;
+            }
+        }
+
+        function handleSimonButtonClick(color) {
+            if (!simonGameActive) return;
+
+            playerSequence.push(color);
+            const button = simonButtons[color];
+            button.classList.add('highlight'); // Visual feedback for player click
+
+            setTimeout(() => {
+                button.classList.remove('highlight');
+            }, 150); // Short highlight for player click
+
+            checkSimonSequence();
+        }
+
+        function checkSimonSequence() {
+            const lastIndex = playerSequence.length - 1;
+            if (playerSequence[lastIndex] !== simonSequence[lastIndex]) {
+                // Game Over
+                simonGameActive = false;
+                enableSimonButtons(false);
+                saveSimonHighScore(simonPlayerName, simonLevel - 1); // Save previous level as score
+                
+                showModal('gameOver', {
+                    title: "¡Juego Terminado!",
+                    message: `¡Oh no, ${simonPlayerName}! Llegaste al Nivel ${simonLevel - 1}. ¡Inténtalo de nuevo para mejorar tu memoria!`,
+                    restartCallback: () => { closeModal('gameOver'); resetSimonGame(); },
+                    game: 'simon',
+                    win: false // Indicate it's a loss
+                });
+                return;
+            }
+
+            if (playerSequence.length === simonSequence.length) {
+                // Round completed successfully
+                simonGameActive = false;
+                enableSimonButtons(false);
+                simonFeedback.textContent = '¡Genial! Preparando siguiente nivel...';
+                simonFeedback.style.color = '#10B981'; /* emerald-600 */
+                setTimeout(() => {
+                    generateSimonSequence();
+                    playSimonSequence();
+                }, 1000); // Short pause before next round
+            }
+        }
+
+        function enableSimonButtons(enable) {
+            Object.values(simonButtons).forEach(button => {
+                button.disabled = !enable;
+            });
+        }
+
+        function saveSimonHighScore(playerName, score) {
+            const key = `highscore_simon_${playerName}`;
+            const currentHighScore = parseInt(localStorage.getItem(key) || '0');
+            console.log(`[Simon Dice] Saving high score for ${playerName}. New score: ${score}, Current best: ${currentHighScore}`);
+            if (score > currentHighScore) {
+                localStorage.setItem(key, score);
+                console.log(`[Simon Dice] New high score saved: ${score} for ${playerName}`);
+            } else {
+                console.log(`[Simon Dice] No new high score for ${playerName}. Score: ${score}, Current best: ${currentHighScore}`);
+            }
+        }
+
+        // --- Paint by Number Game Logic ---
+        const paintPatterns = [
+            {
+                name: "Corazón",
+                colors: {
+                    1: '#EF4444', // Red
+                    0: '#f3f4f6' // Background (gray-100)
+                },
+                grid: [
+                    [0, 1, 1, 0, 1, 1, 0],
+                    [1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1],
+                    [0, 1, 1, 1, 1, 1, 0],
+                    [0, 0, 1, 1, 1, 0, 0],
+                    [0, 0, 0, 1, 0, 0, 0]
+                ]
+            },
+            {
+                name: "Estrella",
+                colors: {
+                    1: '#F59E0B', // Amber
+                    0: '#f3f4f6'
+                },
+                grid: [
+                    [0, 0, 1, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [1, 1, 1, 1, 1],
+                    [0, 1, 0, 1, 0],
+                    [1, 0, 0, 0, 1]
+                ]
+            },
+            {
+                name: "Casa",
+                colors: {
+                    1: '#92400E', // Amber-800 (Techo)
+                    2: '#FDBA74', // Orange-300 (Paredes)
+                    3: '#A16207', // Amber-700 (Puerta)
+                    0: '#f3f4f6'
+                },
+                grid: [
+                    [0, 0, 1, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [1, 2, 2, 2, 1],
+                    [1, 2, 3, 2, 1],
+                    [1, 2, 2, 2, 1]
+                ]
+            },
+            {
+                name: "Flor",
+                colors: {
+                    1: '#FBBF24', // Amarillo (Centro)
+                    2: '#34D399', // Verde (Tallo)
+                    3: '#60A5FA', // Azul claro (Pétalo 1)
+                    4: '#F87171', // Rojo claro (Pétalo 2)
+                    5: '#A78BFA', // Púrpura (Pétalo 3)
+                    6: '#FCD34D', // Amarillo claro (Pétalo 4)
+                    0: '#f3f4f6' // Fondo
+                },
+                grid: [
+                    [0, 0, 3, 0, 0],
+                    [0, 3, 1, 4, 0],
+                    [3, 1, 1, 1, 4],
+                    [0, 5, 1, 6, 0],
+                    [0, 0, 5, 0, 0],
+                    [0, 0, 2, 0, 0],
+                    [0, 0, 2, 0, 0]
+                ]
+            },
+            {
+                name: "Manzana",
+                colors: {
+                    1: '#DC2626', // Rojo oscuro
+                    2: '#16A34A', // Verde oscuro (Hoja)
+                    3: '#7C2D12', // Marrón (Tallo)
+                    0: '#f3f4f6' // Fondo
+                },
+                grid: [
+                    [0, 0, 1, 1, 0, 0],
+                    [0, 1, 1, 1, 1, 0],
+                    [1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1],
+                    [0, 1, 1, 1, 1, 0],
+                    [0, 0, 3, 2, 0, 0]
+                ]
+            },
+            {
+                name: "Coche",
+                colors: {
+                    1: '#3B82F6', // Azul (Carrocería)
+                    2: '#1F2937', // Gris oscuro (Ruedas)
+                    3: '#9CA3AF', // Gris claro (Ventanas)
+                    4: '#FCD34D', // Amarillo (Faros)
+                    0: '#f3f4f6' // Fondo
+                },
+                grid: [
+                    [0, 0, 0, 1, 1, 0, 0, 0],
+                    [0, 0, 1, 1, 1, 1, 1, 0],
+                    [0, 1, 1, 3, 3, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 4],
+                    [1, 1, 1, 1, 1, 1, 1, 1],
+                    [0, 2, 2, 0, 0, 2, 2, 0]
+                ]
+            },
+            {
+                name: "Sol",
+                colors: {
+                    1: '#FBBF24', // Amarillo (Centro)
+                    2: '#F59E0B', // Naranja (Rayos)
+                    0: '#f3f4f6' // Fondo
+                },
+                grid: [
+                    [0, 0, 2, 0, 0],
+                    [2, 1, 1, 1, 2],
+                    [0, 1, 1, 1, 0],
+                    [2, 1, 1, 1, 2],
+                    [0, 0, 2, 0, 0]
+                ]
+            }
+        ];
+
+        let paintByNumberCurrentPattern;
+        let paintByNumberPlayerName;
+        let paintByNumberPaintedCells; // Keep track of painted cells
+        let paintByNumberTotalCellsToPaint;
+        let paintByNumberCurrentSelectedColor = null;
+        let paintByNumberCurrentSelectedNumber = null;
+        let paintByNumberStartTime;
+        let paintByNumberTimerInterval;
+
+        const paintGridContainer = document.getElementById('paint-grid-container');
+        const colorPalette = document.getElementById('color-palette');
+        const paintByNumberProgressDisplay = document.getElementById('paint-by-number-progress');
+        // Removed paintByNumberHighscoreValue as its display element is removed
+        // const paintByNumberHighscoreValue = document.getElementById('paint-by-number-highscore-value');
+
+        function startPaintByNumberGame(mode, selectedPlayer) {
+            if (mode !== 'single') {
+                console.error("Modo de juego no soportado para Pintar por Números.");
+                return;
+            }
+            paintByNumberPlayerName = selectedPlayer;
+            resetPaintByNumberGame();
+            showScreen('paint-by-number-game');
+        }
+
+        function resetPaintByNumberGame() {
+            // Randomly select a pattern
+            paintByNumberCurrentPattern = paintPatterns[Math.floor(Math.random() * paintPatterns.length)];
+            
+            paintByNumberPaintedCells = 0;
+            paintByNumberTotalCellsToPaint = 0;
+            paintByNumberCurrentSelectedColor = null;
+            paintByNumberCurrentSelectedNumber = null;
+            
+            paintByNumberProgressDisplay.textContent = '0%';
+            
+            stopPaintByNumberTimer(); // Ensure timer is stopped on reset
+            // Removed the line trying to update paintByNumberHighscoreValue.textContent
+            // paintByNumberHighscoreValue.textContent = localStorage.getItem(`highscore_paint_by_number_${paintByNumberPlayerName}`) || 'N/A';
+
+            renderPaintGrid();
+            renderColorPalette();
+            
+            // Start timer only after grid and palette are rendered
+            paintByNumberStartTime = Date.now();
+            paintByNumberTimerInterval = setInterval(updatePaintByNumberTimer, 1000);
+        }
+
+        function renderPaintGrid() {
+            paintGridContainer.innerHTML = '';
+            paintGridContainer.style.gridTemplateColumns = `repeat(${paintByNumberCurrentPattern.grid[0].length}, 1fr)`;
+            paintByNumberTotalCellsToPaint = 0;
+
+            paintByNumberCurrentPattern.grid.forEach((row, rowIndex) => {
+                row.forEach((cellValue, colIndex) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'paint-grid-cell';
+                    cell.textContent = cellValue !== 0 ? cellValue : ''; // Show number for non-background cells
+                    cell.dataset.row = rowIndex;
+                    cell.dataset.col = colIndex;
+                    cell.dataset.originalValue = cellValue; // Store original value for checking
+                    cell.dataset.painted = 'false'; // Track if cell is painted
+
+                    // If it's a background cell (0), it's considered "painted" for progress calculation
+                    if (cellValue === 0) {
+                        cell.classList.add('painted');
+                        cell.style.backgroundColor = paintByNumberCurrentPattern.colors[0];
+                        cell.textContent = ''; // Hide '0'
+                        paintByNumberPaintedCells++; // Count background cells as painted
+                    } else {
+                        paintByNumberTotalCellsToPaint++; // Only count non-background cells for painting
+                        cell.addEventListener('click', () => handlePaintGridCellClick(cell, rowIndex, colIndex));
+                    }
+                    paintGridContainer.appendChild(cell);
+                });
+            });
+            updatePaintByNumberProgress(); // Initial progress update
+        }
+
+        function renderColorPalette() {
+            colorPalette.innerHTML = '';
+            const numbersUsed = [...new Set(paintByNumberCurrentPattern.grid.flat().filter(num => num !== 0))]; // Get unique numbers, excluding 0
+            
+            numbersUsed.sort((a, b) => a - b); // Sort numbers numerically
+
+            numbersUsed.forEach(number => {
+                const color = paintByNumberCurrentPattern.colors[number];
+                const button = document.createElement('button');
+                button.className = 'color-palette-button';
+                button.style.backgroundColor = color;
+                button.textContent = number;
+                button.dataset.number = number;
+                button.dataset.color = color;
+                button.addEventListener('click', () => selectPaintColor(button, number, color));
+                colorPalette.appendChild(button);
+            });
+        }
+
+        function selectPaintColor(button, number, color) {
+            // Remove 'selected' class from all buttons
+            document.querySelectorAll('.color-palette-button').forEach(btn => btn.classList.remove('selected'));
+            // Add 'selected' class to the clicked button
+            button.classList.add('selected');
+            
+            paintByNumberCurrentSelectedColor = color;
+            paintByNumberCurrentSelectedNumber = number;
+            console.log(`[Pintar por Números] Color seleccionado: ${color} (Número: ${number})`);
+        }
+
+        function handlePaintGridCellClick(cell, row, col) {
+            if (!paintByNumberCurrentSelectedColor || cell.dataset.painted === 'true') {
+                // console.log("[Pintar por Números] No hay color seleccionado o celda ya pintada.");
+                return;
+            }
+
+            const originalValue = parseInt(cell.dataset.originalValue);
+            if (originalValue === paintByNumberCurrentSelectedNumber) {
+                cell.style.backgroundColor = paintByNumberCurrentSelectedColor;
+                cell.classList.add('painted');
+                cell.textContent = ''; // Hide the number
+                cell.dataset.painted = 'true';
+                paintByNumberPaintedCells++;
+                updatePaintByNumberProgress();
+            } else {
+                // Optional: visual feedback for incorrect guess
+                cell.style.backgroundColor = '#EF4444'; // Flash red
+                setTimeout(() => {
+                    cell.style.backgroundColor = '#f3f4f6'; // Revert to original unpainted color
+                }, 200);
+                console.log(`[Pintar por Números] Intento incorrecto en [${row},${col}]. Esperado: ${originalValue}, Seleccionado: ${paintByNumberCurrentSelectedNumber}`);
+            }
+        }
+
+        function updatePaintByNumberProgress() {
+            // Calculate total cells in the grid, including background cells (0)
+            const totalCellsInGrid = paintByNumberCurrentPattern.grid.length * paintByNumberCurrentPattern.grid[0].length;
+            const progressPercentage = Math.floor((paintByNumberPaintedCells / totalCellsInGrid) * 100);
+            paintByNumberProgressDisplay.textContent = `${progressPercentage}%`;
+
+            if (progressPercentage === 100) {
+                endPaintByNumberGame();
+            }
+        }
+
+        function updatePaintByNumberTimer() {
+            const elapsedTime = Math.floor((Date.now() - paintByNumberStartTime) / 1000);
+            // No direct timer display on screen, but used for high score
+            // console.log(`[Pintar por Números] Tiempo transcurrido: ${elapsedTime} segundos`);
+        }
+
+        function endPaintByNumberGame() {
+            stopPaintByNumberTimer();
+            const finalTimeSeconds = Math.floor((Date.now() - paintByNumberStartTime) / 1000);
+            savePaintByNumberHighScore(paintByNumberPlayerName, finalTimeSeconds);
+
+            // Highlight all painted cells
+            const allCells = document.querySelectorAll('#paint-grid-container .paint-grid-cell');
+            allCells.forEach(cell => {
+                if (cell.dataset.painted === 'true') {
+                    cell.classList.add('highlight-completed');
+                }
+            });
+
+            // Add a delay before showing the modal, accounting for the highlight animation
+            setTimeout(() => {
+                showModal('gameOver', {
+                    title: "¡Imagen Completada!",
+                    message: `¡Felicidades ${paintByNumberPlayerName}! Completaste el dibujo "${paintByNumberCurrentPattern.name}" en ${formatTime(finalTimeSeconds)}.`,
+                    restartCallback: () => { closeModal('gameOver'); resetPaintByNumberGame(); },
+                    game: 'paint-by-number',
+                    win: true
+                });
+                // Optional: Remove highlight class after modal is shown or game is reset
+                allCells.forEach(cell => {
+                    cell.classList.remove('highlight-completed');
+                });
+            }, 2500); // 2 seconds initial delay + 0.5 seconds animation = 2.5 seconds total
+        }
+
+        function savePaintByNumberHighScore(playerName, timeInSeconds) {
+            const key = `highscore_paint_by_number_${playerName}`;
+            const currentHighScore = parseInt(localStorage.getItem(key) || '999999'); // Lower time is better
+            console.log(`[Pintar por Números] Guardando puntuación alta para ${playerName}. Tiempo: ${timeInSeconds}, Mejor actual: ${currentHighScore}`);
+            if (timeInSeconds < currentHighScore) {
+                localStorage.setItem(key, timeInSeconds);
+                console.log(`[Pintar por Números] Nueva puntuación alta guardada: ${timeInSeconds} para ${playerName}`);
+            } else {
+                console.log(`[Pintar por Números] No hay nueva puntuación alta para ${playerName}. Tiempo: ${timeInSeconds}, Mejor actual: ${currentHighScore}`);
+            }
+        }
+
+        function stopPaintByNumberTimer() {
+            if (paintByNumberTimerInterval) {
+                clearInterval(paintByNumberTimerInterval);
+                paintByNumberTimerInterval = null;
+            }
+        }
 
         // Initial load
         window.onload = () => {
@@ -1244,4 +2134,3 @@
     </script>
 </body>
 </html>
-�
