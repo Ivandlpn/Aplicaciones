@@ -219,6 +219,25 @@
             margin: 0; /* Elimina el margen predeterminado del párrafo */
         }
 
+        /* Sección de frases de humor */
+        .humor-section {
+            border-top: 1px solid #d4e6f1;
+            padding-top: 25px;
+            margin-top: 30px; /* Más margen superior para separarlo */
+            text-align: center;
+            font-size: 0.95rem;
+            color: #607d8b; /* Un gris azulado para el texto */
+            font-style: italic;
+            min-height: 60px; /* Altura mínima para evitar saltos de diseño */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f8ff; /* Fondo muy claro para la sección */
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); /* Sombra interna sutil */
+        }
+
         /* Media Queries para Responsividad */
         @media (max-width: 500px) {
             body {
@@ -261,6 +280,11 @@
             .projection-section {
                 padding-top: 25px;
                 margin-top: 20px;
+            }
+            .humor-section {
+                padding: 12px;
+                font-size: 0.85rem;
+                min-height: 50px;
             }
         }
 
@@ -338,6 +362,11 @@
                 <span id="future-wallet-value" class="currency-value">0.00</span>
             </div>
         </div>
+
+        <!-- Sección de Frases de Humor -->
+        <div class="humor-section">
+            <p id="humor-phrase"></p>
+        </div>
     </div>
 
     <script>
@@ -360,12 +389,38 @@
             const futurePriceDatalist = document.getElementById('future-price-datalist'); // Reference to datalist
             const futureWalletValueSpan = document.getElementById('future-wallet-value');
             const currencyToggleButton = document.getElementById('currency-toggle-btn');
+            const humorPhraseElement = document.getElementById('humor-phrase'); // Element to display humor phrases
 
             // Predefined future prices in USD
             const predefinedFuturePricesUSD = [
                 100000, 150000, 200000, 250000, 300000,
                 400000, 500000, 750000, 1000000, 2000000
             ];
+
+            // Humorous phrases comparing real estate and Bitcoin (up to 20)
+            const humorPhrases = [
+                "Mi cuñado dice que el ladrillo nunca baja. Bitcoin le respondió: 'Sujétame el café'.",
+                "Con Bitcoin, si pierdes dinero, al menos no tienes que reformar el baño para venderlo.",
+                "Invertir en inmuebles: '¿Quién ha roto el plato?'. Invertir en Bitcoin: '¿Quién ha roto la barrera de los 100k?'.",
+                "Mi abuela dice que el piso es seguro. Bitcoin le manda un saludo desde la luna.",
+                "Para vender un piso, papeleo. Para vender Bitcoin, un click. ¿Quién dijo que la vida era difícil?",
+                "El alquiler de un piso te da dolores de cabeza. Bitcoin te da infartos de alegría (o de susto).",
+                "Con Bitcoin, no hay derramas. Solo 'pérdidas momentáneas de valor'.",
+                "Mi vecino compró un piso en la playa. Yo compré Bitcoin y ahora la playa viene a mí (en un yate).",
+                "El mercado inmobiliario es lento. Bitcoin es como un cohete sin paracaídas.",
+                "Si el inquilino no paga, llamas a la policía. Si Bitcoin baja, llamas a tu terapeuta.",
+                "Un piso te da un techo. Bitcoin te da la posibilidad de comprar un edificio entero (o una tienda de campaña).",
+                "La rentabilidad de mi piso es del 3%. La de Bitcoin... bueno, a veces es del 300% y otras del -80%. ¡Emoción garantizada!",
+                "Con el Bitcoin, no tienes que lidiar con goteras, solo con 'correcciones de mercado'.",
+                "El valor de tu casa lo decide el barrio. El de Bitcoin, el universo (y Elon Musk).",
+                "Mi cuñado presume de su chalet. Yo de mis satoshis, que caben en un USB y valen más.",
+                "Para vender tu casa necesitas un agente. Para vender Bitcoin, solo necesitas nervios de acero.",
+                "El esfuerzo de gestionar un alquiler vs. el esfuerzo de no mirar el precio de Bitcoin cada 5 minutos.",
+                "El ladrillo es para los que tienen paciencia. Bitcoin es para los que tienen un desfibrilador cerca.",
+                "Con el Bitcoin, no hay comunidad de vecinos que te juzgue. Solo una comunidad global que te anima (o te hace 'hodl').",
+                "Mi padre dice: 'Invierte en algo que puedas tocar'. Yo le digo: 'Papá, ¿has tocado alguna vez un millón de euros?'"
+            ];
+
 
             // --- FUNCIONES ---
 
@@ -450,6 +505,12 @@
                 updateCurrencyDisplays();
             }
 
+            // Función para mostrar una frase de humor aleatoria
+            function displayRandomHumorPhrase() {
+                const randomIndex = Math.floor(Math.random() * humorPhrases.length);
+                humorPhraseElement.textContent = humorPhrases[randomIndex];
+            }
+
             // --- INICIALIZACIÓN Y EVENT LISTENERS ---
 
             currentDateSpan.textContent = new Date().toLocaleDateString('es-ES');
@@ -475,6 +536,7 @@
 
             // Initial call to set the UI state
             updateValues('none'); 
+            displayRandomHumorPhrase(); // Display a random phrase on load
         });
     </script>
 </body>
