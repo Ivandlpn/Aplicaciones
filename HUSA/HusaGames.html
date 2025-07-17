@@ -19,7 +19,46 @@
         body {
             font-family: 'Roboto', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            /* Base amber-100 color - this will be overwritten by JS for random image */
+            background-color: #FEF3C7; 
+            overflow: hidden; /* Hide overflow from animations */
+            position: relative; /* For pseudo-element positioning */
+            /* New styles for background image */
+            background-size: cover; /* Cover the entire viewport */
+            background-position: center center; /* Center the image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-attachment: fixed; /* Keep background fixed when scrolling */
+            transition: background-image 1s ease-in-out; /* Smooth transition for background image change */
         }
+
+        /* Removed body::before as it's replaced by animated-background */
+        /* Pseudo-element for the animated background (now removed as per user request for image background) */
+        /*
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 15%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.25) 0%, transparent 18%),
+                radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 12%);
+            background-size: 200% 200%;
+            animation: floatBackground 30s infinite alternate linear;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes floatBackground {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        */
+
         h1, h2, h3, .font-display {
             font-family: 'Fredoka One', cursive;
         }
@@ -44,21 +83,16 @@
             backface-visibility: hidden;
             z-index: 1; /* Ensures this face (emoji) is behind initially */
         }
-        .bg-pattern {
-            background-color: #FEF3C7; /* amber-100 */
-            background-image:
-                radial-gradient(circle at 100% 0, #FBBF24, transparent 20%),
-                radial-gradient(circle at 0 100%, #34D399, transparent 20%);
-        }
+        /* Removed .bg-pattern as it's replaced by animated-background */
         .btn-game {
             transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, filter 0.2s ease-out; /* Added filter to transition */
         }
         .btn-game:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-8px) scale(1.02); /* More pronounced bounce and slight scale */
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15), 0 5px 8px -3px rgba(0, 0, 0, 0.08); /* Larger shadow */
         }
         .btn-game:active {
-            transform: translateY(0px) scale(0.97); /* Slight scale down, no translateY on active */
+            transform: translateY(0px) scale(0.95); /* More pronounced press */
             box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.05); /* Reduced shadow for pressed look */
             filter: brightness(0.85); /* Slightly darker */
         }
@@ -263,6 +297,18 @@
             padding: 0.5rem;
             transition: background-color 0.3s ease-in-out;
         }
+        .memory-board-theme-food { /* New theme style */
+            background-color: #FDF6E3; /* Orange-50, very light orange */
+            border-radius: 1rem;
+            padding: 0.5rem;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .memory-board-theme-space { /* New theme style */
+            background-color: #EEF2FF; /* Indigo-50, very light indigo */
+            border-radius: 1rem;
+            padding: 0.5rem;
+            transition: background-color 0.3s ease-in-out;
+        }
 
         /* Simon Says specific styles */
         .simon-button {
@@ -340,9 +386,17 @@
         .paint-grid-cell.highlight-completed {
             animation: paint-cell-flash 0.5s ease-out forwards; /* Quick flash */
         }
+        /* Style for SVG icons */
+        .game-icon {
+            width: 2.5rem; /* Equivalent to text-4xl for visual size */
+            height: 2.5rem;
+            fill: currentColor; /* Inherit color from parent button */
+            margin-right: 0.75rem; /* Equivalent to mr-3 */
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); /* Subtle shadow for depth */
+        }
     </style>
 </head>
-<body class="bg-amber-100 text-slate-800 min-h-screen flex items-center justify-center p-4 bg-pattern">
+<body class="bg-amber-100 text-slate-800 min-h-screen flex items-center justify-center p-4">
 
     <div id="app-container" class="w-full max-w-md mx-auto bg-white/70 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden">
         
@@ -353,22 +407,40 @@
             
             <div class="space-y-4">
                 <button onclick="showScreen('trivia-menu')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3 text-3xl drop-shadow-md">❓</span> Preguntas y Respuestas
+                    <svg class="game-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.44 12.9 13 13.5 13 14h-2v-.5c0-1.1.45-2.2 1.17-2.92l.9-.92C13.44 9.4 14 8.7 14 8c0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.5-.78 2.79-2.07 3.5z"/>
+                    </svg>
+                    Preguntas y Respuestas
                 </button>
                 <button onclick="showScreen('tictactoe-menu')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3 text-3xl drop-shadow-md">❌</span> Tres en Raya
+                    <svg class="game-icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM11 19H5v-6h6v6zm0-8H5V5h6v6zm8 8h-6v-6h6v6zm0-8h-6V5h6v6z"/>
+                    </svg>
+                    Tres en Raya
                 </button>
                 <button onclick="showScreen('memory-menu')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3 text-3xl drop-shadow-md">🃏</span> Memocartas
+                    <svg class="game-icon" viewBox="0 0 24 24">
+                        <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H4c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h16c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1zm-7-2h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+                    </svg>
+                    Memocartas
                 </button>
                 <button onclick="showScreen('guess-number-menu')" class="btn-game w-full bg-green-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3 text-3xl drop-shadow-md">🔢</span> Adivina el Número
+                    <svg class="game-icon" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM10 8H9v2H7v1h2v2h1v-2h2v-1h-2V8z"/>
+                    </svg>
+                    Adivina el Número
                 </button>
                 <button onclick="showScreen('simon-menu')" class="btn-game w-full bg-fuchsia-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3 text-3xl drop-shadow-md">🧠</span> Simon Dice
+                    <svg class="game-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm-4 0h2v6H7zm8 0h2v6h-2z"/>
+                    </svg>
+                    Simon Dice
                 </button>
                 <button onclick="showScreen('paint-by-number-menu')" class="btn-game w-full bg-orange-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3 text-3xl drop-shadow-md">🎨</span> Pintar por Números
+                    <svg class="game-icon" viewBox="0 0 24 24">
+                        <path d="M7 14c1.66 0 2.99-1.34 2.99-3L10 3H7c-.55 0-1 .45-1 1v7c0 1.66 1.34 3 3 3zm14-4c0-1.66-1.34-3-3-3h-4V3h4c.55 0 1 .45 1 1v7c0 1.66 1.34 3 3 3zm-7 7c-1.66 0-3-1.34-3-3h-4v-4h4c1.66 0 3 1.34 3 3zm-7-7c0-1.66 1.34-3 3-3h4V3h-4c-.55 0-1 .45-1 1v7c0 1.66 1.34 3 3 3z"/>
+                    </svg>
+                    Pintar por Números
                 </button>
             </div>
         </div>
@@ -381,29 +453,40 @@
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
             <div class="space-y-4">
-                <button onclick="showScreen('trivia-player-selection')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                <button onclick="showSinglePlayerModeSelection('trivia')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
                 <button onclick="startTrivia('multi')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
                 </button>
             </div>
         </div>
 
-        <!-- Trivia Player Selection Screen -->
-        <div id="trivia-player-selection" class="hidden p-6 md:p-8">
+        <!-- Generic Single Player Mode Selection Screen -->
+        <div id="single-player-mode-selection" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('trivia-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
-                <h2 class="text-3xl font-display text-emerald-600">¿Quién juega?</h2>
+                <button id="single-player-mode-back-button" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 id="single-player-mode-title" class="text-3xl font-display text-emerald-600">¿Quién juega?</h2>
             </div>
-            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
+            <p class="text-center text-slate-600 mb-6">Elige tu nombre o "Familia":</p>
             <div class="space-y-4">
-                <button onclick="startTrivia('single', 'Hugo')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Hugo
+                <button onclick="startGameForPlayer(currentSelectedGameType, 'Hugo')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">Hugo</button>
+                <button onclick="startGameForPlayer(currentSelectedGameType, 'Saúl')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">Saúl</button>
+                <button onclick="showFamilyMemberSelection(currentSelectedGameType)" class="btn-game w-full bg-purple-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">👨‍👩‍👧‍👦</span> Familia
                 </button>
-                <button onclick="startTrivia('single', 'Saúl')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Saúl
-                </button>
+            </div>
+        </div>
+
+        <!-- Generic Family Member Selection Screen -->
+        <div id="family-member-selection" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="showSinglePlayerModeSelection(currentSelectedGameType)" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 id="family-member-title" class="text-3xl font-display text-emerald-600">Elige un familiar:</h2>
+            </div>
+            <p class="text-center text-slate-600 mb-6">Selecciona quién jugará:</p>
+            <div id="family-member-buttons" class="space-y-4">
+                <!-- Family player buttons will be generated by JS -->
             </div>
         </div>
 
@@ -442,28 +525,11 @@
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
             <div class="space-y-4">
-                <button onclick="showScreen('tictactoe-player-selection')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                <button onclick="showSinglePlayerModeSelection('tictactoe')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
                 <button onclick="startTicTacToe('human')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
-                </button>
-            </div>
-        </div>
-
-        <!-- Tic-Tac-Toe Player Selection Screen -->
-        <div id="tictactoe-player-selection" class="hidden p-6 md:p-8">
-            <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('tictactoe-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
-                <h2 class="text-3xl font-display text-sky-600">¿Quién juega?</h2>
-            </div>
-            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
-            <div class="space-y-4">
-                <button onclick="startTicTacToe('ai', 'Hugo')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Hugo vs <span class="text-3xl drop-shadow-md">🤖</span>
-                </button>
-                <button onclick="startTicTacToe('ai', 'Saúl')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Saúl vs <span class="text-3xl drop-shadow-md">🤖</span>
                 </button>
             </div>
         </div>
@@ -488,30 +554,41 @@
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
             <div class="space-y-4">
-                <button onclick="showScreen('memory-player-selection')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                <button onclick="showSinglePlayerModeSelection('memory')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
-                <button onclick="startMemoryGame('multi')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores
+                <button onclick="showMemorySetupSelection(null)" class="btn-game w-full bg-purple-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
                 </button>
             </div>
         </div>
 
-        <!-- Memory Player Selection Screen -->
-        <div id="memory-player-selection" class="hidden p-6 md:p-8">
+        <!-- Memory Setup Selection Screen -->
+        <div id="memory-setup-selection" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('memory-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
-                <h2 class="text-3xl font-display text-rose-600">¿Quién juega?</h2>
+                <button id="memory-setup-back-button" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-rose-600">Configurar Memocartas</h2>
             </div>
-            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
-            <div class="space-y-4">
-                <button onclick="startMemoryGame('single', 'Hugo')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Hugo
-                </button>
-                <button onclick="startMemoryGame('single', 'Saúl')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Saúl
-                </button>
+            <p class="text-center text-slate-600 mb-6">Elige la dificultad:</p>
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <button onclick="selectMemoryDifficulty(12, 4)" class="btn-game bg-rose-300 text-white p-4 rounded-xl shadow-lg text-xl font-display">Fácil (4x3)</button>
+                <button onclick="selectMemoryDifficulty(16, 4)" class="btn-game bg-rose-400 text-white p-4 rounded-xl shadow-lg text-xl font-display">Normal (4x4)</button>
+                <button onclick="selectMemoryDifficulty(20, 5)" class="btn-game bg-rose-500 text-white p-4 rounded-xl shadow-lg text-xl font-display">Difícil (5x4)</button>
+                <button onclick="selectMemoryDifficulty(24, 6)" class="btn-game bg-rose-600 text-white p-4 rounded-xl shadow-lg text-xl font-display">Muy Difícil (6x4)</button>
             </div>
+
+            <p class="text-center text-slate-600 mb-6">Elige el tema:</p>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="selectMemoryTheme('sports')" class="btn-game bg-emerald-500 text-white p-4 rounded-xl shadow-lg text-xl font-display">Deportes ⚽️</button>
+                <button onclick="selectMemoryTheme('animals')" class="btn-game bg-yellow-500 text-white p-4 rounded-xl shadow-lg text-xl font-display">Animales 🐶</button>
+                <button onclick="selectMemoryTheme('symbols')" class="btn-game bg-purple-500 text-white p-4 rounded-xl shadow-lg text-xl font-display">Símbolos ❤️</button>
+                <button onclick="selectMemoryTheme('flags')" class="btn-game bg-blue-500 text-white p-4 rounded-xl shadow-lg text-xl font-display">Banderas 🇪🇸</button>
+                <button onclick="selectMemoryTheme('food')" class="btn-game bg-orange-500 text-white p-4 rounded-xl shadow-lg text-xl font-display">Comida 🍔</button> <!-- New theme button -->
+                <button onclick="selectMemoryTheme('space')" class="btn-game w-full bg-indigo-500 text-white p-4 rounded-xl shadow-lg text-xl font-display">Espacio 🚀</button> <!-- New theme button -->
+            </div>
+            <button id="start-memory-game-button" onclick="confirmStartMemoryGame()" class="mt-8 w-full bg-amber-500 text-white p-4 rounded-xl shadow-lg text-2xl font-display opacity-50 cursor-not-allowed" disabled>
+                ¡Empezar a Jugar!
+            </button>
         </div>
 
         <!-- Memory Game Screen -->
@@ -524,16 +601,21 @@
                         Intentos: <span id="memory-attempts">0</span>
                     </div>
                     <div id="memory-timer-display" class="text-lg font-bold bg-rose-100 text-rose-800 px-3 py-1 rounded-full hidden">
-                        Tiempo: <span id="memory-timer">00:00</span>
+                        <span id="memory-player-name-display"></span>Tiempo: <span id="memory-timer">00:00</span>
                     </div>
+                    <!-- Mute button for memory game -->
+                    <button id="memory-mute-button" onclick="toggleMemoryMute()" class="text-2xl text-slate-500 hover:text-slate-700 active:scale-95 transition-all duration-100">
+                        🔊
+                    </button>
                  </div>
             </div>
+            <!-- Removed the high score display for Memory Game -->
+            <!-- <div id="memory-highscore-display" class="text-center text-rose-600 font-semibold mb-3 hidden">
+                <span id="memory-highscore-label"></span> <span id="memory-highscore-value">N/A</span>
+            </div> -->
             <div id="memory-player-turn" class="text-center text-rose-700 font-semibold mb-3 hidden">
                 <span id="memory-current-player-turn"></span><br>
                 <span class="text-base font-semibold">Hugo: <span id="memory-player1-matched">0</span> | Saúl: <span id="memory-player2-matched">0</span></span>
-            </div>
-            <div id="memory-highscore-display" class="text-center text-rose-600 font-semibold mb-3 hidden">
-                <span id="memory-highscore-label"></span> <span id="memory-highscore-value">N/A</span>
             </div>
             <div id="memory-board" class="grid grid-cols-4 gap-2 md:gap-3">
                 <!-- Cards will be generated by JS -->
@@ -548,29 +630,11 @@
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
             <div class="space-y-4">
-                <button onclick="showScreen('guess-number-player-selection')" class="btn-game w-full bg-green-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                <button onclick="showSinglePlayerModeSelection('guess-number')" class="btn-game w-full bg-green-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
-                <!-- For now, 2 players mode is not implemented for this game -->
-                <button class="btn-game w-full bg-gray-400 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display cursor-not-allowed opacity-70">
-                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Próximamente)
-                </button>
-            </div>
-        </div>
-
-        <!-- Guess the Number Player Selection Screen -->
-        <div id="guess-number-player-selection" class="hidden p-6 md:p-8">
-            <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('guess-number-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
-                <h2 class="text-3xl font-display text-green-600">¿Quién juega?</h2>
-            </div>
-            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
-            <div class="space-y-4">
-                <button onclick="startGameGuessNumber('single', 'Hugo')" class="btn-game w-full bg-green-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Hugo
-                </button>
-                <button onclick="startGameGuessNumber('single', 'Saúl')" class="btn-game w-full bg-lime-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Saúl
+                <button onclick="startGameGuessNumber('multi', 'Hugo', 'Saúl')" class="btn-game w-full bg-lime-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
                 </button>
             </div>
         </div>
@@ -584,8 +648,11 @@
                     Intentos: <span id="guess-number-attempts">0</span>
                 </div>
             </div>
+            <div id="guess-number-player-turn" class="text-center text-green-700 font-semibold mb-3 hidden">
+                <span id="guess-number-current-player-turn"></span>
+            </div>
             <div id="guess-number-highscore-display" class="text-center text-green-600 font-semibold mb-3">
-                Mejor: <span id="guess-number-highscore-value">N/A</span>
+                <span id="guess-number-player-name-display"></span>Mejor: <span id="guess-number-highscore-value">N/A</span>
             </div>
             <div class="bg-white p-4 rounded-lg shadow-inner mb-4 text-center">
                 <p class="text-lg font-semibold mb-2">Estoy pensando en un número entre 1 y 100.</p>
@@ -595,6 +662,7 @@
                 <input type="number" id="guess-number-input" class="flex-grow p-3 rounded-lg border-2 border-green-300 focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 text-center text-2xl font-bold" placeholder="Tu número" min="1" max="100">
                 <button onclick="checkGuess()" class="bg-green-500 text-white p-3 rounded-lg shadow-md text-xl font-display active:scale-95 active:opacity-75 transition-all duration-100">¡Adivinar!</button>
             </div>
+            <button id="guess-number-hint-button" onclick="requestHint()" class="w-full bg-blue-500 text-white p-2 rounded-lg shadow-md mb-2 active:scale-95 active:opacity-75 transition-all duration-100">Pedir Pista (<span id="guess-number-hints-left">1</span>)</button>
             <button onclick="resetGuessNumberGame()" class="w-full bg-gray-200 text-slate-700 p-2 rounded-lg active:scale-95 active:opacity-75 transition-all duration-100">Reiniciar Juego</button>
         </div>
 
@@ -606,28 +674,11 @@
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
             <div class="space-y-4">
-                <button onclick="showScreen('simon-player-selection')" class="btn-game w-full bg-fuchsia-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                <button onclick="showSinglePlayerModeSelection('simon')" class="btn-game w-full bg-fuchsia-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
                 <button class="btn-game w-full bg-gray-400 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display cursor-not-allowed opacity-70">
                     <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Próximamente)
-                </button>
-            </div>
-        </div>
-
-        <!-- Simon Says Player Selection Screen -->
-        <div id="simon-player-selection" class="hidden p-6 md:p-8">
-            <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('simon-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
-                <h2 class="text-3xl font-display text-fuchsia-600">¿Quién juega?</h2>
-            </div>
-            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
-            <div class="space-y-4">
-                <button onclick="startSimonGame('single', 'Hugo')" class="btn-game w-full bg-fuchsia-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Hugo
-                </button>
-                <button onclick="startSimonGame('single', 'Saúl')" class="btn-game w-full bg-pink-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Saúl
                 </button>
             </div>
         </div>
@@ -642,7 +693,7 @@
                 </div>
             </div>
             <div id="simon-highscore-display" class="text-center text-fuchsia-600 font-semibold mb-3">
-                Mejor: <span id="simon-highscore-value">N/A</span>
+                <span id="simon-player-name-display"></span>Mejor: <span id="simon-highscore-value">N/A</span>
             </div>
             <div class="bg-white p-4 rounded-lg shadow-inner mb-4 text-center aspect-square flex items-center justify-center flex-col">
                 <p id="simon-feedback" class="text-xl font-bold text-slate-700 min-h-[2rem] flex items-center justify-center mb-4">¡Pulsa "Empezar" para jugar!</p>
@@ -665,28 +716,11 @@
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
             <div class="space-y-4">
-                <button onclick="showScreen('paint-by-number-player-selection')" class="btn-game w-full bg-orange-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                <button onclick="showSinglePlayerModeSelection('paint-by-number')" class="btn-game w-full bg-orange-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
                 <button class="btn-game w-full bg-gray-400 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display cursor-not-allowed opacity-70">
                     <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Próximamente)
-                </button>
-            </div>
-        </div>
-
-        <!-- Paint by Number Player Selection Screen -->
-        <div id="paint-by-number-player-selection" class="hidden p-6 md:p-8">
-            <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('paint-by-number-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
-                <h2 class="text-3xl font-display text-orange-600">¿Quién juega?</h2>
-            </div>
-            <p class="text-center text-slate-600 mb-6">Elige tu nombre:</p>
-            <div class="space-y-4">
-                <button onclick="startPaintByNumberGame('single', 'Hugo')" class="btn-game w-full bg-orange-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Hugo
-                </button>
-                <button onclick="startPaintByNumberGame('single', 'Saúl')" class="btn-game w-full bg-amber-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    Saúl
                 </button>
             </div>
         </div>
@@ -696,8 +730,14 @@
             <div class="flex justify-between items-center mb-4">
                 <button onclick="showScreen('paint-by-number-menu')" class="text-slate-500 hover:text-amber-600 text-2xl active:scale-95 active:opacity-75 transition-all duration-100">←</button>
                 <h2 class="text-3xl font-display text-orange-600">Pintar</h2>
-                <div class="text-lg font-bold bg-orange-100 text-orange-800 px-3 py-1 rounded-full">
-                    Progreso: <span id="paint-by-number-progress">0%</span>
+                <div class="flex items-center space-x-4">
+                    <div class="text-lg font-bold bg-orange-100 text-orange-800 px-3 py-1 rounded-full">
+                        <span id="paint-by-number-player-name-display"></span>Progreso: <span id="paint-by-number-progress">0%</span>
+                    </div>
+                     <!-- Mute button for paint by number game -->
+                    <button id="paint-mute-button" onclick="togglePaintMute()" class="text-2xl text-slate-500 hover:text-slate-700 active:scale-95 transition-all duration-100">
+                        🔊
+                    </button>
                 </div>
             </div>
             <!-- Removed the high score display for Paint by Number -->
@@ -734,26 +774,30 @@
 
     </div>
 
+    <!-- Audio elements for Simon Says -->
+    <audio id="simon-sound-red" preload="auto"></audio>
+    <audio id="simon-sound-green" preload="auto"></audio>
+    <audio id="simon-sound-blue" preload="auto"></audio>
+    <audio id="simon-sound-yellow" preload="auto"></audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <script>
         const screens = {
             mainMenu: document.getElementById('main-menu'),
             triviaMenu: document.getElementById('trivia-menu'),
-            triviaPlayerSelection: document.getElementById('trivia-player-selection'),
+            singlePlayerModeSelection: document.getElementById('single-player-mode-selection'), // Generic single player mode selection
+            familyMemberSelection: document.getElementById('family-member-selection'), // Generic family member selection
             triviaGame: document.getElementById('trivia-game'),
             tictactoeMenu: document.getElementById('tictactoe-menu'),
-            tictactoePlayerSelection: document.getElementById('tictactoe-player-selection'),
             tictactoeGame: document.getElementById('tictactoe-game'),
             memoryMenu: document.getElementById('memory-menu'),
-            memoryPlayerSelection: document.getElementById('memory-player-selection'),
+            memorySetupSelection: document.getElementById('memory-setup-selection'),
             memoryGame: document.getElementById('memory-game'),
             guessNumberMenu: document.getElementById('guess-number-menu'),
-            guessNumberPlayerSelection: document.getElementById('guess-number-player-selection'),
             guessNumberGame: document.getElementById('guess-number-game'),
             simonMenu: document.getElementById('simon-menu'),
-            simonPlayerSelection: document.getElementById('simon-player-selection'),
             simonGame: document.getElementById('simon-game'),
             paintByNumberMenu: document.getElementById('paint-by-number-menu'),
-            paintByNumberPlayerSelection: document.getElementById('paint-by-number-player-selection'),
             paintByNumberGame: document.getElementById('paint-by-number-game'),
         };
         
@@ -763,6 +807,7 @@
         };
 
         let currentScreen = 'main-menu'; // Tracks the ID of the currently visible screen
+        let currentSelectedGameType = ''; // To store which game type is currently in player selection flow
 
         function showScreen(screenId) {
             const targetScreen = document.getElementById(screenId);
@@ -773,31 +818,30 @@
 
             // Remove all specific theme classes from appContainer
             appContainer.classList.remove('bg-trivia-theme', 'bg-tictactoe-theme', 'bg-memory-theme', 'bg-guess-number-theme', 'bg-simon-theme', 'bg-paint-by-number-theme');
-            // Re-add the default translucent white for screens that, that don't have a specific theme
-            appContainer.classList.add('bg-white/70');
+            
+            // Re-add the default translucent white for screens that don't have a specific theme,
+            // or if we are going back to the main menu.
+            if (screenId === 'main-menu') {
+                appContainer.classList.add('bg-white/70');
+            } else {
+                appContainer.classList.remove('bg-white/70'); // Remove default translucent white if a game theme is applied
+            }
 
             // Apply theme based on screenId
-            if (screenId.startsWith('trivia')) { // Check if screenId starts with 'trivia'
+            if (screenId.startsWith('trivia')) {
                 appContainer.classList.add('bg-trivia-theme');
-                appContainer.classList.remove('bg-white/70'); // Remove default translucent white if theme is applied
-            } else if (screenId.startsWith('tictactoe')) { // Check if screenId starts with 'tictactoe'
+            } else if (screenId.startsWith('tictactoe')) {
                 appContainer.classList.add('bg-tictactoe-theme');
-                appContainer.classList.remove('bg-white/70');
-            } else if (screenId.startsWith('memory')) { // Check if screenId starts with 'memory'
+            } else if (screenId.startsWith('memory')) {
                 appContainer.classList.add('bg-memory-theme');
-                appContainer.classList.remove('bg-white/70');
-            } else if (screenId.startsWith('guess-number')) { // New theme for Guess the Number
+            } else if (screenId.startsWith('guess-number')) {
                 appContainer.classList.add('bg-guess-number-theme');
-                appContainer.classList.remove('bg-white/70');
-            } else if (screenId.startsWith('simon')) { // New theme for Simon Says
+            } else if (screenId.startsWith('simon')) {
                 appContainer.classList.add('bg-simon-theme');
-                appContainer.classList.remove('bg-white/70');
-            } else if (screenId.startsWith('paint-by-number')) { // New theme for Paint by Number
+            } else if (screenId.startsWith('paint-by-number')) {
                 appContainer.classList.add('bg-paint-by-number-theme');
-                appContainer.classList.remove('bg-white/70');
             }
-            // For 'main-menu', it will default back to bg-white/70 after removal above.
-
+            
             if (currentScreenElement && currentScreenElement !== targetScreen) {
                 // Apply fade-out animation to the current screen
                 currentScreenElement.classList.add('fade-out');
@@ -958,16 +1002,208 @@
             }
         }
 
+        // --- Global Player List and Selection Logic ---
+        const allFamilyPlayers = ['Hugo', 'Saúl', 'Papá', 'Mamá', 'Yoyo', 'Yaya', 'Abuela', 'Abuelo', 'Tito Samu', 'Tita Lidia', 'Tito Iván', 'Tita Tere', 'Tito Freek', 'Prima Gema', 'Primo Oliver'];
+        const corePlayers = ['Hugo', 'Saúl'];
+        const otherFamilyPlayers = allFamilyPlayers.filter(player => !corePlayers.includes(player));
+
+        const playerButtonColors = [
+            'bg-emerald-500', 'bg-sky-500', 'bg-purple-500', 'bg-pink-500', 'bg-yellow-500',
+            'bg-lime-500', 'bg-red-500', 'bg-blue-500', 'bg-orange-500', 'bg-teal-500',
+            'bg-indigo-500', 'bg-emerald-500', 'bg-sky-500', 'bg-rose-500', 'bg-green-500'
+        ];
+
+        function getPlayerColorClass(playerName) {
+            const index = allFamilyPlayers.indexOf(playerName);
+            if (index !== -1) {
+                return playerButtonColors[index % playerButtonColors.length];
+            }
+            return 'bg-gray-500'; // Default color if not found
+        }
+
+        function showSinglePlayerModeSelection(gameType) {
+            currentSelectedGameType = gameType;
+            const titleElement = document.getElementById('single-player-mode-title');
+            const backButton = document.getElementById('single-player-mode-back-button');
+
+            // Set title and back button based on game type
+            if (gameType === 'trivia') {
+                titleElement.textContent = 'Preguntas y Respuestas';
+                titleElement.classList.add('text-emerald-600');
+                titleElement.classList.remove('text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                backButton.onclick = () => showScreen('trivia-menu');
+            } else if (gameType === 'tictactoe') {
+                titleElement.textContent = 'Tres en Raya';
+                titleElement.classList.add('text-sky-600');
+                titleElement.classList.remove('text-emerald-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                backButton.onclick = () => showScreen('tictactoe-menu');
+            } else if (gameType === 'memory') {
+                titleElement.textContent = 'Memocartas';
+                titleElement.classList.add('text-rose-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                backButton.onclick = () => showScreen('memory-menu');
+            } else if (gameType === 'guess-number') {
+                titleElement.textContent = 'Adivina el Número';
+                titleElement.classList.add('text-green-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-fuchsia-600', 'text-orange-600');
+                backButton.onclick = () => showScreen('guess-number-menu');
+            } else if (gameType === 'simon') {
+                titleElement.textContent = 'Simon Dice';
+                titleElement.classList.add('text-fuchsia-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-orange-600');
+                backButton.onclick = () => showScreen('simon-menu');
+            } else if (gameType === 'paint-by-number') {
+                titleElement.textContent = 'Pintar por Números';
+                titleElement.classList.add('text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600');
+                backButton.onclick = () => showScreen('paint-by-number-menu');
+            }
+
+            showScreen('single-player-mode-selection');
+        }
+
+        function showFamilyMemberSelection(gameType) {
+            currentSelectedGameType = gameType;
+            const container = document.getElementById('family-member-buttons');
+            container.innerHTML = ''; // Clear previous buttons
+
+            const titleElement = document.getElementById('family-member-title');
+            if (gameType === 'trivia') {
+                titleElement.classList.add('text-emerald-600');
+                titleElement.classList.remove('text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+            } else if (gameType === 'tictactoe') {
+                titleElement.classList.add('text-sky-600');
+                titleElement.classList.remove('text-emerald-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+            } else if (gameType === 'memory') {
+                titleElement.classList.add('text-rose-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+            } else if (gameType === 'guess-number') {
+                titleElement.classList.add('text-green-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-fuchsia-600', 'text-orange-600');
+            } else if (gameType === 'simon') {
+                titleElement.classList.add('text-fuchsia-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-orange-600');
+            } else if (gameType === 'paint-by-number') {
+                titleElement.classList.add('text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600');
+            }
+
+            otherFamilyPlayers.forEach(player => {
+                const button = document.createElement('button');
+                button.className = `btn-game w-full ${getPlayerColorClass(player)} text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display`;
+                button.textContent = player;
+                button.onclick = () => startGameForPlayer(gameType, player);
+                container.appendChild(button);
+            });
+            showScreen('family-member-selection');
+        }
+
+        function startGameForPlayer(gameType, playerName) {
+            if (gameType === 'trivia') {
+                startTrivia('single', playerName);
+            } else if (gameType === 'tictactoe') {
+                startTicTacToe('ai', playerName);
+            } else if (gameType === 'memory') {
+                showMemorySetupSelection(playerName); // Memory has an intermediate setup screen
+            } else if (gameType === 'guess-number') {
+                startGameGuessNumber('single', playerName);
+            } else if (gameType === 'simon') {
+                startSimonGame('single', playerName);
+            } else if (gameType === 'paint-by-number') {
+                startPaintByNumberGame('single', playerName);
+            }
+        }
+
         // --- Trivia Game Logic ---
         const initialTriviaQuestions = [ // Renamed to initialTriviaQuestions
             { category: "Ciencia", question: "¿Cuál es el planeta más grande de nuestro sistema solar?", answers: ["Júpiter", "Saturno", "Tierra", "Marte"], correct: 0, explanation: "Júpiter es tan grande que todos los demás planetas del sistema solar podrían caber dentro de él." },
+            { category: "Ciencia", question: "¿Qué parte de la planta absorbe el agua y los nutrientes del suelo?", answers: ["Las hojas", "Las flores", "Las raíces", "El tallo"], correct: 2, explanation: "Las raíces son las encargadas de absorber el agua y los nutrientes que la planta necesita para crecer." },
+            { category: "Ciencia", question: "¿Qué gas necesitan las plantas para hacer la fotosíntesis?", answers: ["Oxígeno", "Dióxido de carbono", "Nitrógeno", "Hidrógeno"], correct: 1, explanation: "Las plantas absorben dióxido de carbono del aire para realizar la fotosíntesis y producen oxígeno como resultado." },
+            { category: "Ciencia", question: "¿Cuál es el hueso más largo del cuerpo humano?", answers: ["El fémur", "La columna vertebral", "El cráneo", "La tibia"], correct: 0, explanation: "El fémur, que está en el muslo, es el hueso más largo del cuerpo humano." },
+            { category: "Ciencia", question: "¿Qué planeta es conocido como 'el planeta rojo'?", answers: ["Venus", "Marte", "Júpiter", "Saturno"], correct: 1, explanation: "Marte es conocido como 'el planeta rojo' debido al óxido de hierro en su superficie que le da ese color característico." },
+            { category: "Ciencia", question: "¿Qué tipo de animal es una ballena?", answers: ["Un pez", "Un anfibio", "Un mamífero", "Un reptil"], correct: 2, explanation: "¡Correcto! Las ballenas son mamíferos marinos, no peces. Respiran aire, dan a luz crías vivas y amamantan a sus bebés." },
+            { category: "Ciencia", question: "¿Qué fuerza nos mantiene pegados al suelo de la Tierra?", answers: ["El magnetismo", "La gravedad", "La fricción", "La presión atmosférica"], correct: 1, explanation: "La gravedad es la fuerza invisible que nos mantiene pegados a la Tierra y hace que los objetos caigan cuando los soltamos." },
+            { category: "Ciencia", question: "¿Qué parte del cuerpo bombea la sangre?", answers: ["Los pulmones", "El cerebro", "El corazón", "El estómago"], correct: 2, explanation: "El corazón es el órgano encargado de bombear la sangre por todo el cuerpo a través de los vasos sanguíneos." },
+            { category: "Ciencia", question: "¿Qué gas es el más abundante en la atmósfera de la Tierra?", answers: ["Oxígeno", "Dióxido de carbono", "Nitrógeno", "Hidrógeno"], correct: 2, explanation: "El nitrógeno es el gas más abundante en la atmósfera terrestre, representando aproximadamente el 78% del aire que respiramos." },
+            { category: "Ciencia", question: "¿Qué tipo de energía usa una bicicleta para moverse?", answers: ["Energía eléctrica", "Energía nuclear", "Energía eólica", "Energía mecánica"], correct: 3, explanation: "Una bicicleta convierte la energía mecánica del pedaleo en movimiento hacia adelante." },
+            { category: "Tecnología", question: "¿Qué significa la sigla 'GB' cuando hablamos de almacenamiento en un teléfono o computadora?", answers: ["GigaByte", "GigaBit", "GigaBase", "Gran Botón"], correct: 0, explanation: "GB significa GigaByte, que es una unidad de almacenamiento digital. 1 GB equivale a aproximadamente 1,000 millones de bytes." },
+            { category: "Tecnología", question: "¿Qué empresa creó el sistema operativo Windows?", answers: ["Apple", "Microsoft", "Google", "Samsung"], correct: 1, explanation: "Microsoft es la empresa que creó y desarrolla el sistema operativo Windows, que es uno de los más usados en computadoras personales." },
+            { category: "Tecnología", question: "¿Qué dispositivo nos permite conectarnos a Internet de forma inalámbrica en casa?", answers: ["Monitor", "Teclado", "Router WiFi", "Impresora"], correct: 2, explanation: "El router WiFi es el dispositivo que crea una red inalámbrica en casa, permitiendo que otros dispositivos se conecten a Internet sin cables." },
+            { category: "Tecnología", question: "¿Qué es un 'smartphone'?", answers: ["Un teléfono antiguo con cable", "Un teléfono inteligente con pantalla táctil", "Un reloj digital", "Una tableta grande"], correct: 1, explanation: "Un smartphone es un teléfono inteligente con pantalla táctil, que puede ejecutar aplicaciones y conectarse a Internet, además de hacer llamadas." },
+            { category: "Tecnología", question: "¿Qué significan las siglas 'URL' en Internet?", answers: ["Universal Resource Locator", "United Radio Link", "User Registration Link", "Ultra Rapid Link"], correct: 0, explanation: "URL significa 'Localizador Uniforme de Recursos' (Universal Resource Locator), que es básicamente la dirección de una página web en Internet." },
+            { category: "Tecnología", question: "¿Qué botón del teclado se usa para borrar el carácter que está a la izquierda del cursor?", answers: ["Enter", "Shift", "Barra espaciadora", "Retroceso (Backspace)"], correct: 3, explanation: "La tecla Retroceso o Backspace (a menudo marcada con una flecha hacia la izquierda) borra el carácter que está a la izquierda del cursor." },
+            { category: "Tecnología", question: "¿Qué dispositivo de entrada nos permite controlar el puntero en la pantalla de la computadora?", answers: ["El teclado", "El ratón (mouse)", "La impresora", "El monitor"], correct: 1, explanation: "El ratón o mouse es el dispositivo que nos permite mover el puntero en la pantalla y hacer clic en los elementos." },
+            { category: "Tecnología", question: "¿Qué significa 'descargar' un archivo de Internet?", answers: ["Eliminar un archivo", "Copiar un archivo de Internet a tu dispositivo", "Mover un archivo a la papelera", "Comprimir un archivo"], correct: 1, explanation: "Descargar significa copiar un archivo o información de Internet a tu computadora, teléfono u otro dispositivo." },
+            { category: "Tecnología", question: "¿Qué aplicación te permite hacer videollamadas con otras personas?", answers: ["Word", "Excel", "Zoom o Meet", "PowerPoint"], correct: 2, explanation: "Aplicaciones como Zoom, Google Meet o Microsoft Teams permiten hacer videollamadas con varias personas a la vez." },
+            { category: "Tecnología", question: "¿Qué debes hacer si recibes un mensaje de un desconocido pidiendo información personal?", answers: ["Responder con mis datos", "Compartirlo con mis amigos", "No responder y avisar a un adulto", "Hacer clic en los enlaces que envíe"], correct: 2, explanation: "Nunca debes compartir información personal con desconocidos. Es importante no responder y avisar a un adulto de confianza." },
+            { category: "Geografía de España", question: "¿Cuál es la capital de España?", answers: ["Barcelona", "Madrid", "Valencia", "Sevilla"], correct: 1, explanation: "Madrid es la capital de España y la ciudad más poblada del país, situada en el centro de la península ibérica." },
+            { category: "Geografía de España", question: "¿Qué gran cadena montañosa separa España de Francia?", answers: ["Los Pirineos", "Los Alpes", "Sierra Nevada", "Sistema Central"], correct: 0, explanation: "Los Pirineos son una cordillera que forma una frontera natural entre España y Francia, extendiéndose desde el mar Cantábrico hasta el mar Mediterráneo." },
+            { category: "Geografía de España", question: "¿Cuál es el río más largo de España?", answers: ["Tajo", "Ebro", "Guadiana", "Guadalquivir"], correct: 1, explanation: "El río Ebro es el más largo de España, con 930 km de longitud, y desemboca en el mar Mediterráneo formando un gran delta en Tarragona." },
+            { category: "Geografía de España", question: "¿Qué islas españolas se encuentran en el océano Atlántico?", answers: ["Islas Baleares", "Islas Cíes", "Islas Canarias", "Islas Columbretes"], correct: 2, explanation: "Las Islas Canarias son un archipiélago español en el océano Atlántico, frente a la costa noroeste de África." },
+            { category: "Geografía de España", question: "¿Qué comunidad autónoma es conocida como 'La Tierra de los Mil Vinos'?", answers: ["La Rioja", "Andalucía", "Galicia", "Castilla y León"], correct: 0, explanation: "La Rioja es famosa por sus vinos de alta calidad, con una tradición vinícola que se remonta a la época romana." },
+            { category: "Geografía de España", question: "¿En qué comunidad autónoma se encuentra la ciudad de Santiago de Compostela?", answers: ["Asturias", "Galicia", "Cantabria", "País Vasco"], correct: 1, explanation: "Santiago de Compostela es la capital de Galicia y un importante lugar de peregrinación por ser el final del Camino de Santiago." },
+            { category: "Geografía de España", question: "¿Qué mar baña la costa este de España?", answers: ["Océano Atlántico", "Mar Cantábrico", "Mar Mediterráneo", "Mar de Alborán"], correct: 2, explanation: "El mar Mediterráneo baña la costa este y sureste de España, desde Cataluña hasta Andalucía." },
+            { category: "Geografía de España", question: "¿Cuál es el pico más alto de la península ibérica?", answers: ["Monte Perdido", "Teide", "Mulhacén", "Aneto"], correct: 3, explanation: "El Aneto, con 3.404 metros, es el pico más alto de los Pirineos y de la península ibérica. El Teide es más alto pero está en Canarias." },
+            { category: "Geografía de España", question: "¿Qué comunidad autónoma está formada por las provincias de Cáceres y Badajoz?", answers: ["Castilla-La Mancha", "Andalucía", "Extremadura", "Castilla y León"], correct: 2, explanation: "Extremadura es la comunidad formada por las provincias de Cáceres y Badajoz, en el oeste de España, haciendo frontera con Portugal." },
+            { category: "Geografía de España", question: "¿Qué gran desierto se encuentra en la provincia de Almería?", answers: ["Desierto de Tabernas", "Desierto de Monegros", "Desierto de Bárdenas", "Desierto de Gorafe"], correct: 0, explanation: "El desierto de Tabernas en Almería es el único desierto propiamente dicho de Europa y ha sido escenario de numerosas películas del oeste." },
+            { category: "Geografía de Andalucía", question: "¿Cuál es la capital de Andalucía?", answers: ["Sevilla", "Málaga", "Granada", "Córdoba"], correct: 0, explanation: "Sevilla es la capital de la comunidad autónoma de Andalucía y una de las ciudades más importantes del sur de España." },
+            { category: "Geografía de Andalucía", question: "¿Qué río andaluz es el más largo de Andalucía y el quinto de la península?", answers: ["Guadalquivir", "Guadiana", "Genil", "Guadalhorce"], correct: 0, explanation: "El río Guadalquivir, con 657 km, es el río más largo de Andalucía. Pasa por ciudades como Córdoba y Sevilla." },
+            { category: "Geografía de Andalucía", question: "¿Qué cadena montañosa separa Andalucía de la meseta central?", answers: ["Sierra Morena", "Sierra Nevada", "Sierra de Grazalema", "Sierra de Cazorla"], correct: 0, explanation: "Sierra Morena actúa como frontera natural entre Andalucía y la meseta central de España." },
+            { category: "Geografía de Andalucía", question: "¿En qué provincia andaluza se encuentra el Parque Nacional de Doñana?", answers: ["Huelva", "Cádiz", "Sevilla", "Málaga"], correct: 0, explanation: "El Parque Nacional de Doñana se encuentra principalmente en la provincia de Huelva, aunque también se extiende por Sevilla y Cádiz." },
+            { category: "Geografía de Andalucía", question: "¿Qué estrecho separa España de África y conecta el océano Atlántico con el mar Mediterráneo?", answers: ["Estrecho de Gibraltar", "Estrecho de Bonifacio", "Estrecho de Mesina", "Estrecho de Magallanes"], correct: 0, explanation: "El estrecho de Gibraltar separa España de Marruecos y conecta el océano Atlántico con el mar Mediterráneo." },
+            { category: "Geografía de Andalucía", question: "¿Qué montaña de Sierra Nevada es el pico más alto de la península ibérica?", answers: ["Mulhacén", "Veleta", "Alcazaba", "Chullo"], correct: 0, explanation: "El Mulhacén, con 3.479 metros, es el pico más alto de la península ibérica y el segundo más alto de España tras el Teide." },
+            { category: "Geografía de Andalucía", question: "¿Qué mar baña la costa de la provincia de Almería?", answers: ["Mar Mediterráneo", "Océano Atlántico", "Mar Cantábrico", "Mar de Alborán"], correct: 3, explanation: "La provincia de Almería está bañada por el mar de Alborán, que es la parte más occidental del mar Mediterráneo." },
+            { category: "Geografía de Andalucía", question: "¿Qué parque natural andaluz es conocido como 'la sierra de la nieve'?", answers: ["Sierra de Grazalema", "Sierra de Cazorla", "Sierra de Aracena", "Sierra de las Nieves"], correct: 3, explanation: "La Sierra de las Nieves, en Málaga, es un parque natural conocido por sus bosques de pinsapos y sus paisajes nevados en invierno." },
+            { category: "Geografía de Andalucía", question: "¿Qué provincia andaluza es la más poblada?", answers: ["Sevilla", "Málaga", "Cádiz", "Granada"], correct: 0, explanation: "Sevilla es la provincia más poblada de Andalucía, seguida de Málaga y Cádiz." },
+            { category: "Geografía de Andalucía", question: "¿Qué río pasa por la ciudad de Córdoba?", answers: ["Guadiana", "Guadalquivir", "Genil", "Guadalhorce"], correct: 1, explanation: "El río Guadalquivir pasa por Córdoba, donde se encuentra el famoso Puente Romano que lo cruza." },
+            { category: "Cuerpo Humano", question: "¿Cuál es el órgano más grande del cuerpo humano?", answers: ["El cerebro", "El corazón", "La piel", "El hígado"], correct: 2, explanation: "La piel es el órgano más grande del cuerpo humano. En un adulto puede pesar hasta 4 kg y cubrir una superficie de 2 m²." },
+            { category: "Cuerpo Humano", question: "¿Cuántos huesos tiene el cuerpo humano de un adulto?", answers: ["106", "206", "306", "156"], correct: 1, explanation: "El cuerpo humano de un adulto tiene 206 huesos. Los bebés nacen con unos 300 huesos que se van fusionando a medida que crecen." },
+            { category: "Cuerpo Humano", question: "¿Qué parte del cuerpo produce la bilis para ayudar a digerir las grasas?", answers: ["El estómago", "El páncreas", "El hígado", "El intestino delgado"], correct: 2, explanation: "El hígado produce la bilis, que se almacena en la vesícula biliar y ayuda a descomponer las grasas durante la digestión." },
+            { category: "Cuerpo Humano", question: "¿Qué glóbulos de la sangre son los encargados de combatir las infecciones?", answers: ["Glóbulos rojos", "Plaquetas", "Glóbulos blancos", "Plasma"], correct: 2, explanation: "Los glóbulos blancos o leucocitos son las células de la sangre que nos protegen de las infecciones y enfermedades." },
+            { category: "Cuerpo Humano", question: "¿Cuál es el músculo más fuerte del cuerpo humano en relación a su tamaño?", answers: ["El cuádriceps", "El glúteo mayor", "La lengua", "El bíceps"], correct: 2, explanation: "La lengua es el músculo más fuerte en relación a su tamaño. Aunque es pequeña, es muy poderosa y trabaja constantemente." },
+            { category: "Cuerpo Humano", question: "¿Qué parte del ojo controla la cantidad de luz que entra en él?", answers: ["El cristalino", "La retina", "El iris", "La córnea"], correct: 2, explanation: "El iris es la parte coloreada del ojo que controla el tamaño de la pupila, regulando así la cantidad de luz que entra en el ojo." },
+            { category: "Cuerpo Humano", question: "¿Cuál de estos órganos NO forma parte del sistema respiratorio?", answers: ["Tráquea", "Pulmones", "Diafragma", "Estómago"], correct: 3, explanation: "El estómago es parte del sistema digestivo, no del respiratorio. La tráquea, los pulmones y el diafragma sí forman parte del sistema respiratorio." },
+            { category: "Cuerpo Humano", question: "¿Cuántos dientes tiene normalmente una persona adulta, incluyendo las muelas del juicio?", answers: ["24", "28", "32", "36"], correct: 2, explanation: "Un adulto normalmente tiene 32 dientes, incluyendo las 4 muelas del juicio, aunque no a todo el mundo le salen." },
+            { category: "Cuerpo Humano", question: "¿Qué hueso protege el cerebro?", answers: ["El esternón", "La columna vertebral", "El cráneo", "Las costillas"], correct: 2, explanation: "El cráneo es el conjunto de huesos que forman la cabeza y protegen el cerebro de posibles golpes o lesiones." },
+            { category: "Cuerpo Humano", question: "¿Qué parte del cuerpo contiene aproximadamente el 70% de agua?", answers: ["Los huesos", "La sangre", "El cerebro", "La piel"], correct: 2, explanation: "El cerebro humano está compuesto por aproximadamente un 70% de agua, por eso es importante mantenerse bien hidratado para pensar con claridad." },
+            { category: "Inglés", question: "¿Cómo se dice 'perro' en inglés?", answers: ["Cat", "Dog", "Bird", "Fish"], correct: 1, explanation: "'Dog' es la palabra en inglés para 'perro'. 'Cat' es gato, 'bird' es pájaro y 'fish' es pez." },
+            { category: "Inglés", question: "¿Cuál es la traducción correcta de 'libro' al inglés?", answers: ["Book", "Look", "Cook", "Took"], correct: 0, explanation: "'Book' significa 'libro' en inglés. Las otras opciones son verbos: 'look' (mirar), 'cook' (cocinar) y 'took' (tomó)." },
+            { category: "Inglés", question: "¿Cómo se dice 'gracias' en inglés?", answers: ["Hello", "Please", "Thank you", "Sorry"], correct: 2, explanation: "'Thank you' significa 'gracias' en inglés. 'Hello' es hola, 'please' es por favor y 'sorry' es lo siento." },
+            { category: "Inglés", question: "¿Qué palabra en inglés significa 'grande'?", answers: ["Small", "Big", "Little", "Tiny"], correct: 1, explanation: "'Big' significa 'grande' en inglés. 'Small' y 'little' significan pequeño, y 'tiny' significa muy pequeño." },
+            { category: "Inglés", question: "¿Cómo se dice 'rojo' en inglés?", answers: ["Blue", "Green", "Red", "Yellow"], correct: 2, explanation: "'Red' es la palabra en inglés para 'rojo'. 'Blue' es azul, 'green' es verde y 'yellow' es amarillo." },
+            { category: "Inglés", question: "¿Qué palabra inglesa completa la frase: 'I ___ a student'?", answers: ["Is", "Am", "Are", "Be"], correct: 1, explanation: "La frase correcta es 'I am a student' (Yo soy un estudiante). En inglés, 'I' siempre va con 'am'." },
+            { category: "Inglés", question: "¿Cómo se dice 'hermano' en inglés?", answers: ["Sister", "Mother", "Father", "Brother"], correct: 3, explanation: "'Brother' significa 'hermano' en inglés. 'Sister' es hermana, 'mother' es madre y 'father' es padre." },
+            { category: "Inglés", question: "¿Qué palabra inglesa significa 'feliz'?", answers: ["Sad", "Happy", "Angry", "Tired"], correct: 1, explanation: "'Happy' significa 'feliz' en inglés. 'Sad' es triste, 'angry' es enojado y 'tired' es cansado." },
+            { category: "Inglés", question: "¿Cómo se dice 'uno' en inglés?", answers: ["Two", "One", "Three", "Four"], correct: 1, explanation: "'One' es 'uno' en inglés. 'Two' es dos, 'three' es tres y 'four' es cuatro." },
+            { category: "Inglés", question: "¿Qué palabra inglesa completa la frase: 'The cat is ___ the table'?", answers: ["On", "In", "At", "By"], correct: 0, explanation: "La frase correcta es 'The cat is on the table' (El gato está sobre la mesa). 'On' se usa para indicar que algo está sobre una superficie." },
+            { category: "Inteligencia Artificial", question: "¿Qué significa la abreviatura 'IA'?", answers: ["Inteligencia Asistida", "Inteligencia Artificial", "Informática Avanzada", "Interfaz Automatizada"], correct: 1, explanation: "IA significa 'Inteligencia Artificial', que es la capacidad de las máquinas para realizar tareas que normalmente requieren inteligencia humana, como aprender y resolver problemas." },
+            { category: "Inteligencia Artificial", question: "¿Qué es un chatbot?", answers: ["Un robot que limpia la casa", "Un programa que simula conversaciones humanas", "Un tipo de videojuego", "Un teléfono inteligente"], correct: 1, explanation: "Un chatbot es un programa de computadora que simula conversaciones con personas, a menudo usando IA para responder preguntas o ayudar con tareas." },
+            { category: "Inteligencia Artificial", question: "¿Qué tipo de IA puede reconocer lo que hay en una imagen?", answers: ["Reconocimiento de voz", "Visión por computadora", "Robótica avanzada", "Análisis de datos"], correct: 1, explanation: "La visión por computadora es el campo de la IA que permite a las computadoras entender e interpretar imágenes, como reconocer objetos en fotos." },
+            { category: "Inteligencia Artificial", question: "¿Qué es el aprendizaje automático o 'machine learning'?", answers: ["Cuando los robots construyen máquinas", "Cuando las computadoras aprenden de la experiencia sin ser programadas explícitamente", "Cuando los teléfonos se cargan solos", "Cuando los videojuegos se juegan solos"], correct: 1, explanation: "El aprendizaje automático es cuando las computadoras aprenden patrones de los datos y mejoran con la experiencia, sin necesidad de ser programadas para cada tarea específica." },
+            { category: "Inteligencia Artificial", question: "¿Qué tipo de IA puede entender y responder al lenguaje hablado?", answers: ["Robótica", "Procesamiento de lenguaje natural", "Redes neuronales", "Realidad virtual"], correct: 1, explanation: "El procesamiento de lenguaje natural (PLN) es el campo de la IA que permite a las computadoras entender, interpretar y responder al lenguaje humano hablado o escrito." },
+            { category: "Inteligencia Artificial", question: "¿Qué es un asistente virtual como Siri o Alexa?", answers: ["Un robot con forma humana", "Un programa de IA que responde a comandos de voz", "Un tipo de videojuego", "Un dispositivo para cargar el teléfono"], correct: 1, explanation: "Asistentes como Siri o Alexa son programas de IA que usan reconocimiento de voz y procesamiento de lenguaje natural para responder preguntas y realizar tareas mediante comandos de voz." },
+            { category: "Inteligencia Artificial", question: "¿Qué es una red neuronal artificial?", answers: ["Un tipo de red social", "Un sistema informático inspirado en el cerebro humano", "Un nuevo tipo de internet", "Un juego de ordenador"], correct: 1, explanation: "Una red neuronal artificial es un sistema informático modelado a partir del cerebro humano, que puede aprender a reconocer patrones y tomar decisiones basadas en datos." },
+            { category: "Inteligencia Artificial", question: "¿Qué es un robot?", answers: ["Solo un juguete", "Un programa de computadora", "Una máquina que puede realizar tareas automáticamente", "Un tipo de teléfono"], correct: 2, explanation: "Un robot es una máquina programable que puede realizar tareas de manera automática, a veces con la ayuda de IA. No todos los robots tienen forma humana." },
+            { category: "Inteligencia Artificial", question: "¿Qué es el reconocimiento facial?", answers: ["Una forma de identificar personas en fotos usando IA", "Un tipo de maquillaje", "Una red social", "Un juego de adivinanzas"], correct: 0, explanation: "El reconocimiento facial es una tecnología de IA que puede identificar o verificar a una persona a partir de una imagen o video, analizando patrones en sus rasgos faciales." },
+            { category: "Inteligencia Artificial", question: "¿Qué es un algoritmo en IA?", answers: ["Un tipo de robot", "Un conjunto de pasos para resolver un problema", "Un lenguaje de programación", "Un dispositivo de almacenamiento"], correct: 1, explanation: "Un algoritmo es un conjunto de instrucciones paso a paso que una computadora sigue para resolver un problema o realizar una tarea. En IA, los algoritmos ayudan a las máquinas a aprender de los datos." },
             { category: "Deportes", question: "¿Cuántos jugadores tiene un equipo de fútbol en el campo?", answers: ["11", "9", "7", "12"], correct: 0, explanation: "Un equipo de fútbol estándar tiene 11 jugadores en el campo, incluyendo al portero." },
             { category: "Animales", question: "Verdadero o Falso: El guepardo es el animal terrestre más rápido.", answers: ["Verdadero", "Falso"], correct: 0, explanation: "¡Es cierto! El guepardo puede alcanzar velocidades de hasta 120 km/h en distancias cortas." },
             { category: "Historia", question: "¿Quién descubrió América en 1492?", answers: ["Marco Polo", "Vasco de Gama", "Cristóbal Colón", "Hernán Cortés"], correct: 2, explanation: "Cristóbal Colón llegó a América en 1492, aunque él creía haber llegado a las Indias." },
             { category: "Geografía", question: "¿Cuál es el río más largo del mundo?", answers: ["Nilo", "Amazonas", "Misisipi", "Yangtsé"], correct: 1, explanation: "El río Amazonas en Sudamérica es considerado el más largo y caudaloso del mundo." },
             { category: "Matemáticas", question: "¿Cuánto es 12 x 12?", answers: ["124", "132", "144", "156"], correct: 2, explanation: "12 multiplicado por 12 es igual a 144. ¡Buen cálculo!" },
             { category: "Animales", question: "¿Cuál es el mamífero más grande del mundo?", answers: ["Elefante", "Jirafa", "Ballena Azul", "Rinoceronte"], correct: 2, explanation: "La Ballena Azul es el animal más grande que ha existido jamás, ¡más grande que cualquier dinosaurio!" },
+            { category: "Curiosidades", question: "¿Cuántos corazones tiene un pulpo?", answers: ["1", "2", "3", "4"], correct: 2, explanation: "¡Los pulpos tienen 3 corazones! Dos bombean sangre a las branquias y el tercero al resto del cuerpo. Además, su sangre es azul por una proteína llamada hemocianina." },
+            { category: "Curiosidades", question: "¿Cuál es el único mamífero que puede volar?", answers: ["El murciélago", "La ardilla voladora", "El colibrí", "La zarigüeya voladora"], correct: 0, explanation: "El murciélago es el único mamífero que puede volar realmente. Las ardillas y zarigüeyas solo planean, y los colibríes son aves, no mamíferos." },
+            { category: "Curiosidades", question: "¿Qué planeta del sistema solar tiene el día más largo?", answers: ["Venus", "Marte", "Júpiter", "Mercurio"], correct: 0, explanation: "¡Un día en Venus dura más que un año en Venus! Un día venusiano equivale a 243 días terrestres, mientras que su año es de solo 225 días terrestres." },
+            { category: "Curiosidades", question: "¿Cuál es el hueso más pequeño del cuerpo humano?", answers: ["Estribo (en el oído)", "Falange del dedo meñique", "Hueso hioides", "Rótula"], correct: 0, explanation: "El estribo, ubicado en el oído medio, mide solo 2.6-3.4 mm de longitud. Es uno de los tres huesecillos que transmiten el sonido al oído interno." },
+            { category: "Curiosidades", question: "¿Qué fruta tiene sus semillas por fuera?", answers: ["La fresa", "La manzana", "La naranja", "El plátano"], correct: 0, explanation: "¡Las fresas son las únicas frutas que llevan sus semillas en el exterior! Cada fresa tiene alrededor de 200 semillas en su superficie." },
+            { category: "Curiosidades", question: "¿Cuál es el animal más ruidoso del mundo en relación a su tamaño?", answers: ["El león", "La ballena azul", "La cigarra", "El mono aullador"], correct: 2, explanation: "La cigarra puede producir sonidos de hasta 120 decibelios, similar a un concierto de rock. ¡Y todo con un cuerpo de solo 5 cm de largo!" },
+            { category: "Curiosidades", question: "¿Cuántos músculos trabajan cuando das un solo paso?", answers: ["Menos de 50", "Entre 50 y 100", "Entre 100 y 200", "Más de 200"], correct: 3, explanation: "¡Dar un solo paso involucra a más de 200 músculos trabajando juntos! Es una de las acciones más complejas que realiza el cuerpo humano." },
+            { category: "Curiosidades", question: "¿Qué porcentaje del cuerpo humano es agua?", answers: ["30-40%", "45-55%", "55-65%", "70-80%"], correct: 2, explanation: "Aproximadamente el 60% del cuerpo humano adulto es agua. Los bebés tienen un porcentaje aún mayor, alrededor del 75-78%." },
+            { category: "Curiosidades", question: "¿Qué planeta tiene el año más corto?", answers: ["Mercurio", "Venus", "Júpiter", "Neptuno"], correct: 0, explanation: "Mercurio tiene el año más corto del sistema solar: solo 88 días terrestres para completar una órbita alrededor del Sol." },
+            { category: "Curiosidades", question: "¿Qué animal puede girar su cabeza 270 grados?", answers: ["El búho", "El camaleón", "La jirafa", "El gato"], correct: 0, explanation: "Los búhos pueden girar su cabeza hasta 270 grados gracias a su cuello súper flexible y un sistema circulatorio especial que evita que se mareen." },
             { category: "Deportes", question: "Verdadero o Falso: Los Juegos Olímpicos se celebran cada 5 años.", answers: ["Verdadero", "Falso"], correct: 1, explanation: "Falso. Los Juegos Olímpicos de Verano e Invierno se celebran cada 4 años." },
+            
             // New questions about Málaga
             { category: "Historia de Málaga", question: "¿Qué famoso artista nació en Málaga?", answers: ["Pablo Picasso", "Salvador Dalí", "Francisco Goya", "Diego Velázquez"], correct: 0, explanation: "Pablo Picasso, uno de los artistas más influyentes del siglo XX, nació en Málaga." },
             { category: "Historia de Málaga", question: "¿Cómo se llama la fortaleza palaciega de origen musulmán en Málaga?", answers: ["La Alhambra", "La Alcazaba", "El Generalife", "El Real Alcázar"], correct: 1, explanation: "La Alcazaba es una impresionante fortaleza palaciega de la época musulmana en Málaga." },
@@ -980,7 +1216,7 @@
             { category: "Curiosidades de Málaga", question: "¿Qué tipo de clima predomina en Málaga?", answers: ["Oceánico", "Continental", "Desértico", "Mediterráneo subtropical"], correct: 3, explanation: "Málaga goza de un clima mediterráneo subtropical, con inviernos suaves y veranos cálidos." },
             { category: "Curiosidades de Málaga", question: "¿Qué celebración famosa tiene lugar en Málaga en agosto?", answers: ["Semana Santa", "Carnaval", "Feria de Málaga", "Navidad"], correct: 2, explanation: "La Feria de Málaga es una de las fiestas más importantes y concurridas de la ciudad, celebrada en agosto." },
             { category: "Comida de Málaga", question: "¿Cuál es el plato de pescado a la brasa más típico de Málaga?", answers: ["Paella", "Pulpo a la gallega", "Espetos de sardinas", "Calamares a la romana"], correct: 2, explanation: "Los espetos de sardinas, ensartadas en cañas y asadas a la brasa en la playa, son un icono de la gastronomía malagueña." },
-            { category: "Comida de Málaga", question: "¿Qué sopa fría malagueña se elabora con almendras, ajo y pan?", answers: ["Gazpacho", "Salmorejo", "Ajoblanco", "Porra antequerana"], correct: 2, explanation: "El ajoblanco es una deliciosa sopa fría de origen malagueño, ideal para el verano." },
+            { category: "Comida de Málaga", question: "¿Qué sopa fría malagueña se elabora con almendras, ajo y pan?", answers: ["Gazpacho", "Salmorejo", "Ajoblanco", "Porra antequerana"], correct: 2, explanation: "El ajoblanco es una deliciosa sopa fría de origen malagueña, ideal para el verano." },
             { category: "Comida de Málaga", question: "¿Cómo se llama la fritura variada de pescado típica de Málaga?", answers: ["Mariscada", "Pescado a la sal", "Fritura Malagueña", "Gambas al pil-pil"], correct: 2, explanation: "La fritura malagueña es un surtido de pescado frito, muy popular en los chiringuitos de la costa." },
             { category: "Comida de Málaga", question: "¿Qué producto dulce y seco de la vid es muy famoso en Málaga?", answers: ["Uvas", "Vino dulce", "Pasas de Málaga", "Mosto"], correct: 2, explanation: "Las pasas de Málaga, especialmente las de la variedad Moscatel, tienen Denominación de Origen." },
             { category: "Comida de Málaga", question: "¿Qué tipo de vino dulce es famoso en Málaga?", answers: ["Rioja", "Ribera del Duero", "Jerez", "Vino de Málaga"], correct: 3, explanation: "El Vino de Málaga, con sus distintas variedades y dulzuras, es un producto vinícola con gran tradición." },
@@ -989,6 +1225,75 @@
             { category: "Deporte en Málaga", question: "¿Qué estadio es la sede del Málaga CF?", answers: ["Santiago Bernabéu", "Camp Nou", "Estadio La Rosaleda", "Estadio de La Cartuja"], correct: 2, explanation: "El Estadio La Rosaleda es el hogar del Málaga Club de Fútbol." },
             { category: "Deporte en Málaga", question: "¿Málaga ha sido sede de algún evento deportivo internacional importante?", answers: ["No, nunca", "Sí, solo eventos locales", "Sí, por ejemplo, la Copa Davis de tenis", "Solo competiciones de natación"], correct: 2, explanation: "Málaga ha albergado eventos de prestigio internacional, como fases finales de la Copa Davis de tenis." },
             { category: "Deporte en Málaga", question: "¿Qué deporte acuático es popular en la costa de Málaga, además de la natación?", answers: ["Esquí alpino", "Patinaje sobre hielo", "Surf", "Ciclismo de montaña"], correct: 2, explanation: "La costa de Málaga ofrece buenas condiciones para deportes acuáticos como el surf, el paddle surf o el windsurf." },
+            {
+    "category": "Historia del club",
+    "question": "¿En qué año fue fundado el actual Juventud de Torremolinos C.F.?",
+    "answers": ["1932", "1942", "1958", "1969"],
+    "correct": 2,
+    "explanation": "El Juventud de Torremolinos C.F. fue fundado en **1958** por D. Pedro Navarro Bruna [1]. Anteriormente existieron otros clubes como el C.F. Torremolinos (1932) [2] y el C.D. Torremolinos (1942) [3]."
+  },
+  {
+    "category": "Historia del club",
+    "question": "¿Quién fundó el Juventud de Torremolinos C.F. tal como lo conocemos hoy en día?",
+    "answers": ["D. Miguel Cerdán", "Don Antonio Moya", "D. Pedro Navarro Bruna", "Vicente Peña Castillo"],
+    "correct": 2,
+    "explanation": "El Juventud de Torremolinos C.F. fue fundado en 1958 por **D. Pedro Navarro Bruna** [1]. D. Miguel Cerdán fundó el C.F. Torremolinos en 1932 [2], Don Antonio Moya fundó el C.D. Torremolinos en 1942 [3], y Vicente Peña Castillo fundó el equipo juvenil 'Los Leones' en 1969 [4]."
+  },
+  {
+    "category": "Instalaciones",
+    "question": "¿Cuál es el nombre del estadio principal donde juega el Juventud Torremolinos C.F.?",
+    "answers": ["Estadio Ciudad de Málaga", "Estadio Municipal “El Pozuelo”", "Estadio La Rosaleda", "Campo de Aviación"],
+    "correct": 1,
+    "explanation": "El equipo juega en el **Estadio Municipal “El Pozuelo”** [5-7]."
+  },
+  {
+    "category": "Instalaciones",
+    "question": "¿Cuál es la capacidad de espectadores del Estadio Municipal “El Pozuelo”?",
+    "answers": ["1.000 personas", "2.000 personas", "3.000 personas", "5.000 personas"],
+    "correct": 2,
+    "explanation": "El Estadio Municipal “El Pozuelo” tiene una capacidad de **3.000 personas** [6-8]."
+  },
+  {
+    "category": "Logros deportivos",
+    "question": "¿Cuál fue el reciente ascenso histórico logrado por el Juventud Torremolinos C.F. en mayo de 2025?",
+    "answers": ["Ascenso a Segunda División B", "Ascenso a la Liga SmartBank", "Ascenso a Primera RFEF/Primera Federación", "Ascenso a Tercera División"],
+    "correct": 2,
+    "explanation": "El Juventud Torremolinos C.F. logró un histórico **ascenso a Primera RFEF/Primera Federación** en mayo de 2025 [9-11], siendo la primera vez en su historia que militan en esta categoría [5] y su segundo ascenso consecutivo [9-13]."
+  },
+  {
+    "category": "Equipo técnico",
+    "question": "¿Quién es el entrenador principal del primer equipo del Juventud Torremolinos para la temporada 2024/2025?",
+    "answers": ["Luis Pellicer", "Ibon Pérez", "José Miguel Ramírez", "Antonio Calderón Burgos"],
+    "correct": 3,
+    "explanation": "El entrenador principal del primer equipo para la temporada 2024/2025 es **Antonio Calderón Burgos** [7, 14, 15]. Luis Pellicer fue un entrenador anterior que los llevó a Tercera División [16], e Ibon Pérez era el entrenador en 2021 [17]. José Miguel Ramírez Quintero es el segundo entrenador [14, 15]."
+  },
+  {
+    "category": "Partidos",
+    "question": "¿Cuál fue el resultado del partido del Juventud Torremolinos C.F. que aseguró su ascenso directo a Primera RFEF?",
+    "answers": ["Ganó 3-0", "Empató 1-1", "Perdió 2-1", "Ganó 5-0"],
+    "correct": 3,
+    "explanation": "El Juventud Torremolinos se impuso por un contundente **5-0 a la Deportiva Minera** para asegurar su ascenso directo [11, 13, 18], combinado con la derrota de La Unión Atlético por 2-1 ante la Balompédica Linense por 2-1 [13, 18, 19]."
+  },
+  {
+    "category": "Gestión del club",
+    "question": "¿Qué grupo se hizo cargo del club Juventud Torremolinos hace unos años?",
+    "answers": ["Grupo Sol Sports", "ACA Football Partners", "Grupo Málaga CF", "Inversiones Torremolinos"],
+    "correct": 1,
+    "explanation": "El grupo japonés **ACA Football Partners** se hizo cargo del club dos años y medio antes de su ascenso histórico en mayo de 2025, cuando el club acababa de descender a Tercera RFEF [7, 10]."
+  },
+  {
+    "category": "Cantera",
+    "question": "¿Cuál fue el nombre del equipo juvenil fundado en 1969 que se considera el creador de la cantera local del Juventud de Torremolinos?",
+    "answers": ["Juvenil A", "Nuevo Atlético Torremolinos", "Los Leones", "Benjamín B"],
+    "correct": 2,
+    "explanation": "El equipo juvenil **'Los Leones'** fue fundado en **1969** por Vicente Peña Castillo [4] y se considera el creador de la cantera local del Juventud de Torremolinos [4], pasando a formar parte del club en 1975 [4]. El Nuevo Atlético Torremolinos fue otro equipo absorbido en 1972 [20, 21], pero no el creador de la cantera." },
+  {
+    "category": "Historia del club",
+    "question": "¿Cuál fue el primer club de fútbol fundado en Torremolinos, en 1932?",
+    "answers": ["Juventud de Torremolinos C.F.", "C.D. Torremolinos", "C.F. Torremolinos", "Balompié Torremolinos"],
+    "correct": 2,
+    "explanation": "El primer club de fútbol fundado en Torremolinos, en **1932**, fue el **C.F. Torremolinos**, fundado por D. Miguel Cerdán [2]. El C.D. Torremolinos apareció en 1942 [3], y el Juventud de Torremolinos C.F. en 1958 [1]. Balompié Torremolinos fue un nombre temporal del Juventud [21, 22]."
+  },
             // New questions about Policía Nacional
             { category: "Policía Nacional", question: "¿Cuál es el número de teléfono para llamar a la Policía Nacional en caso de emergencia?", answers: ["091", "112", "062", "900"], correct: 0, explanation: "El 091 es el número directo de la Policía Nacional para emergencias. El 112 es el número de emergencias general en Europa." },
             { category: "Policía Nacional", question: "¿Qué animal es el símbolo de la Policía Nacional?", answers: ["Un león", "Un águila", "Un perro", "Un caballo"], correct: 1, explanation: "El águila es el símbolo oficial de la Policía Nacional, representando fuerza y vigilancia." },
@@ -1162,7 +1467,8 @@
                     modalOptions.title = `¡${triviaPlayer1Name} ha ganado!`;
                     modalOptions.win = true;
                 } else if (triviaPlayer2Score > triviaPlayer1Score) {
-                    finalMessage = `¡Felicidades ${triviaPlayer2Name}! Ganaste con ${triviaPlayer2Score} puntos contra ${trivia1Score}.`;
+                    // FIX: Corrected variable names here
+                    finalMessage = `¡Felicidades ${triviaPlayer2Name}! Ganaste con ${triviaPlayer2Score} puntos contra ${triviaPlayer1Score}.`;
                     modalOptions.title = `¡${triviaPlayer2Name} ha ganado!`;
                     modalOptions.win = true;
                 } else {
@@ -1216,7 +1522,11 @@
         function handleCellClick(cell, index) {
             if (ttt_board[index] !== '' || !ttt_gameActive) return;
 
-            ttt_board[index] = ttt_currentPlayer === ttt_player1Name ? 'X' : 'O'; // Use X/O internally for logic
+            // Determine the mark for the current player
+            const currentPlayerMark = ttt_currentPlayer === ttt_player1Name ? 'X' : 'O';
+            const opponentMark = ttt_currentPlayer === ttt_player1Name ? 'O' : 'X'; // Opponent's mark
+
+            ttt_board[index] = currentPlayerMark; // Use X/O internally for logic
             cell.textContent = ttt_currentPlayer === ttt_player1Name ? '❌' : '⭕'; // Display emojis
             cell.classList.add('scale-up-center');
 
@@ -1267,30 +1577,97 @@
                 [0, 3, 6], [1, 4, 7], [2, 5, 8],
                 [0, 4, 8], [2, 4, 6]
             ];
-            for (let condition of winConditions) {
-                const [a, b, c] = condition;
+            for (let condition = 0; condition < winConditions.length; condition++) {
+                const [a, b, c] = winConditions[condition];
                 if (ttt_board[a] && ttt_board[a] === ttt_board[b] && ttt_board[a] === ttt_board[c]) {
-                    return condition; // Return the winning condition
+                    return winConditions[condition]; // Return the winning condition
                 }
             }
             return null; // No win
         }
 
+        // Helper function to find a winning or blocking move
+        function findWinningMove(board, playerMark) {
+            const winConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            for (let i = 0; i < winConditions.length; i++) {
+                const [a, b, c] = winConditions[i];
+                // Check if two spots are already filled by the player and the third is empty
+                if (board[a] === playerMark && board[b] === playerMark && board[c] === '') return c;
+                if (board[a] === playerMark && board[c] === playerMark && board[b] === '') return b;
+                if (board[b] === playerMark && board[c] === playerMark && board[a] === '') return a;
+            }
+            return -1; // No winning move found
+        }
+
         function aiMove() {
             if (!ttt_gameActive) return;
+
+            const aiMark = 'O'; // AI is always 'O'
+            const playerMark = 'X'; // Player is always 'X'
             let move = -1;
-            
-            // Simple AI: find an empty spot
             const emptyCells = [];
             ttt_board.forEach((val, idx) => {
                 if (val === '') emptyCells.push(idx);
             });
-            
-            if (emptyCells.length > 0) {
-                 move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+            // 1. Check if AI can win
+            move = findWinningMove(ttt_board, aiMark);
+            if (move !== -1) {
+                console.log("AI: Found winning move at", move);
+                const cell = document.querySelector(`#tictactoe-board button[data-index='${move}']`);
+                handleCellClick(cell, move);
+                return;
             }
 
+            // 2. Check if player can win and block them
+            move = findWinningMove(ttt_board, playerMark);
             if (move !== -1) {
+                console.log("AI: Blocking player win at", move);
+                const cell = document.querySelector(`#tictactoe-board button[data-index='${move}']`);
+                handleCellClick(cell, move);
+                return;
+            }
+
+            // 3. Take the center if available
+            if (ttt_board[4] === '') {
+                move = 4;
+                console.log("AI: Taking center at", move);
+                const cell = document.querySelector(`#tictactoe-board button[data-index='${move}']`);
+                handleCellClick(cell, move);
+                return;
+            }
+
+            // 4. Take a corner if available
+            const corners = [0, 2, 6, 8];
+            const availableCorners = emptyCells.filter(idx => corners.includes(idx));
+            if (availableCorners.length > 0) {
+                move = availableCorners[Math.floor(Math.random() * availableCorners.length)];
+                console.log("AI: Taking corner at", move);
+                const cell = document.querySelector(`#tictactoe-board button[data-index='${move}']`);
+                handleCellClick(cell, move);
+                return;
+            }
+
+            // 5. Take any available side if available (last resort)
+            const sides = [1, 3, 5, 7];
+            const availableSides = emptyCells.filter(idx => sides.includes(idx));
+            if (availableSides.length > 0) {
+                move = availableSides[Math.floor(Math.random() * availableSides.length)];
+                console.log("AI: Taking side at", move);
+                const cell = document.querySelector(`#tictactoe-board button[data-index='${move}']`);
+                handleCellClick(cell, move);
+                return;
+            }
+
+            // Fallback (should not be reached if board is not full)
+            if (emptyCells.length > 0) {
+                move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                console.log("AI: Taking random empty cell (fallback) at", move);
                 const cell = document.querySelector(`#tictactoe-board button[data-index='${move}']`);
                 handleCellClick(cell, move);
             }
@@ -1299,10 +1676,12 @@
         // --- Memory Game Logic ---
         // Define different sets of emojis/symbols
         const memoryEmojiSets = {
-            sports: ['⚽️', '🏀', '🏈', '⚾️', '🎾', '🏐', '🎱', '🏓'],
-            animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'],
-            symbols: ['❤️', '⭐️', '⚡️', '🌈', '�', '💎', '💰', '🔑'],
-            flags: ['🇪🇸', '🇫🇷', '🇩🇪', '🇮🇹', '🇬🇧', '🇺🇸', '🇯🇵', '🇨🇳']
+            sports: ['⚽️', '🏀', '🏈', '⚾️', '🎾', '🏐', '🎱', '🏓', '⛳️', '🏒', '🥊', '🏊‍♂️'], // 12 emojis
+            animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐸'], // 12 emojis
+            symbols: ['❤️', '⭐️', '⚡️', '🌈', '💡', '💎', '💰', '🔑', '🚀', '⏳', '💡', '🏆'], // 12 emojis
+            flags: ['🇪🇸', '🇫�', '🇩🇪', '🇮🇹', '🇬🇧', '🇺🇸', '🇯🇵', '🇨🇳', '🇧🇷', '🇨🇦', '🇦🇺', '🇮🇳'], // 12 emojis
+            food: ['🍎', '🍌', '🍕', '🍔', '🍟', '🍦', '🍩', '🍪', '🍓', '🍇', '🍉', '🍍'], // New food theme
+            space: ['🚀', '🌕', '⭐️', '🪐', '☄️', '🌌', '🔭', '🛰️', '👽', '👨‍🚀', '👩‍🚀', '💫'] // New space theme
         };
         let memoryEmojis = []; // This will hold the randomly selected set for the current game
         let currentMemoryEmojiSetKey = ''; // To store the key of the current emoji set
@@ -1320,11 +1699,15 @@
         let memoryPlayer2Name;
         let memoryTimerInterval; // To store the setInterval ID for the timer
         let memoryTimeElapsed; // To store the elapsed time in seconds
+        let isMemoryMuted = false; // New variable to track mute state
+
+        // Global variables for memory game setup
+        let selectedMemoryPlayerName = null; // Will be 'Hugo', 'Saúl', or null for 2 players
+        let selectedMemoryBoardSize = null; // e.g., 12, 16, 20, 24
+        let selectedMemoryGridCols = null; // e.g., 4, 5, 6
+        let selectedMemoryEmojiSetKey = null;
 
         const memoryPlayerTurnDisplay = document.getElementById('memory-player-turn');
-        const memoryHighscoreDisplay = document.getElementById('memory-highscore-display');
-        const memoryHighscoreLabel = document.getElementById('memory-highscore-label');
-        const memoryHighscoreValue = document.getElementById('memory-highscore-value');
         const memoryPlayer1MatchedDisplay = document.getElementById('memory-player1-matched');
         const memoryPlayer2MatchedDisplay = document.getElementById('memory-player2-matched');
         const memoryCurrentPlayerTurnDisplay = document.getElementById('memory-current-player-turn');
@@ -1332,11 +1715,127 @@
         const memoryTimerDisplay = document.getElementById('memory-timer-display'); // Get the timer display container
         const memoryTimerElement = document.getElementById('memory-timer'); // Get the span for the timer value
         const memoryBoardElement = document.getElementById('memory-board'); // Get the memory board element
+        const memoryMuteButton = document.getElementById('memory-mute-button'); // Get the mute button element
+        const memoryPlayerNameDisplay = document.getElementById('memory-player-name-display'); // New element for player name
 
+        // Global Tone.js objects for memory game sounds
+        const memorySounds = {
+            flip: new Tone.MembraneSynth().toDestination(), // For card flip
+            match: new Tone.PolySynth(Tone.Synth).toDestination(), // Changed to PolySynth
+            noMatch: new Tone.PolySynth(Tone.Synth).toDestination(), // Changed to PolySynth
+            fanfare: new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: {
+                    attack: 0.05,
+                    decay: 0.8,
+                    sustain: 0.0,
+                    release: 0.5
+                }
+            }).toDestination() // New PolySynth for fanfare
+        };
 
-        function startMemoryGame(mode, selectedPlayer = null) {
+        // Notes for memory game sounds
+        const memoryNotes = {
+            flip: "C5", // A quick, high note for flip
+            match: ["C5", "E5", "G5"], // Rising arpeggio for match
+            noMatch: ["C4", "A3"], // Descending for no match
+            fanfare: ["C4", "E4", "G4", "C5", "E5", "G5"] // Fanfare chord
+        };
+
+        function playMemorySound(type) {
+            // Start Tone.js audio context on first user interaction with the game
+            Tone.start(); 
+            if (isMemoryMuted) return; // Do not play sound if muted
+
+            if (type === 'flip') {
+                memorySounds.flip.triggerAttackRelease(memoryNotes.flip, "16n"); // Short pluck
+            } else if (type === 'match') {
+                memorySounds.match.triggerAttackRelease(memoryNotes.match, "8n"); // Arpeggio
+            } else if (type === 'noMatch') {
+                memorySounds.noMatch.triggerAttackRelease(memoryNotes.noMatch, "8n"); // Descending
+            } else if (type === 'fanfare') {
+                // Play fanfare chord for a longer duration
+                memorySounds.fanfare.triggerAttackRelease(memoryNotes.fanfare, "1.5s");
+            }
+        }
+
+        function toggleMemoryMute() {
+            isMemoryMuted = !isMemoryMuted;
+            if (isMemoryMuted) {
+                Tone.Master.mute = true; // Mute all Tone.js output
+                memoryMuteButton.textContent = '🔇'; // Muted icon
+            } else {
+                Tone.Master.mute = false; // Unmute all Tone.js output
+                memoryMuteButton.textContent = '🔊'; // Unmuted icon
+            }
+        }
+
+        function showMemorySetupSelection(playerName = null) {
+            selectedMemoryPlayerName = playerName; // Store the player name if coming from single player selection
+            selectedMemoryBoardSize = null; // Reset selection
+            selectedMemoryGridCols = null;
+            selectedMemoryEmojiSetKey = null;
+            document.getElementById('start-memory-game-button').disabled = true;
+            document.getElementById('start-memory-game-button').classList.add('opacity-50', 'cursor-not-allowed');
+
+            // Clear selected styles for difficulty and theme buttons
+            document.querySelectorAll('#memory-setup-selection .btn-game[onclick^="selectMemoryDifficulty"]').forEach(btn => {
+                btn.classList.remove('border-4', 'border-amber-500', 'scale-105');
+            });
+            document.querySelectorAll('#memory-setup-selection .btn-game[onclick^="selectMemoryTheme"]').forEach(btn => {
+                btn.classList.remove('border-4', 'border-amber-500', 'scale-105');
+            });
+
+            // Update back button for memory setup screen
+            document.getElementById('memory-setup-back-button').onclick = () => {
+                showScreen(selectedMemoryPlayerName ? 'single-player-mode-selection' : 'memory-menu');
+            };
+
+            showScreen('memory-setup-selection');
+        }
+
+        function selectMemoryDifficulty(size, cols) {
+            selectedMemoryBoardSize = size;
+            selectedMemoryGridCols = cols;
+            // Visually indicate selection
+            document.querySelectorAll('#memory-setup-selection .btn-game[onclick^="selectMemoryDifficulty"]').forEach(btn => {
+                btn.classList.remove('border-4', 'border-amber-500', 'scale-105');
+            });
+            event.target.classList.add('border-4', 'border-amber-500', 'scale-105');
+            checkMemorySetupReady();
+        }
+
+        function selectMemoryTheme(key) {
+            selectedMemoryEmojiSetKey = key;
+            // Visually indicate selection
+            document.querySelectorAll('#memory-setup-selection .btn-game[onclick^="selectMemoryTheme"]').forEach(btn => {
+                btn.classList.remove('border-4', 'border-amber-500', 'scale-105');
+            });
+            event.target.classList.add('border-4', 'border-amber-500', 'scale-105');
+            checkMemorySetupReady();
+        }
+
+        function checkMemorySetupReady() {
+            const startButton = document.getElementById('start-memory-game-button');
+            if (selectedMemoryBoardSize !== null && selectedMemoryEmojiSetKey !== null) {
+                startButton.disabled = false;
+                startButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                startButton.disabled = true;
+                startButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function confirmStartMemoryGame() {
+            // Determine mode based on whether selectedMemoryPlayerName is set
+            const mode = selectedMemoryPlayerName ? 'single' : 'multi';
+            startMemoryGame(mode, selectedMemoryPlayerName, selectedMemoryBoardSize, selectedMemoryGridCols, selectedMemoryEmojiSetKey);
+        }
+
+        function startMemoryGame(mode, selectedPlayerName, boardSize, gridCols, emojiSetKey) {
             memoryGameMode = mode;
             memoryAttempts = 0;
+            flippedCards = []; // Reset flipped cards from previous game
             matchedPairs = 0; // Reset total matched pairs
             memoryPlayer1MatchedPairs = 0;
             memoryPlayer2MatchedPairs = 0;
@@ -1348,33 +1847,28 @@
 
             // Hide all score/timer displays initially
             memoryPlayerTurnDisplay.classList.add('hidden');
-            memoryHighscoreDisplay.classList.add('hidden');
             memoryAttemptsDisplay.classList.add('hidden'); // Hide attempts by default
             memoryTimerDisplay.classList.add('hidden'); // Hide timer by default
 
-            // Randomly select an emoji set for this game
-            const setKeys = Object.keys(memoryEmojiSets);
-            currentMemoryEmojiSetKey = setKeys[Math.floor(Math.random() * setKeys.length)];
-            memoryEmojis = memoryEmojiSets[currentMemoryEmojiSetKey];
+            // Use selected emoji set and board size
+            memoryEmojis = memoryEmojiSets[emojiSetKey];
+            const numPairs = boardSize / 2;
+            // Ensure we only take enough emojis for the selected board size
+            const selectedEmojisForGame = memoryEmojis.slice(0, numPairs);
 
             // Remove all previous theme classes from the board
-            memoryBoardElement.classList.remove('memory-board-theme-sports', 'memory-board-theme-animals', 'memory-board-theme-symbols', 'memory-board-theme-flags');
+            memoryBoardElement.classList.remove('memory-board-theme-sports', 'memory-board-theme-animals', 'memory-board-theme-symbols', 'memory-board-theme-flags', 'memory-board-theme-food', 'memory-board-theme-space');
             // Add the new theme class to the board
-            memoryBoardElement.classList.add(`memory-board-theme-${currentMemoryEmojiSetKey}`);
+            memoryBoardElement.classList.add(`memory-board-theme-${emojiSetKey}`);
+            // Set grid columns dynamically
+            memoryBoardElement.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
 
 
             if (memoryGameMode === 'single') {
-                memoryPlayer1Name = selectedPlayer;
+                memoryPlayer1Name = selectedPlayerName;
                 memoryPlayer2Name = null;
-                const highscore = localStorage.getItem(`highscore_memory_${memoryPlayer1Name}`);
-                console.log(`[Memocartas] Retrieving high score for ${memoryPlayer1Name}:`, highscore); // DEBUG
-                
-                memoryHighscoreLabel.textContent = `Mejor Tiempo (${memoryPlayer1Name}):`; // Label for time
-                // Format stored time (seconds) into MM:SS for display
-                memoryHighscoreValue.textContent = highscore !== null ? formatTime(parseInt(highscore)) : 'N/A';
-                
-                memoryHighscoreDisplay.classList.remove('hidden');
                 memoryTimerDisplay.classList.remove('hidden'); // Show timer for single player
+                memoryPlayerNameDisplay.textContent = `${memoryPlayer1Name}: `; // Display player name
                 
                 memoryTimeElapsed = 0; // Reset timer
                 memoryTimerElement.textContent = '00:00'; // Reset timer display
@@ -1386,7 +1880,7 @@
                 memoryAttemptsDisplay.classList.remove('hidden'); // Show attempts for multi-player
             }
             
-            const cardValues = [...memoryEmojis, ...memoryEmojis];
+            const cardValues = [...selectedEmojisForGame, ...selectedEmojisForGame];
             cardValues.sort(() => Math.random() - 0.5); // Shuffle
             
             const board = document.getElementById('memory-board');
@@ -1464,18 +1958,12 @@
 
             card.classList.add('is-flipped');
             flippedCards.push(card);
+            playMemorySound('flip'); // Play sound on flip
 
             if (flippedCards.length === 2) {
+                memoryAttempts++; // Increment attempts for both single and multi-player
+                document.getElementById('memory-attempts').textContent = memoryAttempts; // Update display
                 memoryLockBoard = true;
-                // Only increment attempts in single-player mode for high score tracking
-                if (memoryGameMode === 'single') {
-                    // Attempts are not used for single-player high score anymore, but can still be counted
-                    // if needed for display. For now, we'll keep it simple and only use time for single player HS.
-                } else { // Multi-player still uses attempts
-                    memoryAttempts++;
-                    document.getElementById('memory-attempts').textContent = memoryAttempts;
-                    console.log("[Memocartas] Attempts incremented:", memoryAttempts); // DEBUG
-                }
                 checkForMatch();
             }
         }
@@ -1485,8 +1973,10 @@
             const isMatch = cardOne.dataset.value === cardTwo.dataset.value;
 
             if (isMatch) {
+                playMemorySound('match'); // Play match sound
                 disableCards();
             } else {
+                playMemorySound('noMatch'); // Play no-match sound
                 unflipCards();
             }
         }
@@ -1507,7 +1997,7 @@
             }
 
             resetTurn();
-            if (matchedPairs === memoryEmojis.length) { // Check against total unique emojis
+            if (matchedPairs === (selectedMemoryBoardSize / 2)) { // Check against total unique emojis
                 endMemoryGame();
             }
         }
@@ -1530,19 +2020,20 @@
 
         function endMemoryGame() {
             stopMemoryTimer(); // Stop the timer when the game ends
+            playMemorySound('fanfare'); // Play fanfare on game win
             let finalMessage = "";
-            let restartCallback = () => { closeModal('gameOver'); startMemoryGame(memoryGameMode, memoryPlayer1Name); };
+            let restartCallback = () => { closeModal('gameOver'); confirmStartMemoryGame(); }; // Restart with same settings
 
             if (memoryGameMode === 'single') {
                 saveMemoryHighScore(memoryPlayer1Name, memoryTimeElapsed, true); // Save time as high score
                 finalMessage = `¡${memoryPlayer1Name}, completaste el juego en ${formatTime(memoryTimeElapsed)}! ¡Qué memoria!`;
             } else {
                 if (memoryPlayer1MatchedPairs > memoryPlayer2MatchedPairs) {
-                    finalMessage = `¡Felicidades ${memoryPlayer1Name}! Ganaste con ${memoryPlayer1MatchedPairs} parejas contra ${memoryPlayer2MatchedPairs}.`;
-                } else if (memoryPlayer2MatchedPairs > memoryPlayer1MatchedPairs) {
-                    finalMessage = `¡Felicidades ${memoryPlayer2Name}! Ganaste con ${memory2MatchedPairs} parejas contra ${memory1MatchedPairs}.`;
+                    finalMessage = `¡Felicidades ${memoryPlayer1Name}! Ganaste con ${memoryPlayer1MatchedPairs} parejas contra ${memoryPlayer2MatchedPairs} de ${memoryPlayer2Name}.`; // FIX: Corrected variable names and added player names
+                } else if (memoryPlayer2MatchedPairs > memoryPlayer1MatchedPairs) { // FIX: Corrected variable name
+                    finalMessage = `¡Felicidades ${memoryPlayer2Name}! Ganaste con ${memory2PlayerMatchedPairs} parejas contra ${memoryPlayer1MatchedPairs} de ${memoryPlayer1Name}.`; // FIX: Corrected variable names and added player names
                 } else {
-                    finalMessage = `¡Es un empate! Ambos jugadores encontraron ${memory1MatchedPairs} parejas.`;
+                    finalMessage = `¡Es un empate! Ambos jugadores encontraron ${memoryPlayer1MatchedPairs} parejas.`;
                 }
             }
 
@@ -1557,21 +2048,33 @@
         // --- Guess the Number Game Logic ---
         let guessNumberSecret;
         let guessNumberAttempts;
-        let guessNumberPlayerName;
+        let guessNumberPlayerName; // Used for single player
         let guessNumberGameActive;
+        let guessNumberHintsLeft; // New variable for hints (single player)
+        let guessNumberPlayer1HintsLeft; // New variable for Player 1 hints (multi-player)
+        let guessNumberPlayer2HintsLeft; // New variable for Player 2 hints (multi-player)
+        let guessNumberGameMode; // 'single' or 'multi'
+        let guessNumberCurrentPlayer; // Stores the name of the current player in multi-mode
+        let guessNumberPlayer1Name; // Player 1 name in multi-mode
+        let guessNumberPlayer2Name; // Player 2 name in multi-mode
 
         const guessNumberInput = document.getElementById('guess-number-input');
         const guessNumberFeedback = document.getElementById('guess-number-feedback');
         const guessNumberAttemptsDisplay = document.getElementById('guess-number-attempts');
+        const guessNumberHighscoreDisplay = document.getElementById('guess-number-highscore-display'); // Entire highscore div
         const guessNumberHighscoreValue = document.getElementById('guess-number-highscore-value');
+        const guessNumberHintButton = document.getElementById('guess-number-hint-button'); // New hint button element
+        const guessNumberHintsLeftDisplay = document.getElementById('guess-number-hints-left'); // New hint counter display
+        const guessNumberPlayerTurnDisplay = document.getElementById('guess-number-player-turn'); // New player turn display
+        const guessNumberCurrentPlayerTurnDisplay = document.getElementById('guess-number-current-player-turn'); // Span inside player turn display
+        const guessNumberPlayerNameDisplay = document.getElementById('guess-number-player-name-display'); // New element for player name
 
-        function startGameGuessNumber(mode, selectedPlayer) {
-            // For now, only single player is supported for this game
-            if (mode !== 'single') {
-                console.error("Modo de juego no soportado para Adivina el Número.");
-                return;
-            }
-            guessNumberPlayerName = selectedPlayer;
+
+        function startGameGuessNumber(mode, player1Name, player2Name = null) {
+            guessNumberGameMode = mode;
+            guessNumberPlayer1Name = player1Name;
+            guessNumberPlayer2Name = player2Name;
+            
             resetGuessNumberGame();
             showScreen('guess-number-game');
         }
@@ -1580,16 +2083,44 @@
             guessNumberSecret = Math.floor(Math.random() * 100) + 1; // Number between 1 and 100
             guessNumberAttempts = 0;
             guessNumberGameActive = true;
-
+            
             guessNumberInput.value = '';
             guessNumberFeedback.textContent = '';
             guessNumberAttemptsDisplay.textContent = guessNumberAttempts;
             guessNumberInput.disabled = false;
-            
-            // Load and display high score
-            const highscore = localStorage.getItem(`highscore_guess_number_${guessNumberPlayerName}`);
-            guessNumberHighscoreValue.textContent = highscore !== null ? highscore : 'N/A';
+            guessNumberHintButton.disabled = false; // Explicitly enable the button here
+
+            if (guessNumberGameMode === 'single') {
+                guessNumberPlayerName = guessNumberPlayer1Name; // Set the single player name
+                guessNumberHintsLeft = 1; // 1 hint for single player
+                guessNumberHighscoreDisplay.classList.remove('hidden');
+                guessNumberPlayerTurnDisplay.classList.add('hidden');
+                guessNumberPlayerNameDisplay.textContent = `${guessNumberPlayerName}: `; // Display player name
+                const highscore = localStorage.getItem(`highscore_guess_number_${guessNumberPlayerName}`);
+                guessNumberHighscoreValue.textContent = highscore !== null ? highscore : 'N/A';
+            } else { // 'multi'
+                guessNumberHighscoreDisplay.classList.add('hidden');
+                guessNumberPlayerTurnDisplay.classList.remove('hidden');
+                guessNumberPlayer1HintsLeft = 1; // 1 hint for player 1
+                guessNumberPlayer2HintsLeft = 1; // 1 hint for player 2
+                guessNumberCurrentPlayer = guessNumberPlayer1Name; // Start with Player 1
+                guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
+            }
+            updateGuessNumberHintDisplay(); // This will then set the correct count and re-disable if needed (e.g., if hints are 0)
             console.log(`[Adivina el Número] Nuevo juego iniciado. Número secreto: ${guessNumberSecret}`); // For debugging
+        }
+
+        function getHintsLeftForCurrentPlayer() {
+            if (guessNumberGameMode === 'single') {
+                return guessNumberHintsLeft;
+            } else {
+                return (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer1HintsLeft : guessNumberPlayer2HintsLeft;
+            }
+        }
+
+        function updateGuessNumberHintDisplay() {
+            guessNumberHintsLeftDisplay.textContent = getHintsLeftForCurrentPlayer();
+            guessNumberHintButton.disabled = (getHintsLeftForCurrentPlayer() <= 0);
         }
 
         function checkGuess() {
@@ -1610,11 +2141,19 @@
                 guessNumberFeedback.textContent = `¡Correcto! Adivinaste el número ${guessNumberSecret}.`;
                 guessNumberFeedback.style.color = '#10B981'; /* emerald-600 */
                 guessNumberGameActive = false;
-                saveGuessNumberHighScore(guessNumberPlayerName, guessNumberAttempts);
+                guessNumberInput.disabled = true; // Disable input on win
+                guessNumberHintButton.disabled = true; // Disable hint button on win
+                
+                let winnerName = guessNumberGameMode === 'single' ? guessNumberPlayerName : guessNumberCurrentPlayer;
+
+                if (guessNumberGameMode === 'single') {
+                    saveGuessNumberHighScore(guessNumberPlayerName, guessNumberAttempts);
+                }
+                
                 setTimeout(() => {
                     showModal('gameOver', {
                         title: "¡Has ganado!",
-                        message: `¡Felicidades ${guessNumberPlayerName}! Adivinaste el número ${guessNumberSecret} en ${guessNumberAttempts} intentos.`,
+                        message: `¡Felicidades ${winnerName}! Adivinaste el número ${guessNumberSecret} en ${guessNumberAttempts} intentos.`,
                         restartCallback: () => { closeModal('gameOver'); resetGuessNumberGame(); },
                         game: 'guess-number',
                         win: true
@@ -1623,15 +2162,57 @@
             } else if (guess < guessNumberSecret) {
                 guessNumberFeedback.textContent = "¡Más alto!";
                 guessNumberFeedback.style.color = '#FBBF24'; /* amber-500 */
+                if (guessNumberGameMode === 'multi') {
+                    guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer2Name : guessNumberPlayer1Name;
+                    guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
+                }
             } else {
                 guessNumberFeedback.textContent = "¡Más bajo!";
                 guessNumberFeedback.style.color = '#FBBF24'; /* amber-500 */
+                if (guessNumberGameMode === 'multi') {
+                    guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer2Name : guessNumberPlayer1Name;
+                    guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
+                }
             }
-
+            updateGuessNumberHintDisplay(); // Update hint display after turn change
             guessNumberInput.value = ''; // Clear input for next guess
         }
 
+        function requestHint() {
+            let currentHints = getHintsLeftForCurrentPlayer();
+
+            if (!guessNumberGameActive || currentHints <= 0) {
+                guessNumberFeedback.textContent = "Ya no te quedan Pistas."; // Changed message
+                guessNumberFeedback.style.color = '#EF4444';
+                return;
+            }
+
+            if (guessNumberGameMode === 'single') {
+                guessNumberHintsLeft--;
+            } else {
+                if (guessNumberCurrentPlayer === guessNumberPlayer1Name) {
+                    guessNumberPlayer1HintsLeft--;
+                } else {
+                    guessNumberPlayer2HintsLeft--;
+                }
+            }
+            updateGuessNumberHintDisplay(); // Update display immediately
+
+            let hintMessage = "";
+            const hintType = Math.random() < 0.5 ? 'parity' : 'multipleOf5'; // Randomly choose hint type
+
+            if (hintType === 'parity') {
+                hintMessage = `El número secreto es ${guessNumberSecret % 2 === 0 ? 'par' : 'impar'}.`;
+            } else { // multipleOf5
+                hintMessage = `El número secreto ${guessNumberSecret % 5 === 0 ? 'es' : 'no es'} múltiplo de 5.`;
+            }
+            
+            guessNumberFeedback.textContent = `Pista: ${hintMessage}`;
+            guessNumberFeedback.style.color = '#3B82F6'; /* blue-500 */
+        }
+
         function saveGuessNumberHighScore(playerName, attempts) {
+            // This function is now only called for single-player mode
             const key = `highscore_guess_number_${playerName}`;
             const currentHighScore = parseInt(localStorage.getItem(key) || '999'); // Lower attempts is better
             console.log(`[Adivina el Número] Guardando puntuación alta para ${playerName}. Intentos: ${attempts}, Mejor actual: ${currentHighScore}`);
@@ -1663,6 +2244,30 @@
             blue: document.getElementById('simon-blue'),
             yellow: document.getElementById('simon-yellow')
         };
+        const simonPlayerNameDisplay = document.getElementById('simon-player-name-display'); // New element for player name
+
+        // Get audio elements
+        const simonSounds = {
+            red: new Tone.Synth().toDestination(),
+            green: new Tone.Synth().toDestination(),
+            blue: new Tone.Synth().toDestination(),
+            yellow: new Tone.Synth().toDestination()
+        };
+
+        // Assign different notes to each color
+        const simonNotes = {
+            red: "C4",
+            green: "E4",
+            blue: "G4",
+            yellow: "A4"
+        };
+
+        function playSimonSound(color) {
+            if (simonSounds[color] && simonNotes[color]) {
+                simonSounds[color].triggerAttackRelease(simonNotes[color], "8n"); // Play note for 1/8th note duration
+            }
+        }
+
 
         // Add event listeners to Simon buttons
         Object.values(simonButtons).forEach(button => {
@@ -1695,6 +2300,7 @@
             enableSimonButtons(false); // Disable game buttons initially
 
             // Load and display high score
+            simonPlayerNameDisplay.textContent = `${simonPlayerName}: `; // Display player name
             const highscore = localStorage.getItem(`highscore_simon_${simonPlayerName}`);
             simonHighscoreValue.textContent = highscore !== null ? highscore : 'N/A';
             console.log(`[Simon Dice] Juego reiniciado para ${simonPlayerName}.`);
@@ -1702,6 +2308,8 @@
 
         // New function to start a round (generate and then play)
         function startSimonRound() {
+            // Start Tone.js audio context on user interaction
+            Tone.start(); 
             simonStartButton.disabled = true; // Disable start button once game starts
             generateSimonSequence(); // Generate the first sequence
             playSimonSequence(); // Play the generated sequence
@@ -1729,7 +2337,7 @@
                 const button = simonButtons[colorToHighlight];
 
                 button.classList.add('highlight');
-                // Play sound if implemented here
+                playSimonSound(colorToHighlight); // Play sound when highlighting
 
                 setTimeout(() => {
                     button.classList.remove('highlight');
@@ -1752,6 +2360,7 @@
             playerSequence.push(color);
             const button = simonButtons[color];
             button.classList.add('highlight'); // Visual feedback for player click
+            playSimonSound(color); // Play sound on player click
 
             setTimeout(() => {
                 button.classList.remove('highlight');
@@ -1937,12 +2546,75 @@
         let paintByNumberCurrentSelectedNumber = null;
         let paintByNumberStartTime;
         let paintByNumberTimerInterval;
+        let isPaintMuted = false; // New variable to track mute state for Paint by Number
 
         const paintGridContainer = document.getElementById('paint-grid-container');
         const colorPalette = document.getElementById('color-palette');
         const paintByNumberProgressDisplay = document.getElementById('paint-by-number-progress');
-        // Removed paintByNumberHighscoreValue as its display element is removed
-        // const paintByNumberHighscoreValue = document.getElementById('paint-by-number-highscore-value');
+        const paintByNumberPlayerNameDisplay = document.getElementById('paint-by-number-player-name-display'); // New element for player name
+        const paintMuteButton = document.getElementById('paint-mute-button'); // Get the mute button element
+
+        // Global Tone.js objects for Paint by Number sounds
+        const paintSounds = {
+            selectColor: new Tone.Synth().toDestination(),
+            correctPaint: new Tone.Synth().toDestination(),
+            incorrectPaint: new Tone.Synth().toDestination(),
+            completion: new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: {
+                    attack: 0.05,
+                    decay: 0.8,
+                    sustain: 0.0,
+                    release: 0.5
+                }
+            }).toDestination()
+        };
+
+        // Notes for Paint by Number sounds
+        const paintNotes = {
+            selectColor: "C4",
+            correctPaint: "G5", // Higher pitch for success
+            incorrectPaint: "C3", // Lower pitch for error
+            completion: ["C4", "E4", "G4", "C5"] // Celebratory chord
+        };
+
+        // Background music for Paint by Number
+        const paintMusicPlayer = new Tone.Synth({
+            oscillator: { type: "triangle" },
+            envelope: {
+                attack: 2,
+                decay: 1,
+                sustain: 0.5,
+                release: 5
+            }
+        }).toDestination();
+
+        function playPaintSound(type) {
+            // Start Tone.js audio context on first user interaction with the game
+            Tone.start(); 
+            if (isPaintMuted) return; // Do not play sound if muted
+
+            if (type === 'selectColor') {
+                paintSounds.selectColor.triggerAttackRelease(paintNotes.selectColor, "16n");
+            } else if (type === 'correctPaint') {
+                paintSounds.correctPaint.triggerAttackRelease(paintNotes.correctPaint, "16n");
+            } else if (type === 'incorrectPaint') {
+                paintSounds.incorrectPaint.triggerAttackRelease(paintNotes.incorrectPaint, "16n");
+            } else if (type === 'completion') {
+                paintSounds.completion.triggerAttackRelease(paintNotes.completion, "2s");
+            }
+        }
+
+        function togglePaintMute() {
+            isPaintMuted = !isPaintMuted;
+            if (isPaintMuted) {
+                Tone.Master.mute = true; // Mute all Tone.js output
+                paintMuteButton.textContent = '🔇'; // Muted icon
+            } else {
+                Tone.Master.mute = false; // Unmute all Tone.js output
+                paintMuteButton.textContent = '🔊'; // Unmuted icon
+            }
+        }
 
         function startPaintByNumberGame(mode, selectedPlayer) {
             if (mode !== 'single') {
@@ -1952,6 +2624,15 @@
             paintByNumberPlayerName = selectedPlayer;
             resetPaintByNumberGame();
             showScreen('paint-by-number-game');
+            // Start background music loop
+            Tone.start(); // Ensure audio context is started
+            paintMusicPlayer.triggerAttackRelease("C4", "8n"); // Play a simple note to start the synth
+            paintMusicPlayer.loop = true;
+            paintMusicPlayer.loopStart = 0;
+            paintMusicPlayer.loopEnd = "4n"; // Loop every quarter note for a simple pulse
+            paintMusicPlayer.frequency.value = "C4"; // Set a base frequency
+            paintMusicPlayer.volume.value = -15; // Set a low volume for background music
+            Tone.Transport.start(); // Start the transport for looping
         }
 
         function resetPaintByNumberGame() {
@@ -1964,6 +2645,7 @@
             paintByNumberCurrentSelectedNumber = null;
             
             paintByNumberProgressDisplay.textContent = '0%';
+            paintByNumberPlayerNameDisplay.textContent = `${paintByNumberPlayerName}: `; // Display player name
             
             stopPaintByNumberTimer(); // Ensure timer is stopped on reset
             // Removed the line trying to update paintByNumberHighscoreValue.textContent
@@ -1975,6 +2657,14 @@
             // Start timer only after grid and palette are rendered
             paintByNumberStartTime = Date.now();
             paintByNumberTimerInterval = setInterval(updatePaintByNumberTimer, 1000);
+
+            // Ensure music is playing if not muted
+            if (!isPaintMuted) {
+                Tone.Transport.start();
+                if (!paintMusicPlayer.state === 'started') {
+                    paintMusicPlayer.triggerAttackRelease("C4", "8n"); // Re-trigger if needed
+                }
+            }
         }
 
         function renderPaintGrid() {
@@ -1997,7 +2687,7 @@
                         cell.classList.add('painted');
                         cell.style.backgroundColor = paintByNumberCurrentPattern.colors[0];
                         cell.textContent = ''; // Hide '0'
-                        paintByNumberPaintedCells++; // Count background cells as painted
+                        // paintByNumberPaintedCells++; // FIX: Do not increment here, this is only for cells that need to be painted by user
                     } else {
                         paintByNumberTotalCellsToPaint++; // Only count non-background cells for painting
                         cell.addEventListener('click', () => handlePaintGridCellClick(cell, rowIndex, colIndex));
@@ -2005,6 +2695,9 @@
                     paintGridContainer.appendChild(cell);
                 });
             });
+            // FIX: Initialize paintByNumberPaintedCells based on actual painted cells (including background)
+            // This ensures progress is correct from the start if there are background cells.
+            paintByNumberPaintedCells = document.querySelectorAll('#paint-grid-container .paint-grid-cell.painted').length;
             updatePaintByNumberProgress(); // Initial progress update
         }
 
@@ -2035,6 +2728,7 @@
             
             paintByNumberCurrentSelectedColor = color;
             paintByNumberCurrentSelectedNumber = number;
+            playPaintSound('selectColor'); // Play sound on color selection
             console.log(`[Pintar por Números] Color seleccionado: ${color} (Número: ${number})`);
         }
 
@@ -2050,11 +2744,13 @@
                 cell.classList.add('painted');
                 cell.textContent = ''; // Hide the number
                 cell.dataset.painted = 'true';
-                paintByNumberPaintedCells++;
+                paintByNumberPaintedCells++; // Increment only when user paints a cell
+                playPaintSound('correctPaint'); // Play sound for correct paint
                 updatePaintByNumberProgress();
             } else {
                 // Optional: visual feedback for incorrect guess
                 cell.style.backgroundColor = '#EF4444'; // Flash red
+                playPaintSound('incorrectPaint'); // Play sound for incorrect paint
                 setTimeout(() => {
                     cell.style.backgroundColor = '#f3f4f6'; // Revert to original unpainted color
                 }, 200);
@@ -2081,13 +2777,16 @@
 
         function endPaintByNumberGame() {
             stopPaintByNumberTimer();
+            Tone.Transport.stop(); // Stop background music
+            playPaintSound('completion'); // Play completion sound
             const finalTimeSeconds = Math.floor((Date.now() - paintByNumberStartTime) / 1000);
             savePaintByNumberHighScore(paintByNumberPlayerName, finalTimeSeconds);
 
             // Highlight all painted cells
             const allCells = document.querySelectorAll('#paint-grid-container .paint-grid-cell');
             allCells.forEach(cell => {
-                if (cell.dataset.painted === 'true') {
+                // Only highlight cells that were meant to be painted (not background 0 cells)
+                if (parseInt(cell.dataset.originalValue) !== 0) {
                     cell.classList.add('highlight-completed');
                 }
             });
@@ -2127,8 +2826,16 @@
             }
         }
 
-        // Initial load
+        // Initial load and background image logic
         window.onload = () => {
+            const backgroundImages = [
+                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada3.png',
+                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada2.png'
+            ];
+            const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+            const selectedImage = backgroundImages[randomIndex];
+            document.body.style.backgroundImage = `url('${selectedImage}')`;
+
             showScreen('main-menu');
         };
     </script>
