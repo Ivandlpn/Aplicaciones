@@ -11,84 +11,107 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: -apple-system, BlinkMacMacFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: hsl(200, 30%, 95%); /* Fondo muy claro, azul-gris suave */
-            color: #333333; /* Color de texto principal más oscuro */
+            font-family: 'Inter', -apple-system, BlinkMacMacFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f2f7 0%, #cce7f0 100%);
+            color: #2c3e50;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow-y: auto; /* Permite desplazamiento vertical si el contenido es más grande */
+            overflow-x: hidden; /* Evita el desplazamiento horizontal */
+            min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la vista */
+            padding: 20px; /* Añadir padding al body para evitar que el contenedor toque los bordes */
+            box-sizing: border-box; /* Incluye padding en el tamaño total */
         }
 
         .container {
             width: 100%;
-            max-width: 400px;
-            height: 95vh; /* Use viewport height to ensure it fits, allowing a small margin */
-            padding: 15px; /* Reduced padding */
+            max-width: 450px; /* Ligeramente más ancho para mejor simetría */
+            min-height: 620px; /* Altura mínima para asegurar espacio */
+            padding: 30px; /* Aumento de padding para más espacio interno */
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: space-around; /* Distribute space evenly */
-            background-color: #ffffff; /* Contenedor blanco */
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+            justify-content: space-between; /* Distribuye el espacio entre secciones */
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            animation: fadeIn 0.8s ease-out;
+            margin: auto; /* Centra el contenedor horizontalmente */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            /* Adjusted color for a more prominent header */
-            color: hsl(220, 70%, 25%); /* Darker, richer blue for main title */
+            color: #1a5276;
             text-align: center;
-            margin-bottom: 20px; /* Reduced margin */
-            font-size: 2.2rem; /* Increased font size for main title */
-            font-weight: 700; /* Bolder font weight */
+            margin-bottom: 35px; /* Más margen inferior */
+            font-size: 2.8rem;
+            font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px; /* Increased gap for the symbol */
-            padding-bottom: 5px; /* Small padding at the bottom */
-            border-bottom: 2px solid hsl(220, 60%, 80%); /* Subtle underline */
+            gap: 12px;
+            padding-bottom: 12px; /* Más padding inferior */
+            border-bottom: 3px solid #d4e6f1;
+            letter-spacing: -0.5px;
+        }
+
+        h1 img { /* Estilo para la imagen del logo de Bitcoin */
+            width: 1.2em; /* Tamaño relativo al tamaño de la fuente del h1 */
+            height: 1.2em;
+            vertical-align: middle;
+            margin-right: 5px; /* Espacio entre el logo y el texto */
         }
 
         h2 {
-            color: hsl(220, 50%, 40%); /* Azul índigo para títulos de sección */
+            color: #2e86c1;
             text-align: center;
-            margin-bottom: 20px; /* Reduced margin */
-            font-size: 1.6rem; /* Slightly reduced font size */
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px; /* Reduced gap */
+            gap: 8px;
         }
 
         .input-group {
-            margin-bottom: 15px; /* Reduced margin */
+            margin-bottom: 22px; /* Más margen inferior para separar grupos */
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 6px; /* Reduced margin */
-            font-size: 0.9rem; /* Slightly reduced font size */
-            color: hsl(210, 20%, 45%); /* Azul-gris mutado para etiquetas */
+            margin-bottom: 8px;
+            font-size: 1.05rem; /* Ligeramente más grande */
+            color: #5d6d7e;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 4px; /* Reduced gap */
+            gap: 8px; /* Más espacio para el icono */
         }
 
         .input-group input {
             width: 100%;
-            padding: 10px; /* Reduced padding */
-            border: 1px solid hsl(200, 50%, 85%); /* Borde azul claro */
-            border-radius: 8px;
-            background-color: hsl(200, 10%, 98%); /* Blanco roto para inputs */
+            padding: 14px 18px; /* Más padding */
+            border: 2px solid #aed6f1;
+            border-radius: 12px; /* Bordes más redondeados */
+            background-color: #f8fcfd;
             color: #333333;
-            font-size: 1.1rem; /* Slightly reduced font size */
+            font-size: 1.25rem; /* Tamaño de fuente más grande */
             box-sizing: border-box;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
         }
 
         .input-group input:focus {
             outline: none;
-            border-color: hsl(220, 60%, 50%); /* Borde azul al enfocar */
-            box-shadow: 0 0 0 3px hsla(220, 60%, 50%, 0.2); /* Sombra suave al enfocar */
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.3);
+            background-color: #ffffff;
         }
 
         /* Oculta las flechas de los inputs numéricos */
@@ -103,121 +126,216 @@
         }
 
         .projection-section {
-            border-top: 1px solid hsl(200, 40%, 80%); /* Borde superior más claro y azulado */
-            padding-top: 15px; /* Reduced padding */
+            border-top: 1px solid #d4e6f1;
+            padding-top: 30px; /* Más padding superior */
+            margin-top: 25px; /* Más margen superior */
         }
 
         .current-value p, .future-value label {
-            font-size: 0.9rem; /* Slightly reduced font size */
-            color: hsl(210, 20%, 45%);
+            font-size: 1.05rem;
+            color: #5d6d7e;
+            font-weight: 600;
+            margin-bottom: 10px; /* Espacio para el valor */
         }
 
         h3 {
-            margin-top: 8px; /* Reduced margin */
-            font-size: 1.4rem; /* Slightly reduced font size */
-            color: hsl(220, 50%, 20%); /* Color oscuro para valores importantes */
+            margin-top: 10px;
+            font-size: 1.7rem; /* Tamaño de fuente más grande */
+            color: #1a5276;
             display: flex;
             align-items: center;
-            gap: 6px; /* Reduced gap */
+            gap: 10px; /* Más espacio para el icono */
+            font-weight: 700;
+            margin-bottom: 20px; /* Espacio antes del siguiente elemento */
         }
 
-        /* Styles for the input field with datalist */
         #future-price-input {
             width: 100%;
-            padding: 10px; /* Reduced padding */
-            border-radius: 8px;
-            background-color: hsl(200, 10%, 98%); /* Blanco roto para input */
+            padding: 14px 18px;
+            border-radius: 12px;
+            background-color: #f8fcfd;
             color: #333333;
-            font-size: 1rem; /* Slightly reduced font size */
-            border: 1px solid hsl(200, 50%, 85%); /* Borde azul claro */
-            margin-top: 8px; /* Reduced margin */
-            box-sizing: border-box; /* Ensure padding and border are included in width */
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1.25rem;
+            border: 2px solid #aed6f1;
+            margin-top: 10px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
         }
 
         #future-price-input:focus {
             outline: none;
-            border-color: hsl(220, 60%, 50%);
-            box-shadow: 0 0 0 3px hsla(220, 60%, 50%, 0.2);
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.3);
+            background-color: #ffffff;
         }
 
-        .currency-value { /* Nueva clase para los spans de valor monetario */
-            color: hsl(140, 70%, 40%); /* Verde vibrante para valores monetarios */
+        .currency-value {
+            color: #27ae60;
             font-weight: bold;
+            font-size: 1.7rem; /* Tamaño de fuente más grande para los valores */
         }
 
         #currency-toggle-btn {
-            padding: 6px 12px; /* Reduced padding */
+            padding: 12px 20px; /* Más padding */
             border: none;
-            border-radius: 5px;
-            background-color: hsl(220, 60%, 50%); /* Azul para el botón de moneda */
+            border-radius: 10px; /* Bordes más redondeados */
+            background-color: #3498db;
             color: white;
             cursor: pointer;
-            font-size: 0.85rem; /* Slightly reduced font size */
-            transition: background-color 0.3s ease, transform 0.1s ease;
+            font-size: 1rem; /* Tamaño de fuente ligeramente más grande */
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            min-width: 120px; /* Ancho mínimo para el botón */
         }
 
         #currency-toggle-btn:hover {
-            background-color: hsl(220, 60%, 40%); /* Azul más oscuro al pasar el ratón */
-            transform: translateY(-1px);
+            background-color: #217dbb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
         }
 
-        @media (max-width: 480px) {
+        #currency-toggle-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Iconos (usando emojis para simplicidad y compatibilidad) */
+        .icon {
+            font-size: 1.2em;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        /* Estilo para los valores de proyección */
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline; /* Alinea el texto base de los valores */
+            margin-bottom: 15px; /* Espacio entre las líneas de valor */
+        }
+
+        .value-display p {
+            margin: 0; /* Elimina el margen predeterminado del párrafo */
+        }
+
+        /* Media Queries para Responsividad */
+        @media (max-width: 500px) {
+            body {
+                padding: 15px; /* Menos padding en pantallas muy pequeñas */
+            }
             .container {
-                padding: 10px; /* Further reduced padding for very small screens */
-                height: 98vh; /* Maximize height on small screens */
+                padding: 25px;
+                border-radius: 15px;
+                min-height: unset;
+                height: auto;
+                margin: 0; /* Elimina el margen auto para usar el padding del body */
             }
             h1 {
-                font-size: 1.8rem; /* Adjusted for smaller screens */
+                font-size: 2.2rem;
+                margin-bottom: 25px;
+            }
+            h1 img {
+                width: 1.1em;
+                height: 1.1em;
             }
             h2 {
-                font-size: 1.3rem;
+                font-size: 1.6rem;
+                margin-bottom: 20px;
             }
             .input-group input {
-                font-size: 0.95rem;
+                font-size: 1.1rem;
+                padding: 12px 15px;
             }
             h3 {
-                font-size: 1.2rem;
+                font-size: 1.5rem;
+            }
+            .currency-value {
+                font-size: 1.5rem;
             }
             #currency-toggle-btn {
-                font-size: 0.8rem;
-                padding: 5px 10px;
+                font-size: 0.9rem;
+                padding: 10px 18px;
+                min-width: unset; /* Elimina el ancho mínimo en móviles */
+            }
+            .projection-section {
+                padding-top: 25px;
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            h1 {
+                font-size: 2rem;
+            }
+            h1 img {
+                width: 1em;
+                height: 1em;
+            }
+            h2 {
+                font-size: 1.4rem;
+            }
+            .input-group input {
+                font-size: 1rem;
+                padding: 10px 12px;
+            }
+            h3 {
+                font-size: 1.3rem;
+            }
+            .currency-value {
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Calculadora Bitcoin ₿</h1>
+        <h1>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png" 
+                 alt="Logo de Bitcoin" 
+                 onerror="this.onerror=null;this.src='https://placehold.co/40x40/f7931a/ffffff?text=₿'">
+            Calculadora Bitcoin
+        </h1>
 
         <!-- Sección Superior: Conversor -->
         <div class="converter-section">
-            <h2>Conversor BTC 🔄 Satoshi</h2>
+            <h2>Conversor BTC <span class="icon">🔄</span> Satoshi</h2>
             <div class="input-group">
-                <label for="btc-input">BTC 🪙</label>
+                <label for="btc-input">BTC <span class="icon">🪙</span></label>
                 <input type="number" id="btc-input" placeholder="0.0">
             </div>
             <div class="input-group">
-                <label for="satoshi-input">Satoshis ✨</label>
-                <input type="text" id="satoshi-input" placeholder="0"> <!-- Cambiado a text para mejor formato -->
+                <label for="satoshi-input">Satoshis <span class="icon">✨</span></label>
+                <input type="text" id="satoshi-input" placeholder="0">
             </div>
         </div>
 
         <!-- Sección Inferior: Proyección -->
         <div class="projection-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2>Proyección de Inversión 📈</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2>Proyección de Inversión <span class="icon">📈</span></h2>
                 <button id="currency-toggle-btn">Cambiar a USD</button>
             </div>
-            <div class="current-value">
-                <p>Hoy (<span id="current-date"></span>): <span id="current-price" class="currency-value"></span></p>
-                <h3>Valor Actual: <span id="wallet-value" class="currency-value">0.00</span></h3>
+            
+            <div class="value-display">
+                <p>Hoy (<span id="current-date"></span>):</p>
+                <span id="current-price" class="currency-value"></span>
             </div>
-            <div class="future-value">
+            
+            <div class="value-display">
+                <h3>Valor Actual:</h3>
+                <span id="wallet-value" class="currency-value">0.00</span>
+            </div>
+
+            <div class="input-group">
                 <label for="future-price-input">Si 1 BTC alcanza:</label>
                 <input type="number" id="future-price-input" list="future-price-datalist" placeholder="Introduce una cifra o selecciona" value="">
                 <datalist id="future-price-datalist"></datalist>
-                <h3>Valor Futuro: <span id="future-wallet-value" class="currency-value">0.00</span></h3>
+            </div>
+
+            <div class="value-display">
+                <h3>Valor Futuro:</h3>
+                <span id="future-wallet-value" class="currency-value">0.00</span>
             </div>
         </div>
     </div>
