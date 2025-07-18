@@ -12,6 +12,14 @@
         /* Ensure UTF-8 encoding for proper character display */
         @charset "UTF-8";
 
+        /* Lista de URLs de portadas disponibles:
+         * https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada1.png
+         * https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada2.png
+         * https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada3.png
+         * https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada4.png
+         * https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada5.png
+         * https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada6.png
+         */
         body {
             font-family: 'Roboto', sans-serif;
             -webkit-tap-highlight-color: transparent;
@@ -85,6 +93,55 @@
             100% { transform: scale(1); }
         }
 
+        /* New animation for Tic-Tac-Toe pieces */
+        @keyframes piece-pop {
+            0% {
+                transform: scale(0.4);
+                opacity: 0.5;
+            }
+            80% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .piece-pop-in {
+            animation: piece-pop 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        }
+
+        /* New styles for confetti celebration */
+        #confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999; /* Ensure it's on top */
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: #f59e0b; /* amber-500 */
+            top: -20px; /* Start above the screen */
+            opacity: 0;
+            animation: fall 4s linear forwards;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
         /* New animation for matched cards */
         .card.is-matched {
             animation: card-pop 0.3s ease-out;
@@ -126,6 +183,16 @@
         }
 
         /* New styles for Trivia answer feedback */
+        /* Animación shake para feedback de error en Adivina el Número */
+        .shake {
+            animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translateX(-2px); }
+            20%, 80% { transform: translateX(4px); }
+            30%, 50%, 70% { transform: translateX(-8px); }
+            40%, 60% { transform: translateX(8px); }
+        }
         .trivia-answer-button.correct {
             background-color: #34D399; /* emerald-500 */
             color: white;
@@ -143,6 +210,89 @@
         .trivia-answer-button.disabled {
             pointer-events: none; /* Disable clicks during feedback */
         }
+
+        /* Estilos para el termómetro de Adivina el Número */
+        .thermometer {
+            width: 40px;
+            height: 200px;
+            background: #f3f4f6;
+            border-radius: 20px;
+            position: relative;
+            margin: 20px auto;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .thermometer-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, #ef4444, #f59e0b, #22c55e);
+            transition: height 0.5s ease, background-color 0.5s ease;
+            border-radius: 20px;
+        }
+
+        .thermometer::before {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: #f3f4f6;
+            border-radius: 50%;
+        }
+
+        /* Estilos para las flechas animadas */
+        .guess-arrow {
+            font-size: 2.5rem;
+            animation: bounce 1s infinite;
+            display: inline-block;
+            margin: 0 10px;
+            color: #f59e0b;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Estilos para el indicador de proximidad */
+        .proximity-indicator {
+            height: 10px;
+            background: linear-gradient(to right, #ef4444, #f59e0b, #22c55e);
+            border-radius: 5px;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .proximity-marker {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #1f2937;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 0.5s ease;
+        }
+
+        .proximity-pulse {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Estilos para el código de colores de distancia */
+        .distance-very-close { color: #22c55e; } /* Verde */
+        .distance-close { color: #f59e0b; } /* Amarillo */
+        .distance-far { color: #ef4444; } /* Rojo */
 
         /* New styles for Tic-Tac-Toe win animation */
         .win-highlight {
@@ -359,16 +509,15 @@
         /* Style for SVG icons */
         .game-icon {
             width: 2.5rem; /* Equivalent to text-4xl for visual size */
-            height: 2.5rem;
-            fill: currentColor; /* Inherit color from parent button */
-            margin-right: 0.75rem; /* Equivalent to mr-3 */
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); /* Subtle shadow for depth */
         }
+
+        /* Animación shake para feedback de error en Adivina el Número */
+        /* ...existing code... */
     </style>
 </head>
 <body class="bg-amber-100 text-slate-800 min-h-screen flex items-center justify-center p-4">
 
-    <div id="app-container" class="w-full max-w-md mx-auto bg-white/70 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden">
+    <div id="app-container" class="w-full max-w-md mx-auto bg-white/70 backdrop-blur-sm rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
         
         <!-- Main Menu Screen -->
         <div id="main-menu" class="p-6 md:p-8">
@@ -425,7 +574,7 @@
         <!-- Trivia Menu Screen -->
         <div id="trivia-menu" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button onclick="showScreen('main-menu')" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 class="text-3xl font-display text-emerald-600">Preguntas y Respuestas</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
@@ -442,7 +591,7 @@
         <!-- Generic Single Player Mode Selection Screen -->
         <div id="single-player-mode-selection" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button id="single-player-mode-back-button" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button id="single-player-mode-back-button" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 id="single-player-mode-title" class="text-3xl font-display text-emerald-600">¿Quién juega?</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige tu nombre o "Familia":</p>
@@ -464,11 +613,11 @@
         <!-- Generic Family Member Selection Screen -->
         <div id="family-member-selection" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showSinglePlayerModeSelection(currentSelectedGameType)" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button onclick="showSinglePlayerModeSelection(currentSelectedGameType)" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 id="family-member-title" class="text-3xl font-display text-emerald-600">Elige un familiar:</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Selecciona quién jugará:</p>
-            <div id="family-member-buttons" class="space-y-4">
+            <div id="family-member-buttons" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                 <!-- Family player buttons will be generated by JS -->
             </div>
         </div>
@@ -503,7 +652,7 @@
         <!-- Tic-Tac-Toe Menu Screen -->
         <div id="tictactoe-menu" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button onclick="showScreen('main-menu')" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 class="text-3xl font-display text-sky-600">Tres en Raya</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
@@ -522,9 +671,15 @@
             <div class="flex justify-between items-center mb-4">
                 <button onclick="showScreen('tictactoe-menu')" class="text-slate-500 hover:text-amber-600 text-2xl active:scale-95 active:opacity-75 transition-all duration-100">←</button>
                  <h2 id="tictactoe-status" class="text-xl text-center font-display text-sky-600"></h2>
-                <button onclick="resetTicTacToe()" class="text-sky-500 hover:text-sky-700 font-bold active:scale-95 active:opacity-75 transition-all duration-100">Reiniciar</button>
+                <div class="flex items-center space-x-4">
+                    <button onclick="resetTicTacToe()" class="text-sky-500 hover:text-sky-700 font-bold active:scale-95 active:opacity-75 transition-all duration-100">Reiniciar</button>
+                    <button id="tictactoe-mute-button" onclick="toggleTicTacToeMute()" class="text-2xl text-slate-500 hover:text-slate-700 active:scale-95 transition-all duration-100">
+                        🔊
+                    </button>
+                </div>
             </div>
-            <div id="tictactoe-board" class="grid grid-cols-3 gap-2 aspect-square max-w-sm mx-auto">
+            <div id="tictactoe-board" class="relative grid grid-cols-3 gap-2 aspect-square max-w-sm mx-auto">
+                <canvas id="tictactoe-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none"></canvas>
                 <!-- Cells will be generated by JS -->
             </div>
         </div>
@@ -532,7 +687,7 @@
         <!-- Memory Menu Screen -->
         <div id="memory-menu" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button onclick="showScreen('main-menu')" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 class="text-3xl font-display text-rose-600">Memocartas</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
@@ -549,7 +704,7 @@
         <!-- Memory Setup Selection Screen -->
         <div id="memory-setup-selection" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button id="memory-setup-back-button" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button id="memory-setup-back-button" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 class="text-3xl font-display text-rose-600">Configurar Memocartas</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige la dificultad:</p>
@@ -604,7 +759,7 @@
         <!-- Guess the Number Menu Screen -->
         <div id="guess-number-menu" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button onclick="showScreen('main-menu')" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 class="text-3xl font-display text-green-600">Adivina el Número</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
@@ -614,6 +769,10 @@
                 </button>
                 <button onclick="startGameGuessNumber('multi', 'Hugo', 'Saúl')" class="btn-game w-full bg-lime-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
+                </button>
+                <!-- Nuevo botón para Modo Matemático -->
+                <button onclick="startGameGuessNumber('math')" class="btn-game w-full bg-blue-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">🧮</span> Modo Matemático
                 </button>
             </div>
         </div>
@@ -633,13 +792,36 @@
             <div id="guess-number-highscore-display" class="text-center text-green-600 font-semibold mb-3">
                 <span id="guess-number-player-name-display"></span>Mejor: <span id="guess-number-highscore-value">N/A</span>
             </div>
+            <div id="guess-number-mode-display" class="text-center text-blue-600 font-semibold mb-3">
+                <span id="guess-number-mode-text"></span>
+            </div>
             <div class="bg-white p-4 rounded-lg shadow-inner mb-4 text-center">
-                <p class="text-lg font-semibold mb-2">Estoy pensando en un número entre 1 y 100.</p>
-                <p id="guess-number-feedback" class="text-xl font-bold text-slate-700 min-h-[2rem] flex items-center justify-center"></p>
+                <p id="guess-number-range" class="text-lg font-semibold mb-2">Estoy pensando en un número entre 1 y 100.</p>
+                <div class="flex items-center justify-center space-x-4">
+                    <!-- Termómetro -->
+                    <div class="thermometer">
+                        <div class="thermometer-fill" id="guess-thermometer" style="height: 0%"></div>
+                    </div>
+                    <!-- Contenedor central con feedback y flechas -->
+                    <div class="flex-1">
+                        <div class="flex items-center justify-center">
+                            <span id="guess-arrow-left" class="guess-arrow hidden">⬆️</span>
+                            <p id="guess-number-feedback" class="text-xl font-bold text-slate-700 min-h-[2rem] flex items-center justify-center transition-all duration-300"></p>
+                            <span id="guess-arrow-right" class="guess-arrow hidden">⬇️</span>
+                        </div>
+                        <!-- Indicador de proximidad -->
+                        <div class="proximity-indicator mt-4">
+                            <div id="proximity-marker" class="proximity-marker"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="math-hints-container" class="mt-4 space-y-2">
+                    <!-- Las pistas matemáticas se mostrarán aquí -->
+                </div>
             </div>
             <div class="flex space-x-2 mb-4">
-                <input type="number" id="guess-number-input" class="flex-grow p-3 rounded-lg border-2 border-green-300 focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 text-center text-2xl font-bold" placeholder="Tu número" min="1" max="100">
-                <button onclick="checkGuess()" class="bg-green-500 text-white p-3 rounded-lg shadow-md text-xl font-display active:scale-95 active:opacity-75 transition-all duration-100">¡Adivinar!</button>
+                <input type="number" id="guess-number-input" class="flex-grow p-3 rounded-lg border-2 border-green-300 focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 text-center text-2xl font-bold transition-all duration-300" placeholder="Tu número" min="1" max="100">
+                <button onclick="checkGuess()" id="guess-number-submit" class="bg-green-500 text-white p-3 rounded-lg shadow-md text-xl font-display active:scale-95 active:opacity-75 transition-all duration-100">¡Adivinar!</button>
             </div>
             <button id="guess-number-hint-button" onclick="requestHint()" class="w-full bg-blue-500 text-white p-2 rounded-lg shadow-md mb-2 active:scale-95 active:opacity-75 transition-all duration-100">Pedir Pista (<span id="guess-number-hints-left">1</span>)</button>
             <button onclick="resetGuessNumberGame()" class="w-full bg-gray-200 text-slate-700 p-2 rounded-lg active:scale-95 active:opacity-75 transition-all duration-100">Reiniciar Juego</button>
@@ -648,7 +830,7 @@
         <!-- Simon Says Menu Screen -->
         <div id="simon-menu" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button onclick="showScreen('main-menu')" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 class="text-3xl font-display text-fuchsia-600">Simon Dice</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
@@ -666,7 +848,9 @@
         <div id="simon-game" class="hidden p-6 md:p-8">
             <div class="flex justify-between items-center mb-4">
                 <button onclick="showScreen('simon-menu')" class="text-slate-500 hover:text-amber-600 text-2xl active:scale-95 active:opacity-75 transition-all duration-100">←</button>
-                <h2 class="text-3xl font-display text-fuchsia-600">Simon Dice</h2>
+                <h2 class="text-3xl font-display text-fuchsia-600">
+                    <span class="inline-block" style="color: white; filter: brightness(150%) grayscale(100%) invert(100%);">🎮</span>&nbsp;&nbsp;Simon Dice
+                </h2>
                 <div class="text-lg font-bold bg-fuchsia-100 text-fuchsia-800 px-3 py-1 rounded-full">
                     Nivel: <span id="simon-level">0</span>
                 </div>
@@ -690,7 +874,7 @@
         <!-- Paint by Number Menu Screen -->
         <div id="paint-by-number-menu" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button onclick="showScreen('main-menu')" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 class="text-3xl font-display text-orange-600">Pintar por Números</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
@@ -731,7 +915,7 @@
         <!-- Retos Menu Screen (NEW) -->
         <div id="retos-menu" class="hidden p-6 md:p-8">
             <div class="flex justify-start items-center mb-6">
-                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <button onclick="showScreen('main-menu')" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 class="text-3xl font-display text-indigo-600">Retos</h2>
             </div>
             <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
@@ -804,6 +988,8 @@
         </div>
 
     </div>
+
+    <div id="confetti-container"></div>
 
     <!-- Audio elements for Simon Says -->
     <audio id="simon-sound-red" preload="auto"></audio>
@@ -1525,6 +1711,39 @@
         let ttt_gameMode; // 'ai' or 'human'
         let ttt_player1Name;
         let ttt_player2Name;
+        let isTicTacToeMuted = false; // Mute state for Tic-Tac-Toe
+
+        // Sound definitions for Tic-Tac-Toe
+        const ttt_sounds = {
+            click: new Tone.Synth({
+                oscillator: { type: 'sine' },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0.01, release: 0.05 }
+            }).toDestination(),
+            win: new Tone.PolySynth(Tone.Synth).toDestination(),
+            tie: new Tone.Synth({
+                oscillator: { type: 'triangle' },
+                envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.1 }
+            }).toDestination()
+        };
+
+        function playTicTacToeSound(type) {
+            Tone.start();
+            if (isTicTacToeMuted) return;
+
+            if (type === 'click') {
+                ttt_sounds.click.triggerAttackRelease('C5', '8n');
+            } else if (type === 'win') {
+                ttt_sounds.win.triggerAttackRelease(['C5', 'E5', 'G5', 'C6'], '8n', Tone.now());
+            } else if (type === 'tie') {
+                ttt_sounds.tie.triggerAttackRelease('E4', '4n');
+            }
+        }
+
+        function toggleTicTacToeMute() {
+            isTicTacToeMuted = !isTicTacToeMuted;
+            const muteButton = document.getElementById('tictactoe-mute-button');
+            muteButton.textContent = isTicTacToeMuted ? '🔇' : '🔊';
+        }
         
         function startTicTacToe(mode, selectedPlayer = null) { // Added selectedPlayer
             ttt_gameMode = mode;
@@ -1546,6 +1765,20 @@
             document.getElementById('tictactoe-status').textContent = `Turno de ${ttt_currentPlayer}`;
             const boardContainer = document.getElementById('tictactoe-board');
             boardContainer.innerHTML = '';
+
+            // Clear the canvas
+            const canvas = document.getElementById('tictactoe-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            } else {
+                 // Re-create the canvas if it was removed
+                const newCanvas = document.createElement('canvas');
+                newCanvas.id = 'tictactoe-canvas';
+                newCanvas.className = 'absolute top-0 left-0 w-full h-full pointer-events-none';
+                boardContainer.prepend(newCanvas);
+            }
+
             for (let i = 0; i < 9; i++) {
                 const cell = document.createElement('button');
                 cell.className = "flex items-center justify-center text-5xl md:text-6xl bg-white rounded-lg shadow-inner hover:bg-sky-100 active:scale-95 active:opacity-75 transition-all duration-100"; /* Added active styles */
@@ -1558,13 +1791,17 @@
         function handleCellClick(cell, index) {
             if (ttt_board[index] !== '' || !ttt_gameActive) return;
 
+            playTicTacToeSound('click'); // Play click sound
+
+            // Determine the mark for the current player
+
             // Determine the mark for the current player
             const currentPlayerMark = ttt_currentPlayer === ttt_player1Name ? 'X' : 'O';
             const opponentMark = ttt_currentPlayer === ttt_player1Name ? 'O' : 'X'; // Opponent's mark
 
             ttt_board[index] = currentPlayerMark; // Use X/O internally for logic
             cell.textContent = ttt_currentPlayer === ttt_player1Name ? '❌' : '⭕'; // Display emojis
-            cell.classList.add('scale-up-center');
+            cell.classList.add('piece-pop-in'); // Apply the pop animation
 
             const winCondition = checkWin();
             if (winCondition) {
@@ -1577,6 +1814,8 @@
 
                 // Delay showing modal to allow animation to play
                 setTimeout(() => {
+                    playTicTacToeSound('win'); // Play win sound
+                    triggerConfetti(); // Trigger confetti on win
                     showModal('gameOver', {
                         title: `¡${ttt_currentPlayer} ha ganado!`,
                         message: `¡Felicidades, ${ttt_currentPlayer}! Eres el campeón del Tres en Raya.`,
@@ -1589,6 +1828,7 @@
             }
             if (ttt_board.every(cell => cell !== '')) {
                 ttt_gameActive = false;
+                playTicTacToeSound('tie'); // Play tie sound
                 showModal('gameOver', {
                     title: "¡Empate!",
                     message: "¡Nadie ganó esta vez! ¡Juega de nuevo para desempatar!",
@@ -1613,13 +1853,51 @@
                 [0, 3, 6], [1, 4, 7], [2, 5, 8],
                 [0, 4, 8], [2, 4, 6]
             ];
-            for (let condition = 0; condition < winConditions.length; condition++) {
-                const [a, b, c] = winConditions[condition];
+            for (let i = 0; i < winConditions.length; i++) {
+                const [a, b, c] = winConditions[i];
                 if (ttt_board[a] && ttt_board[a] === ttt_board[b] && ttt_board[a] === ttt_board[c]) {
-                    return winConditions[condition]; // Return the winning condition
+                    drawWinningLine(winConditions[i]); // Call the new drawing function
+                    return winConditions[i]; // Return the winning condition
                 }
             }
             return null; // No win
+        }
+
+        function drawWinningLine(winningCombination) {
+            const canvas = document.getElementById('tictactoe-canvas');
+            const ctx = canvas.getContext('2d');
+            const board = document.getElementById('tictactoe-board');
+            const boardSize = board.offsetWidth;
+            
+            // Set canvas dimensions to match the board
+            canvas.width = boardSize;
+            canvas.height = boardSize;
+
+            const [a, b, c] = winningCombination;
+            const cellSize = boardSize / 3;
+
+            // Function to get center coordinates of a cell index
+            const getCellCenter = (index) => {
+                const row = Math.floor(index / 3);
+                const col = index % 3;
+                const x = col * cellSize + cellSize / 2;
+                const y = row * cellSize + cellSize / 2;
+                return { x, y };
+            };
+
+            const start = getCellCenter(a);
+            const end = getCellCenter(c);
+
+            ctx.beginPath();
+            ctx.moveTo(start.x, start.y);
+            ctx.lineTo(end.x, end.y);
+            ctx.strokeStyle = '#ef4444'; // red-500
+            ctx.lineWidth = 10;
+            ctx.lineCap = 'round';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 5;
+            ctx.stroke();
         }
 
         // Helper function to find a winning or blocking move
@@ -1705,6 +1983,24 @@
                 console.log("AI: Taking random empty cell (fallback) at", move);
                 const cell = document.querySelector(`#tictactoe-board button[data-index='${move}']`);
                 handleCellClick(cell, move);
+            }
+        }
+
+        function triggerConfetti() {
+            const container = document.getElementById('confetti-container');
+            if (!container) return;
+            container.innerHTML = ''; // Clear previous confetti
+            const colors = ['#f59e0b', '#ef4444', '#3b82f6', '#22c55e', '#ec4899']; // amber, red, blue, green, pink
+            for (let i = 0; i < 100; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = `${Math.random() * 100}vw`;
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = `${Math.random() * 2}s`;
+                piece.style.width = `${Math.floor(Math.random() * 8) + 8}px`;
+                piece.style.height = `${Math.floor(Math.random() * 15) + 10}px`;
+                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(piece);
             }
         }
         
@@ -2105,13 +2401,92 @@
         const guessNumberPlayerNameDisplay = document.getElementById('guess-number-player-name-display'); // New element for player name
 
 
+        // Variables para el modo matemático
+        let mathGameHints = [];
+        let mathGameDifficulty = 'normal';
+
         function startGameGuessNumber(mode, player1Name, player2Name = null) {
             guessNumberGameMode = mode;
             guessNumberPlayer1Name = player1Name;
             guessNumberPlayer2Name = player2Name;
             
-            resetGuessNumberGame();
+            // Si es modo matemático, inicializar variables específicas
+            if (mode === 'math') {
+                initializeMathGame();
+            } else {
+                resetGuessNumberGame();
+            }
             showScreen('guess-number-game');
+        }
+
+        function initializeMathGame() {
+            guessNumberGameActive = true;
+            guessNumberAttempts = 0;
+            mathGameHints = [];
+            guessNumberSecret = Math.floor(Math.random() * 100) + 1;
+            
+            // Generar pistas matemáticas
+            generateMathHints();
+            
+            // Actualizar la interfaz
+            document.getElementById('guess-number-mode-text').textContent = '🧮 Modo Matemático';
+            document.getElementById('guess-number-range').textContent = 'Adivina el número usando las pistas matemáticas:';
+            guessNumberFeedback.textContent = '';
+            guessNumberAttemptsDisplay.textContent = '0';
+            guessNumberInput.value = '';
+            guessNumberInput.disabled = false;
+            
+            // Mostrar las pistas matemáticas
+            displayMathHints();
+        }
+
+        function generateMathHints() {
+            const hints = [];
+            
+            // Divisibilidad
+            hints.push(`El número ${guessNumberSecret % 2 === 0 ? 'es' : 'no es'} par`);
+            hints.push(`El número ${guessNumberSecret % 5 === 0 ? 'es' : 'no es'} múltiplo de 5`);
+            
+            // Suma de dígitos
+            const digitSum = Array.from(String(guessNumberSecret)).reduce((sum, digit) => sum + parseInt(digit), 0);
+            hints.push(`La suma de sus dígitos es ${digitSum}`);
+            
+            // Factores
+            const factors = [];
+            for (let i = 1; i <= guessNumberSecret; i++) {
+                if (guessNumberSecret % i === 0) {
+                    factors.push(i);
+                }
+            }
+            if (factors.length > 2) {
+                const randomFactor = factors[Math.floor(Math.random() * (factors.length - 2)) + 1];
+                hints.push(`Es divisible por ${randomFactor}`);
+            }
+            
+            // Distancia a números cuadrados
+            const sqrtFloor = Math.floor(Math.sqrt(guessNumberSecret));
+            const nearestSquare = sqrtFloor * sqrtFloor;
+            const distanceToSquare = Math.abs(guessNumberSecret - nearestSquare);
+            hints.push(`Está a ${distanceToSquare} números de distancia del cuadrado perfecto ${nearestSquare}`);
+            
+            // Números cercanos con propiedades especiales
+            const nearestMultipleOf10 = Math.round(guessNumberSecret / 10) * 10;
+            hints.push(`Está a ${Math.abs(guessNumberSecret - nearestMultipleOf10)} números de ${nearestMultipleOf10}`);
+            
+            // Mezclar las pistas
+            mathGameHints = hints.sort(() => Math.random() - 0.5);
+        }
+
+        function displayMathHints() {
+            const container = document.getElementById('math-hints-container');
+            container.innerHTML = '';
+            
+            mathGameHints.forEach((hint, index) => {
+                const hintElement = document.createElement('div');
+                hintElement.className = 'p-2 bg-blue-100 rounded-lg text-blue-800 font-medium';
+                hintElement.textContent = `Pista ${index + 1}: ${hint}`;
+                container.appendChild(hintElement);
+            });
         }
 
         function resetGuessNumberGame() {
@@ -2124,6 +2499,18 @@
             guessNumberAttemptsDisplay.textContent = guessNumberAttempts;
             guessNumberInput.disabled = false;
             guessNumberHintButton.disabled = false; // Explicitly enable the button here
+            
+            // Reiniciar elementos visuales
+            const thermometer = document.getElementById('guess-thermometer');
+            const proximityMarker = document.getElementById('proximity-marker');
+            const arrowLeft = document.getElementById('guess-arrow-left');
+            const arrowRight = document.getElementById('guess-arrow-right');
+            
+            thermometer.style.height = '0%';
+            proximityMarker.style.left = '0%';
+            proximityMarker.classList.remove('proximity-pulse');
+            arrowLeft.classList.add('hidden');
+            arrowRight.classList.add('hidden');
 
             if (guessNumberGameMode === 'single') {
                 guessNumberPlayerName = guessNumberPlayer1Name; // Set the single player name
@@ -2158,14 +2545,65 @@
             guessNumberHintButton.disabled = (getHintsLeftForCurrentPlayer() <= 0);
         }
 
+        function updateVisualFeedback(guess, difference) {
+            // Actualizar termómetro
+            const thermometer = document.getElementById('guess-thermometer');
+            const proximityMarker = document.getElementById('proximity-marker');
+            const arrowLeft = document.getElementById('guess-arrow-left');
+            const arrowRight = document.getElementById('guess-arrow-right');
+            
+            // Calcular proximidad (0-100%)
+            const maxDifference = 100;
+            const proximity = Math.max(0, 100 - (Math.abs(difference) / maxDifference * 100));
+            
+            // Actualizar altura del termómetro
+            thermometer.style.height = `${proximity}%`;
+            
+            // Actualizar posición del marcador de proximidad
+            proximityMarker.style.left = `${proximity}%`;
+            
+            // Actualizar clase de pulso basada en la proximidad
+            proximityMarker.classList.toggle('proximity-pulse', proximity > 80);
+            
+            // Mostrar/ocultar flechas
+            arrowLeft.classList.toggle('hidden', guess >= guessNumberSecret);
+            arrowRight.classList.toggle('hidden', guess <= guessNumberSecret);
+            
+            // Actualizar colores basados en la proximidad
+            if (proximity > 80) {
+                feedback.classList.remove('distance-far', 'distance-close');
+                feedback.classList.add('distance-very-close');
+            } else if (proximity > 50) {
+                feedback.classList.remove('distance-far', 'distance-very-close');
+                feedback.classList.add('distance-close');
+            } else {
+                feedback.classList.remove('distance-close', 'distance-very-close');
+                feedback.classList.add('distance-far');
+            }
+        }
+
         function checkGuess() {
             if (!guessNumberGameActive) return;
 
             const guess = parseInt(guessNumberInput.value);
+            const feedback = document.getElementById('guess-number-feedback');
+            const input = document.getElementById('guess-number-input');
+            const submitBtn = document.getElementById('guess-number-submit');
+            
+            // Manejar el modo matemático de manera especial
+            const isMathMode = guessNumberGameMode === 'math';
+
+            // Reset styles
+            feedback.style.color = '';
+            feedback.classList.remove('scale-up-center', 'shake');
+            input.classList.remove('ring-2', 'ring-green-400', 'ring-red-400', 'animate-pulse');
+            submitBtn.classList.remove('animate-bounce');
 
             if (isNaN(guess) || guess < 1 || guess > 100) {
-                guessNumberFeedback.textContent = "Por favor, introduce un número entre 1 y 100.";
-                guessNumberFeedback.style.color = '#EF4444'; /* red-500 */
+                feedback.textContent = "Por favor, introduce un número entre 1 y 100.";
+                feedback.style.color = '#EF4444';
+                feedback.classList.add('shake');
+                input.classList.add('ring-2', 'ring-red-400');
                 return;
             }
 
@@ -2173,44 +2611,63 @@
             guessNumberAttemptsDisplay.textContent = guessNumberAttempts;
 
             if (guess === guessNumberSecret) {
-                guessNumberFeedback.textContent = `¡Correcto! Adivinaste el número ${guessNumberSecret}.`;
-                guessNumberFeedback.style.color = '#10B981'; /* emerald-600 */
+                feedback.textContent = `¡Correcto! Adivinaste el número ${guessNumberSecret}.`;
+                feedback.style.color = '#10B981';
+                feedback.classList.add('scale-up-center');
+                input.classList.add('ring-2', 'ring-green-400', 'animate-pulse');
+                submitBtn.classList.add('animate-bounce');
                 guessNumberGameActive = false;
-                guessNumberInput.disabled = true; // Disable input on win
-                guessNumberHintButton.disabled = true; // Disable hint button on win
-                
-                let winnerName = guessNumberGameMode === 'single' ? guessNumberPlayerName : guessNumberCurrentPlayer;
+                guessNumberInput.disabled = true;
+                guessNumberHintButton.disabled = true;
 
+                let winnerName = guessNumberGameMode === 'single' ? guessNumberPlayerName : guessNumberCurrentPlayer;
                 if (guessNumberGameMode === 'single') {
-                    saveGuessNumberHighScore(winnerName, guessNumberAttempts); // Pass winnerName to save high score
+                    saveGuessNumberHighScore(winnerName, guessNumberAttempts);
                 }
-                
                 setTimeout(() => {
+                    const modalMessage = isMathMode ? 
+                        `¡Excelente trabajo matemático! Resolviste el acertijo del número ${guessNumberSecret} en ${guessNumberAttempts} intentos.` :
+                        `¡Felicidades ${winnerName}! Adivinaste el número ${guessNumberSecret} en ${guessNumberAttempts} intentos.`;
+                    
                     showModal('gameOver', {
                         title: "¡Has ganado!",
-                        message: `¡Felicidades ${winnerName}! Adivinaste el número ${guessNumberSecret} en ${guessNumberAttempts} intentos.`,
-                        restartCallback: () => { closeModal('gameOver'); resetGuessNumberGame(); },
+                        message: modalMessage,
+                        restartCallback: () => { 
+                            closeModal('gameOver'); 
+                            if (isMathMode) {
+                                initializeMathGame();
+                            } else {
+                                resetGuessNumberGame(); 
+                            }
+                        },
                         game: 'guess-number',
                         win: true
                     });
                 }, 1000);
             } else if (guess < guessNumberSecret) {
-                guessNumberFeedback.textContent = "¡Más alto!";
-                guessNumberFeedback.style.color = '#FBBF24'; /* amber-500 */
-                if (guessNumberGameMode === 'multi') {
-                    guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer2Name : guessNumberPlayer1Name;
-                    guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
-                }
+                feedback.textContent = "¡Más alto!";
+                feedback.style.color = '#FBBF24';
+                feedback.classList.add('scale-up-center');
+                input.classList.add('ring-2', 'ring-yellow-400');
+                updateVisualFeedback(guess, guessNumberSecret - guess);
             } else {
-                guessNumberFeedback.textContent = "¡Más bajo!";
-                guessNumberFeedback.style.color = '#FBBF24'; /* amber-500 */
-                if (guessNumberGameMode === 'multi') {
-                    guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer2Name : guessNumberPlayer1Name;
-                    guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
-                }
+                feedback.textContent = "¡Más bajo!";
+                feedback.style.color = '#FBBF24';
+                feedback.classList.add('scale-up-center');
+                input.classList.add('ring-2', 'ring-yellow-400');
+                updateVisualFeedback(guess, guessNumberSecret - guess);
             }
-            updateGuessNumberHintDisplay(); // Update hint display after turn change
-            guessNumberInput.value = ''; // Clear input for next guess
+            if (guessNumberGameMode === 'multi') {
+                guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer2Name : guessNumberPlayer1Name;
+                guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
+            }
+            updateGuessNumberHintDisplay();
+            guessNumberInput.value = '';
+            setTimeout(() => {
+                feedback.classList.remove('scale-up-center', 'shake');
+                input.classList.remove('ring-2', 'ring-green-400', 'ring-red-400', 'ring-yellow-400', 'animate-pulse');
+                submitBtn.classList.remove('animate-bounce');
+            }, 700);
         }
 
         function requestHint() {
@@ -2268,6 +2725,36 @@
         let simonPlayerName;
         let simonButtonDelay = 800; // Initial delay for sequence playback
         let simonPlaybackIndex = 0; // To track current position in sequence playback
+        let simonDifficulty = 'normal'; // Difficulty level: 'easy', 'normal', 'hard', 'expert'
+        
+        // Configuración de dificultades
+        const simonDifficultySettings = {
+            easy: {
+                baseDelay: 1000,
+                speedReduction: 50,
+                minDelay: 500,
+                colorBrightness: 1
+            },
+            normal: {
+                baseDelay: 800,
+                speedReduction: 100,
+                minDelay: 300,
+                colorBrightness: 0.9
+            },
+            hard: {
+                baseDelay: 600,
+                speedReduction: 150,
+                minDelay: 200,
+                colorBrightness: 0.8
+            },
+            expert: {
+                baseDelay: 400,
+                speedReduction: 200,
+                minDelay: 150,
+                colorBrightness: 0.7,
+                fadeEffect: true
+            }
+        };
 
         const simonFeedback = document.getElementById('simon-feedback');
         const simonLevelDisplay = document.getElementById('simon-level');
@@ -2308,6 +2795,46 @@
         Object.values(simonButtons).forEach(button => {
             button.addEventListener('click', (event) => handleSimonButtonClick(event.target.id.replace('simon-', '')));
         });
+
+        function showSimonDifficultySelection(mode, selectedPlayer) {
+            simonPlayerName = selectedPlayer;
+            
+            // Crear la pantalla de selección de dificultad
+            const difficultyScreen = `
+                <div class="flex flex-col items-center justify-center p-8 bg-amber-50 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold mb-6">Elige la Dificultad</h2>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <button onclick="selectDifficultyAndStart('easy')" class="simon-difficulty-btn easy">
+                            <span class="text-lg">😊 Fácil</span><br>
+                            <span class="text-sm">Secuencia lenta y colores brillantes</span>
+                        </button>
+                        <button onclick="selectDifficultyAndStart('normal')" class="simon-difficulty-btn normal">
+                            <span class="text-lg">😃 Normal</span><br>
+                            <span class="text-sm">Velocidad estándar</span>
+                        </button>
+                        <button onclick="selectDifficultyAndStart('hard')" class="simon-difficulty-btn hard">
+                            <span class="text-lg">😈 Difícil</span><br>
+                            <span class="text-sm">Secuencia rápida</span>
+                        </button>
+                        <button onclick="selectDifficultyAndStart('expert')" class="simon-difficulty-btn expert">
+                            <span class="text-lg">🔥 Experto</span><br>
+                            <span class="text-sm">Ultra rápido y colores que se desvanecen</span>
+                        </button>
+                    </div>
+                    <button onclick="showScreen('player-selection')" class="btn-game">
+                        ← Volver
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('simon-difficulty-selection').innerHTML = difficultyScreen;
+            showScreen('simon-difficulty-selection');
+        }
+
+        function selectDifficultyAndStart(difficulty) {
+            simonDifficulty = difficulty;
+            startSimonGame('single', simonPlayerName);
+        }
 
         function startSimonGame(mode, selectedPlayer) {
             // For now, only single player is supported for this game
@@ -2360,10 +2887,19 @@
             simonFeedback.style.color = 'inherit';
             enableSimonButtons(false); // Disable player input during playback
 
-            // Adjust speed based on level
-            if (simonLevel > 4) simonButtonDelay = 600;
-            if (simonLevel > 8) simonButtonDelay = 400;
-            if (simonLevel > 12) simonButtonDelay = 300;
+            // Ajustar velocidad según dificultad y nivel
+            const settings = simonDifficultySettings[simonDifficulty];
+            simonButtonDelay = Math.max(
+                settings.minDelay,
+                settings.baseDelay - (simonLevel * settings.speedReduction)
+            );
+
+            // Aplicar efecto de desvanecimiento en modo experto
+            if (settings.fadeEffect) {
+                Object.values(simonButtons).forEach(button => {
+                    button.classList.add('simon-fade-out');
+                });
+            }
         }
 
         function playSimonSequence() {
