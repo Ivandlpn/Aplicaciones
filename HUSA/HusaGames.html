@@ -520,11 +520,13 @@
     <div id="app-container" class="w-full max-w-md mx-auto bg-white/70 backdrop-blur-sm rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
         
         <!-- Main Menu Screen -->
-        <div id="main-menu" class="p-6 md:p-8">
-            <h1 class="text-5xl md:text-6xl text-center font-display text-amber-600 drop-shadow-lg">HuSa Games</h1>
-            <p class="text-center text-slate-600 mt-2 mb-8">Los Juegos de Hugo y Saúl</p>
+        <div id="main-menu" class="p-6 md:p-8 flex flex-col">
+            <div class="flex-none">
+                <h1 class="text-5xl md:text-6xl text-center font-display text-amber-600 drop-shadow-lg">HuSa Games</h1>
+                <p class="text-center text-slate-600 mt-2 mb-8">Los Juegos de Hugo y Saúl</p>
+            </div>
             
-            <div class="space-y-4">
+            <div class="space-y-4 overflow-y-auto pr-2 flex-grow">
                 <button onclick="showScreen('trivia-menu')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <svg class="game-icon" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.44 12.9 13 13.5 13 14h-2v-.5c0-1.1.45-2.2 1.17-2.92l.9-.92C13.44 9.4 14 8.7 14 8c0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.5-.78 2.79-2.07 3.5z"/>
@@ -988,6 +990,38 @@
         </div>
 
     </div>
+
+    <script>
+        // Lista de imágenes de fondo
+        const backgroundImages = [
+            'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada1.png',
+            'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada2.png',
+            'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada3.png',
+            'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada4.png',
+            'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada5.png',
+            'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada6.png'
+        ];
+
+        let currentBackgroundIndex = -1;
+
+        // Función para cambiar el fondo
+        function changeBackground() {
+            // Seleccionar una imagen aleatoria diferente de la actual
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * backgroundImages.length);
+            } while (newIndex === currentBackgroundIndex && backgroundImages.length > 1);
+            
+            currentBackgroundIndex = newIndex;
+            document.body.style.backgroundImage = `url('${backgroundImages[currentBackgroundIndex]}')`;
+        }
+
+        // Cambiar el fondo inicialmente
+        changeBackground();
+
+        // Cambiar el fondo cada 10 segundos
+        setInterval(changeBackground, 10000);
+    </script>
 
     <div id="confetti-container"></div>
 
@@ -3781,12 +3815,8 @@
         // Initial load and background image logic
         window.onload = () => {
             const backgroundImages = [
-                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada1.png',
-                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada2.png',
                 'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada3.png',
-                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada4.png',
-                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada5.png',
-                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada6.png'
+                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada2.png'
             ];
             const randomIndex = Math.floor(Math.random() * backgroundImages.length);
             const selectedImage = backgroundImages[randomIndex];
