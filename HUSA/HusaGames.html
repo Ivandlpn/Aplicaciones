@@ -8,10 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Playful Harmony -->
-    <!-- Application Structure Plan: A single-page application (SPA) using a view-switching mechanism. DIVs for each screen (main-menu, trivia-menu, trivia-player-selection, trivia-game, tictactoe-menu, tictactoe-player-selection, tictactoe-game, memory-menu, memory-player-selection, memory-game, guess-number-menu, guess-number-player-selection, guess-number-game, simon-menu, simon-player-selection, simon-game, paint-by-number-menu, paint-by-number-player-selection, paint-by-number-game) are toggled between hidden/visible. This creates a fluid, app-like experience without page reloads, which is ideal for kids. The flow is: Main Menu -> Select Game Menu -> Select Player/Mode -> Play -> Return to Game Menu/Main Menu. High scores are now integrated directly into the game screens for single-player modes. This structure is user-friendly and technically simple for a single-file app. -->
-    <!-- Visualization & Content Choices: Main Menu uses large, animated HTML buttons with Unicode icons for intuitive navigation. Game menus (Trivia, Tic-Tac-Toe, Memory, Guess the Number, Simon Says, Paint by Number) allow mode selection (1 or 2 players). New player selection screens for Trivia, Tic-Tac-Toe, Memory, Guess the Number, Simon Says, and Paint by Number. Trivia uses HTML text blocks and a feedback modal for an interactive learning loop, now with turn-based scoring and player names for 2 players. Tic-Tac-Toe uses a CSS grid and X/O symbols for a thematic and asset-free experience, with player names for both 1-player (vs AI) and 2-player modes, now displaying 🤖 instead of IA. The Memory game uses a CSS grid with 3D flip animations on the cards for engagement, now with turn-based logic and player names for 2 players. Added a 'pop' animation for matched memory cards. Guess the Number provides feedback and tracks attempts. Simon Says introduces a sequence of colored buttons for memory challenge. Paint by Number uses a grid and color palette for artistic play. High scores and current game scores are now directly visible on the game screen for single-player modes, styled with normal, clean scoreboards. All interactions are handled by Vanilla JS. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         /* Ensure UTF-8 encoding for proper character display */
         @charset "UTF-8";
@@ -30,34 +26,6 @@
             background-attachment: fixed; /* Keep background fixed when scrolling */
             transition: background-image 1s ease-in-out; /* Smooth transition for background image change */
         }
-
-        /* Removed body::before as it's replaced by animated-background */
-        /* Pseudo-element for the animated background (now removed as per user request for image background) */
-        /*
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 20%),
-                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 15%),
-                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.25) 0%, transparent 18%),
-                radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 12%);
-            background-size: 200% 200%;
-            animation: floatBackground 30s infinite alternate linear;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @keyframes floatBackground {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-        */
 
         h1, h2, h3, .font-display {
             font-family: 'Fredoka One', cursive;
@@ -83,7 +51,6 @@
             backface-visibility: hidden;
             z-index: 1; /* Ensures this face (emoji) is behind initially */
         }
-        /* Removed .bg-pattern as it's replaced by animated-background */
         .btn-game {
             transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, filter 0.2s ease-out; /* Added filter to transition */
         }
@@ -96,7 +63,6 @@
             box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.05); /* Reduced shadow for pressed look */
             filter: brightness(0.85); /* Slightly darker */
         }
-        /* Renamed modal-enter/leave to be more generic for screen transitions */
         .fade-in {
             animation: fadeIn 0.3s ease-out forwards;
         }
@@ -152,6 +118,10 @@
         }
         .bg-paint-by-number-theme {
             background-color: #FDF6F0; /* orange-50, very light orange */
+            transition: background-color 0.3s ease-in-out;
+        }
+        .bg-retos-theme { /* New theme for Retos */
+            background-color: #EEF2FF; /* indigo-50, very light indigo */
             transition: background-color 0.3s ease-in-out;
         }
 
@@ -403,7 +373,7 @@
         <!-- Main Menu Screen -->
         <div id="main-menu" class="p-6 md:p-8">
             <h1 class="text-5xl md:text-6xl text-center font-display text-amber-600 drop-shadow-lg">HuSa Games</h1>
-            <p class="text-center text-slate-600 mt-2 mb-8">¡Elige un juego y a divertirse!</p>
+            <p class="text-center text-slate-600 mt-2 mb-8">Los Juegos de Hugo y Saúl</p>
             
             <div class="space-y-4">
                 <button onclick="showScreen('trivia-menu')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
@@ -442,6 +412,13 @@
                     </svg>
                     Pintar por Números
                 </button>
+                <!-- New button for Retos game -->
+                <button onclick="showScreen('retos-menu')" class="btn-game w-full bg-indigo-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <svg class="game-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                    Retos
+                </button>
             </div>
         </div>
 
@@ -470,8 +447,14 @@
             </div>
             <p class="text-center text-slate-600 mb-6">Elige tu nombre o "Familia":</p>
             <div class="space-y-4">
-                <button onclick="startGameForPlayer(currentSelectedGameType, 'Hugo')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">Hugo</button>
-                <button onclick="startGameForPlayer(currentSelectedGameType, 'Saúl')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">Saúl</button>
+                <button onclick="startGameForPlayer(currentSelectedGameType, 'Hugo')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <img src="https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/hugo.png" alt="Avatar de Hugo" class="w-12 h-12 rounded-full mr-3 object-cover">
+                    Hugo
+                </button>
+                <button onclick="startGameForPlayer(currentSelectedGameType, 'Saúl')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <img src="https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/saul.png" alt="Avatar de Saúl" class="w-12 h-12 rounded-full mr-3 object-cover">
+                    Saúl
+                </button>
                 <button onclick="showFamilyMemberSelection(currentSelectedGameType)" class="btn-game w-full bg-purple-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👨‍👩‍👧‍👦</span> Familia
                 </button>
@@ -609,10 +592,6 @@
                     </button>
                  </div>
             </div>
-            <!-- Removed the high score display for Memory Game -->
-            <!-- <div id="memory-highscore-display" class="text-center text-rose-600 font-semibold mb-3 hidden">
-                <span id="memory-highscore-label"></span> <span id="memory-highscore-value">N/A</span>
-            </div> -->
             <div id="memory-player-turn" class="text-center text-rose-700 font-semibold mb-3 hidden">
                 <span id="memory-current-player-turn"></span><br>
                 <span class="text-base font-semibold">Hugo: <span id="memory-player1-matched">0</span> | Saúl: <span id="memory-player2-matched">0</span></span>
@@ -740,7 +719,6 @@
                     </button>
                 </div>
             </div>
-            <!-- Removed the high score display for Paint by Number -->
             <div id="paint-grid-container" class="w-full aspect-square bg-white rounded-lg shadow-inner overflow-hidden mb-4 grid">
                 <!-- Grid cells will be generated by JS -->
             </div>
@@ -748,6 +726,59 @@
                 <!-- Color buttons will be generated by JS -->
             </div>
             <button onclick="resetPaintByNumberGame()" class="w-full bg-gray-200 text-slate-700 p-2 rounded-lg active:scale-95 active:opacity-75 transition-all duration-100">Reiniciar Imagen</button>
+        </div>
+
+        <!-- Retos Menu Screen (NEW) -->
+        <div id="retos-menu" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="showScreen('main-menu')" class="text-slate-500 hover:text-amber-600 text-2xl mr-4 active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-indigo-600">Retos</h2>
+            </div>
+            <p class="text-center text-slate-600 mb-6">Elige modo de juego:</p>
+            <div class="space-y-4">
+                <button onclick="showSinglePlayerModeSelection('retos')" class="btn-game w-full bg-indigo-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">👤</span> 1 Jugador
+                </button>
+                <button class="btn-game w-full bg-gray-400 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display cursor-not-allowed opacity-70">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Próximamente)
+                </button>
+            </div>
+        </div>
+
+        <!-- Retos Game Screen (NEW) -->
+        <div id="retos-game" class="hidden p-6 md:p-8">
+            <div class="flex justify-between items-center mb-4">
+                <button onclick="showScreen('retos-menu')" class="text-slate-500 hover:text-amber-600 text-2xl active:scale-95 active:opacity-75 transition-all duration-100">←</button>
+                <h2 class="text-3xl font-display text-indigo-600">Retos</h2>
+                <div class="text-lg font-bold bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full">
+                    Retos: <span id="retos-completed-count">0</span>
+                </div>
+            </div>
+            <div id="retos-highscore-display" class="text-center text-indigo-600 font-semibold mb-3">
+                <span id="retos-player-name-display"></span>Mejor: <span id="retos-highscore-value">N/A</span>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-inner mb-4 text-center">
+                <p id="retos-category" class="text-sm text-slate-500 mb-2"></p>
+                <p id="retos-challenge" class="text-xl font-semibold mb-4 min-h-[4rem] flex items-center justify-center"></p>
+                <!-- Bomb visual and timer -->
+                <div class="flex flex-col items-center justify-center mb-4">
+                    <div id="retos-bomb-display" class="text-7xl mb-2">💣</div>
+                    <div class="text-5xl font-extrabold text-indigo-700">
+                        <span id="retos-timer">00</span><span class="text-3xl">s</span>
+                    </div>
+                </div>
+                <p id="retos-feedback" class="text-lg text-slate-700 min-h-[1.5rem]"></p>
+            </div>
+            <div class="grid grid-cols-1 gap-4"> <!-- Changed to 1 column grid -->
+                <button id="retos-done-button" onclick="completeReto()" class="bg-emerald-500 text-white p-4 rounded-xl shadow-lg text-xl font-display active:scale-95 active:opacity-75 transition-all duration-100" disabled>
+                    ¡Desactivar Bomba! 💣
+                </button>
+                <!-- Removed the "No lo hice" button -->
+            </div>
+            <button id="retos-start-next-button" onclick="startNextReto()" class="w-full bg-amber-500 text-white p-3 rounded-lg shadow-md text-xl font-display mt-4 active:scale-95 active:opacity-75 transition-all duration-100">
+                Empezar Reto
+            </button>
+            <button onclick="resetRetosGame()" class="w-full bg-gray-200 text-slate-700 p-2 rounded-lg active:scale-95 active:opacity-75 transition-all duration-100 mt-2">Reiniciar Juego</button>
         </div>
 
 
@@ -799,6 +830,8 @@
             simonGame: document.getElementById('simon-game'),
             paintByNumberMenu: document.getElementById('paint-by-number-menu'),
             paintByNumberGame: document.getElementById('paint-by-number-game'),
+            retosMenu: document.getElementById('retos-menu'), // NEW
+            retosGame: document.getElementById('retos-game'), // NEW
         };
         
         const modals = {
@@ -816,19 +849,13 @@
             const currentScreenElement = document.getElementById(currentScreen);
             const appContainer = document.getElementById('app-container'); // Get app container
 
-            // Remove all specific theme classes from appContainer
-            appContainer.classList.remove('bg-trivia-theme', 'bg-tictactoe-theme', 'bg-memory-theme', 'bg-guess-number-theme', 'bg-simon-theme', 'bg-paint-by-number-theme');
-            
-            // Re-add the default translucent white for screens that don't have a specific theme,
-            // or if we are going back to the main menu.
-            if (screenId === 'main-menu') {
-                appContainer.classList.add('bg-white/70');
-            } else {
-                appContainer.classList.remove('bg-white/70'); // Remove default translucent white if a game theme is applied
-            }
+            // Remove all specific theme classes and default translucent white/blur
+            appContainer.classList.remove('bg-trivia-theme', 'bg-tictactoe-theme', 'bg-memory-theme', 'bg-guess-number-theme', 'bg-simon-theme', 'bg-paint-by-number-theme', 'bg-retos-theme', 'bg-white/70', 'backdrop-blur-sm', 'bg-white');
 
             // Apply theme based on screenId
-            if (screenId.startsWith('trivia')) {
+            if (screenId === 'main-menu') {
+                appContainer.classList.add('bg-white/70', 'backdrop-blur-sm');
+            } else if (screenId.startsWith('trivia')) {
                 appContainer.classList.add('bg-trivia-theme');
             } else if (screenId.startsWith('tictactoe')) {
                 appContainer.classList.add('bg-tictactoe-theme');
@@ -840,6 +867,12 @@
                 appContainer.classList.add('bg-simon-theme');
             } else if (screenId.startsWith('paint-by-number')) {
                 appContainer.classList.add('bg-paint-by-number-theme');
+            } else if (screenId.startsWith('retos')) { // NEW
+                appContainer.classList.add('bg-retos-theme');
+            }
+            else if (screenId === 'single-player-mode-selection' || screenId === 'family-member-selection') {
+                // For player selection screens, use a solid white background
+                appContainer.classList.add('bg-white');
             }
             
             if (currentScreenElement && currentScreenElement !== targetScreen) {
@@ -944,6 +977,14 @@
                         titleElement.classList.add('tie-animation');
                         titleElement.style.color = '#FBBF24'; /* amber-500 */
                     }
+                } else if (options.game === 'retos') { // NEW
+                    if (options.win) {
+                        titleElement.classList.add('win-animation');
+                        titleElement.style.color = '#4F46E5'; /* indigo-600 */
+                    } else {
+                        titleElement.classList.add('lose-animation');
+                        titleElement.style.color = '#EF4444'; /* red-500 */
+                    }
                 }
 
                 document.getElementById('gameover-restart-btn').onclick = options.restartCallback;
@@ -956,6 +997,7 @@
                     else if (options.game === 'guess-number') showScreen('guess-number-menu');
                     else if (options.game === 'simon') showScreen('simon-menu');
                     else if (options.game === 'paint-by-number') showScreen('paint-by-number-menu');
+                    else if (options.game === 'retos') showScreen('retos-menu'); // NEW
                     else showScreen('main-menu'); // Default fallback
                 };
             }
@@ -1030,33 +1072,38 @@
             if (gameType === 'trivia') {
                 titleElement.textContent = 'Preguntas y Respuestas';
                 titleElement.classList.add('text-emerald-600');
-                titleElement.classList.remove('text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                titleElement.classList.remove('text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600', 'text-indigo-600');
                 backButton.onclick = () => showScreen('trivia-menu');
             } else if (gameType === 'tictactoe') {
                 titleElement.textContent = 'Tres en Raya';
                 titleElement.classList.add('text-sky-600');
-                titleElement.classList.remove('text-emerald-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600', 'text-indigo-600');
                 backButton.onclick = () => showScreen('tictactoe-menu');
             } else if (gameType === 'memory') {
                 titleElement.textContent = 'Memocartas';
                 titleElement.classList.add('text-rose-600');
-                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600', 'text-indigo-600');
                 backButton.onclick = () => showScreen('memory-menu');
             } else if (gameType === 'guess-number') {
                 titleElement.textContent = 'Adivina el Número';
                 titleElement.classList.add('text-green-600');
-                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-fuchsia-600', 'text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-fuchsia-600', 'text-orange-600', 'text-indigo-600');
                 backButton.onclick = () => showScreen('guess-number-menu');
             } else if (gameType === 'simon') {
                 titleElement.textContent = 'Simon Dice';
                 titleElement.classList.add('text-fuchsia-600');
-                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-orange-600', 'text-indigo-600');
                 backButton.onclick = () => showScreen('simon-menu');
             } else if (gameType === 'paint-by-number') {
                 titleElement.textContent = 'Pintar por Números';
                 titleElement.classList.add('text-orange-600');
-                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-indigo-600');
                 backButton.onclick = () => showScreen('paint-by-number-menu');
+            } else if (gameType === 'retos') { // NEW
+                titleElement.textContent = 'Retos';
+                titleElement.classList.add('text-indigo-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                backButton.onclick = () => showScreen('retos-menu');
             }
 
             showScreen('single-player-mode-selection');
@@ -1070,22 +1117,25 @@
             const titleElement = document.getElementById('family-member-title');
             if (gameType === 'trivia') {
                 titleElement.classList.add('text-emerald-600');
-                titleElement.classList.remove('text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                titleElement.classList.remove('text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600', 'text-indigo-600');
             } else if (gameType === 'tictactoe') {
                 titleElement.classList.add('text-sky-600');
-                titleElement.classList.remove('text-emerald-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600', 'text-indigo-600');
             } else if (gameType === 'memory') {
                 titleElement.classList.add('text-rose-600');
-                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600', 'text-indigo-600');
             } else if (gameType === 'guess-number') {
                 titleElement.classList.add('text-green-600');
-                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-fuchsia-600', 'text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-fuchsia-600', 'text-orange-600', 'text-indigo-600');
             } else if (gameType === 'simon') {
                 titleElement.classList.add('text-fuchsia-600');
-                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-orange-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-orange-600', 'text-indigo-600');
             } else if (gameType === 'paint-by-number') {
                 titleElement.classList.add('text-orange-600');
-                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-indigo-600');
+            } else if (gameType === 'retos') { // NEW
+                titleElement.classList.add('text-indigo-600');
+                titleElement.classList.remove('text-emerald-600', 'text-sky-600', 'text-rose-600', 'text-green-600', 'text-fuchsia-600', 'text-orange-600');
             }
 
             otherFamilyPlayers.forEach(player => {
@@ -1111,6 +1161,8 @@
                 startSimonGame('single', playerName);
             } else if (gameType === 'paint-by-number') {
                 startPaintByNumberGame('single', playerName);
+            } else if (gameType === 'retos') { // NEW
+                startRetosGame('single', playerName);
             }
         }
 
@@ -1133,7 +1185,7 @@
             { category: "Tecnología", question: "¿Qué significan las siglas 'URL' en Internet?", answers: ["Universal Resource Locator", "United Radio Link", "User Registration Link", "Ultra Rapid Link"], correct: 0, explanation: "URL significa 'Localizador Uniforme de Recursos' (Universal Resource Locator), que es básicamente la dirección de una página web en Internet." },
             { category: "Tecnología", question: "¿Qué botón del teclado se usa para borrar el carácter que está a la izquierda del cursor?", answers: ["Enter", "Shift", "Barra espaciadora", "Retroceso (Backspace)"], correct: 3, explanation: "La tecla Retroceso o Backspace (a menudo marcada con una flecha hacia la izquierda) borra el carácter que está a la izquierda del cursor." },
             { category: "Tecnología", question: "¿Qué dispositivo de entrada nos permite controlar el puntero en la pantalla de la computadora?", answers: ["El teclado", "El ratón (mouse)", "La impresora", "El monitor"], correct: 1, explanation: "El ratón o mouse es el dispositivo que nos permite mover el puntero en la pantalla y hacer clic en los elementos." },
-            { category: "Tecnología", question: "¿Qué significa 'descargar' un archivo de Internet?", answers: ["Eliminar un archivo", "Copiar un archivo de Internet a tu dispositivo", "Mover un archivo a la papelera", "Comprimir un archivo"], correct: 1, explanation: "Descargar significa copiar un archivo o información de Internet a tu computadora, teléfono u otro dispositivo." },
+            { category: "Tecnología", question: "¿Qué significa 'descargar' un archivo de Internet撈", answers: ["Eliminar un archivo", "Copiar un archivo de Internet a tu dispositivo", "Mover un archivo a la papelera", "Comprimir un archivo"], correct: 1, explanation: "Descargar significa copiar un archivo o información de Internet a tu computadora, teléfono u otro dispositivo." },
             { category: "Tecnología", question: "¿Qué aplicación te permite hacer videollamadas con otras personas?", answers: ["Word", "Excel", "Zoom o Meet", "PowerPoint"], correct: 2, explanation: "Aplicaciones como Zoom, Google Meet o Microsoft Teams permiten hacer videollamadas con varias personas a la vez." },
             { category: "Tecnología", question: "¿Qué debes hacer si recibes un mensaje de un desconocido pidiendo información personal?", answers: ["Responder con mis datos", "Compartirlo con mis amigos", "No responder y avisar a un adulto", "Hacer clic en los enlaces que envíe"], correct: 2, explanation: "Nunca debes compartir información personal con desconocidos. Es importante no responder y avisar a un adulto de confianza." },
             { category: "Geografía de España", question: "¿Cuál es la capital de España?", answers: ["Barcelona", "Madrid", "Valencia", "Sevilla"], correct: 1, explanation: "Madrid es la capital de España y la ciudad más poblada del país, situada en el centro de la península ibérica." },
@@ -1172,7 +1224,7 @@
             { category: "Inglés", question: "¿Qué palabra en inglés significa 'grande'?", answers: ["Small", "Big", "Little", "Tiny"], correct: 1, explanation: "'Big' significa 'grande' en inglés. 'Small' y 'little' significan pequeño, y 'tiny' significa muy pequeño." },
             { category: "Inglés", question: "¿Cómo se dice 'rojo' en inglés?", answers: ["Blue", "Green", "Red", "Yellow"], correct: 2, explanation: "'Red' es la palabra en inglés para 'rojo'. 'Blue' es azul, 'green' es verde y 'yellow' es amarillo." },
             { category: "Inglés", question: "¿Qué palabra inglesa completa la frase: 'I ___ a student'?", answers: ["Is", "Am", "Are", "Be"], correct: 1, explanation: "La frase correcta es 'I am a student' (Yo soy un estudiante). En inglés, 'I' siempre va con 'am'." },
-            { category: "Inglés", question: "¿Cómo se dice 'hermano' en inglés?", answers: ["Sister", "Mother", "Father", "Brother"], correct: 3, explanation: "'Brother' significa 'hermano' en inglés. 'Sister' es hermana, 'mother' es madre y 'father' es padre." },
+            { category: "Inglés", question: "¿Cómo se dice 'hermano' en inglés?", answers: ["Sister", "Mother", "Father", "Brother"], correct: 3, explanation: "''Brother' significa 'hermano' en inglés. 'Sister' es hermana, 'mother' es madre y 'father' es padre." },
             { category: "Inglés", question: "¿Qué palabra inglesa significa 'feliz'?", answers: ["Sad", "Happy", "Angry", "Tired"], correct: 1, explanation: "'Happy' significa 'feliz' en inglés. 'Sad' es triste, 'angry' es enojado y 'tired' es cansado." },
             { category: "Inglés", question: "¿Cómo se dice 'uno' en inglés?", answers: ["Two", "One", "Three", "Four"], correct: 1, explanation: "'One' es 'uno' en inglés. 'Two' es dos, 'three' es tres y 'four' es cuatro." },
             { category: "Inglés", question: "¿Qué palabra inglesa completa la frase: 'The cat is ___ the table'?", answers: ["On", "In", "At", "By"], correct: 0, explanation: "La frase correcta es 'The cat is on the table' (El gato está sobre la mesa). 'On' se usa para indicar que algo está sobre una superficie." },
@@ -1186,22 +1238,6 @@
             { category: "Inteligencia Artificial", question: "¿Qué es un robot?", answers: ["Solo un juguete", "Un programa de computadora", "Una máquina que puede realizar tareas automáticamente", "Un tipo de teléfono"], correct: 2, explanation: "Un robot es una máquina programable que puede realizar tareas de manera automática, a veces con la ayuda de IA. No todos los robots tienen forma humana." },
             { category: "Inteligencia Artificial", question: "¿Qué es el reconocimiento facial?", answers: ["Una forma de identificar personas en fotos usando IA", "Un tipo de maquillaje", "Una red social", "Un juego de adivinanzas"], correct: 0, explanation: "El reconocimiento facial es una tecnología de IA que puede identificar o verificar a una persona a partir de una imagen o video, analizando patrones en sus rasgos faciales." },
             { category: "Inteligencia Artificial", question: "¿Qué es un algoritmo en IA?", answers: ["Un tipo de robot", "Un conjunto de pasos para resolver un problema", "Un lenguaje de programación", "Un dispositivo de almacenamiento"], correct: 1, explanation: "Un algoritmo es un conjunto de instrucciones paso a paso que una computadora sigue para resolver un problema o realizar una tarea. En IA, los algoritmos ayudan a las máquinas a aprender de los datos." },
-            { category: "Deportes", question: "¿Cuántos jugadores tiene un equipo de fútbol en el campo?", answers: ["11", "9", "7", "12"], correct: 0, explanation: "Un equipo de fútbol estándar tiene 11 jugadores en el campo, incluyendo al portero." },
-            { category: "Animales", question: "Verdadero o Falso: El guepardo es el animal terrestre más rápido.", answers: ["Verdadero", "Falso"], correct: 0, explanation: "¡Es cierto! El guepardo puede alcanzar velocidades de hasta 120 km/h en distancias cortas." },
-            { category: "Historia", question: "¿Quién descubrió América en 1492?", answers: ["Marco Polo", "Vasco de Gama", "Cristóbal Colón", "Hernán Cortés"], correct: 2, explanation: "Cristóbal Colón llegó a América en 1492, aunque él creía haber llegado a las Indias." },
-            { category: "Geografía", question: "¿Cuál es el río más largo del mundo?", answers: ["Nilo", "Amazonas", "Misisipi", "Yangtsé"], correct: 1, explanation: "El río Amazonas en Sudamérica es considerado el más largo y caudaloso del mundo." },
-            { category: "Matemáticas", question: "¿Cuánto es 12 x 12?", answers: ["124", "132", "144", "156"], correct: 2, explanation: "12 multiplicado por 12 es igual a 144. ¡Buen cálculo!" },
-            { category: "Animales", question: "¿Cuál es el mamífero más grande del mundo?", answers: ["Elefante", "Jirafa", "Ballena Azul", "Rinoceronte"], correct: 2, explanation: "La Ballena Azul es el animal más grande que ha existido jamás, ¡más grande que cualquier dinosaurio!" },
-            { category: "Curiosidades", question: "¿Cuántos corazones tiene un pulpo?", answers: ["1", "2", "3", "4"], correct: 2, explanation: "¡Los pulpos tienen 3 corazones! Dos bombean sangre a las branquias y el tercero al resto del cuerpo. Además, su sangre es azul por una proteína llamada hemocianina." },
-            { category: "Curiosidades", question: "¿Cuál es el único mamífero que puede volar?", answers: ["El murciélago", "La ardilla voladora", "El colibrí", "La zarigüeya voladora"], correct: 0, explanation: "El murciélago es el único mamífero que puede volar realmente. Las ardillas y zarigüeyas solo planean, y los colibríes son aves, no mamíferos." },
-            { category: "Curiosidades", question: "¿Qué planeta del sistema solar tiene el día más largo?", answers: ["Venus", "Marte", "Júpiter", "Mercurio"], correct: 0, explanation: "¡Un día en Venus dura más que un año en Venus! Un día venusiano equivale a 243 días terrestres, mientras que su año es de solo 225 días terrestres." },
-            { category: "Curiosidades", question: "¿Cuál es el hueso más pequeño del cuerpo humano?", answers: ["Estribo (en el oído)", "Falange del dedo meñique", "Hueso hioides", "Rótula"], correct: 0, explanation: "El estribo, ubicado en el oído medio, mide solo 2.6-3.4 mm de longitud. Es uno de los tres huesecillos que transmiten el sonido al oído interno." },
-            { category: "Curiosidades", question: "¿Qué fruta tiene sus semillas por fuera?", answers: ["La fresa", "La manzana", "La naranja", "El plátano"], correct: 0, explanation: "¡Las fresas son las únicas frutas que llevan sus semillas en el exterior! Cada fresa tiene alrededor de 200 semillas en su superficie." },
-            { category: "Curiosidades", question: "¿Cuál es el animal más ruidoso del mundo en relación a su tamaño?", answers: ["El león", "La ballena azul", "La cigarra", "El mono aullador"], correct: 2, explanation: "La cigarra puede producir sonidos de hasta 120 decibelios, similar a un concierto de rock. ¡Y todo con un cuerpo de solo 5 cm de largo!" },
-            { category: "Curiosidades", question: "¿Cuántos músculos trabajan cuando das un solo paso?", answers: ["Menos de 50", "Entre 50 y 100", "Entre 100 y 200", "Más de 200"], correct: 3, explanation: "¡Dar un solo paso involucra a más de 200 músculos trabajando juntos! Es una de las acciones más complejas que realiza el cuerpo humano." },
-            { category: "Curiosidades", question: "¿Qué porcentaje del cuerpo humano es agua?", answers: ["30-40%", "45-55%", "55-65%", "70-80%"], correct: 2, explanation: "Aproximadamente el 60% del cuerpo humano adulto es agua. Los bebés tienen un porcentaje aún mayor, alrededor del 75-78%." },
-            { category: "Curiosidades", question: "¿Qué planeta tiene el año más corto?", answers: ["Mercurio", "Venus", "Júpiter", "Neptuno"], correct: 0, explanation: "Mercurio tiene el año más corto del sistema solar: solo 88 días terrestres para completar una órbita alrededor del Sol." },
-            { category: "Curiosidades", question: "¿Qué animal puede girar su cabeza 270 grados?", answers: ["El búho", "El camaleón", "La jirafa", "El gato"], correct: 0, explanation: "Los búhos pueden girar su cabeza hasta 270 grados gracias a su cuello súper flexible y un sistema circulatorio especial que evita que se mareen." },
             { category: "Deportes", question: "Verdadero o Falso: Los Juegos Olímpicos se celebran cada 5 años.", answers: ["Verdadero", "Falso"], correct: 1, explanation: "Falso. Los Juegos Olímpicos de Verano e Invierno se celebran cada 4 años." },
             
             // New questions about Málaga
@@ -1658,7 +1694,6 @@
             const availableSides = emptyCells.filter(idx => sides.includes(idx));
             if (availableSides.length > 0) {
                 move = availableSides[Math.floor(Math.random() * availableSides.length)];
-                console.log("AI: Taking side at", move);
                 const cell = document.querySelector(`#tictactoe-board button[data-index='${move}']`);
                 handleCellClick(cell, move);
                 return;
@@ -1679,7 +1714,7 @@
             sports: ['⚽️', '🏀', '🏈', '⚾️', '🎾', '🏐', '🎱', '🏓', '⛳️', '🏒', '🥊', '🏊‍♂️'], // 12 emojis
             animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐸'], // 12 emojis
             symbols: ['❤️', '⭐️', '⚡️', '🌈', '💡', '💎', '💰', '🔑', '🚀', '⏳', '💡', '🏆'], // 12 emojis
-            flags: ['🇪🇸', '🇫�', '🇩🇪', '🇮🇹', '🇬🇧', '🇺🇸', '🇯🇵', '🇨🇳', '🇧🇷', '🇨🇦', '🇦🇺', '🇮🇳'], // 12 emojis
+            flags: ['🇪🇸', '🇫🇷', '🇩🇪', '🇮🇹', '🇬🇧', '🇺🇸', '🇯🇵', '🇨🇳', '🇧🇷', '🇨🇦', '🇦🇺', '🇮🇳'], // 12 emojis
             food: ['🍎', '🍌', '🍕', '🍔', '🍟', '🍦', '🍩', '🍪', '🍓', '🍇', '🍉', '🍍'], // New food theme
             space: ['🚀', '🌕', '⭐️', '🪐', '☄️', '🌌', '🔭', '🛰️', '👽', '👨‍🚀', '👩‍🚀', '💫'] // New space theme
         };
@@ -2031,7 +2066,7 @@
                 if (memoryPlayer1MatchedPairs > memoryPlayer2MatchedPairs) {
                     finalMessage = `¡Felicidades ${memoryPlayer1Name}! Ganaste con ${memoryPlayer1MatchedPairs} parejas contra ${memoryPlayer2MatchedPairs} de ${memoryPlayer2Name}.`; // FIX: Corrected variable names and added player names
                 } else if (memoryPlayer2MatchedPairs > memoryPlayer1MatchedPairs) { // FIX: Corrected variable name
-                    finalMessage = `¡Felicidades ${memoryPlayer2Name}! Ganaste con ${memory2PlayerMatchedPairs} parejas contra ${memoryPlayer1MatchedPairs} de ${memoryPlayer1Name}.`; // FIX: Corrected variable names and added player names
+                    finalMessage = `¡Felicidades ${memoryPlayer2Name}! Ganaste con ${memoryPlayer2MatchedPairs} parejas contra ${memoryPlayer1MatchedPairs} de ${memoryPlayer1Name}.`; // FIX: Corrected variable names and added player names
                 } else {
                     finalMessage = `¡Es un empate! Ambos jugadores encontraron ${memoryPlayer1MatchedPairs} parejas.`;
                 }
@@ -2147,7 +2182,7 @@
                 let winnerName = guessNumberGameMode === 'single' ? guessNumberPlayerName : guessNumberCurrentPlayer;
 
                 if (guessNumberGameMode === 'single') {
-                    saveGuessNumberHighScore(guessNumberPlayerName, guessNumberAttempts);
+                    saveGuessNumberHighScore(winnerName, guessNumberAttempts); // Pass winnerName to save high score
                 }
                 
                 setTimeout(() => {
@@ -2826,13 +2861,392 @@
             }
         }
 
+        // --- Retos Game Logic (NEW) ---
+        // Define all possible challenges for the Retos game
+        const allRetosChallenges = [
+            { type: "color_bomb", timeLimitSeconds: 5 },
+            { type: "starting_letter", timeLimitSeconds: 5 },
+            { type: "shape_bomb", timeLimitSeconds: 5 },
+            { type: "temperature_bomb", timeLimitSeconds: 5 },
+            { type: "sound_bomb", timeLimitSeconds: 5 },
+            { type: "category_bomb", timeLimitSeconds: 5 },
+            // New challenges below
+            { type: "physical_squats", timeLimitSeconds: 8, reps: 3 },
+            { type: "physical_pushups", timeLimitSeconds: 10, reps: 3 },
+            { type: "physical_jumping_jacks", timeLimitSeconds: 8, reps: 5 },
+            { type: "find_object_count", timeLimitSeconds: 10 },
+            { type: "make_animal_sound", timeLimitSeconds: 7 },
+            { type: "touch_texture", timeLimitSeconds: 7 },
+            { type: "action_verb", timeLimitSeconds: 5 },
+            { type: "balance_challenge", timeLimitSeconds: 7 },
+            { type: "mimic_emotion", timeLimitSeconds: 5 },
+            { type: "find_number", timeLimitSeconds: 8 }
+        ];
+
+        // Data for new challenges
+        const bombColors = ['rojo', 'azul', 'verde', 'amarillo', 'naranja', 'morado', 'rosa', 'negro', 'blanco'];
+        const alphabetLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'Z'];
+        const shapes = ['cuadrado', 'redondo', 'triangular', 'rectangular', 'ovalado'];
+        const temperatures = ['frío', 'caliente'];
+        const sounds = ['que suene', 'que vibre', 'que cruja', 'que haga clic'];
+        const categories = ['una fruta', 'un juguete', 'una prenda de ropa', 'un utensilio de cocina', 'un libro', 'un animal', 'una planta'];
+        const animals = ['perro', 'gato', 'león', 'elefante', 'pájaro', 'serpiente'];
+        const textures = ['suave', 'rugoso', 'liso'];
+        const actions = ['salta', 'gira', 'aplaude', 'corre en el sitio'];
+        const emotions = ['feliz', 'triste', 'enfadado', 'sorprendido', 'asustado'];
+        const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+
+        let retosPlayerName;
+        let retosCompletedCount;
+        let retosGameActive;
+        let retosCurrentChallenge; // Stores the current challenge object
+        let retosTimerInterval;
+        let retosCurrentTimeLeft;
+        let retosCurrentChallengeDetail; // Stores the randomly chosen color or letter for the challenge
+        let shuffledRetosChallenges = []; // To store the shuffled challenges for the current game
+
+        const retosCategoryDisplay = document.getElementById('retos-category');
+        const retosChallengeDisplay = document.getElementById('retos-challenge');
+        const retosTimerDisplay = document.getElementById('retos-timer');
+        const retosFeedbackDisplay = document.getElementById('retos-feedback');
+        const retosCompletedCountDisplay = document.getElementById('retos-completed-count');
+        const retosHighscoreValue = document.getElementById('retos-highscore-value');
+        const retosPlayerNameDisplay = document.getElementById('retos-player-name-display');
+        const retosDoneButton = document.getElementById('retos-done-button');
+        const retosStartNextButton = document.getElementById('retos-start-next-button');
+        const retosBombDisplay = document.getElementById('retos-bomb-display'); // New bomb display element
+
+        // Tone.js sounds for Retos
+        const retosSounds = {
+            start: new Tone.Synth().toDestination(),
+            success: new Tone.Synth().toDestination(), // General success, not defuse
+            fail: new Tone.Synth().toDestination(),
+            countdown: new Tone.Synth().toDestination(), // For timer tick
+            bombExplode: new Tone.NoiseSynth({
+                noise: {
+                    type: "white"
+                },
+                envelope: {
+                    attack: 0.01,
+                    decay: 0.2,
+                    sustain: 0,
+                    release: 0.1
+                }
+            }).toDestination(), // New for explosion
+            bombDefuse: new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: {
+                    attack: 0.05,
+                    decay: 0.8,
+                    sustain: 0.0,
+                    release: 0.5
+                }
+            }).toDestination() // New for defuse
+        };
+
+        const retosNotes = {
+            start: "C6", // High pitch for game start
+            success: "G5", // Success sound
+            fail: "C3", // Low pitch for failure
+            countdown: "C4", // Tick sound
+            bombDefuse: ["C4", "E4", "G4", "C5"] // Defuse chord
+        };
+
+        function playRetosSound(type) {
+            Tone.start(); // Ensure audio context is started
+            if (type === 'start') {
+                retosSounds.start.triggerAttackRelease(retosNotes.start, "16n");
+            } else if (type === 'success') {
+                retosSounds.success.triggerAttackRelease(retosNotes.success, "8n");
+            } else if (type === 'fail') {
+                retosSounds.fail.triggerAttackRelease(retosNotes.fail, "4n");
+            } else if (type === 'countdown') {
+                retosSounds.countdown.triggerAttackRelease(retosNotes.countdown, "32n"); // Short tick
+            } else if (type === 'bombExplode') {
+                retosSounds.bombExplode.triggerAttackRelease("4n"); // Short burst of noise
+            } else if (type === 'bombDefuse') {
+                retosSounds.bombDefuse.triggerAttackRelease(retosNotes.bombDefuse, "1.5s");
+            }
+        }
+
+        function startRetosGame(mode, selectedPlayer) {
+            // For now, only single player is supported for this game
+            if (mode !== 'single') {
+                console.error("Modo de juego no soportado para Retos.");
+                return;
+            }
+            retosPlayerName = selectedPlayer;
+            resetRetosGame();
+            showScreen('retos-game');
+        }
+
+        function resetRetosGame() {
+            retosCompletedCount = 0;
+            retosGameActive = false;
+            retosCurrentChallenge = null; // No challenge loaded yet
+            stopRetosTimer();
+            // Shuffle all challenges for a new game
+            shuffledRetosChallenges = [...allRetosChallenges];
+            shuffleArray(shuffledRetosChallenges);
+
+            retosCompletedCountDisplay.textContent = retosCompletedCount;
+            retosPlayerNameDisplay.textContent = `${retosPlayerName}: `;
+            const highscore = localStorage.getItem(`highscore_retos_${retosPlayerName}`);
+            retosHighscoreValue.textContent = highscore !== null ? highscore : 'N/A';
+
+            retosCategoryDisplay.textContent = '';
+            retosChallengeDisplay.textContent = 'Pulsa "Empezar Reto" para jugar.';
+            retosTimerDisplay.textContent = '00';
+            retosFeedbackDisplay.textContent = '';
+            retosBombDisplay.textContent = '💣'; // Reset bomb visual
+
+            retosDoneButton.disabled = true;
+            retosStartNextButton.disabled = false; // Enable start button
+            retosStartNextButton.textContent = 'Empezar Reto';
+
+            console.log(`[Retos] Juego reiniciado para ${retosPlayerName}.`);
+        }
+
+        function startNextReto() {
+            playRetosSound('start');
+            retosGameActive = true;
+            
+            // Get the next challenge from the shuffled array
+            if (shuffledRetosChallenges.length === 0) {
+                // If all challenges have been played, reshuffle
+                shuffledRetosChallenges = [...allRetosChallenges];
+                shuffleArray(shuffledRetosChallenges);
+            }
+            retosCurrentChallenge = shuffledRetosChallenges.shift(); // Take one from the front
+
+            retosCurrentTimeLeft = retosCurrentChallenge.timeLimitSeconds;
+            retosTimerDisplay.textContent = String(retosCurrentTimeLeft).padStart(2, '0');
+
+            retosDoneButton.disabled = false;
+            retosStartNextButton.disabled = true; // Disable until reto is done/failed
+
+            let challengeText = '';
+            let categoryText = '';
+
+            if (retosCurrentChallenge.type === "color_bomb") {
+                retosCurrentChallengeDetail = bombColors[Math.floor(Math.random() * bombColors.length)];
+                categoryText = `Categoría: ¡Bomba de Color!`;
+                challengeText = `¡Toca un objeto de color ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "starting_letter") {
+                retosCurrentChallengeDetail = alphabetLetters[Math.floor(Math.random() * alphabetLetters.length)];
+                categoryText = `Categoría: ¡Bomba de Letra!`;
+                challengeText = `¡Toca un objeto que empiece por la letra "${retosCurrentChallengeDetail}" y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "shape_bomb") {
+                retosCurrentChallengeDetail = shapes[Math.floor(Math.random() * shapes.length)];
+                categoryText = `Categoría: ¡Bomba de Forma!`;
+                challengeText = `¡Toca un objeto de forma ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "temperature_bomb") {
+                retosCurrentChallengeDetail = temperatures[Math.floor(Math.random() * temperatures.length)];
+                categoryText = `Categoría: ¡Bomba de Temperatura!`;
+                challengeText = `¡Toca un objeto que esté ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "sound_bomb") {
+                retosCurrentChallengeDetail = sounds[Math.floor(Math.random() * sounds.length)];
+                categoryText = `Categoría: ¡Bomba de Sonido!`;
+                challengeText = `¡Toca un objeto ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "category_bomb") {
+                retosCurrentChallengeDetail = categories[Math.floor(Math.random() * categories.length)];
+                categoryText = `Categoría: ¡Bomba de Categoría!`;
+                challengeText = `¡Toca ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "physical_squats") {
+                categoryText = `Categoría: ¡Reto Físico!`;
+                challengeText = `¡Haz ${retosCurrentChallenge.reps} sentadillas y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "physical_pushups") {
+                categoryText = `Categoría: ¡Reto Físico!`;
+                challengeText = `¡Haz ${retosCurrentChallenge.reps} flexiones y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "physical_jumping_jacks") {
+                categoryText = `Categoría: ¡Reto Físico!`;
+                challengeText = `¡Haz ${retosCurrentChallenge.reps} saltos de estrella y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "find_object_count") {
+                const count = Math.floor(Math.random() * 3) + 2; // 2, 3, or 4
+                const color = bombColors[Math.floor(Math.random() * bombColors.length)];
+                retosCurrentChallengeDetail = { count, color };
+                categoryText = `Categoría: ¡Bomba de Observación!`;
+                challengeText = `¡Encuentra ${count} objetos de color ${color} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "make_animal_sound") {
+                retosCurrentChallengeDetail = animals[Math.floor(Math.random() * animals.length)];
+                categoryText = `Categoría: ¡Reto Creativo!`;
+                challengeText = `¡Haz el sonido de un ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "touch_texture") {
+                retosCurrentChallengeDetail = textures[Math.floor(Math.random() * textures.length)];
+                categoryText = `Categoría: ¡Bomba de Textura!`;
+                challengeText = `¡Toca algo ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "action_verb") {
+                retosCurrentChallengeDetail = actions[Math.floor(Math.random() * actions.length)];
+                categoryText = `Categoría: ¡Reto de Acción!`;
+                challengeText = `¡${retosCurrentChallengeDetail.charAt(0).toUpperCase() + retosCurrentChallengeDetail.slice(1)} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "balance_challenge") {
+                categoryText = `Categoría: ¡Reto de Equilibrio!`;
+                challengeText = `¡Mantente a la pata coja durante 3 segundos y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "mimic_emotion") {
+                retosCurrentChallengeDetail = emotions[Math.floor(Math.random() * emotions.length)];
+                categoryText = `Categoría: ¡Reto de Expresión!`;
+                challengeText = `¡Haz una cara de ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            } else if (retosCurrentChallenge.type === "find_number") {
+                retosCurrentChallengeDetail = numbers[Math.floor(Math.random() * numbers.length)];
+                categoryText = `Categoría: ¡Bomba Numérica!`;
+                challengeText = `¡Encuentra el número ${retosCurrentChallengeDetail} y vuelve para desactivar la bomba!`;
+            }
+
+
+            retosCategoryDisplay.textContent = categoryText;
+            retosChallengeDisplay.textContent = challengeText;
+            retosFeedbackDisplay.textContent = '';
+            retosBombDisplay.textContent = '💣'; // Show bomb emoji
+
+            startRetosTimer();
+        }
+
+        function startRetosTimer() {
+            stopRetosTimer(); // Clear any existing timer
+            retosTimerInterval = setInterval(() => {
+                retosCurrentTimeLeft--;
+                retosTimerDisplay.textContent = String(retosCurrentTimeLeft).padStart(2, '0');
+                playRetosSound('countdown'); // Play tick sound
+
+                if (retosCurrentTimeLeft <= 0) {
+                    stopRetosTimer();
+                    failReto(true); // Automatically fail if time runs out
+                }
+            }, 1000);
+        }
+
+        function stopRetosTimer() {
+            if (retosTimerInterval) {
+                clearInterval(retosTimerInterval);
+                retosTimerInterval = null;
+            }
+        }
+
+        function completeReto() {
+            if (!retosGameActive) return;
+            stopRetosTimer();
+            playRetosSound('bombDefuse'); // Play defuse sound
+            retosCompletedCount++;
+            retosCompletedCountDisplay.textContent = retosCompletedCount;
+            
+            let feedbackMessage = "";
+            if (retosCurrentChallenge.type === "color_bomb") {
+                feedbackMessage = `¡Bomba desactivada! ¡Encontraste el color ${retosCurrentChallengeDetail}!`;
+            } else if (retosCurrentChallenge.type === "starting_letter") {
+                feedbackMessage = `¡Bomba desactivada! ¡Encontraste un objeto que empieza por "${retosCurrentChallengeDetail}"!`;
+            } else if (retosCurrentChallenge.type === "shape_bomb") {
+                feedbackMessage = `¡Bomba desactivada! ¡Encontraste un objeto de forma ${retosCurrentChallengeDetail}!`;
+            } else if (retosCurrentChallenge.type === "temperature_bomb") {
+                feedbackMessage = `¡Bomba desactivada! ¡Encontraste un objeto ${retosCurrentChallengeDetail}!`;
+            } else if (retosCurrentChallenge.type === "sound_bomb") {
+                feedbackMessage = `¡Bomba desactivada! ¡Encontraste un objeto ${retosCurrentChallengeDetail}!`;
+            } else if (retosCurrentChallenge.type === "category_bomb") {
+                feedbackMessage = `¡Bomba desactivada! ¡Encontraste ${retosCurrentChallengeDetail}!`;
+            } else if (retosCurrentChallenge.type === "physical_squats") {
+                feedbackMessage = `¡Bomba desactivada! ¡Hiciste ${retosCurrentChallenge.reps} sentadillas!`;
+            } else if (retosCurrentChallenge.type === "physical_pushups") {
+                feedbackMessage = `¡Bomba desactivada! ¡Hiciste ${retosCurrentChallenge.reps} flexiones!`;
+            } else if (retosCurrentChallenge.type === "physical_jumping_jacks") {
+                feedbackMessage = `¡Bomba desactivada! ¡Hiciste ${retosCurrentChallenge.reps} saltos de estrella!`;
+            } else if (retosCurrentChallenge.type === "find_object_count") {
+                feedbackMessage = `¡Bomba desactivada! ¡Encontraste ${retosCurrentChallengeDetail.count} objetos de color ${retosCurrentChallengeDetail.color}!`;
+            } else if (retosCurrentChallenge.type === "make_animal_sound") {
+                feedbackMessage = `¡Bomba desactivada! ¡Hiciste el sonido de un ${retosCurrentChallengeDetail}!`;
+            } else if (retosCurrentChallenge.type === "touch_texture") {
+                feedbackMessage = `¡Bomba desactivada! ¡Tocaste algo ${retosCurrentChallengeDetail}!`;
+            } else if (retosCurrentChallenge.type === "action_verb") {
+                feedbackMessage = `¡Bomba desactivada! ¡${retosCurrentChallengeDetail.charAt(0).toUpperCase() + retosCurrentChallengeDetail.slice(1)}!`;
+            } else if (retosCurrentChallenge.type === "balance_challenge") {
+                feedbackMessage = `¡Bomba desactivada! ¡Mantuviste el equilibrio!`;
+            } else if (retosCurrentChallenge.type === "mimic_emotion") {
+                feedbackMessage = `¡Bomba desactivada! ¡Hiciste una cara de ${retosCurrentChallengeDetail}!`;
+            } else if (retosCurrentChallenge.type === "find_number") {
+                feedbackMessage = `¡Bomba desactivada! ¡Encontraste el número ${retosCurrentChallengeDetail}!`;
+            }
+
+            retosFeedbackDisplay.textContent = feedbackMessage;
+            retosFeedbackDisplay.style.color = '#10B981'; /* emerald-600 */
+            retosBombDisplay.textContent = '✅'; // Defused bomb emoji
+            endRetoRound(true); // Pass true for success
+        }
+
+        function failReto(timeUp = false) {
+            if (!retosGameActive) return;
+            stopRetosTimer();
+            playRetosSound('bombExplode'); // Play explode sound
+            
+            let feedbackMessage = "";
+            if (retosCurrentChallenge.type === "color_bomb") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No tocaste un objeto de color ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "starting_letter") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No encontraste un objeto que empieza por "${retosCurrentChallengeDetail}" a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "shape_bomb") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No encontraste un objeto de forma ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "temperature_bomb") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No encontraste un objeto ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "sound_bomb") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No encontraste un objeto ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "category_bomb") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No encontraste ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "physical_squats") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No hiciste ${retosCurrentChallenge.reps} sentadillas a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "physical_pushups") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No hiciste ${retosCurrentChallenge.reps} flexiones a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "physical_jumping_jacks") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No hiciste ${retosCurrentChallenge.reps} saltos de estrella a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "find_object_count") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No encontraste ${retosCurrentChallengeDetail.count} objetos de color ${retosCurrentChallengeDetail.color} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "make_animal_sound") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No hiciste el sonido de un ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "touch_texture") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No tocaste algo ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "action_verb") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "balance_challenge") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No mantuviste el equilibrio a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "mimic_emotion") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No hiciste una cara de ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            } else if (retosCurrentChallenge.type === "find_number") {
+                feedbackMessage = timeUp ? "¡BOOM! ¡La bomba explotó! 💥" : `¡Reto fallido! No encontraste el número ${retosCurrentChallengeDetail} a tiempo. ❌`;
+            }
+
+            retosFeedbackDisplay.textContent = feedbackMessage;
+            retosFeedbackDisplay.style.color = '#EF4444'; /* red-500 */
+            retosBombDisplay.textContent = '💥'; // Exploded bomb emoji
+            endRetoRound(false); // Pass false for failure
+        }
+
+        function endRetoRound(success) {
+            retosGameActive = false;
+            retosDoneButton.disabled = true;
+            retosStartNextButton.disabled = false;
+            retosStartNextButton.textContent = 'Siguiente Reto';
+            
+            // Only save high score if the reto was completed successfully
+            if (success) {
+                saveRetosHighScore(retosPlayerName, retosCompletedCount);
+            }
+        }
+
+        function saveRetosHighScore(playerName, score) {
+            const key = `highscore_retos_${playerName}`;
+            const currentHighScore = parseInt(localStorage.getItem(key) || '0');
+            console.log(`[Retos] Saving high score for ${playerName}. New score: ${score}, Current best: ${currentHighScore}`);
+            if (score > currentHighScore) {
+                localStorage.setItem(key, score);
+                console.log(`[Retos] New high score saved: ${score} for ${playerName}`);
+                retosHighscoreValue.textContent = score; // Update display immediately
+            } else {
+                console.log(`[Retos] No new high score for ${playerName}. Score: ${score}, Current best: ${currentHighScore}`);
+            }
+        }
+
         // Initial load and background image logic
         window.onload = () => {
             const backgroundImages = [
-                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada1.png',
-                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada2.png',
                 'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada3.png',
-                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada4.jpeg'
+                'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada2.png'
             ];
             const randomIndex = Math.floor(Math.random() * backgroundImages.length);
             const selectedImage = backgroundImages[randomIndex];
