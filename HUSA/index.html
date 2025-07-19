@@ -1260,15 +1260,13 @@
         let currentTurn = null;
 
         function startMultiPlayerGame() {
-            // Establecer el primer turno aleatorio
-            currentTurn = Math.random() < 0.5 ? selectedPlayer1 : selectedPlayer2;
-            
+            // En modo multijugador siempre son dos jugadores humanos
             switch (currentGameType) {
                 case 'trivia':
-                    startTrivia('multi', selectedPlayer1, selectedPlayer2, currentTurn);
+                    startTrivia('multi', selectedPlayer1, selectedPlayer2);
                     break;
                 case 'tictactoe':
-                    startTicTacToe('human', selectedPlayer1, selectedPlayer2);
+                    startTicTacToe('multi', selectedPlayer1, selectedPlayer2);
                     break;
                 case 'memory':
                     showMemorySetupSelection('multi', selectedPlayer1, selectedPlayer2);
@@ -2782,15 +2780,25 @@
         let mathGameDifficulty = 'normal';
 
         function startGameGuessNumber(mode, player1Name, player2Name = null) {
+            // Limpiar cualquier estado anterior
             guessNumberGameMode = mode;
             guessNumberPlayer1Name = player1Name;
             guessNumberPlayer2Name = player2Name;
-            guessNumberCurrentPlayer = player1Name; // Asegurar que siempre empiece el jugador 1
+            guessNumberCurrentPlayer = player1Name; // Siempre empieza el jugador 1
             
-            // Si es modo matemático, inicializar variables específicas
+            // Configurar el modo de juego
             if (mode === 'math') {
                 initializeMathGame();
+            } else if (mode === 'multi') {
+                // Asegurarnos de que tenemos dos jugadores válidos
+                if (!player1Name || !player2Name) {
+                    console.error('Se requieren dos jugadores para el modo multijugador');
+                    return;
+                }
+                document.getElementById('guess-number-mode-text').textContent = '👥 Modo Multijugador';
+                resetGuessNumberGame();
             } else {
+                document.getElementById('guess-number-mode-text').textContent = '👤 Modo Un Jugador';
                 resetGuessNumberGame();
             }
             showScreen('guess-number-game');
@@ -2877,10 +2885,18 @@
             guessNumberInput.disabled = false;
             guessNumberHintButton.disabled = false; // Explicitly enable the button here
 
-            // Configurar el modo correcto
+            // Configurar el modo correcto y mostrar información de jugadores
             if (guessNumberGameMode === 'multi') {
+                document.getElementById('guess-number-mode-text').textContent = '👥 Modo Multijugador';
                 guessNumberCurrentPlayer = guessNumberPlayer1Name; // Siempre empezar con el jugador 1
+                guessNumberHighscoreDisplay.classList.add('hidden');
+                guessNumberPlayerTurnDisplay.classList.remove('hidden');
                 updateGuessNumberPlayerTurnDisplay();
+            } else {
+                document.getElementById('guess-number-mode-text').textContent = '👤 Modo Un Jugador';
+                guessNumberPlayerName = guessNumberPlayer1Name;
+                guessNumberHighscoreDisplay.classList.remove('hidden');
+                guessNumberPlayerTurnDisplay.classList.add('hidden');
             }
             
             // Reiniciar elementos visuales
@@ -3000,7 +3016,7 @@
             guessNumberAttemptsDisplay.textContent = guessNumberAttempts;
 
             if (guess === guessNumberSecret) {
-                feedback.textContent = `¡Correcto! Adivinaste el número ${guessNumberSecret}.`;
+                feedback.textContent = `¡Correcto! ${guessNumberCurrentPlayer} adivinó el número ${guessNumberSecret}.`;
                 feedback.style.color = '#10B981';
                 feedback.classList.add('scale-up-center');
                 input.classList.add('ring-2', 'ring-green-400', 'animate-pulse');
@@ -3009,7 +3025,7 @@
                 guessNumberInput.disabled = true;
                 guessNumberHintButton.disabled = true;
 
-                let winnerName = guessNumberGameMode === 'single' ? guessNumberPlayerName : guessNumberCurrentPlayer;
+                let winnerName = guessNumberCurrentPlayer;
                 if (guessNumberGameMode === 'single') {
                     saveGuessNumberHighScore(winnerName, guessNumberAttempts);
                 }
@@ -3046,9 +3062,10 @@
                 input.classList.add('ring-2', 'ring-yellow-400');
                 updateVisualFeedback(guess, guessNumberSecret - guess);
             }
-            if (guessNumberGameMode === 'multi' && guess !== guessNumberSecret) {
-                // Solo cambiar el turno si no se ha ganado el juego
+            if (guessNumberGameMode === 'multi') {
+                // Cambiar el turno después de cada intento, independientemente del resultado
                 guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer2Name : guessNumberPlayer1Name;
+                updateGuessNumberPlayerTurnDisplay(); // Actualizar el display del turno
                 guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
             }
             updateGuessNumberHintDisplay();
