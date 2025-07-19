@@ -71,6 +71,25 @@
             box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.05); /* Reduced shadow for pressed look */
             filter: brightness(0.85); /* Slightly darker */
         }
+        .mute-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 9999px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+        .mute-button:hover {
+            background-color: rgba(255, 255, 255, 0.95);
+            transform: scale(1.1);
+        }
+        .mute-button:active {
+            transform: scale(0.95);
+        }
         .fade-in {
             animation: fadeIn 0.3s ease-out forwards;
         }
@@ -591,7 +610,7 @@
         </div>
 
         <!-- Generic Single Player Mode Selection Screen -->
-        <div id="single-player-mode-selection" class="hidden p-6 md:p-8">
+        <div id="single-player-mode-selection" class="hidden p-6 md:p-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg">
             <div class="flex justify-start items-center mb-6">
                 <button id="single-player-mode-back-button" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
                 <h2 id="single-player-mode-title" class="text-3xl font-display text-emerald-600">¿Quién juega?</h2>
@@ -704,7 +723,7 @@
         </div>
 
         <!-- Multi Player Mode Selection Screen -->
-        <div id="multi-player-mode-selection" class="hidden p-6 md:p-8">
+        <div id="multi-player-mode-selection" class="hidden p-6 md:p-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg">
             <div class="flex justify-start items-center mb-6">
                 <button onclick="history.back()" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -1177,17 +1196,24 @@
         function showFamilyMemberSelectionForMulti(playerNumber) {
             // Guardar el número de jugador actual para saber a quién asignar la selección
             sessionStorage.setItem('multiPlayerNumber', playerNumber.toString());
+            sessionStorage.setItem('returnToMulti', 'true'); // Marcar que debemos volver al modo multi
             showFamilyMemberSelection(currentGameType);
         }
 
         function selectFamilyMemberForMulti(familyMember) {
             const playerNumber = parseInt(sessionStorage.getItem('multiPlayerNumber'));
+            const currentGame = sessionStorage.getItem('currentGameType');
+            
             if (playerNumber === 1) {
                 selectFirstPlayer(familyMember);
             } else {
                 selectSecondPlayer(familyMember);
             }
-            showScreen('multi-player-mode-selection');
+
+            if (sessionStorage.getItem('returnToMulti') === 'true') {
+                sessionStorage.removeItem('returnToMulti'); // Limpiar el flag
+                showMultiPlayerModeSelection(currentGame);
+            }
         }
 
         function checkMultiPlayerSelection() {
@@ -1586,6 +1612,7 @@
 
         function showFamilyMemberSelection(gameType) {
             currentSelectedGameType = gameType;
+            sessionStorage.setItem('currentGameType', gameType); // Guardar el tipo de juego actual
             const container = document.getElementById('family-member-buttons');
             container.innerHTML = ''; // Clear previous buttons
 
@@ -3015,6 +3042,7 @@
         let simonButtonDelay = 800; // Initial delay for sequence playback
         let simonPlaybackIndex = 0; // To track current position in sequence playback
         let simonDifficulty = 'normal'; // Difficulty level: 'easy', 'normal', 'hard', 'expert'
+        let isSimonMuted = false; // Variable para controlar el estado del sonido
         
         // Configuración de dificultades
         const simonDifficultySettings = {
@@ -3074,8 +3102,19 @@
         };
 
         function playSimonSound(color) {
+            if (isSimonMuted) return; // No reproducir sonido si está silenciado
             if (simonSounds[color] && simonNotes[color]) {
                 simonSounds[color].triggerAttackRelease(simonNotes[color], "8n"); // Play note for 1/8th note duration
+            }
+        }
+
+        function toggleSimonMute() {
+            isSimonMuted = !isSimonMuted;
+            const muteIcon = document.getElementById('simon-mute-icon');
+            if (isSimonMuted) {
+                muteIcon.setAttribute('d', 'M11.5 4.5l-3.5 3H5c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h3l3.5 3V4.5z M20 4l-4 4m0 0l-4 4m4-4l4 4m-4-4l-4-4');
+            } else {
+                muteIcon.setAttribute('d', 'M15.5 8.5a7 7 0 0 1 0 7M18 6a10 10 0 0 1 0 12M11.5 4.5l-3.5 3H5c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h3l3.5 3V4.5z');
             }
         }
 
@@ -3727,6 +3766,7 @@
         let retosGameActive;
         let retosCurrentChallenge; // Stores the current challenge object
         let retosTimerInterval;
+        let isRetosMuted = false; // Variable para controlar el sonido
         let retosCurrentTimeLeft;
         let retosCurrentChallengeDetail; // Stores the randomly chosen color or letter for the challenge
         let shuffledRetosChallenges = []; // To store the shuffled challenges for the current game
@@ -3779,6 +3819,8 @@
         };
 
         function playRetosSound(type) {
+            if (isRetosMuted) return; // No reproducir sonido si está silenciado
+            
             Tone.start(); // Ensure audio context is started
             if (type === 'start') {
                 retosSounds.start.triggerAttackRelease(retosNotes.start, "16n");
@@ -3792,6 +3834,16 @@
                 retosSounds.bombExplode.triggerAttackRelease("4n"); // Short burst of noise
             } else if (type === 'bombDefuse') {
                 retosSounds.bombDefuse.triggerAttackRelease(retosNotes.bombDefuse, "1.5s");
+            }
+        }
+
+        function toggleRetosMute() {
+            isRetosMuted = !isRetosMuted;
+            const muteIcon = document.getElementById('retos-mute-icon');
+            if (isRetosMuted) {
+                muteIcon.setAttribute('d', 'M11.5 4.5l-3.5 3H5c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h3l3.5 3V4.5z M20 4l-4 4m0 0l-4 4m4-4l4 4m-4-4l-4-4');
+            } else {
+                muteIcon.setAttribute('d', 'M15.5 8.5a7 7 0 0 1 0 7M18 6a10 10 0 0 1 0 12M11.5 4.5l-3.5 3H5c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h3l3.5 3V4.5z');
             }
         }
 
@@ -4068,6 +4120,34 @@
         }
 
         // Initial load and background image logic
+        // Nueva función para manejar la selección de familia
+        function handleFamilySelection(playerNumber) {
+            // Guardamos el estado actual del juego
+            sessionStorage.setItem('currentGameState', {
+                gameType: currentGameType,
+                playerNumber: playerNumber,
+                isMultiPlayer: true
+            });
+            
+            showScreen('family-member-selection');
+        }
+
+        // Función para manejar la selección de un miembro específico de la familia
+        function selectFamilyMember(member) {
+            const gameState = JSON.parse(sessionStorage.getItem('currentGameState'));
+            
+            if (gameState.isMultiPlayer) {
+                if (gameState.playerNumber === 1) {
+                    selectFirstPlayer(member);
+                } else {
+                    selectSecondPlayer(member);
+                }
+                showScreen('multi-player-mode-selection');
+            } else {
+                startGame(gameState.gameType, 'single', member);
+            }
+        }
+
         window.onload = () => {
             const backgroundImages = [
                 'https://ivandlpn.github.io/Aplicaciones/HUSA/img/portada/portada3.png',
