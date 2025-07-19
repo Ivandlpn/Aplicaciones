@@ -584,8 +584,8 @@
                 <button onclick="showSinglePlayerModeSelection('trivia')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
-                <button onclick="startTrivia('multi')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
+                <button onclick="showMultiPlayerModeSelection('trivia')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores
                 </button>
             </div>
         </div>
@@ -662,8 +662,8 @@
                 <button onclick="showSinglePlayerModeSelection('tictactoe')" class="btn-game w-full bg-sky-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
-                <button onclick="startTicTacToe('human')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
+                <button onclick="showMultiPlayerModeSelection('tictactoe')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores
                 </button>
             </div>
         </div>
@@ -697,10 +697,75 @@
                 <button onclick="showSinglePlayerModeSelection('memory')" class="btn-game w-full bg-rose-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
-                <button onclick="showMemorySetupSelection(null)" class="btn-game w-full bg-purple-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
+                <button onclick="showMultiPlayerModeSelection('memory')" class="btn-game w-full bg-purple-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores
                 </button>
             </div>
+        </div>
+
+        <!-- Multi Player Mode Selection Screen -->
+        <div id="multi-player-mode-selection" class="hidden p-6 md:p-8">
+            <div class="flex justify-start items-center mb-6">
+                <button onclick="history.back()" class="bg-amber-400 hover:bg-amber-500 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h2 class="text-3xl font-display text-emerald-600">Elegir Jugadores</h2>
+            </div>
+            
+            <!-- Indicador de jugadores seleccionados -->
+            <div class="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg mb-6 text-center">
+                <div class="flex items-center justify-center text-2xl font-display">
+                    <span id="selected-player1-display" class="text-emerald-600 opacity-50">Jugador 1</span>
+                    <span id="vs-display" class="mx-4 text-amber-500 opacity-50">vs</span>
+                    <span id="selected-player2-display" class="text-sky-600 opacity-50">Jugador 2</span>
+                </div>
+            </div>
+
+            <!-- Contenedor con scroll para las selecciones de jugadores -->
+            <div class="overflow-y-auto max-h-[50vh] pr-2 space-y-6">
+                <!-- Primer Jugador -->
+                <div class="mb-6">
+                    <p class="text-lg font-semibold text-slate-700 mb-3">Jugador 1:</p>
+                    <div class="player1-buttons space-y-2">
+                        <button onclick="selectFirstPlayer('Hugo')" data-player="Hugo" class="btn-game w-full bg-emerald-500 text-white p-3 rounded-xl shadow-lg flex items-center justify-center text-xl font-display transition-all">
+                            <img src="https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/hugo.png" alt="Avatar de Hugo" class="w-10 h-10 rounded-full mr-3 object-cover">
+                            Hugo
+                        </button>
+                        <button onclick="selectFirstPlayer('Saúl')" data-player="Saúl" class="btn-game w-full bg-sky-500 text-white p-3 rounded-xl shadow-lg flex items-center justify-center text-xl font-display transition-all">
+                            <img src="https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/saul.png" alt="Avatar de Saúl" class="w-10 h-10 rounded-full mr-3 object-cover">
+                            Saúl
+                        </button>
+                        <button onclick="showFamilyMemberSelectionForMulti(1)" data-player="familia" class="btn-game w-full bg-purple-500 text-white p-3 rounded-xl shadow-lg flex items-center justify-center text-xl font-display transition-all">
+                            <span class="mr-3">👨‍👩‍👧‍👦</span> Familia
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Segundo Jugador -->
+                <div class="mb-6">
+                    <p class="text-lg font-semibold text-slate-700 mb-3">Jugador 2:</p>
+                    <div class="player2-buttons space-y-2">
+                        <button onclick="selectSecondPlayer('Hugo')" data-player="Hugo" class="btn-game w-full bg-emerald-500 text-white p-3 rounded-xl shadow-lg flex items-center justify-center text-xl font-display transition-all">
+                            <img src="https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/hugo.png" alt="Avatar de Hugo" class="w-10 h-10 rounded-full mr-3 object-cover">
+                            Hugo
+                        </button>
+                        <button onclick="selectSecondPlayer('Saúl')" data-player="Saúl" class="btn-game w-full bg-sky-500 text-white p-3 rounded-xl shadow-lg flex items-center justify-center text-xl font-display transition-all">
+                            <img src="https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/saul.png" alt="Avatar de Saúl" class="w-10 h-10 rounded-full mr-3 object-cover">
+                            Saúl
+                        </button>
+                        <button onclick="showFamilyMemberSelectionForMulti(2)" data-player="familia" class="btn-game w-full bg-purple-500 text-white p-3 rounded-xl shadow-lg flex items-center justify-center text-xl font-display transition-all">
+                            <span class="mr-3">👨‍👩‍👧‍👦</span> Familia
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de inicio (inicialmente deshabilitado) -->
+            <button id="start-multiplayer-game" onclick="startMultiPlayerGame()" class="w-full bg-amber-500 text-white p-4 rounded-xl shadow-lg text-2xl font-display opacity-50 cursor-not-allowed mt-4" disabled>
+                ¡Empezar a Jugar!
+            </button>
         </div>
 
         <!-- Memory Setup Selection Screen -->
@@ -769,8 +834,8 @@
                 <button onclick="showSinglePlayerModeSelection('guess-number')" class="btn-game w-full bg-green-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <span class="mr-3">👤</span> 1 Jugador
                 </button>
-                <button onclick="startGameGuessNumber('multi', 'Hugo', 'Saúl')" class="btn-game w-full bg-lime-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
-                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores (Hugo vs Saúl)
+                <button onclick="showMultiPlayerModeSelection('guess-number')" class="btn-game w-full bg-lime-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
+                    <span class="mr-3">🧑‍🤝‍🧑</span> 2 Jugadores
                 </button>
                 <!-- Nuevo botón para Modo Matemático -->
                 <button onclick="startGameGuessNumber('math')" class="btn-game w-full bg-blue-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
@@ -1003,24 +1068,214 @@
         ];
 
         let currentBackgroundIndex = -1;
+        let selectedPlayer1 = null;
+        let selectedPlayer2 = null;
+        let currentGameType = null;
 
         // Función para cambiar el fondo
         function changeBackground() {
-            // Seleccionar una imagen aleatoria diferente de la actual
+            let storedIndex = sessionStorage.getItem('backgroundIndex');
             let newIndex;
-            do {
-                newIndex = Math.floor(Math.random() * backgroundImages.length);
-            } while (newIndex === currentBackgroundIndex && backgroundImages.length > 1);
             
-            currentBackgroundIndex = newIndex;
-            document.body.style.backgroundImage = `url('${backgroundImages[currentBackgroundIndex]}')`;
+            // Solo cambiar el fondo si no hay uno almacenado o es un reinicio de juego
+            if (!storedIndex || !document.referrer) {
+                do {
+                    newIndex = Math.floor(Math.random() * backgroundImages.length);
+                } while (newIndex === currentBackgroundIndex && backgroundImages.length > 1);
+                
+                currentBackgroundIndex = newIndex;
+                sessionStorage.setItem('backgroundIndex', newIndex);
+                document.body.style.backgroundImage = `url('${backgroundImages[currentBackgroundIndex]}')`;
+            } else {
+                // Usar el fondo almacenado
+                currentBackgroundIndex = parseInt(storedIndex);
+                document.body.style.backgroundImage = `url('${backgroundImages[currentBackgroundIndex]}')`;
+            }
         }
 
-        // Cambiar el fondo inicialmente
-        changeBackground();
+        // Funciones para el modo multijugador
+        function showMultiPlayerModeSelection(gameType) {
+            currentGameType = gameType;
+            selectedPlayer1 = null;
+            selectedPlayer2 = null;
+            document.getElementById('start-multiplayer-game').disabled = true;
+            document.getElementById('start-multiplayer-game').classList.add('opacity-50', 'cursor-not-allowed');
+            showScreen('multi-player-mode-selection');
+        }
 
-        // Cambiar el fondo cada 10 segundos
-        setInterval(changeBackground, 10000);
+        function selectFirstPlayer(player) {
+            // Remover selección visual previa
+            document.querySelectorAll('.player1-buttons button').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-amber-400', 'scale-105');
+            });
+            
+            // Añadir selección visual al botón elegido
+            const selectedButton = document.querySelector(`.player1-buttons button[data-player="${player}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('ring-4', 'ring-amber-400', 'scale-105');
+            }
+            
+            selectedPlayer1 = player;
+            checkMultiPlayerSelection();
+            
+            // Actualizar el estado visual del jugador seleccionado
+            updatePlayerSelectionDisplay();
+        }
+
+        function selectSecondPlayer(player) {
+            if (player === selectedPlayer1) {
+                alert('Por favor, elige un jugador diferente al Jugador 1');
+                return;
+            }
+            
+            // Remover selección visual previa
+            document.querySelectorAll('.player2-buttons button').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-amber-400', 'scale-105');
+            });
+            
+            // Añadir selección visual al botón elegido
+            const selectedButton = document.querySelector(`.player2-buttons button[data-player="${player}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('ring-4', 'ring-amber-400', 'scale-105');
+            }
+            
+            selectedPlayer2 = player;
+            checkMultiPlayerSelection();
+            
+            // Actualizar el estado visual del jugador seleccionado
+            updatePlayerSelectionDisplay();
+        }
+
+        function updatePlayerSelectionDisplay() {
+            const player1Display = document.getElementById('selected-player1-display');
+            const player2Display = document.getElementById('selected-player2-display');
+            const vsDisplay = document.getElementById('vs-display');
+
+            if (selectedPlayer1) {
+                player1Display.textContent = selectedPlayer1;
+                player1Display.classList.remove('opacity-50');
+            } else {
+                player1Display.textContent = 'Jugador 1';
+                player1Display.classList.add('opacity-50');
+            }
+
+            if (selectedPlayer2) {
+                player2Display.textContent = selectedPlayer2;
+                player2Display.classList.remove('opacity-50');
+            } else {
+                player2Display.textContent = 'Jugador 2';
+                player2Display.classList.add('opacity-50');
+            }
+
+            if (selectedPlayer1 && selectedPlayer2) {
+                vsDisplay.classList.remove('opacity-50');
+            } else {
+                vsDisplay.classList.add('opacity-50');
+            }
+        }
+
+        function showFamilyMemberSelectionForMulti(playerNumber) {
+            // Guardar el número de jugador actual para saber a quién asignar la selección
+            sessionStorage.setItem('multiPlayerNumber', playerNumber.toString());
+            showFamilyMemberSelection(currentGameType);
+        }
+
+        function selectFamilyMemberForMulti(familyMember) {
+            const playerNumber = parseInt(sessionStorage.getItem('multiPlayerNumber'));
+            if (playerNumber === 1) {
+                selectFirstPlayer(familyMember);
+            } else {
+                selectSecondPlayer(familyMember);
+            }
+            showScreen('multi-player-mode-selection');
+        }
+
+        function checkMultiPlayerSelection() {
+            const startButton = document.getElementById('start-multiplayer-game');
+            if (selectedPlayer1 && selectedPlayer2 && selectedPlayer1 !== selectedPlayer2) {
+                startButton.disabled = false;
+                startButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                startButton.disabled = true;
+                startButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        let currentTurn = null;
+
+        function startMultiPlayerGame() {
+            // Establecer el primer turno aleatorio
+            currentTurn = Math.random() < 0.5 ? selectedPlayer1 : selectedPlayer2;
+            
+            switch (currentGameType) {
+                case 'trivia':
+                    startTrivia('multi', selectedPlayer1, selectedPlayer2, currentTurn);
+                    break;
+                case 'tictactoe':
+                    startTicTacToe('human', selectedPlayer1, selectedPlayer2, currentTurn);
+                    break;
+                case 'memory':
+                    showMemorySetupSelection(null, selectedPlayer1, selectedPlayer2, currentTurn);
+                    break;
+                case 'guess-number':
+                    startGameGuessNumber('multi', selectedPlayer1, selectedPlayer2, currentTurn);
+                    break;
+            }
+        }
+
+        function switchTurn() {
+            currentTurn = currentTurn === selectedPlayer1 ? selectedPlayer2 : selectedPlayer1;
+            updateTurnDisplay();
+        }
+
+        function updateTurnDisplay() {
+            const turnDisplay = document.querySelector('.current-turn-display');
+            if (turnDisplay) {
+                turnDisplay.textContent = `Turno de: ${currentTurn}`;
+                turnDisplay.className = `current-turn-display text-lg font-bold ${
+                    currentTurn === selectedPlayer1 ? 'text-emerald-600' : 'text-sky-600'
+                }`;
+            }
+        }
+
+        function showTurnIndicator(container) {
+            // Crear o actualizar el indicador de turno
+            let turnIndicator = container.querySelector('.current-turn-display');
+            if (!turnIndicator) {
+                turnIndicator = document.createElement('div');
+                turnIndicator.className = 'current-turn-display text-lg font-bold mb-4 text-center';
+                container.insertBefore(turnIndicator, container.firstChild);
+            }
+            updateTurnDisplay();
+        }
+
+        // Función para inicializar el fondo al cargar o reiniciar
+        function initializeBackground() {
+            // Si no hay un fondo guardado, elegir uno aleatorio
+            if (!sessionStorage.getItem('currentBackground')) {
+                changeBackground();
+            }
+        }
+
+        // Ejecutar al cargar la página
+        initializeBackground();
+
+        // Agregar al evento de reinicio del juego
+        document.addEventListener('DOMContentLoaded', function() {
+            // Eliminar el índice de fondo almacenado cuando se regresa al menú principal
+            const menuButtons = document.querySelectorAll('[onclick*="showScreen(\'main-menu\')"]');
+            menuButtons.forEach(button => {
+                const originalOnClick = button.getAttribute('onclick');
+                button.setAttribute('onclick', `sessionStorage.removeItem('backgroundIndex'); ${originalOnClick}`);
+            });
+            
+            // Cambiar el fondo en los reinicios
+            const restartButtons = document.querySelectorAll('[onclick*="restart"], [onclick*="reset"]');
+            restartButtons.forEach(button => {
+                const originalOnClick = button.getAttribute('onclick');
+                button.setAttribute('onclick', `sessionStorage.removeItem('backgroundIndex'); ${originalOnClick}; changeBackground();`);
+            });
+        });
     </script>
 
     <div id="confetti-container"></div>
