@@ -1171,7 +1171,22 @@
             const vsDisplay = document.getElementById('vs-display');
 
             if (selectedPlayer1) {
-                player1Display.textContent = selectedPlayer1;
+                // Limpiar contenido anterior
+                player1Display.innerHTML = '';
+                
+                // Agregar avatar si es un miembro de la familia
+                if (playerAvatars[selectedPlayer1]) {
+                    const img = document.createElement('img');
+                    img.src = `https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/${playerAvatars[selectedPlayer1]}`;
+                    img.alt = `Avatar de ${selectedPlayer1}`;
+                    img.className = 'w-8 h-8 rounded-full mr-2 inline-block';
+                    player1Display.appendChild(img);
+                }
+                
+                // Agregar nombre
+                const span = document.createElement('span');
+                span.textContent = selectedPlayer1;
+                player1Display.appendChild(span);
                 player1Display.classList.remove('opacity-50');
             } else {
                 player1Display.textContent = 'Jugador 1';
@@ -1179,7 +1194,22 @@
             }
 
             if (selectedPlayer2) {
-                player2Display.textContent = selectedPlayer2;
+                // Limpiar contenido anterior
+                player2Display.innerHTML = '';
+                
+                // Agregar avatar si es un miembro de la familia
+                if (playerAvatars[selectedPlayer2]) {
+                    const img = document.createElement('img');
+                    img.src = `https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/${playerAvatars[selectedPlayer2]}`;
+                    img.alt = `Avatar de ${selectedPlayer2}`;
+                    img.className = 'w-8 h-8 rounded-full mr-2 inline-block';
+                    player2Display.appendChild(img);
+                }
+                
+                // Agregar nombre
+                const span = document.createElement('span');
+                span.textContent = selectedPlayer2;
+                player2Display.appendChild(span);
                 player2Display.classList.remove('opacity-50');
             } else {
                 player2Display.textContent = 'Jugador 2';
@@ -1238,13 +1268,13 @@
                     startTrivia('multi', selectedPlayer1, selectedPlayer2, currentTurn);
                     break;
                 case 'tictactoe':
-                    startTicTacToe('human', selectedPlayer1, selectedPlayer2, currentTurn);
+                    startTicTacToe('human', selectedPlayer1, selectedPlayer2);
                     break;
                 case 'memory':
-                    showMemorySetupSelection(null, selectedPlayer1, selectedPlayer2, currentTurn);
+                    showMemorySetupSelection('multi', selectedPlayer1, selectedPlayer2);
                     break;
                 case 'guess-number':
-                    startGameGuessNumber('multi', selectedPlayer1, selectedPlayer2, currentTurn);
+                    startGameGuessNumber('multi', selectedPlayer1, selectedPlayer2);
                     break;
             }
         }
@@ -1546,6 +1576,24 @@
         }
 
         // --- Global Player List and Selection Logic ---
+        const playerAvatars = {
+            'Hugo': 'hugo.png',
+            'Saúl': 'saul.png',
+            'Papá': 'papa.png',
+            'Mamá': 'mama.png',
+            'Yoyo': 'yoyo.png',
+            'Yaya': 'yaya.png',
+            'Abuela': 'abuelaana.png',
+            'Abuelo': 'abueloquiri.png',
+            'Tito Samu': 'titosamu.png',
+            'Tita Lidia': 'titalidia.png',
+            'Tito Iván': 'titoivan.png',
+            'Tita Tere': 'titatere.png',
+            'Tito Freek': 'titofreek.png',
+            'Prima Gema': 'primagema.png',
+            'Primo Oliver': 'primooliver.png'
+        };
+
         const allFamilyPlayers = ['Hugo', 'Saúl', 'Papá', 'Mamá', 'Yoyo', 'Yaya', 'Abuela', 'Abuelo', 'Tito Samu', 'Tita Lidia', 'Tito Iván', 'Tita Tere', 'Tito Freek', 'Prima Gema', 'Primo Oliver'];
         const corePlayers = ['Hugo', 'Saúl'];
         const otherFamilyPlayers = allFamilyPlayers.filter(player => !corePlayers.includes(player));
@@ -1643,7 +1691,19 @@
             otherFamilyPlayers.forEach(player => {
                 const button = document.createElement('button');
                 button.className = `btn-game w-full ${getPlayerColorClass(player)} text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display`;
-                button.textContent = player;
+                
+                // Crear y agregar la imagen del avatar
+                const img = document.createElement('img');
+                img.src = `https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/${playerAvatars[player]}`;
+                img.alt = `Avatar de ${player}`;
+                img.className = 'w-12 h-12 rounded-full mr-3 object-cover';
+                button.appendChild(img);
+
+                // Agregar el nombre del jugador
+                const span = document.createElement('span');
+                span.textContent = player;
+                button.appendChild(span);
+
                 button.onclick = () => startGameForPlayer(gameType, player);
                 container.appendChild(button);
             });
@@ -2725,6 +2785,7 @@
             guessNumberGameMode = mode;
             guessNumberPlayer1Name = player1Name;
             guessNumberPlayer2Name = player2Name;
+            guessNumberCurrentPlayer = player1Name; // Asegurar que siempre empiece el jugador 1
             
             // Si es modo matemático, inicializar variables específicas
             if (mode === 'math') {
@@ -2815,6 +2876,12 @@
             guessNumberAttemptsDisplay.textContent = guessNumberAttempts;
             guessNumberInput.disabled = false;
             guessNumberHintButton.disabled = false; // Explicitly enable the button here
+
+            // Configurar el modo correcto
+            if (guessNumberGameMode === 'multi') {
+                guessNumberCurrentPlayer = guessNumberPlayer1Name; // Siempre empezar con el jugador 1
+                updateGuessNumberPlayerTurnDisplay();
+            }
             
             // Reiniciar elementos visuales
             const thermometer = document.getElementById('guess-thermometer');
@@ -2906,8 +2973,14 @@
             const input = document.getElementById('guess-number-input');
             const submitBtn = document.getElementById('guess-number-submit');
             
-            // Manejar el modo matemático de manera especial
+            // Verificar el modo de juego
             const isMathMode = guessNumberGameMode === 'math';
+            const isMultiMode = guessNumberGameMode === 'multi';
+
+            // No necesitamos verificar si hay un jugador activo porque ya está garantizado
+            // desde startGameGuessNumber y resetGuessNumberGame
+            // Ya no necesitamos esta comprobación porque el jugador activo siempre está definido
+            updateGuessNumberPlayerTurnDisplay(); // Actualizar la pantalla con el jugador actual
 
             // Reset styles
             feedback.style.color = '';
@@ -2973,7 +3046,8 @@
                 input.classList.add('ring-2', 'ring-yellow-400');
                 updateVisualFeedback(guess, guessNumberSecret - guess);
             }
-            if (guessNumberGameMode === 'multi') {
+            if (guessNumberGameMode === 'multi' && guess !== guessNumberSecret) {
+                // Solo cambiar el turno si no se ha ganado el juego
                 guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer2Name : guessNumberPlayer1Name;
                 guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
             }
