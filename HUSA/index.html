@@ -515,18 +515,18 @@
         /* ...existing code... */
     </style>
 </head>
-<body class="bg-amber-100 text-slate-800 min-h-screen flex items-center justify-center p-4">
+<body class="bg-amber-100 text-slate-800 min-h-screen flex flex-col items-center justify-start p-4 overflow-y-auto">
 
-    <div id="app-container" class="w-full max-w-md mx-auto bg-white/70 backdrop-blur-sm rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+    <div id="app-container" class="w-full max-w-md mx-auto bg-white/70 backdrop-blur-sm rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] my-4">
         
         <!-- Main Menu Screen -->
-        <div id="main-menu" class="p-6 md:p-8 flex flex-col">
-            <div class="flex-none">
-                <h1 class="text-5xl md:text-6xl text-center font-display text-amber-600 drop-shadow-lg">HuSa Games</h1>
-                <p class="text-center text-slate-600 mt-2 mb-8">Los Juegos de Hugo y Saúl</p>
+        <div id="main-menu" class="p-6 md:p-8 flex flex-col h-full">
+            <div class="flex-none mb-6">
+                <h1 class="text-4xl md:text-5xl text-center font-display text-amber-600 drop-shadow-lg">HuSa Games</h1>
+                <p class="text-center text-slate-600 mt-2">Los Juegos de Hugo y Saúl</p>
             </div>
             
-            <div class="space-y-4 overflow-y-auto pr-2 flex-grow">
+            <div class="space-y-3 overflow-y-auto pr-2 flex-grow pb-4">
                 <button onclick="showScreen('trivia-menu')" class="btn-game w-full bg-emerald-500 text-white p-4 rounded-xl shadow-lg flex items-center justify-center text-2xl font-display">
                     <svg class="game-icon" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.44 12.9 13 13.5 13 14h-2v-.5c0-1.1.45-2.2 1.17-2.92l.9-.92C13.44 9.4 14 8.7 14 8c0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.5-.78 2.79-2.07 3.5z"/>
