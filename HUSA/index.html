@@ -1113,13 +1113,21 @@
         }
 
         // Funciones para el modo multijugador
-        function showMultiPlayerModeSelection(gameType) {
+        function showMultiPlayerModeSelection(gameType, preserveSelection = false) {
             currentGameType = gameType;
-            selectedPlayer1 = null;
-            selectedPlayer2 = null;
-            document.getElementById('start-multiplayer-game').disabled = true;
-            document.getElementById('start-multiplayer-game').classList.add('opacity-50', 'cursor-not-allowed');
+            if (!preserveSelection) {
+                // Limpiar selección de jugadores
+                selectedPlayer1 = null;
+                selectedPlayer2 = null;
+                // Limpiar cualquier estado anterior del juego
+                guessNumberPlayer1Name = null;
+                guessNumberPlayer2Name = null;
+                guessNumberCurrentPlayer = null;
+            }
+            
             showScreen('multi-player-mode-selection');
+            updatePlayerSelectionDisplay(); // Make sure the display is up to date
+            checkMultiPlayerSelection(); // Check if start button should be enabled
         }
 
         function selectFirstPlayer(player) {
@@ -1242,7 +1250,7 @@
 
             if (sessionStorage.getItem('returnToMulti') === 'true') {
                 sessionStorage.removeItem('returnToMulti'); // Limpiar el flag
-                showMultiPlayerModeSelection(currentGame);
+                showMultiPlayerModeSelection(currentGame, true);
             }
         }
 
@@ -1662,6 +1670,8 @@
             const container = document.getElementById('family-member-buttons');
             container.innerHTML = ''; // Clear previous buttons
 
+            const isForMultiPlayer = sessionStorage.getItem('returnToMulti') === 'true';
+
             const titleElement = document.getElementById('family-member-title');
             if (gameType === 'trivia') {
                 titleElement.classList.add('text-emerald-600');
@@ -1702,7 +1712,11 @@
                 span.textContent = player;
                 button.appendChild(span);
 
-                button.onclick = () => startGameForPlayer(gameType, player);
+                if (isForMultiPlayer) {
+                    button.onclick = () => selectFamilyMemberForMulti(player);
+                } else {
+                    button.onclick = () => startGameForPlayer(gameType, player);
+                }
                 container.appendChild(button);
             });
             showScreen('family-member-selection');
@@ -1923,7 +1937,7 @@
             }
         }
 
-        function startTrivia(mode, selectedPlayer = null) {
+        function startTrivia(mode, player1, player2 = null) {
             triviaGameMode = mode;
             currentTriviaQuestionIndex = -1;
             triviaPlayer1Score = 0;
@@ -1939,12 +1953,12 @@
             triviaScoreContainer.innerHTML = ''; // Clear content of the score container
 
             if (triviaGameMode === 'single') {
-                triviaPlayer1Name = selectedPlayer;
+                triviaPlayer1Name = player1;
                 triviaPlayer2Name = null; // No second player in single mode
                 triviaScoreContainer.textContent = `${triviaPlayer1Name}: 0`; // Set initial score for single player
             } else { // 'multi'
-                triviaPlayer1Name = 'Hugo';
-                triviaPlayer2Name = 'Saúl';
+                triviaPlayer1Name = player1;
+                triviaPlayer2Name = player2;
                 triviaPlayerTurnDisplay.classList.remove('hidden'); // Show player turn for multi-player
                 // Set initial score for multi-player mode
                 triviaScoreContainer.innerHTML = `${triviaPlayer1Name}: <span id="trivia-player1-score">0</span> | ${triviaPlayer2Name}: <span id="trivia-player2-score">0</span>`;
@@ -2119,14 +2133,14 @@
             muteButton.textContent = isTicTacToeMuted ? '🔇' : '🔊';
         }
         
-        function startTicTacToe(mode, selectedPlayer = null) { // Added selectedPlayer
+        function startTicTacToe(mode, player1, player2 = null) { // Added selectedPlayer
             ttt_gameMode = mode;
             if (ttt_gameMode === 'ai') {
-                ttt_player1Name = selectedPlayer; // Now uses selectedPlayer for single mode
+                ttt_player1Name = player1; // Now uses selectedPlayer for single mode
                 ttt_player2Name = '🤖'; // Always 🤖 for AI
             } else { // 'human'
-                ttt_player1Name = 'Hugo';
-                ttt_player2Name = 'Saúl';
+                ttt_player1Name = player1;
+                ttt_player2Name = player2;
             }
             showScreen('tictactoe-game');
             resetTicTacToe();
@@ -2534,10 +2548,14 @@
         function confirmStartMemoryGame() {
             // Determine mode based on whether selectedMemoryPlayerName is set
             const mode = selectedMemoryPlayerName ? 'single' : 'multi';
-            startMemoryGame(mode, selectedMemoryPlayerName, selectedMemoryBoardSize, selectedMemoryGridCols, selectedMemoryEmojiSetKey);
+            if (mode === 'single') {
+                startMemoryGame(mode, selectedMemoryPlayerName, null, selectedMemoryBoardSize, selectedMemoryGridCols, selectedMemoryEmojiSetKey);
+            } else {
+                startMemoryGame(mode, selectedPlayer1, selectedPlayer2, selectedMemoryBoardSize, selectedMemoryGridCols, selectedMemoryEmojiSetKey);
+            }
         }
 
-        function startMemoryGame(mode, selectedPlayerName, boardSize, gridCols, emojiSetKey) {
+        function startMemoryGame(mode, player1, player2, boardSize, gridCols, emojiSetKey) {
             memoryGameMode = mode;
             memoryAttempts = 0;
             flippedCards = []; // Reset flipped cards from previous game
@@ -2570,7 +2588,7 @@
 
 
             if (memoryGameMode === 'single') {
-                memoryPlayer1Name = selectedPlayerName;
+                memoryPlayer1Name = player1;
                 memoryPlayer2Name = null;
                 memoryTimerDisplay.classList.remove('hidden'); // Show timer for single player
                 memoryPlayerNameDisplay.textContent = `${memoryPlayer1Name}: `; // Display player name
@@ -2579,8 +2597,8 @@
                 memoryTimerElement.textContent = '00:00'; // Reset timer display
                 // Timer will start after shuffle animation
             } else { // 'multi'
-                memoryPlayer1Name = 'Hugo';
-                memoryPlayer2Name = 'Saúl';
+                memoryPlayer1Name = player1;
+                memoryPlayer2Name = player2;
                 memoryPlayerTurnDisplay.classList.remove('hidden');
                 memoryAttemptsDisplay.classList.remove('hidden'); // Show attempts for multi-player
             }
@@ -2780,11 +2798,24 @@
         let mathGameDifficulty = 'normal';
 
         function startGameGuessNumber(mode, player1Name, player2Name = null) {
+            // Guardar los nombres originales
+            const firstPlayer = player1Name;
+            const secondPlayer = player2Name;
+            
             // Limpiar cualquier estado anterior
             guessNumberGameMode = mode;
-            guessNumberPlayer1Name = player1Name;
-            guessNumberPlayer2Name = player2Name;
-            guessNumberCurrentPlayer = player1Name; // Siempre empieza el jugador 1
+            guessNumberPlayer1Name = firstPlayer;
+            guessNumberPlayer2Name = secondPlayer;
+            guessNumberCurrentPlayer = firstPlayer; // Siempre empieza el jugador 1
+            guessNumberGameActive = true;
+            guessNumberAttempts = 0;
+            
+            console.log('Iniciando juego:', {
+                mode: mode,
+                player1: firstPlayer,
+                player2: secondPlayer,
+                current: guessNumberCurrentPlayer
+            });
             
             // Configurar el modo de juego
             if (mode === 'math') {
@@ -2796,6 +2827,27 @@
                     return;
                 }
                 document.getElementById('guess-number-mode-text').textContent = '👥 Modo Multijugador';
+                
+                // Mostrar claramente que empieza el jugador 1
+                guessNumberFeedback.innerHTML = '';
+                const turnMessage = document.createElement('div');
+                turnMessage.className = 'text-lg font-bold text-center text-emerald-600 mb-4';
+                
+                // Añadir avatar si existe
+                if (playerAvatars[player1Name]) {
+                    const img = document.createElement('img');
+                    img.src = `https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/${playerAvatars[player1Name]}`;
+                    img.alt = `Avatar de ${player1Name}`;
+                    img.className = 'w-8 h-8 rounded-full inline-block mr-2 align-middle';
+                    turnMessage.appendChild(img);
+                }
+                
+                const span = document.createElement('span');
+                span.textContent = `Comienza ${player1Name}`;
+                span.className = 'align-middle';
+                turnMessage.appendChild(span);
+                
+                guessNumberFeedback.appendChild(turnMessage);
                 resetGuessNumberGame();
             } else {
                 document.getElementById('guess-number-mode-text').textContent = '👤 Modo Un Jugador';
@@ -2993,10 +3045,34 @@
             const isMathMode = guessNumberGameMode === 'math';
             const isMultiMode = guessNumberGameMode === 'multi';
 
-            // No necesitamos verificar si hay un jugador activo porque ya está garantizado
-            // desde startGameGuessNumber y resetGuessNumberGame
-            // Ya no necesitamos esta comprobación porque el jugador activo siempre está definido
-            updateGuessNumberPlayerTurnDisplay(); // Actualizar la pantalla con el jugador actual
+            // En modo multijugador, mostrar el turno actual con avatar
+            if (isMultiMode) {
+                feedback.innerHTML = '';
+                const turnDiv = document.createElement('div');
+                turnDiv.className = 'mb-4 text-center';
+                
+                // Contenedor para el avatar y nombre
+                const playerInfo = document.createElement('div');
+                playerInfo.className = 'text-lg font-bold ' + 
+                    (guessNumberCurrentPlayer === guessNumberPlayer1Name ? 'text-emerald-600' : 'text-sky-600');
+                
+                // Añadir avatar si existe
+                if (playerAvatars[guessNumberCurrentPlayer]) {
+                    const img = document.createElement('img');
+                    img.src = `https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/${playerAvatars[guessNumberCurrentPlayer]}`;
+                    img.alt = `Avatar de ${guessNumberCurrentPlayer}`;
+                    img.className = 'w-8 h-8 rounded-full inline-block mr-2 align-middle';
+                    playerInfo.appendChild(img);
+                }
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = `Turno de ${guessNumberCurrentPlayer}`;
+                nameSpan.className = 'align-middle';
+                playerInfo.appendChild(nameSpan);
+                
+                turnDiv.appendChild(playerInfo);
+                feedback.appendChild(turnDiv);
+            }
 
             // Reset styles
             feedback.style.color = '';
@@ -3062,15 +3138,57 @@
                 input.classList.add('ring-2', 'ring-yellow-400');
                 updateVisualFeedback(guess, guessNumberSecret - guess);
             }
-            if (guessNumberGameMode === 'multi') {
-                // Cambiar el turno después de cada intento, independientemente del resultado
-                guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? guessNumberPlayer2Name : guessNumberPlayer1Name;
-                updateGuessNumberPlayerTurnDisplay(); // Actualizar el display del turno
-                guessNumberCurrentPlayerTurnDisplay.textContent = `Turno de ${guessNumberCurrentPlayer}`;
+            if (guessNumberGameMode === 'multi' && guess !== guessNumberSecret) {
+                // Mostrar el resultado del intento actual
+                const attemptDiv = document.createElement('div');
+                attemptDiv.className = 'mb-3 text-yellow-600';
+                attemptDiv.textContent = `${guessNumberCurrentPlayer}: ${guess} - ${guess < guessNumberSecret ? '¡Más alto!' : '¡Más bajo!'}`;
+                feedback.appendChild(attemptDiv);
+
+                // Guardar el intento actual y cambiar al otro jugador
+                const currentPlayerAttempt = guessNumberCurrentPlayer;
+                guessNumberCurrentPlayer = (guessNumberCurrentPlayer === guessNumberPlayer1Name) ? 
+                    guessNumberPlayer2Name : guessNumberPlayer1Name;
+                
+                console.log('Cambio de turno:', {
+                    anterior: currentPlayerAttempt,
+                    siguiente: guessNumberCurrentPlayer,
+                    player1: guessNumberPlayer1Name,
+                    player2: guessNumberPlayer2Name
+                });
+                
+                // Limpiar input y mostrar el nuevo turno
+                setTimeout(() => {
+                    guessNumberInput.value = '';
+                    guessNumberInput.focus();
+                    
+                    const nextTurnDiv = document.createElement('div');
+                    nextTurnDiv.className = 'text-lg font-bold mt-3 text-center ' + 
+                        (guessNumberCurrentPlayer === guessNumberPlayer1Name ? 'text-emerald-600' : 'text-sky-600');
+                    
+                    if (playerAvatars[guessNumberCurrentPlayer]) {
+                        const img = document.createElement('img');
+                        img.src = `https://ivandlpn.github.io/Aplicaciones/HUSA/img/jugadores/${playerAvatars[guessNumberCurrentPlayer]}`;
+                        img.alt = `Avatar de ${guessNumberCurrentPlayer}`;
+                        img.className = 'w-8 h-8 rounded-full inline-block mr-2 align-middle';
+                        nextTurnDiv.appendChild(img);
+                    }
+                    
+                    const span = document.createElement('span');
+                    span.textContent = `Turno de ${guessNumberCurrentPlayer}`;
+                    span.className = 'align-middle';
+                    nextTurnDiv.appendChild(span);
+                    
+                    feedback.appendChild(nextTurnDiv);
+                }, 1000);
+            } else {
+                guessNumberInput.value = '';
             }
+            
             updateGuessNumberHintDisplay();
-            guessNumberInput.value = '';
+            
             setTimeout(() => {
+                if (!guessNumberGameActive) return; // No limpiar si el juego terminó
                 feedback.classList.remove('scale-up-center', 'shake');
                 input.classList.remove('ring-2', 'ring-green-400', 'ring-red-400', 'ring-yellow-400', 'animate-pulse');
                 submitBtn.classList.remove('animate-bounce');
