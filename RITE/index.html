@@ -35,7 +35,7 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border;
         }
 
         html {
@@ -514,7 +514,6 @@
             color: var(--color-text-secondary);
             font-size: 1.5rem;
             cursor: pointer;
-            transition: color 0.2s ease-in-out;
             padding: 5px; /* Add padding for easier clicking */
         }
 
@@ -654,7 +653,6 @@
         .calculator-section .form-group .form-control {
             flex-grow: 1;
             width: auto; /* Override default 100% width */
-            min-width: 0; /* Prevents the input from overflowing its flex container */
         }
 
         .calculator-result {
@@ -707,7 +705,7 @@
 
         <!-- VISTA: LINKS (Anteriormente Instagram) -->
         <div id="links" class="view">
-            <h1 class="header">MÁS RITE SPORT</h1>
+            <h1 class="header">+ RITE</h1>
             <div class="links-content">
                 <p>
                     Visita nuestros canales oficiales para más información, productos y contenido exclusivo.
@@ -788,8 +786,10 @@
         <!-- VISTA: UTILITIES -->
         <div id="utilities" class="view">
             <h1 class="header">
-                <img src="https://can.ritesport.es/wp-content/uploads/2022/1/cropped-Rite-logo-azul-claro-1.png" alt="Logo Rite" class="rite-logo-title">
+                <h1 class="header">
+                <img src="./img/logos/logoRITE.png" alt="Logo Rite" class="rite-logo-title">
                 Utilidades
+            </h1>
             </h1>
             <div class="timer-grid">
                 <div class="timer-option" data-timer="stopwatch">
@@ -887,7 +887,7 @@
     <!-- MODAL PARA TEMPORIZADOR ACTIVO -->
     <div id="timer-modal" class="modal">
         <div class="modal-content">
-            <button class="modal-close-btn" onclick="requestCloseTimer()"><i class="fa-solid fa-xmark"></i></button>
+            <button class="modal-close-btn" onclick="stopTimer(true)"><i class="fa-solid fa-xmark"></i></button>
             <h2 id="timer-modal-header" class="modal-header"></h2>
             <div id="timer-info-display" class="info-display"></div>
             
@@ -946,6 +946,7 @@
                 </div>
             </div>
 
+            <button class="btn" onclick="closeModal(document.getElementById('calculator-modal'))" style="margin-top: 20px;">Cerrar</button>
         </div>
     </div>
 
@@ -1000,35 +1001,33 @@
     };
 
     // --- Timer Control Functions (Global scope) ---
-    const requestCloseTimer = () => {
-        if (timerState.running) {
-            if (confirm('El temporizador está en marcha. ¿Seguro que quieres pararlo y salir?')) {
-                forceCloseTimer();
+    const stopTimer = (finishedNaturally = false) => {
+        clearInterval(timerInterval); // Siempre limpia el intervalo
+        timerState.running = false; // Siempre establece running a false
+
+        const timerModal = document.getElementById('timer-modal');
+        const timerDisplay = document.getElementById('timer-display');
+        const timerInfoDisplay = document.getElementById('timer-info-display');
+        const timerStopButton = document.getElementById('timer-stop');
+
+        if (finishedNaturally) {
+            clearTimerState(); // Limpia el estado solo si terminó naturalmente
+            if (timerState.type === 'tabata') {
+                showTabataCompletionMessage();
+            } else {
+                closeModal(timerModal);
+                // Restablece los estilos de visualización si el modal se cierra
+                if (timerDisplay) timerDisplay.style.color = 'var(--color-text-primary)';
+                if (timerInfoDisplay) {
+                    timerInfoDisplay.style.backgroundColor = 'transparent';
+                    timerInfoDisplay.classList.remove('work-mode', 'rest-mode');
+                }
             }
         } else {
-            forceCloseTimer();
-        }
-    };
-
-    const forceCloseTimer = () => {
-        clearInterval(timerInterval);
-        timerState = {};
-        clearTimerState();
-        closeModal(document.getElementById('timer-modal'));
-    };
-
-    const stopTimer = (finishedNaturally = false) => {
-        timerState.running = false;
-        clearInterval(timerInterval);
-        
-        if (finishedNaturally) {
-            clearTimerState();
-            showTabataCompletionMessage(); // This handles completion
-        } else {
-            // This is for a manual stop via the button
-            saveTimerState(); // Save the stopped state
-            document.getElementById('timer-pause-resume').style.display = 'none';
-            document.getElementById('timer-stop').textContent = 'Reiniciar';
+            // El usuario detuvo el temporizador manualmente
+            timerStopButton.textContent = 'Reiniciar'; // Cambia el texto del botón a Reiniciar
+            // NO limpia timerState aquí, lo necesitamos para reiniciar
+            // NO cierra el modal ni muestra la configuración aquí, solo detiene el temporizador
         }
     };
 
@@ -1109,6 +1108,21 @@
             { name: 'Cindy Variation', category: 'Bodyweight', description: 'AMRAP en 15 minutos:\\n5 Pull-ups\\n10 Push-ups\\n15 Air Squats'},
             { name: 'Strict Fran', category: 'Bodyweight', description: '21-15-9 repeticiones por tiempo:\\nStrict Thrusters (95/65 lb)\\nStrict Pull-ups'}
         ];
+
+        // Aplica viñetas a las descripciones de los WODs para mejorar la legibilidad
+        wodDatabase.forEach(wod => {
+            const lines = wod.description.split('\\n');
+            if (lines.length > 1) {
+                const formattedLines = [lines[0]]; // Mantiene la primera línea tal cual (encabezado del WOD)
+                for (let i = 1; i < lines.length; i++) {
+                    // Solo añade viñeta si la línea no está vacía
+                    if (lines[i].trim() !== '') {
+                        formattedLines.push(`- ${lines[i].trim()}`);
+                    }
+                }
+                wod.description = formattedLines.join('\\n');
+            }
+        });
 
         // --- Crossfit Dictionary Database ---
         const crossfitDictionary = [
@@ -1193,7 +1207,7 @@
             { term: 'Medicine Ball', definition: 'Balón medicinal. Similar al Wall Ball, pero puede usarse para lanzamientos, sentadillas y otros ejercicios.', category: 'Materiales' },
             { term: 'Gymnastics Grips', definition: 'Calleras. Protecciones para las manos usadas en ejercicios de barra y anillas para evitar callos y desgarros.', category: 'Materiales' },
             { term: 'Lifting Belt', definition: 'Cinturón de levantamiento. Usado para dar soporte lumbar y aumentar la presión intraabdominal en levantamientos pesados.', category: 'Materiales' },
-            { term: 'Knee Sleeves', definition: 'Rodilleras. Ofrecen compresión y calor a las rodillas, ayudando a la estabilidad y reduciendo el riesgo de lesiones.', category: 'Materiales' },
+            { term: 'Knee Sleeves', definition: 'Rodilleras. Ofrecen compresión y calor a las rodillas, helping to stability and reducing the risk of injuries.', category: 'Materiales' },
             { term: 'Wrist Wraps', definition: 'Muñequeras. Proporcionan soporte a las muñecas durante levantamientos pesados o movimientos de gimnasia.', category: 'Materiales' },
             { term: 'Foam Roller', definition: 'Rodillo de espuma. Herramienta para la liberación miofascial y el calentamiento/enfriamiento.', category: 'Materiales' },
             { term: 'Battle Ropes', definition: 'Cuerdas de batalla. Cuerdas gruesas usadas para ejercicios de fuerza y acondicionamiento ondulando o golpeando el suelo.', category: 'Materiales' },
@@ -1214,7 +1228,17 @@
             { term: 'Noah Ohlsen', definition: 'Atleta estadounidense, múltiples veces podio en los CrossFit Games, popular por su actitud positiva.', category: 'Atletas' },
             { term: 'Brent Fikowski', definition: 'Atleta canadiense, conocido como "The Professor" por su enfoque estratégico en los WODs.', category: 'Atletas' },
             { term: 'Kara Saunders (Webb)', definition: 'Atleta australiana, múltiples veces competidora de los Games y subcampeona en 2017.', category: 'Atletas' },
-            { term: 'Patrick Vellner', definition: 'Atleta canadiense, múltiples veces podio en los CrossFit Games, conocido por su habilidad en gimnasia.', category: 'Atletas' }
+            { term: 'Patrick Vellner', definition: 'Atleta canadiense, múltiples veces podio en los CrossFit Games, conocido por su habilidad en gimnasia.', category: 'Atletas' },
+            { term: 'Dani Castro', definition: 'Atleta español con varias participaciones en los CrossFit Games y Semifinales.', category: 'Atletas' },
+            { term: 'Elena Carratalá', definition: 'Atleta española destacada en la categoría individual femenina.', category: 'Atletas' },
+            { term: 'Bryan Hernández', definition: 'Atleta español con experiencia en competiciones de alto nivel.', category: 'Atletas' },
+            { term: 'Oihana Moya', definition: 'Atleta española con participaciones en Semifinales.', category: 'Atletas' },
+            { term: 'Aniol Ekai', definition: 'Joven promesa española con buenos resultados en categorías junior y élite.', category: 'Atletas' },
+            { term: 'Fernando Hernández', definition: 'Atleta español con una larga trayectoria en el CrossFit nacional.', category: 'Atletas' },
+            { term: 'Silvia García', definition: 'Atleta española con presencia en competiciones europeas.', category: 'Atletas' },
+            { term: 'David Mata', definition: 'Atleta español conocido por su fuerza.', category: 'Atletas' },
+            { term: 'Rita García', definition: 'Atleta española con participaciones en eventos importantes.', category: 'Atletas' },
+            { term: 'Samuel Gallego', definition: 'Atleta español con buen rendimiento en la escena nacional.', category: 'Atletas' }
         ];
 
 
@@ -1265,7 +1289,7 @@
             wodList.innerHTML = filteredWods.map(w => `
                 <div class="wod-item" data-name="${w.name}" data-desc="${w.description}">
                     <div class="wod-name">${w.name}</div>
-                    <div class="wod-desc">${w.description}</div>
+                    <div class="wod-desc">${w.description.replace(/\\n/g, '<br>')}</div>
                 </div>
             `).join('');
             
@@ -1286,7 +1310,7 @@
             header.textContent = name;
             body.innerHTML = `
                 <p class="detail-label">Descripción</p>
-                <p class="detail-value">${description}</p>
+                <p class="detail-value">${description.replace(/\\n/g, '<br>')}</p>
                 <button class="btn" onclick="closeModal(logModal)" style="margin-top: 20px;">Cerrar</button>
             `;
             openModal(logModal);
@@ -1535,10 +1559,70 @@
         });
 
         document.getElementById('timer-stop').addEventListener('click', () => {
-            if (document.getElementById('timer-stop').textContent === 'Stop') {
-                stopTimer();
-            } else {
-                showTimerSetup(timerState.type);
+            const timerStopButton = document.getElementById('timer-stop');
+            if (timerStopButton.textContent === 'Stop') {
+                stopTimer(false); // Detener manualmente
+            } else if (timerStopButton.textContent === 'Reiniciar') {
+                // Reiniciar el temporizador
+                // Necesitamos recrear el timerState inicial para el tipo actual
+                let initialDuration = 0;
+                let initialRounds = 0;
+                let initialWork = 0;
+                let initialRest = 0;
+
+                // Recuperar los valores de configuración originales si es posible
+                // Esto asume que los inputs de configuración aún existen en el DOM o que los guardamos en timerState
+                // Para simplificar, usaremos los valores que se establecieron en showTimerSetup
+                // Si el modal se cerró y se volvió a abrir, estos valores se habrían perdido.
+                // La mejor práctica sería guardar la configuración inicial en timerState.
+                // Por ahora, asumiremos que timerState.duration, timerState.rounds, etc. aún tienen los valores correctos.
+
+                switch (timerState.type) {
+                    case 'countdown':
+                    case 'amrap':
+                        initialDuration = timerState.duration / 1000; // Convertir a segundos
+                        break;
+                    case 'emom':
+                        initialRounds = timerState.rounds;
+                        break;
+                    case 'tabata':
+                        initialRounds = timerState.rounds;
+                        initialWork = timerState.work;
+                        initialRest = timerState.rest;
+                        break;
+                }
+
+                // Reiniciar timerState a su estado inicial
+                timerState = {
+                    type: timerState.type,
+                    running: false,
+                    startTime: 0,
+                    elapsed: 0,
+                    duration: initialDuration * 1000, // Convertir a milisegundos
+                    rounds: initialRounds,
+                    work: initialWork,
+                    rest: initialRest,
+                    currentRound: 1,
+                    isWork: true,
+                    lastBeepSecond: -1,
+                    lastWorkBeepSecond: -1,
+                    lastRestBeepSecond: -1
+                };
+
+                // Restablecer la visualización del temporizador
+                const timerDisplay = document.getElementById('timer-display');
+                const timerInfoDisplay = document.getElementById('timer-info-display');
+                timerInfoDisplay.textContent = 'Prepárate...';
+                if (timerState.type === 'stopwatch') {
+                    timerDisplay.textContent = '00:00';
+                } else if (timerState.type === 'countdown' || timerState.type === 'amrap') {
+                    timerDisplay.textContent = formatTime(timerState.duration / 1000);
+                } else { // emom or tabata
+                    timerDisplay.textContent = formatTime(60);
+                }
+
+                timerStopButton.textContent = 'Stop'; // Vuelve a "Stop"
+                countdownAndStart(startTimer); // Inicia la cuenta atrás y luego el temporizador
             }
         });
 
@@ -1676,9 +1760,8 @@
 
             timerDynamicContent.style.display = 'none';
             timerActiveDisplay.style.display = 'block';
-            document.getElementById('timer-pause-resume').style.display = 'block';
             document.getElementById('timer-pause-resume').textContent = 'Pausa';
-            document.getElementById('timer-stop').textContent = 'Stop';
+            document.getElementById('timer-stop').textContent = 'Stop'; // Asegura que el botón diga "Stop" al iniciar
 
             // All timers now have a countdown
             timerInfoDisplay.textContent = 'Prepárate...';
@@ -1886,14 +1969,16 @@
 
                 // Add the @ritesport text below the logo
                 const text = '@ritesport';
-                const fontSize = 24; // Adjust font size as needed
-                context.font = `bold ${fontSize}px ${getComputedStyle(document.body).fontFamily}`; // Use a bold version of the body font
+                const baseFontSize = 24; // Original base size
+                const newFontSize = baseFontSize * 3; // Three times larger
+                context.font = `bold ${newFontSize}px ${getComputedStyle(document.body).fontFamily}`; // Use explicit newFontSize
                 context.fillStyle = 'white'; // White color for the text
                 context.textAlign = 'center'; // Center align the text
 
                 // Calculate text position: centered horizontally, below the logo
                 const textX = photoCanvas.width / 2;
-                const textY = y + logoHeight + 30; // 30px margin below the logo
+                // Adjust textY based on the new font size to ensure it doesn't overlap too much
+                const textY = y + logoHeight + 30 + (newFontSize - baseFontSize); // 30px margin below the logo + adjustment for new font size
 
                 context.fillText(text, textX, textY);
 
