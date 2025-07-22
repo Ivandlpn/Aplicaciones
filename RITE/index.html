@@ -1720,7 +1720,7 @@
         const photoCanvas = document.getElementById('photo-canvas');
         const cameraStatus = document.getElementById('camera-status');
         const startCameraBtn = document.getElementById('start-camera-btn');
-        const takePhotoBtn = document = document.getElementById('take-photo-btn');
+        const takePhotoBtn = document.getElementById('take-photo-btn');
         const retakePhotoBtn = document.getElementById('retake-photo-btn');
         const shareOptions = document.getElementById('share-options');
         const sharePhotoBtn = document.getElementById('share-photo-btn');
@@ -1729,7 +1729,7 @@
 
         // Define the RITE logo sticker data
         const riteLogoSticker = {
-            src: 'https://can.ritesport.es/wp-content/uploads/2022/10/cropped-Rite-letras-e1666192483757-1.png',
+            src: './img/logos/letrasRITE.png', // Updated path for the logo
             width: 200, // Adjust size as needed
             height: 50 // Adjust size as needed
         };
@@ -1813,12 +1813,12 @@
             img.crossOrigin = 'Anonymous'; // Crucial for preventing tainting
             img.src = riteLogoSticker.src;
             img.onload = () => {
-                // Position the logo (e.g., top-left corner with some margin)
+                // Position the logo: centered horizontally at the top with some margin
                 const margin = 20;
                 const logoWidth = riteLogoSticker.width;
                 const logoHeight = riteLogoSticker.height;
-                const x = margin;
-                const y = margin;
+                const x = (photoCanvas.width - logoWidth) / 2; // Centered horizontally
+                const y = margin; // Top with margin
                 context.drawImage(img, x, y, logoWidth, logoHeight);
 
                 // Add the @ritesport text below the logo
