@@ -602,6 +602,52 @@
             color: var(--color-text-secondary);
             margin-top: 20px;
         }
+
+        #share .sticker-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+        }
+
+        #share .sticker-options .sticker-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 80px; /* Tamaño fijo para los botones de sticker */
+            height: 80px;
+            padding: 5px;
+            background-color: #333;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            text-transform: none; /* No uppercase for sticker names */
+        }
+
+        #share .sticker-options .sticker-btn:hover {
+            background-color: #424242;
+        }
+
+        #share .sticker-options .sticker-btn.selected {
+            border-color: var(--color-primary);
+            background-color: var(--color-primary);
+            color: var(--color-text-primary);
+            transform: scale(1.05);
+        }
+
+        #share .sticker-options .sticker-btn img {
+            max-width: 40px;
+            max-height: 40px;
+            margin-bottom: 5px;
+        }
         
     </style>
 </head>
@@ -760,6 +806,27 @@
                     <button id="retake-photo-btn" class="btn btn-secondary" style="display: none;"><i class="fa-solid fa-rotate-left"></i> Repetir</button>
                 </div>
 
+                <!-- Opciones de Stickers/AR-like -->
+                <div id="sticker-options" class="sticker-options" style="display: none;">
+                    <p style="width: 100%; text-align: center; color: var(--color-text-secondary); margin-bottom: 10px;">Añade un toque RITE:</p>
+                    <button class="sticker-btn" data-sticker="rite-logo">
+                        <img src="https://can.ritesport.es/wp-content/uploads/2022/1/cropped-Rite-logo-azul-claro-1.png" alt="Logo RITE">
+                        <span>Logo RITE</span>
+                    </button>
+                    <button class="sticker-btn" data-sticker="medal">
+                        <i class="fa-solid fa-medal"></i>
+                        <span>Medalla</span>
+                    </button>
+                    <button class="sticker-btn" data-sticker="fire">
+                        <i class="fa-solid fa-fire"></i>
+                        <span>Fuego</span>
+                    </button>
+                    <button class="sticker-btn selected" data-sticker="none">
+                        <i class="fa-solid fa-ban"></i>
+                        <span>Ninguno</span>
+                    </button>
+                </div>
+
                 <div id="share-options" class="share-options" style="display: none;">
                     <button id="share-photo-btn" class="btn" style="margin-top: 20px;"><i class="fa-solid fa-share-nodes"></i> Compartir</button>
                     <button id="download-photo-btn" class="btn btn-secondary" style="margin-top: 10px;"><i class="fa-solid fa-download"></i> Descargar Foto</button>
@@ -846,7 +913,8 @@
         let state = {
             currentView: 'home', // Inicia en la vista de inicio
             cameraStream: null, // To store the camera stream
-            capturedImageBlob: null // To store the captured image as Blob
+            capturedImageBlob: null, // To store the captured image as Blob
+            selectedSticker: 'none' // Default to no sticker
         };
         
         // --- WOD Database ---
@@ -1617,7 +1685,18 @@
         const shareOptions = document.getElementById('share-options');
         const sharePhotoBtn = document.getElementById('share-photo-btn');
         const downloadPhotoBtn = document.getElementById('download-photo-btn');
+        const stickerOptionsDiv = document.getElementById('sticker-options');
+        const stickerButtons = document.querySelectorAll('.sticker-btn');
+
         let mediaStream = null; // To store the camera media stream
+
+        // Sticker data (image URLs or Font Awesome classes)
+        const stickers = {
+            'rite-logo': { type: 'image', src: 'https://can.ritesport.es/wp-content/uploads/2022/1/cropped-Rite-logo-azul-claro-1.png', width: 100, height: 100 },
+            'medal': { type: 'icon', class: 'fa-solid fa-medal', color: '#FFD700', size: 80 }, // Gold color for medal
+            'fire': { type: 'icon', class: 'fa-solid fa-fire', color: '#FF4500', size: 80 }, // Orange-red for fire
+            'none': { type: 'none' }
+        };
 
         const startCamera = async () => {
             cameraStatus.textContent = 'Iniciando cámara...';
@@ -1651,6 +1730,7 @@
             takePhotoBtn.style.display = 'block';
             retakePhotoBtn.style.display = 'none';
             shareOptions.style.display = 'none';
+            stickerOptionsDiv.style.display = 'none'; // Hide sticker options while camera is live
             photoCanvas.style.display = 'none';
             state.capturedImageBlob = null; // Clear any previous photo
 
@@ -1674,6 +1754,7 @@
                 takePhotoBtn.style.display = 'none';
                 retakePhotoBtn.style.display = 'none';
                 shareOptions.style.display = 'none';
+                stickerOptionsDiv.style.display = 'none'; // Hide sticker options
                 photoCanvas.style.display = 'none';
                 state.capturedImageBlob = null;
             }
@@ -1689,7 +1770,60 @@
             const context = photoCanvas.getContext('2d');
             photoCanvas.width = cameraFeed.videoWidth;
             photoCanvas.height = cameraFeed.videoHeight;
+            
+            // Draw the current video frame onto the canvas
             context.drawImage(cameraFeed, 0, 0, photoCanvas.width, photoCanvas.height);
+
+            // Apply selected sticker if any
+            if (state.selectedSticker && state.selectedSticker !== 'none') {
+                const stickerData = stickers[state.selectedSticker];
+                if (stickerData) {
+                    if (stickerData.type === 'image') {
+                        const img = new Image();
+                        img.src = stickerData.src;
+                        img.onload = () => {
+                            // Draw sticker at a fixed position (e.g., bottom right corner)
+                            const margin = 20;
+                            const stickerWidth = stickerData.width;
+                            const stickerHeight = stickerData.height;
+                            const x = photoCanvas.width - stickerWidth - margin;
+                            const y = photoCanvas.height - stickerHeight - margin;
+                            context.drawImage(img, x, y, stickerWidth, stickerHeight);
+                            updateCapturedImageBlob(); // Update blob after drawing sticker
+                        };
+                        img.onerror = () => {
+                            console.error('Error loading sticker image:', stickerData.src);
+                            updateCapturedImageBlob(); // Still update blob even if sticker fails
+                        };
+                    } else if (stickerData.type === 'icon') {
+                        // For Font Awesome icons, we draw them as text
+                        context.font = `${stickerData.size}px "Font Awesome 6 Free"`; // Ensure Font Awesome font is loaded
+                        context.fillStyle = stickerData.color;
+                        context.textAlign = 'right'; // Align text to the right
+                        context.textBaseline = 'bottom'; // Align text to the bottom
+                        const margin = 20;
+                        const x = photoCanvas.width - margin;
+                        const y = photoCanvas.height - margin;
+                        // To get the actual icon character, you'd need a mapping or use a specific Font Awesome utility.
+                        // For simplicity, we'll just draw a placeholder or assume a common character.
+                        // A more robust solution would involve rendering the icon to a temporary canvas or SVG.
+                        // For now, let's just use a simple text character or a generic icon if direct FA character isn't feasible.
+                        // Let's use the actual FA character by creating a temporary element and getting its computed style
+                        const tempDiv = document.createElement('div');
+                        tempDiv.className = stickerData.class;
+                        tempDiv.style.position = 'absolute';
+                        tempDiv.style.visibility = 'hidden';
+                        document.body.appendChild(tempDiv);
+                        const iconContent = getComputedStyle(tempDiv, '::before').content.replace(/['"]/g, '');
+                        document.body.removeChild(tempDiv);
+
+                        context.fillText(iconContent, x, y);
+                        updateCapturedImageBlob(); // Update blob after drawing sticker
+                    }
+                }
+            } else {
+                updateCapturedImageBlob(); // Update blob immediately if no sticker
+            }
 
             // Hide video, show canvas
             cameraFeed.style.display = 'none';
@@ -1700,7 +1834,10 @@
             startCameraBtn.style.display = 'none'; // No need to restart camera, just retake
             retakePhotoBtn.style.display = 'block';
             shareOptions.style.display = 'block';
+            stickerOptionsDiv.style.display = 'flex'; // Show sticker options after taking photo
+        };
 
+        const updateCapturedImageBlob = () => {
             // Convert canvas to Blob for sharing/downloading
             photoCanvas.toBlob((blob) => {
                 state.capturedImageBlob = blob;
@@ -1716,7 +1853,12 @@
             takePhotoBtn.style.display = 'block';
             retakePhotoBtn.style.display = 'none';
             shareOptions.style.display = 'none';
+            stickerOptionsDiv.style.display = 'none'; // Hide sticker options again
             state.capturedImageBlob = null;
+            // Deselect all stickers
+            stickerButtons.forEach(btn => btn.classList.remove('selected'));
+            document.querySelector('.sticker-btn[data-sticker="none"]').classList.add('selected');
+            state.selectedSticker = 'none'; // Reset selected sticker
         };
 
         const sharePhoto = async () => {
@@ -1763,6 +1905,67 @@
         retakePhotoBtn.addEventListener('click', retakePhoto);
         sharePhotoBtn.addEventListener('click', sharePhoto);
         downloadPhotoBtn.addEventListener('click', downloadPhoto);
+
+        // Sticker selection logic
+        stickerButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                stickerButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                state.selectedSticker = button.dataset.sticker;
+                
+                // Redraw the photo with the new sticker if a photo is already taken
+                if (photoCanvas.style.display === 'block' && state.capturedImageBlob) {
+                    // Re-draw the original image first
+                    const img = new Image();
+                    img.src = URL.createObjectURL(state.capturedImageBlob); // Use the current blob (without sticker)
+                    img.onload = () => {
+                        const context = photoCanvas.getContext('2d');
+                        context.clearRect(0, 0, photoCanvas.width, photoCanvas.height); // Clear canvas
+                        context.drawImage(img, 0, 0, photoCanvas.width, photoCanvas.height); // Draw original photo
+
+                        // Now draw the new sticker
+                        if (state.selectedSticker && state.selectedSticker !== 'none') {
+                            const stickerData = stickers[state.selectedSticker];
+                            if (stickerData) {
+                                if (stickerData.type === 'image') {
+                                    const stickerImg = new Image();
+                                    stickerImg.src = stickerData.src;
+                                    stickerImg.onload = () => {
+                                        const margin = 20;
+                                        const stickerWidth = stickerData.width;
+                                        const stickerHeight = stickerData.height;
+                                        const x = photoCanvas.width - stickerWidth - margin;
+                                        const y = photoCanvas.height - stickerHeight - margin;
+                                        context.drawImage(stickerImg, x, y, stickerWidth, stickerHeight);
+                                        updateCapturedImageBlob(); // Update blob after drawing sticker
+                                    };
+                                } else if (stickerData.type === 'icon') {
+                                    context.font = `${stickerData.size}px "Font Awesome 6 Free"`;
+                                    context.fillStyle = stickerData.color;
+                                    context.textAlign = 'right';
+                                    context.textBaseline = 'bottom';
+                                    const margin = 20;
+                                    const x = photoCanvas.width - margin;
+                                    const y = photoCanvas.height - margin;
+                                    const tempDiv = document.createElement('div');
+                                    tempDiv.className = stickerData.class;
+                                    tempDiv.style.position = 'absolute';
+                                    tempDiv.style.visibility = 'hidden';
+                                    document.body.appendChild(tempDiv);
+                                    const iconContent = getComputedStyle(tempDiv, '::before').content.replace(/['"]/g, '');
+                                    document.body.removeChild(tempDiv);
+                                    context.fillText(iconContent, x, y);
+                                    updateCapturedImageBlob(); // Update blob after drawing sticker
+                                }
+                            }
+                        } else {
+                            updateCapturedImageBlob(); // Update blob if no sticker selected
+                        }
+                        URL.revokeObjectURL(img.src); // Clean up the object URL
+                    };
+                }
+            });
+        });
 
 
         // --- Initialization ---
