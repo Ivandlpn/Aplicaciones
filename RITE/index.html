@@ -482,6 +482,17 @@
                 <a href="https://www.youtube.com/@ritesport" target="_blank" rel="noopener noreferrer" class="link-item">
                     <i class="fab fa-youtube"></i> YouTube
                 </a>
+                <!-- Nuevos enlaces añadidos -->
+                <a href="https://www.facebook.com/profile.php?id=100088406053613" target="_blank" rel="noopener noreferrer" class="link-item">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </a>
+                <a href="mailto:soporte@ritesport.es" class="link-item">
+                    <i class="fa-solid fa-envelope"></i> Correo
+                </a>
+                <a href="https://wa.me/34638927442" target="_blank" rel="noopener noreferrer" class="link-item">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <!-- Fin de nuevos enlaces -->
             </div>
         </div>
 
@@ -517,6 +528,16 @@
             <div class="tab-content" id="crossfit-dictionary-section">
                 <div class="card" style="margin-top: 0;"> <!-- Removed margin-top as it's now inside a tab-content -->
                     <h2 class="modal-header" style="margin-bottom: 15px;">Diccionario de Crossfit</h2>
+                    <div class="filter-controls">
+                        <select id="dictionary-category-filter" class="form-control">
+                            <option value="all">Todas las Categorías</option>
+                            <option value="Tipos de Entrenamiento">Tipos de Entrenamiento</option>
+                            <option value="Movimientos">Movimientos</option>
+                            <option value="Materiales">Materiales</option>
+                            <option value="Atletas Famosos">Atletas Famosos</option>
+                            <option value="Otros Términos">Otros Términos</option>
+                        </select>
+                    </div>
                     <div id="dictionary-content">
                         <p style="color: var(--color-text-secondary); margin-bottom: 10px;">Aquí encontrarás términos comunes de Crossfit.</p>
                         <div id="dictionary-list"></div>
@@ -658,30 +679,113 @@
 
         // --- Crossfit Dictionary Database ---
         const crossfitDictionary = [
-            { term: 'AMRAP', definition: 'As Many Rounds/Reps As Possible. Realizar tantas rondas o repeticiones como sea posible en un tiempo determinado.' },
-            { term: 'EMOM', definition: 'Every Minute On the Minute. Realizar un número específico de repeticiones de un ejercicio al comienzo de cada minuto.' },
-            { term: 'For Time', definition: 'Completar una serie de ejercicios o un WOD en el menor tiempo posible.' },
-            { term: 'WOD', definition: 'Workout Of the Day. El entrenamiento del día.' },
-            { term: 'MetCon', definition: 'Metabolic Conditioning. Entrenamiento de acondicionamiento metabólico, diseñado para mejorar la capacidad cardiovascular y la resistencia.' },
-            { term: 'Rx', definition: 'As Prescribed. Realizar el WOD con los pesos y movimientos exactos indicados, sin modificaciones.' },
-            { term: 'Scaled', definition: 'Escalado. Modificar el WOD (pesos, movimientos, etc.) para adaptarlo al nivel de habilidad o condición física del atleta.' },
-            { term: 'Box', definition: 'Término informal para un gimnasio de Crossfit.' },
-            { term: 'Burpee', definition: 'Ejercicio de cuerpo completo que combina una sentadilla, un salto hacia atrás a plancha, una flexión, un salto hacia adelante a sentadilla y un salto vertical.' },
-            { term: 'Double-Under', definition: 'Salto a la comba donde la cuerda pasa dos veces por debajo de los pies en un solo salto.' },
-            { term: 'Kipping', definition: 'Movimiento de balanceo del cuerpo que genera impulso para asistir en ejercicios como Pull-ups o Handstand Push-ups.' },
-            { term: 'PR', definition: 'Personal Record. La mejor marca personal en un ejercicio o WOD.' },
-            { term: 'RM', definition: 'Repetition Maximum. El peso máximo que se puede levantar para un número específico de repeticiones (ej. 1RM = máximo para una repetición).' },
-            { term: 'Thruster', definition: 'Combinación de una sentadilla frontal y un push press en un solo movimiento fluido.' },
-            { term: 'Clean & Jerk', definition: 'Levantamiento olímpico que consiste en dos movimientos: el "clean" (llevar la barra desde el suelo hasta los hombros) y el "jerk" (elevar la barra desde los hombros hasta por encima de la cabeza).' },
-            { term: 'Snatch', definition: 'Levantamiento olímpico que consiste en levantar la barra desde el suelo hasta por encima de la cabeza en un solo movimiento continuo.' },
-            { term: 'Wall Ball Shot', definition: 'Sentadilla frontal seguida de un lanzamiento de balón medicinal a una altura específica en la pared.' },
-            { term: 'Kettlebell Swing', definition: 'Movimiento balístico con una pesa rusa (kettlebell) que involucra la extensión de cadera.' },
-            { term: 'Handstand Push-up (HSPU)', definition: 'Flexión de pino, realizada en posición invertida apoyado en las manos.' },
-            { term: 'Toes-to-Bar (T2B)', definition: 'Colgado de una barra, elevar los pies hasta tocar la barra.' },
-            { term: 'Box Jump', definition: 'Salto sobre una caja o plataforma.' },
-            { term: 'Row', definition: 'Remo en máquina, medido en calorías o metros.' },
-            { term: 'Push Press', definition: 'Levantamiento de barra desde los hombros hasta por encima de la cabeza, con ayuda de un impulso de piernas.' },
-            { term: 'Deadlift', definition: 'Peso muerto. Levantamiento de una barra desde el suelo hasta una posición erguida.' }
+            // Tipos de Entrenamiento
+            { term: 'AMRAP', definition: 'As Many Rounds/Reps As Possible. Realizar tantas rondas o repeticiones como sea posible en un tiempo determinado.', category: 'Tipos de Entrenamiento' },
+            { term: 'EMOM', definition: 'Every Minute On the Minute. Realizar un número específico de repeticiones de un ejercicio al comienzo de cada minuto.', category: 'Tipos de Entrenamiento' },
+            { term: 'For Time', definition: 'Completar una serie de ejercicios o un WOD en el menor tiempo posible.', category: 'Tipos de Entrenamiento' },
+            { term: 'MetCon', definition: 'Metabolic Conditioning. Entrenamiento de acondicionamiento metabólico, diseñado para mejorar la capacidad cardiovascular y la resistencia.', category: 'Tipos de Entrenamiento' },
+            { term: 'Tabata', definition: 'Protocolo de entrenamiento de alta intensidad: 20 segundos de trabajo, 10 segundos de descanso, repetido 8 veces (4 minutos en total).', category: 'Tipos de Entrenamiento' },
+            { term: 'Chipper', definition: 'WOD largo con muchos movimientos diferentes, donde se completa una serie de repeticiones de un ejercicio antes de pasar al siguiente.', category: 'Tipos de Entrenamiento' },
+            { term: 'Couplet', definition: 'WOD que combina dos movimientos diferentes.', category: 'Tipos de Entrenamiento' },
+            { term: 'Triplet', definition: 'WOD que combina tres movimientos diferentes.', category: 'Tipos de Entrenamiento' },
+            { term: 'Interval Training', definition: 'Entrenamiento que alterna periodos de alta intensidad con periodos de baja intensidad o descanso.', category: 'Tipos de Entrenamiento' },
+            { term: 'GPP (General Physical Preparedness)', definition: 'Programas de entrenamiento enfocados en desarrollar una base amplia de habilidades físicas.', category: 'Tipos de Entrenamiento' },
+            { term: 'Open Gym', definition: 'Tiempo en el gimnasio donde los atletas pueden trabajar en sus propias habilidades o WODs sin una clase dirigida.', category: 'Tipos de Entrenamiento' },
+            { term: 'Strength Bias', definition: 'Periodo de entrenamiento donde el enfoque principal es el desarrollo de la fuerza.', category: 'Tipos de Entrenamiento' },
+            { term: 'Endurance WOD', definition: 'Entrenamiento enfocado en mejorar la resistencia cardiovascular y muscular, a menudo con carreras o remos largos.', category: 'Tipos de Entrenamiento' },
+            { term: 'Skill Work', definition: 'Tiempo dedicado a practicar y mejorar la técnica de movimientos específicos de gimnasia u halterofilia.', category: 'Tipos de Entrenamiento' },
+            { term: 'Team WOD', definition: 'Entrenamiento diseñado para ser realizado en equipo, fomentando la colaboración y la estrategia.', category: 'Tipos de Entrenamiento' },
+            { term: 'Ascending Ladder', definition: 'WOD donde el número de repeticiones de un ejercicio aumenta en cada ronda.', category: 'Tipos de Entrenamiento' },
+            { term: 'Descending Ladder', definition: 'WOD donde el número de repeticiones de un ejercicio disminuye en cada ronda.', category: 'Tipos de Entrenamiento' },
+            { term: 'Every 2 Minutes On the Minute (E2MOM)', definition: 'Realizar una tarea al comienzo de cada 2 minutos. El tiempo restante en los 2 minutos es de descanso.', category: 'Tipos de Entrenamiento' },
+            { term: 'Max Effort', definition: 'Realizar el máximo número de repeticiones o el peso más alto posible en un solo intento.', category: 'Tipos de Entrenamiento' },
+            { term: 'Accessory Work', definition: 'Ejercicios adicionales realizados para fortalecer músculos específicos o mejorar el rendimiento en movimientos principales.', category: 'Tipos de Entrenamiento' },
+
+            // Movimientos
+            { term: 'Burpee', definition: 'Ejercicio de cuerpo completo que combina una sentadilla, un salto hacia atrás a plancha, una flexión, un salto hacia adelante a sentadilla y un salto vertical.', category: 'Movimientos' },
+            { term: 'Double-Under', definition: 'Salto a la comba donde la cuerda pasa dos veces por debajo de los pies en un solo salto.', category: 'Movimientos' },
+            { term: 'Kipping', definition: 'Movimiento de balanceo del cuerpo que genera impulso para asistir en ejercicios como Pull-ups o Handstand Push-ups.', category: 'Movimientos' },
+            { term: 'Thruster', definition: 'Combinación de una sentadilla frontal y un push press en un solo movimiento fluido.', category: 'Movimientos' },
+            { term: 'Clean & Jerk', definition: 'Levantamiento olímpico que consiste en dos movimientos: el "clean" (llevar la barra desde el suelo hasta los hombros) y el "jerk" (elevar la barra desde los hombros hasta por encima de la cabeza).', category: 'Movimientos' },
+            { term: 'Snatch', definition: 'Levantamiento olímpico que consiste en levantar la barra desde el suelo hasta por encima de la cabeza en un solo movimiento continuo.', category: 'Movimientos' },
+            { term: 'Wall Ball Shot', definition: 'Sentadilla frontal seguida de un lanzamiento de balón medicinal a una altura específica en la pared.', category: 'Movimientos' },
+            { term: 'Kettlebell Swing', definition: 'Movimiento balístico con una pesa rusa (kettlebell) que involucra la extensión de cadera.', category: 'Movimientos' },
+            { term: 'Handstand Push-up (HSPU)', definition: 'Flexión de pino, realizada en posición invertida apoyado en las manos.', category: 'Movimientos' },
+            { term: 'Toes-to-Bar (T2B)', definition: 'Colgado de una barra, elevar los pies hasta tocar la barra.', category: 'Movimientos' },
+            { term: 'Box Jump', definition: 'Salto sobre una caja o plataforma.', category: 'Movimientos' },
+            { term: 'Row', definition: 'Remo en máquina, medido en calorías o metros.', category: 'Movimientos' },
+            { term: 'Push Press', definition: 'Levantamiento de barra desde los hombros hasta por encima de la cabeza, con ayuda de un impulso de piernas.', category: 'Movimientos' },
+            { term: 'Deadlift', definition: 'Peso muerto. Levantamiento de una barra desde el suelo hasta una posición erguida.', category: 'Movimientos' },
+            { term: 'Pull-up', definition: 'Dominada. Ejercicio donde se cuelga de una barra y se eleva el cuerpo hasta que la barbilla sobrepasa la barra.', category: 'Movimientos' },
+            { term: 'Squat', definition: 'Sentadilla. Movimiento donde se baja el cuerpo flexionando las rodillas y caderas.', category: 'Movimientos' },
+            { term: 'Push-up', definition: 'Flexión. Ejercicio donde se baja el pecho hacia el suelo desde una posición de plancha.', category: 'Movimientos' },
+            { term: 'Sit-up', definition: 'Abdominal. Ejercicio donde se eleva el torso desde una posición tumbada para trabajar el abdomen.', category: 'Movimientos' },
+            { term: 'Overhead Squat (OHS)', definition: 'Sentadilla realizada con la barra por encima de la cabeza y los brazos extendidos.', category: 'Movimientos' },
+            { term: 'Muscle-up', definition: 'Movimiento avanzado de gimnasia que combina una dominada y un fondo en anillas o barra.', category: 'Movimientos' },
+            { term: 'Pistol Squat', definition: 'Sentadilla a una pierna. Sentadilla profunda realizada sobre una sola pierna.', category: 'Movimientos' },
+            { term: 'GHD Sit-up', definition: 'Sit-up realizado en una máquina Glute-Ham Developer, permitiendo un rango de movimiento más amplio.', category: 'Movimientos' },
+            { term: 'Rope Climb', definition: 'Escalada de cuerda. Subir una cuerda usando solo las manos o con ayuda de las piernas.', category: 'Movimientos' },
+            { term: 'Walking Lunge', definition: 'Zancada caminando. Pasos largos alternando las piernas, bajando la cadera en cada zancada.', category: 'Movimientos' },
+            { term: 'Handstand Walk', definition: 'Caminar sobre las manos en posición de pino.', category: 'Movimientos' },
+            { term: 'Front Squat', definition: 'Sentadilla frontal. La barra se apoya en la parte delantera de los hombros.', category: 'Movimientos' },
+            { term: 'Back Squat', definition: 'Sentadilla trasera. La barra se apoya en la parte superior de la espalda.', category: 'Movimientos' },
+            { term: 'Sumo Deadlift High-Pull (SDHP)', definition: 'Peso muerto sumo con tirón alto. Un deadlift con agarre ancho y piernas separadas, seguido de un tirón de la barra hasta la barbilla.', category: 'Movimientos' },
+            { term: 'Push Jerk', definition: 'Elevación de la barra por encima de la cabeza con un doble impulso de piernas.', category: 'Movimientos' },
+            { term: 'Strict Press', definition: 'Press de hombros estricto. Elevación de la barra por encima de la cabeza sin ayuda de las piernas.', category: 'Movimientos' },
+
+            // Materiales
+            { term: 'Barbell', definition: 'Barra. Barra de metal utilizada para levantamiento de pesas, a la que se le añaden discos.', category: 'Materiales' },
+            { term: 'Dumbbell', definition: 'Mancuerna. Pesa de mano con un peso fijo.', category: 'Materiales' },
+            { term: 'Kettlebell', definition: 'Pesa Rusa. Pesa con forma de bola y un asa, utilizada para movimientos balísticos.', category: 'Materiales' },
+            { term: 'Rope', definition: 'Cuerda. Utilizada para saltos (Double-Unders) o escalada (Rope Climbs).', category: 'Materiales' },
+            { term: 'Plyo Box', definition: 'Cajón de Pliometría. Caja de madera o espuma utilizada para Box Jumps y otros ejercicios de salto.', category: 'Materiales' },
+            { term: 'Assault Bike', definition: 'Bicicleta de Aire. Bicicleta estática que utiliza la resistencia del aire, involucrando brazos y piernas.', category: 'Materiales' },
+            { term: 'Concept2 Rower', definition: 'Remo Concept2. Máquina de remo utilizada para acondicionamiento cardiovascular.', category: 'Materiales' },
+            { term: 'Rings', definition: 'Anillas. Anillas de gimnasia utilizadas para ejercicios como Muscle-ups o Ring Dips.', category: 'Materiales' },
+            { term: 'AbMat', definition: 'Colchoneta AbMat. Almohadilla diseñada para apoyar la zona lumbar durante los sit-ups.', category: 'Materiales' },
+            { term: 'Weight Vest', definition: 'Chaleco Lastrado. Chaleco con peso añadido para aumentar la intensidad de los ejercicios.', category: 'Materiales' },
+            { term: 'Plates', definition: 'Discos. Pesas redondas que se cargan en las barras.', category: 'Materiales' },
+            { term: 'Wall Ball', definition: 'Balón Medicinal. Balón pesado utilizado para Wall Ball Shots.', category: 'Materiales' },
+            { term: 'Jump Rope', definition: 'Comba. Cuerda utilizada para saltos, especialmente Double-Unders.', category: 'Materiales' },
+            { term: 'GHD (Glute-Ham Developer)', definition: 'Máquina para ejercicios de glúteos, isquiotibiales y abdominales.', category: 'Materiales' },
+            { term: 'Slam Ball', definition: 'Balón pesado sin rebote, diseñado para ser lanzado contra el suelo con fuerza.', category: 'Materiales' },
+            { term: 'Pull-up Bar', definition: 'Barra de dominadas. Barra horizontal fija para realizar dominadas.', category: 'Materiales' },
+            { term: 'Rack', definition: 'Estructura metálica donde se apoya la barra para ejercicios como sentadillas o press de banca.', category: 'Materiales' },
+            { term: 'Bumper Plates', definition: 'Discos de goma. Discos de levantamiento de pesas diseñados para ser caídos sin dañar el suelo.', category: 'Materiales' },
+            { term: 'Mobility Band', definition: 'Bandas de resistencia elásticas, usadas para calentamiento, estiramientos y asistencia en movimientos.', category: 'Materiales' },
+            { term: 'Chalk', definition: 'Magnesio. Polvo blanco utilizado para mejorar el agarre y reducir la humedad en las manos.', category: 'Materiales' },
+            { term: 'Concept2 SkiErg', definition: 'Máquina de esquí. Simula el movimiento de esquí de fondo, trabajando todo el cuerpo.', category: 'Materiales' },
+            { term: 'Concept2 BikeErg', definition: 'Bicicleta estática. Simula el ciclismo, utilizando resistencia de aire.', category: 'Materiales' },
+            { term: 'Sandbag', definition: 'Saco de arena. Utilizado para ejercicios de fuerza y acondicionamiento, ofreciendo una carga inestable.', category: 'Materiales' },
+            { term: 'Medicine Ball', definition: 'Balón medicinal. Similar al Wall Ball, pero puede usarse para lanzamientos, sentadillas y otros ejercicios.', category: 'Materiales' },
+            { term: 'Gymnastics Grips', definition: 'Calleras. Protecciones para las manos usadas en ejercicios de barra y anillas para evitar callos y desgarros.', category: 'Materiales' },
+            { term: 'Lifting Belt', definition: 'Cinturón de levantamiento. Usado para dar soporte lumbar y aumentar la presión intraabdominal en levantamientos pesados.', category: 'Materiales' },
+            { term: 'Knee Sleeves', definition: 'Rodilleras. Ofrecen compresión y calor a las rodillas, ayudando a la estabilidad y reduciendo el riesgo de lesiones.', category: 'Materiales' },
+            { term: 'Wrist Wraps', definition: 'Muñequeras. Proporcionan soporte a las muñecas durante levantamientos pesados o movimientos de gimnasia.', category: 'Materiales' },
+            { term: 'Foam Roller', definition: 'Rodillo de espuma. Herramienta para la liberación miofascial y el calentamiento/enfriamiento.', category: 'Materiales' },
+            { term: 'Battle Ropes', definition: 'Cuerdas de batalla. Cuerdas gruesas usadas para ejercicios de fuerza y acondicionamiento ondulando o golpeando el suelo.', category: 'Materiales' },
+
+            // Atletas Famosos
+            { term: 'Rich Froning Jr.', definition: 'Atleta estadounidense, considerado uno de los mejores de la historia del CrossFit, 4 veces campeón de los CrossFit Games (individual).', category: 'Atletas Famosos' },
+            { term: 'Tia-Clair Toomey', definition: 'Atleta australiana, la mujer más dominante en la historia del CrossFit, 6 veces campeona de los CrossFit Games.', category: 'Atletas Famosos' },
+            { term: 'Mat Fraser', definition: 'Atleta estadounidense, 5 veces campeón de los CrossFit Games (individual), conocido por su consistencia y fuerza mental.', category: 'Atletas Famosos' },
+            { term: 'Annie Thorisdottir', definition: 'Atleta islandesa, 2 veces campeona de los CrossFit Games, una de las pioneras del deporte.', category: 'Atletas Famosos' },
+            { term: 'Katrin Davidsdottir', definition: 'Atleta islandesa, 2 veces campeona de los CrossFit Games, conocida por su resiliencia.', category: 'Atletas Famosos' },
+            { term: 'Ben Smith', definition: 'Atleta estadounidense, campeón de los CrossFit Games 2015, conocido por su longevidad en el deporte.', category: 'Atletas Famosos' },
+            { term: 'Sara Sigmundsdottir', definition: 'Atleta islandesa, múltiples veces podio en los CrossFit Games, conocida por su fuerza y carisma.', category: 'Atletas Famosos' },
+            { term: 'Justin Medeiros', definition: 'Atleta estadounidense, campeón de los CrossFit Games 2021 y 2022, la nueva cara del deporte.', category: 'Atletas Famosos' },
+            { term: 'Laura Horvath', definition: 'Atleta húngara, campeona de los CrossFit Games 2023, conocida por su fuerza bruta.', category: 'Atletas Famosos' },
+            { term: 'Jeffrey Adler', definition: 'Atleta canadiense, campeón de los CrossFit Games 2023, conocido por su consistencia y ética de trabajo.', category: 'Atletas Famosos' },
+            { term: 'Samantha Briggs', definition: 'Atleta británica, campeona de los CrossFit Games 2013, conocida como "The Engine" por su resistencia.', category: 'Atletas Famosos' },
+            { term: 'Brooke Wells', definition: 'Atleta estadounidense, competidora constante en los CrossFit Games, conocida por su fuerza y presencia.', category: 'Atletas Famosos' },
+            { term: 'Noah Ohlsen', definition: 'Atleta estadounidense, múltiples veces podio en los CrossFit Games, popular por su actitud positiva.', category: 'Atletas Famosos' },
+            { term: 'Brent Fikowski', definition: 'Atleta canadiense, conocido como "The Professor" por su enfoque estratégico en los WODs.', category: 'Atletas Famosos' },
+            { term: 'Kara Saunders (Webb)', definition: 'Atleta australiana, múltiples veces competidora de los Games y subcampeona en 2017.', category: 'Atletas Famosos' },
+            { term: 'Patrick Vellner', definition: 'Atleta canadiense, múltiples veces podio en los CrossFit Games, conocido por su habilidad en gimnasia.', category: 'Atletas Famosos' },
+            { term: 'Fraser, Mat', definition: 'Ver Mat Fraser.', category: 'Atletas Famosos' },
+            { term: 'Toomey, Tia-Clair', definition: 'Ver Tia-Clair Toomey.', category: 'Atletas Famosos' },
+            { term: 'Froning, Rich', definition: 'Ver Rich Froning Jr.', category: 'Atletas Famosos' },
+            { term: 'Davidsdottir, Katrin', definition: 'Ver Katrin Davidsdottir.', category: 'Atletas Famosos' }
         ];
 
 
@@ -753,7 +857,11 @@
         // --- Crossfit Dictionary Rendering Logic ---
         const renderCrossfitDictionary = () => {
             const dictionaryList = document.getElementById('dictionary-list');
-            dictionaryList.innerHTML = crossfitDictionary.map(item => `
+            const category = document.getElementById('dictionary-category-filter').value;
+
+            const filteredTerms = crossfitDictionary.filter(term => category === 'all' || term.category === category);
+
+            dictionaryList.innerHTML = filteredTerms.map(item => `
                 <div class="wod-item"> <!-- Reusing wod-item style for consistency -->
                     <div class="wod-name">${item.term}</div>
                     <div class="wod-desc">${item.definition}</div>
@@ -791,6 +899,9 @@
                 showWikiTab(button.dataset.tab);
             });
         });
+
+        // Event listener for dictionary category filter
+        document.getElementById('dictionary-category-filter').addEventListener('change', renderCrossfitDictionary);
 
 
         // --- Timer Logic ---
