@@ -357,12 +357,17 @@
             text-align: center;
             cursor: pointer;
             border: 1px solid #333;
+            /* Flexbox para apilar icono y texto */
+            display: flex;
+            flex-direction: column; /* Apila los elementos verticalmente */
+            align-items: center; /* Centra horizontalmente */
+            justify-content: center; /* Centra verticalmente */
         }
         
         #timers .timer-option i {
             font-size: 2.5rem;
             color: var(--color-primary);
-            margin-bottom: 10px;
+            margin-bottom: 10px; /* Espacio entre el icono y el texto */
         }
 
         #timers .timer-option span {
@@ -1113,7 +1118,7 @@
                         }
                     }
                     timerInfoDisplay.textContent = `Ronda ${timerState.currentRound} / ${timerState.rounds}`;
-                    if(timerState.currentRound > timerState.rounds) {
+                    if(currentTotalRound > timerState.rounds) {
                         stopTimer(true);
                         playSound(800, 0.5);
                         speak('Finalizado');
@@ -1304,7 +1309,7 @@
 
             switch (type) {
                 case 'stopwatch':
-                    setupHtml = `<p style="text-align: center; color: var(--color-text-secondary);">El cronómetro comenzará al pulsar 'Iniciar'.</p>`;
+                    setupHtml = `<p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 20px;">El cronómetro comenzará al pulsar 'Iniciar'.</p>`;
                     break;
                 case 'countdown':
                 case 'amrap':
