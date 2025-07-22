@@ -137,6 +137,18 @@
             vertical-align: middle; /* Alinea verticalmente con el texto */
         }
 
+        /* Nuevo estilo para la imagen del logo en la cabecera de Inicio */
+        #home .header-logo {
+            max-width: 100%; /* Asegura que la imagen no sea demasiado grande */
+            height: 60px; /* Altura fija para el logo */
+            object-fit: contain; /* Asegura que la imagen se ajuste sin recortarse */
+            display: block;
+            margin: 0 auto;
+            padding: 5px 10px; /* Añadido padding para el fondo */
+            background-color: white; /* Fondo blanco para el logo */
+            border-radius: 8px; /* Esquinas redondeadas para el fondo */
+        }
+
 
         .card {
             background-color: var(--color-surface);
@@ -541,7 +553,7 @@
         <!-- VISTA: INICIO -->
         <div id="home" class="view active">
             <h1 class="header">
-                RITE SPORT APP
+                <img src="https://can.ritesport.es/wp-content/uploads/2022/10/cropped-Rite-letras-e1666192483757-1.png" alt="Logo RITE SPORT" class="header-logo">
             </h1>
             <div class="carousel-container">
                 <div class="carousel-slide" id="home-carousel-slide">
@@ -549,9 +561,9 @@
                     <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0744.jpg" alt="Atleta realizando un Clean and Jerk">
                     <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0610.webp" alt="Atleta en posición de sentadilla">
                     <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0849.jpg" alt="Grupo de atletas levantando pesas">
-                    <img src="https://ritesport.es/wp-content/uploads/2025/02/R-I-T-E_4__1_-1.webp" alt="">
-                    <img src="https://ritesport.es/wp-content/uploads/2024/05/2_1-1.webp" alt="">
-                    <img src="https://ritesport.es/wp-content/uploads/2024/06/2_1_11zon-8.webp" alt="">
+                    <img src="https://ritesport.es/wp-content/uploads/2025/02/R-I-T-E_4__1_-1.webp" alt="Imagen de atleta con ropa deportiva Rite">
+                    <img src="https://ritesport.es/wp-content/uploads/2024/05/2_1-1.webp" alt="Imagen de atleta haciendo flexiones">
+                    <img src="https://ritesport.es/wp-content/uploads/2024/06/2_1_11zon-8.webp" alt="Imagen de atleta levantando pesas">
                 </div>
                 <button class="carousel-button prev" id="carousel-prev-btn">&#10094;</button>
                 <button class="carousel-button next" id="carousel-next-btn">&#10095;</button>
@@ -630,7 +642,7 @@
                             <option value="Tipos de Entrenamiento">Tipos de Entrenamiento</option>
                             <option value="Movimientos">Movimientos</option>
                             <option value="Materiales">Materiales</option>
-                            <option value="Atletas Famosos">Atletas Famosos</option>
+                            <option value="Atletas">Atletas</option>
                             <option value="Otros Términos">Otros Términos</option>
                         </select>
                     </div>
@@ -861,28 +873,23 @@
             { term: 'Foam Roller', definition: 'Rodillo de espuma. Herramienta para la liberación miofascial y el calentamiento/enfriamiento.', category: 'Materiales' },
             { term: 'Battle Ropes', definition: 'Cuerdas de batalla. Cuerdas gruesas usadas para ejercicios de fuerza y acondicionamiento ondulando o golpeando el suelo.', category: 'Materiales' },
 
-            // Atletas Famosos
-            { term: 'Rich Froning Jr.', definition: 'Atleta estadounidense, considerado uno de los mejores de la historia del CrossFit, 4 veces campeón de los CrossFit Games (individual).', category: 'Atletas Famosos' },
-            { term: 'Tia-Clair Toomey', definition: 'Atleta australiana, la mujer más dominante en la historia del CrossFit, 6 veces campeona de los CrossFit Games.', category: 'Atletas Famosos' },
-            { term: 'Mat Fraser', definition: 'Atleta estadounidense, 5 veces campeón de los CrossFit Games (individual), conocido por su consistencia y fuerza mental.', category: 'Atletas Famosos' },
-            { term: 'Annie Thorisdottir', definition: 'Atleta islandesa, 2 veces campeona de los CrossFit Games, una de las pioneras del deporte.', category: 'Atletas Famosos' },
-            { term: 'Katrin Davidsdottir', definition: 'Atleta islandesa, 2 veces campeona de los CrossFit Games, conocida por su resiliencia.', category: 'Atletas Famosos' },
-            { term: 'Ben Smith', definition: 'Atleta estadounidense, campeón de los CrossFit Games 2015, conocido por su longevidad en el deporte.', category: 'Atletas Famosos' },
-            { term: 'Sara Sigmundsdottir', definition: 'Atleta islandesa, múltiples veces podio en los CrossFit Games, conocida por su fuerza y carisma.', category: 'Atletas Famosos' },
-            { term: 'Justin Medeiros', definition: 'Atleta estadounidense, campeón de los CrossFit Games 2021 y 2022, la nueva cara del deporte.', category: 'Atletas Famosos' },
-            { term: 'Laura Horvath', definition: 'Atleta húngara, campeona de los CrossFit Games 2023, conocida por su fuerza bruta.', category: 'Atletas Famosos' },
-            { term: 'Jeffrey Adler', definition: 'Atleta canadiense, campeón de los CrossFit Games 2023, conocido por su consistencia y ética de trabajo.', category: 'Atletas Famosos' },
-            { term: 'Samantha Briggs', definition: 'Atleta británica, campeona de los CrossFit Games 2013, conocida como "The Engine" por su resistencia.', category: 'Atletas Famosos' },
-            { term: 'Brooke Wells', definition: 'Atleta estadounidense, competidora constante en los CrossFit Games, conocida por su fuerza y presencia.', category: 'Atletas Famosos' },
-            { term: 'Noah Ohlsen', definition: 'Atleta estadounidense, múltiples veces podio en los CrossFit Games, popular por su actitud positiva.', category: 'Atletas Famosos' },
-            { term: 'Brent Fikowski', definition: 'Atleta canadiense, conocido como "The Professor" por su enfoque estratégico en los WODs.', category: 'Atletas Famosos' },
-            { term: 'Kara Saunders (Webb)', definition: 'Atleta australiana, múltiples veces competidora de los Games y subcampeona en 2017.', category: 'Atletas Famosos' },
-            { term: 'Patrick Vellner', definition: 'Atleta canadiense, múltiples veces podio en los CrossFit Games, conocido por su habilidad en gimnasia.', category: 'Atletas Famosos' },
-            { term: 'Fraser, Mat', definition: 'Ver Mat Fraser.', category: 'Atletas Famosos' },
-            { term: 'Toomey, Tia-Clair', definition: 'Ver Tia-Clair Toomey.', category: 'Atletas Famosos' },
-            { term: 'Froning, Rich', definition: 'Ver Rich Froning Jr.', category: 'Atletas Famosos' },
-            { term: 'Davidsdottir, Katrin', definition: 'Ver Katrin Davidsdottir.', category: 'Atletas Famosos' },
-            { term: 'Ohlsen, Noah', definition: 'Ver Noah Ohlsen.', category: 'Atletas Famosos' } 
+            // Atletas
+            { term: 'Rich Froning Jr.', definition: 'Atleta estadounidense, considerado uno de los mejores de la historia del CrossFit, 4 veces campeón de los CrossFit Games (individual).', category: 'Atletas' },
+            { term: 'Tia-Clair Toomey', definition: 'Atleta australiana, la mujer más dominante en la historia del CrossFit, 6 veces campeona de los CrossFit Games.', category: 'Atletas' },
+            { term: 'Mat Fraser', definition: 'Atleta estadounidense, 5 veces campeón de los CrossFit Games (individual), conocido por su consistencia y fuerza mental.', category: 'Atletas' },
+            { term: 'Annie Thorisdottir', definition: 'Atleta islandesa, 2 veces campeona de los CrossFit Games, una de las pioneras del deporte.', category: 'Atletas' },
+            { term: 'Katrin Davidsdottir', definition: 'Atleta islandesa, 2 veces campeona de los CrossFit Games, conocida por su resiliencia.', category: 'Atletas' },
+            { term: 'Ben Smith', definition: 'Atleta estadounidense, campeón de los CrossFit Games 2015, conocido por su longevidad en el deporte.', category: 'Atletas' },
+            { term: 'Sara Sigmundsdottir', definition: 'Atleta islandesa, múltiples veces podio en los CrossFit Games, conocida por su fuerza y carisma.', category: 'Atletas' },
+            { term: 'Justin Medeiros', definition: 'Atleta estadounidense, campeón de los CrossFit Games 2021 y 2022, la nueva cara del deporte.', category: 'Atletas' },
+            { term: 'Laura Horvath', definition: 'Atleta húngara, campeona de los CrossFit Games 2023, conocida por su fuerza bruta.', category: 'Atletas' },
+            { term: 'Jeffrey Adler', definition: 'Atleta canadiense, campeón de los CrossFit Games 2023, conocido por su consistencia y ética de trabajo.', category: 'Atletas' },
+            { term: 'Samantha Briggs', definition: 'Atleta británica, campeona de los CrossFit Games 2013, conocida como "The Engine" por su resistencia.', category: 'Atletas' },
+            { term: 'Brooke Wells', definition: 'Atleta estadounidense, competidora constante en los CrossFit Games, conocida por su fuerza y presencia.', category: 'Atletas' },
+            { term: 'Noah Ohlsen', definition: 'Atleta estadounidense, múltiples veces podio en los CrossFit Games, popular por su actitud positiva.', category: 'Atletas' },
+            { term: 'Brent Fikowski', definition: 'Atleta canadiense, conocido como "The Professor" por su enfoque estratégico en los WODs.', category: 'Atletas' },
+            { term: 'Kara Saunders (Webb)', definition: 'Atleta australiana, múltiples veces competidora de los Games y subcampeona en 2017.', category: 'Atletas' },
+            { term: 'Patrick Vellner', definition: 'Atleta canadiense, múltiples veces podio en los CrossFit Games, conocido por su habilidad en gimnasia.', category: 'Atletas' }
         ];
 
 
