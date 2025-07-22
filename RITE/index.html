@@ -474,6 +474,7 @@
             max-height: 90vh;
             overflow-y: auto;
             animation: slideInUp 0.3s ease-out;
+            position: relative; /* Needed for absolute positioning of close button */
         }
 
         @keyframes slideInUp {
@@ -498,9 +499,27 @@
             margin-top: 15px;
         }
         
-.modal-body .detail-value {
+        .modal-body .detail-value {
             font-size: 1.1rem;
             white-space: pre-wrap;
+        }
+
+        /* Styles for the new close button */
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+            padding: 5px; /* Add padding for easier clicking */
+        }
+
+        .modal-close-btn:hover {
+            color: var(--color-primary);
         }
 
         /* --- TIMER ACTIVO MODAL --- */
@@ -856,6 +875,7 @@
     <!-- MODAL PARA MOSTRAR DETALLES DE WODS (ya no para registrar) -->
     <div id="log-modal" class="modal">
         <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal(document.getElementById('log-modal'))"><i class="fa-solid fa-xmark"></i></button>
             <h2 id="log-modal-header" class="modal-header">Detalles del WOD</h2>
             <div id="log-modal-body" class="modal-body">
                 <!-- Los detalles del WOD se inyectarán aquí -->
@@ -866,6 +886,7 @@
     <!-- MODAL PARA TEMPORIZADOR ACTIVO -->
     <div id="timer-modal" class="modal">
         <div class="modal-content">
+            <button class="modal-close-btn" onclick="stopTimer()"><i class="fa-solid fa-xmark"></i></button>
             <h2 id="timer-modal-header" class="modal-header"></h2>
             <div id="timer-info-display" class="info-display"></div>
             
@@ -888,6 +909,7 @@
     <!-- NUEVO MODAL PARA LA CALCULADORA DE PESOS -->
     <div id="calculator-modal" class="modal">
         <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal(document.getElementById('calculator-modal'))"><i class="fa-solid fa-xmark"></i></button>
             <h2 class="modal-header">Calculadora de Pesos</h2>
             
             <div class="calculator-section">
@@ -929,19 +951,119 @@
 
 
     <script>
+    // --- Timer Logic Variables (Global scope for access from HTML onclick) ---
+    let timerInterval;
+    let timerState = {};
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
     // --- Modal Logic (Global functions) ---
-    // Moved outside DOMContentLoaded to be globally accessible for inline onclick attributes
     const openModal = (modal) => modal.classList.add('visible');
     const closeModal = (modal) => modal.classList.remove('visible');
 
+    // --- Sound and Voice Functions (Global scope) ---
+    function playSound(freq = 500, duration = 0.1) {
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + duration);
+    }
+    
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    // --- Timer State Management (Global scope) ---
+    const saveTimerState = () => {
+        localStorage.setItem('crossfitAppTimerState', JSON.stringify(timerState));
+    };
+
+    const clearTimerState = () => {
+        localStorage.removeItem('crossfitAppTimerState');
+    };
+    
+    const formatTime = (totalSeconds) => {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = Math.floor(totalSeconds % 60);
+        const formattedSeconds = Math.max(0, seconds).toString().padStart(2, '0');
+        return `${minutes.toString().padStart(2, '0')}:${formattedSeconds}`;
+    };
+
+    // --- Timer Control Functions (Global scope) ---
+    const stopTimer = (finishedNaturally = false) => {
+        timerState.running = false;
+        clearInterval(timerInterval);
+        
+        const timerModal = document.getElementById('timer-modal'); // Get reference here
+        const timerDisplay = document.getElementById('timer-display');
+        const timerInfoDisplay = document.getElementById('timer-info-display');
+
+        if (finishedNaturally) {
+            clearTimerState();
+            showTabataCompletionMessage(); // This function will handle closing the modal
+        } else {
+            clearTimerState();
+            closeModal(timerModal);
+            if (timerDisplay) timerDisplay.style.color = 'var(--color-text-primary)';
+            if (timerInfoDisplay) {
+                timerInfoDisplay.style.backgroundColor = 'transparent';
+                timerInfoDisplay.classList.remove('work-mode', 'rest-mode');
+            }
+        }
+    };
+
+    // Function to show Tabata completion message (made global as it's called by stopTimer)
+    const showTabataCompletionMessage = () => {
+        timerState.type = 'tabata-completed';
+        const timerModal = document.getElementById('timer-modal');
+        const timerInfoDisplay = document.getElementById('timer-info-display');
+        const timerActiveDisplay = document.getElementById('timer-active-display');
+        const timerDynamicContent = document.getElementById('timer-dynamic-content');
+
+        timerModal.classList.add('visible');
+        document.getElementById('timer-modal-header').textContent = '¡Tabata Completado!';
+        timerInfoDisplay.textContent = '¡Felicidades! Has completado tu entrenamiento.';
+        timerInfoDisplay.classList.remove('work-mode', 'rest-mode');
+        timerInfoDisplay.style.backgroundColor = 'transparent';
+
+        timerActiveDisplay.style.display = 'none';
+        timerDynamicContent.style.display = 'block';
+
+        timerDynamicContent.innerHTML = `
+            <p style="text-align: center; font-size: 1.2rem; margin-top: 20px; margin-bottom: 30px; color: var(--color-text-primary);">
+                ¡Gran trabajo!
+            </p>
+            <button id="close-completion-btn" class="btn">Cerrar</button>
+        `;
+        
+        document.getElementById('close-completion-btn').addEventListener('click', () => {
+            closeModal(timerModal);
+            // Assuming navigateTo is defined within DOMContentLoaded, need to be careful here
+            // For now, let's just close the modal. If navigation is needed, it should be global too.
+            // navigateTo('utilities'); // If navigateTo is global
+            clearTimerState();
+        });
+    };
+
+
     document.addEventListener('DOMContentLoaded', () => {
 
-        // --- DOM Elements ---
+        // --- DOM Elements (local to DOMContentLoaded) ---
         const views = document.querySelectorAll('.view');
         const navItems = document.querySelectorAll('.nav-item');
         const logModal = document.getElementById('log-modal');
         const timerModal = document.getElementById('timer-modal');
-        const calculatorModal = document.getElementById('calculator-modal'); // New: Calculator Modal
+        const calculatorModal = document.getElementById('calculator-modal');
 
         // --- Application State ---
         let state = {
@@ -1210,49 +1332,7 @@
         document.getElementById('dictionary-category-filter').addEventListener('change', renderCrossfitDictionary);
 
 
-        // --- Timer Logic ---
-        let timerInterval;
-        let timerState = {};
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        // --- Sound and Voice Functions ---
-        function playSound(freq = 500, duration = 0.1) {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + duration);
-        }
-        
-        function speak(text) {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'es-ES';
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-
-        const saveTimerState = () => {
-            localStorage.setItem('crossfitAppTimerState', JSON.stringify(timerState));
-        };
-
-        const clearTimerState = () => {
-            localStorage.removeItem('crossfitAppTimerState');
-        };
-        
-        const formatTime = (totalSeconds) => {
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = Math.floor(totalSeconds % 60);
-            const formattedSeconds = Math.max(0, seconds).toString().padStart(2, '0');
-            return `${minutes.toString().padStart(2, '0')}:${formattedSeconds}`;
-        };
-
+        // --- Timer Logic (local parts) ---
         const timerDisplay = document.getElementById('timer-display');
         const timerInfoDisplay = document.getElementById('timer-info-display');
         const timerDynamicContent = document.getElementById('timer-dynamic-content');
@@ -1439,48 +1519,6 @@
             }
         };
 
-        const showTabataCompletionMessage = () => {
-            timerState.type = 'tabata-completed';
-            timerModal.classList.add('visible');
-            document.getElementById('timer-modal-header').textContent = '¡Tabata Completado!';
-            timerInfoDisplay.textContent = '¡Felicidades! Has completado tu entrenamiento.';
-            timerInfoDisplay.classList.remove('work-mode', 'rest-mode');
-            timerInfoDisplay.style.backgroundColor = 'transparent';
-
-            timerActiveDisplay.style.display = 'none';
-            timerDynamicContent.style.display = 'block';
-
-            timerDynamicContent.innerHTML = `
-                <p style="text-align: center; font-size: 1.2rem; margin-top: 20px; margin-bottom: 30px; color: var(--color-text-primary);">
-                    ¡Gran trabajo!
-                </p>
-                <button id="close-completion-btn" class="btn">Cerrar</button>
-            `;
-            
-            document.getElementById('close-completion-btn').addEventListener('click', () => {
-                closeModal(timerModal);
-                navigateTo('utilities'); // Updated navigation
-                clearTimerState();
-            });
-        };
-
-
-        const stopTimer = (finishedNaturally = false) => {
-            timerState.running = false;
-            clearInterval(timerInterval);
-            
-            if (finishedNaturally) {
-                clearTimerState();
-                showTabataCompletionMessage();
-            } else {
-                clearTimerState();
-                closeModal(timerModal);
-                timerDisplay.style.color = 'var(--color-text-primary)';
-                timerInfoDisplay.style.backgroundColor = 'transparent';
-                timerInfoDisplay.classList.remove('work-mode', 'rest-mode');
-            }
-        };
-
         document.getElementById('timer-pause-resume').addEventListener('click', () => {
             if (timerState.running) pauseTimer();
             else startTimer();
@@ -1568,6 +1606,7 @@
                     break;
                 case 'countdown':
                 case 'amrap':
+                    // Moved value parsing here, after elements are in DOM
                     duration = (parseInt(document.getElementById('timer-duration-min').value) || 0) * 60;
                     if (duration <= 0) {
                         const errorMessage = document.createElement('div');
@@ -1578,6 +1617,7 @@
                     }
                     break;
                 case 'emom':
+                    // Moved value parsing here, after elements are in DOM
                     rounds = parseInt(document.getElementById('timer-rounds').value) || 0;
                     if (rounds <= 0) {
                         const errorMessage = document.createElement('div');
@@ -1588,6 +1628,7 @@
                     }
                     break;
                 case 'tabata':
+                    // Moved value parsing here, after elements are in DOM
                     rounds = parseInt(document.getElementById('tabata-rounds').value) || 0;
                     work = parseInt(document.getElementById('tabata-work').value) || 0;
                     rest = parseInt(document.getElementById('tabata-rest').value) || 0;
@@ -1737,15 +1778,17 @@
         const startCamera = async () => {
             cameraStatus.textContent = 'Iniciando cámara...';
             try {
-                // Try to get the rear camera first
+                // Try to get the rear camera first with high resolution ideal values
                 mediaStream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        facingMode: { exact: "environment" }
+                        facingMode: { exact: "environment" },
+                        width: { ideal: 1920 }, // Request Full HD width
+                        height: { ideal: 1080 } // Request Full HD height
                     }
                 });
             } catch (err) {
-                console.warn('No se pudo acceder a la cámara trasera. Intentando con la cámara frontal o predeterminada:', err);
-                // Fallback to front camera or default if rear camera fails
+                console.warn('No se pudo acceder a la cámara trasera con alta resolución. Intentando con la cámara frontal o predeterminada:', err);
+                // Fallback to front camera or default if rear camera fails, or if high resolution is not supported
                 try {
                     mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
                 } catch (fallbackErr) {
@@ -1771,6 +1814,7 @@
 
             // Ensure video is loaded before setting canvas dimensions
             cameraFeed.onloadedmetadata = () => {
+                // Set canvas dimensions to match the actual video stream resolution
                 photoCanvas.width = cameraFeed.videoWidth;
                 photoCanvas.height = cameraFeed.videoHeight;
             };
@@ -1802,6 +1846,7 @@
             }
 
             const context = photoCanvas.getContext('2d');
+            // Ensure canvas dimensions match the video stream's actual resolution
             photoCanvas.width = cameraFeed.videoWidth;
             photoCanvas.height = cameraFeed.videoHeight;
             
@@ -1855,6 +1900,7 @@
 
         const updateCapturedImageBlob = () => {
             // Convert canvas to Blob for sharing/downloading
+            // Using image/png for lossless compression
             photoCanvas.toBlob((blob) => {
                 state.capturedImageBlob = blob;
             }, 'image/png');
