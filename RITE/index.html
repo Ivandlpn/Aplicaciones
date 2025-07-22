@@ -549,6 +549,59 @@
         #chart-container {
             margin-top: 20px;
         }
+
+        /* --- SHARE VIEW SPECIFIC STYLES --- */
+        #share .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px; /* Minimum height for camera feed */
+        }
+
+        #share video, #share canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        #share .camera-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        #share .camera-controls .btn {
+            width: auto;
+            padding: 12px 25px;
+            font-size: 1rem;
+        }
+
+        #share .share-options {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #share .share-message {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        #share .loading-message {
+            text-align: center;
+            color: var(--color-text-secondary);
+            margin-top: 20px;
+        }
         
     </style>
 </head>
@@ -581,7 +634,7 @@
 
         <!-- VISTA: LINKS (Anteriormente Instagram) -->
         <div id="links" class="view">
-            <h1 class="header">+ RITE SPORT</h1>
+            <h1 class="header">MÁS RITE SPORT</h1>
             <div class="links-content">
                 <p>
                     Visita nuestros canales oficiales para más información, productos y contenido exclusivo.
@@ -688,6 +741,34 @@
                 </div>
             </div>
         </div>
+
+        <!-- VISTA: SHARE (Nueva sección) -->
+        <div id="share" class="view">
+            <h1 class="header">Comparte tu RITE</h1>
+            <div class="card">
+                <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 20px;">
+                    ¡Haz una foto con tu ropa RITE y compártela en redes sociales!
+                </p>
+                <div class="camera-container">
+                    <video id="camera-feed" autoplay playsinline style="display: none;"></video>
+                    <canvas id="photo-canvas" style="display: none;"></canvas>
+                    <p id="camera-status" class="loading-message">Cargando cámara...</p>
+                </div>
+                <div class="camera-controls">
+                    <button id="start-camera-btn" class="btn"><i class="fa-solid fa-video"></i> Iniciar Cámara</button>
+                    <button id="take-photo-btn" class="btn btn-secondary" style="display: none;"><i class="fa-solid fa-camera"></i> Tomar Foto</button>
+                    <button id="retake-photo-btn" class="btn btn-secondary" style="display: none;"><i class="fa-solid fa-rotate-left"></i> Repetir</button>
+                </div>
+
+                <div id="share-options" class="share-options" style="display: none;">
+                    <button id="share-photo-btn" class="btn" style="margin-top: 20px;"><i class="fa-solid fa-share-nodes"></i> Compartir</button>
+                    <button id="download-photo-btn" class="btn btn-secondary" style="margin-top: 10px;"><i class="fa-solid fa-download"></i> Descargar Foto</button>
+                    <p class="share-message">
+                        Al compartir, selecciona Instagram Stories y recuerda etiquetar a <strong>@ritesport</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- BARRA DE NAVEGACIÓN -->
@@ -703,6 +784,10 @@
         <div class="nav-item" data-view="wiki">
             <i class="fa-solid fa-book"></i> <!-- Changed icon to a book for Wiki -->
             <span>Wiki</span>
+        </div>
+        <div class="nav-item" data-view="share">
+            <i class="fa-solid fa-camera"></i> <!-- New icon for Share -->
+            <span>Comparte</span>
         </div>
         <div class="nav-item" data-view="links">
             <i class="fa-solid fa-link"></i>
@@ -760,6 +845,8 @@
         // --- Application State ---
         let state = {
             currentView: 'home', // Inicia en la vista de inicio
+            cameraStream: null, // To store the camera stream
+            capturedImageBlob: null // To store the captured image as Blob
         };
         
         // --- WOD Database ---
@@ -900,6 +987,10 @@
 
         // --- Navigation Logic ---
         const navigateTo = (viewId) => {
+            // Stop camera stream if leaving the share view
+            if (state.currentView === 'share' && viewId !== 'share') {
+                stopCamera();
+            }
             state.currentView = viewId;
             views.forEach(view => view.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -1514,6 +1605,153 @@
         });
 
         window.addEventListener('resize', updateCarousel); // Adjust carousel on resize
+
+
+        // --- Camera and Share Logic ---
+        const cameraFeed = document.getElementById('camera-feed');
+        const photoCanvas = document.getElementById('photo-canvas');
+        const cameraStatus = document.getElementById('camera-status');
+        const startCameraBtn = document.getElementById('start-camera-btn');
+        const takePhotoBtn = document.getElementById('take-photo-btn');
+        const retakePhotoBtn = document.getElementById('retake-photo-btn');
+        const shareOptions = document.getElementById('share-options');
+        const sharePhotoBtn = document.getElementById('share-photo-btn');
+        const downloadPhotoBtn = document.getElementById('download-photo-btn');
+        let mediaStream = null; // To store the camera media stream
+
+        const startCamera = async () => {
+            cameraStatus.textContent = 'Iniciando cámara...';
+            try {
+                // Request access to the camera
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraFeed.srcObject = mediaStream;
+                cameraFeed.style.display = 'block';
+                cameraStatus.style.display = 'none';
+                startCameraBtn.style.display = 'none';
+                takePhotoBtn.style.display = 'block';
+                retakePhotoBtn.style.display = 'none';
+                shareOptions.style.display = 'none';
+                photoCanvas.style.display = 'none';
+                state.capturedImageBlob = null; // Clear any previous photo
+
+                // Ensure video is loaded before setting canvas dimensions
+                cameraFeed.onloadedmetadata = () => {
+                    photoCanvas.width = cameraFeed.videoWidth;
+                    photoCanvas.height = cameraFeed.videoHeight;
+                };
+
+            } catch (err) {
+                console.error('Error al acceder a la cámara:', err);
+                cameraStatus.textContent = 'Error: No se pudo acceder a la cámara. Asegúrate de haber dado permisos.';
+                cameraStatus.style.color = 'red';
+                startCameraBtn.style.display = 'block'; // Allow retry
+                takePhotoBtn.style.display = 'none';
+            }
+        };
+
+        const stopCamera = () => {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+                cameraFeed.srcObject = null;
+                cameraFeed.style.display = 'none';
+                cameraStatus.style.display = 'block';
+                cameraStatus.textContent = 'Cámara detenida.';
+                cameraStatus.style.color = 'var(--color-text-secondary)';
+                startCameraBtn.style.display = 'block';
+                takePhotoBtn.style.display = 'none';
+                retakePhotoBtn.style.display = 'none';
+                shareOptions.style.display = 'none';
+                photoCanvas.style.display = 'none';
+                state.capturedImageBlob = null;
+            }
+        };
+
+        const takePhoto = () => {
+            if (!mediaStream) {
+                cameraStatus.textContent = 'Error: Cámara no iniciada.';
+                cameraStatus.style.color = 'red';
+                return;
+            }
+
+            const context = photoCanvas.getContext('2d');
+            photoCanvas.width = cameraFeed.videoWidth;
+            photoCanvas.height = cameraFeed.videoHeight;
+            context.drawImage(cameraFeed, 0, 0, photoCanvas.width, photoCanvas.height);
+
+            // Hide video, show canvas
+            cameraFeed.style.display = 'none';
+            photoCanvas.style.display = 'block';
+
+            // Update buttons
+            takePhotoBtn.style.display = 'none';
+            startCameraBtn.style.display = 'none'; // No need to restart camera, just retake
+            retakePhotoBtn.style.display = 'block';
+            shareOptions.style.display = 'block';
+
+            // Convert canvas to Blob for sharing/downloading
+            photoCanvas.toBlob((blob) => {
+                state.capturedImageBlob = blob;
+            }, 'image/png');
+        };
+
+        const retakePhoto = () => {
+            // Show video, hide canvas
+            cameraFeed.style.display = 'block';
+            photoCanvas.style.display = 'none';
+
+            // Update buttons
+            takePhotoBtn.style.display = 'block';
+            retakePhotoBtn.style.display = 'none';
+            shareOptions.style.display = 'none';
+            state.capturedImageBlob = null;
+        };
+
+        const sharePhoto = async () => {
+            if (!state.capturedImageBlob) {
+                console.error('No hay foto para compartir.');
+                return;
+            }
+
+            if (navigator.share && navigator.canShare({ files: [new File([state.capturedImageBlob], 'ritesport_photo.png', { type: 'image/png' })] })) {
+                try {
+                    await navigator.share({
+                        files: [new File([state.capturedImageBlob], 'ritesport_photo.png', { type: 'image/png' })],
+                        title: 'Mi foto RITE Sport',
+                        text: '¡Mira mi estilo RITE Sport! #RITESport @ritesport',
+                    });
+                    console.log('Contenido compartido con éxito.');
+                } catch (error) {
+                    console.error('Error al compartir:', error);
+                    // User might have cancelled the share
+                }
+            } else {
+                // Fallback for browsers/devices that don't support Web Share API with files
+                alert('Tu navegador no soporta la función de compartir directamente. Por favor, descarga la imagen y compártela manualmente en Instagram, etiquetando a @ritesport.');
+                downloadPhoto(); // Offer download as a direct fallback
+            }
+        };
+
+        const downloadPhoto = () => {
+            if (state.capturedImageBlob) {
+                const url = URL.createObjectURL(state.capturedImageBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'ritesport_photo.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        };
+
+        // Attach camera/share event listeners
+        startCameraBtn.addEventListener('click', startCamera);
+        takePhotoBtn.addEventListener('click', takePhoto);
+        retakePhotoBtn.addEventListener('click', retakePhoto);
+        sharePhotoBtn.addEventListener('click', sharePhoto);
+        downloadPhotoBtn.addEventListener('click', downloadPhoto);
+
 
         // --- Initialization ---
         const init = () => {
