@@ -654,6 +654,7 @@
         .calculator-section .form-group .form-control {
             flex-grow: 1;
             width: auto; /* Override default 100% width */
+            min-width: 0; /* Prevents the input from overflowing its flex container */
         }
 
         .calculator-result {
@@ -886,7 +887,7 @@
     <!-- MODAL PARA TEMPORIZADOR ACTIVO -->
     <div id="timer-modal" class="modal">
         <div class="modal-content">
-            <button class="modal-close-btn" onclick="stopTimer()"><i class="fa-solid fa-xmark"></i></button>
+            <button class="modal-close-btn" onclick="requestCloseTimer()"><i class="fa-solid fa-xmark"></i></button>
             <h2 id="timer-modal-header" class="modal-header"></h2>
             <div id="timer-info-display" class="info-display"></div>
             
@@ -900,7 +901,7 @@
                 <div id="timer-display" class="timer-display">00:00</div>
                 <div class="timer-controls">
                     <button id="timer-pause-resume" class="btn">Pausa</button>
-                    <button id="timer-stop" class="btn btn-secondary">Parar y Cerrar</button>
+                    <button id="timer-stop" class="btn btn-secondary">Stop</button>
                 </div>
             </div>
         </div>
@@ -941,11 +942,10 @@
                     </select>
                 </div>
                 <div class="calculator-result">
-                    Convertido: <span id="converted-output">0.00</span> lb
+                    Convertido: <span id="converted-output">0.00</span>
                 </div>
             </div>
 
-            <button class="btn" onclick="closeModal(document.getElementById('calculator-modal'))" style="margin-top: 20px;">Cerrar</button>
         </div>
     </div>
 
@@ -1000,25 +1000,35 @@
     };
 
     // --- Timer Control Functions (Global scope) ---
+    const requestCloseTimer = () => {
+        if (timerState.running) {
+            if (confirm('El temporizador está en marcha. ¿Seguro que quieres pararlo y salir?')) {
+                forceCloseTimer();
+            }
+        } else {
+            forceCloseTimer();
+        }
+    };
+
+    const forceCloseTimer = () => {
+        clearInterval(timerInterval);
+        timerState = {};
+        clearTimerState();
+        closeModal(document.getElementById('timer-modal'));
+    };
+
     const stopTimer = (finishedNaturally = false) => {
         timerState.running = false;
         clearInterval(timerInterval);
         
-        const timerModal = document.getElementById('timer-modal'); // Get reference here
-        const timerDisplay = document.getElementById('timer-display');
-        const timerInfoDisplay = document.getElementById('timer-info-display');
-
         if (finishedNaturally) {
             clearTimerState();
-            showTabataCompletionMessage(); // This function will handle closing the modal
+            showTabataCompletionMessage(); // This handles completion
         } else {
-            clearTimerState();
-            closeModal(timerModal);
-            if (timerDisplay) timerDisplay.style.color = 'var(--color-text-primary)';
-            if (timerInfoDisplay) {
-                timerInfoDisplay.style.backgroundColor = 'transparent';
-                timerInfoDisplay.classList.remove('work-mode', 'rest-mode');
-            }
+            // This is for a manual stop via the button
+            saveTimerState(); // Save the stopped state
+            document.getElementById('timer-pause-resume').style.display = 'none';
+            document.getElementById('timer-stop').textContent = 'Reiniciar';
         }
     };
 
@@ -1524,7 +1534,13 @@
             else startTimer();
         });
 
-        document.getElementById('timer-stop').addEventListener('click', () => stopTimer());
+        document.getElementById('timer-stop').addEventListener('click', () => {
+            if (document.getElementById('timer-stop').textContent === 'Stop') {
+                stopTimer();
+            } else {
+                showTimerSetup(timerState.type);
+            }
+        });
 
 
         const showTimerSetup = (type) => {
@@ -1660,7 +1676,9 @@
 
             timerDynamicContent.style.display = 'none';
             timerActiveDisplay.style.display = 'block';
+            document.getElementById('timer-pause-resume').style.display = 'block';
             document.getElementById('timer-pause-resume').textContent = 'Pausa';
+            document.getElementById('timer-stop').textContent = 'Stop';
 
             // All timers now have a countdown
             timerInfoDisplay.textContent = 'Prepárate...';
