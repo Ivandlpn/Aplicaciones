@@ -204,6 +204,88 @@
             margin-top: 30px;
         }
 
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-slide {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 300px; /* Fixed height for consistency */
+            object-fit: cover; /* Ensures images cover the area without distortion */
+            border-radius: 12px;
+            flex-shrink: 0; /* Prevent images from shrinking */
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 24px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .carousel-button.prev {
+            left: 10px;
+        }
+
+        .carousel-button.next {
+            right: 10px;
+        }
+
+        /* New styles for the collection text */
+        .collection-link {
+            display: block; /* Make the whole area clickable */
+            text-decoration: none; /* Remove underline */
+            text-align: center;
+            margin-top: 30px;
+            color: var(--color-text-primary); /* Ensure text color is visible */
+            transition: color 0.2s;
+        }
+
+        .collection-link:hover {
+            color: var(--color-primary); /* Highlight on hover */
+        }
+
+        .collection-link span {
+            display: block; /* Each part on its own line */
+            font-family: var(--font-display); /* Use display font for impact */
+            text-transform: uppercase;
+        }
+
+        .collection-link .small-text {
+            font-size: 1.2rem; /* Smaller for the first part */
+            color: var(--color-text-secondary);
+        }
+
+        .collection-link .large-text {
+            font-size: 2.5rem; /* Larger for "SUMMER VIBES" */
+            color: var(--color-primary);
+            margin-top: 5px; /* Space between lines */
+        }
+
+
         /* --- VISTA: LINKS (Anteriormente Instagram) --- */
         #links .links-content { /* Cambiado de .instagram-content a .links-content */
             text-align: center;
@@ -287,7 +369,7 @@
             padding: 15px 10px;
             background-color: var(--color-surface);
             border: none;
-            border-bottom: 3px solid transparent;
+            border-bottom: 3px solid transparent; /* Corrected from 33px */
             color: var(--color-text-secondary);
             font-family: var(--font-display);
             font-size: 1.1rem;
@@ -305,7 +387,7 @@
         #wiki .tab-button.active {
             background-color: var(--color-primary);
             color: var(--color-text-primary);
-            border-bottom: 3px solid var(--color-primary);
+            border-bottom: 3px solid var(--color-primary); /* Corrected from 33px */
             font-weight: bold;
             transform: translateY(-2px);
         }
@@ -459,11 +541,22 @@
         <!-- VISTA: INICIO -->
         <div id="home" class="view active">
             <h1 class="header">
-                <img src="https://can.ritesport.es/wp-content/uploads/2022/10/cropped-Rite-letras-e1666192483757-1.png" alt="Logo de Rite Sport">
+                RITE SPORT APP
             </h1>
-            <p class="welcome-message">
-                Tu compañero de entrenamiento para superar tus límites.
-            </p>
+            <div class="carousel-container">
+                <div class="carousel-slide" id="home-carousel-slide">
+                    <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0643.jpg" alt="Atleta entrenando con barra">
+                    <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0744.jpg" alt="Atleta realizando un Clean and Jerk">
+                    <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0610.webp" alt="Atleta en posición de sentadilla">
+                    <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0849.jpg" alt="Grupo de atletas levantando pesas">
+                </div>
+                <button class="carousel-button prev" id="carousel-prev-btn">&#10094;</button>
+                <button class="carousel-button next" id="carousel-next-btn">&#10095;</button>
+            </div>
+            <a href="https://ritesport.es/coleccion-ropa-unisex-rite/" target="_blank" rel="noopener noreferrer" class="collection-link">
+                <span class="small-text">DESCUBRE NUESTRA NUEVA COLECCIÓN</span>
+                <span class="large-text">SUMMER VIBES</span>
+            </a>
         </div>
 
         <!-- VISTA: LINKS (Anteriormente Instagram) -->
@@ -651,30 +744,30 @@
         
         // --- WOD Database ---
         const wodDatabase = [
-            { name: 'Fran', category: 'The Girls', description: '21-15-9 reps for time:\\nThrusters (95/65 lb)\\nPull-ups' },
-            { name: 'Cindy', category: 'The Girls', description: 'AMRAP in 20 minutes:\\n5 Pull-ups\\n10 Push-ups\\n15 Squats' },
-            { name: 'Murph', category: 'Heroes', description: 'For time:\\n1 mile Run\\n100 Pull-ups\\n200 Push-ups\\n300 Squats\\n1 mile Run\\n(con chaleco de 20/14 lb)' },
-            { name: 'DT', category: 'Heroes', description: '5 rondas por tiempo:\\n12 Deadlifts (155/105 lb)\\n9 Hang Power Cleans (155/105 lb)\\n6 Push Jerks (155/105 lb)' },
-            { name: 'Open 11.1', category: 'Open', description: 'AMRAP en 10 minutos:\\n30 Double-Unders\\n15 Power Snatches (75/55 lb)' },
-            { name: 'Open 21.2', category: 'Open', description: 'Por tiempo:\\n10 Dumbbell Snatches\\n15 Burpee Box Jump-Overs\\n20 Dumbbell Snatches\\n15 Burpee Box Jump-Overs\\n30 Dumbbell Snatches\\n15 Burpee Box Jump-Overs\\n40 Dumbbell Snatches\\n15 Burpee Box Jump-Overs\\n50 Dumbbell Snatches\\n15 Burpee Box Jump-Overs\\n(50/35 lb, 24/20 in)'},
-            { name: 'Death by Burpees', category: 'Bodyweight', description: 'EMOM hasta el fallo:\\nMinuto 1: 1 Burpee\\nMinuto 2: 2 Burpees\\nMinuto 3: 3 Burpees\\n...y así sucesivamente.'},
-            { name: 'Tabata Something Else', category: 'Bodyweight', description: '4 rondas de:\\nTabata Pull-ups\\nTabata Push-ups\\nTabata Sit-ups\\nTabata Squats\\n(1 minuto de descanso entre ejercicios)'},
-            { name: 'Grace', category: 'The Girls', description: 'Por tiempo:\\n30 Clean and Jerks (135/95 lb)'},
-            { name: 'Isabel', category: 'The Girls', description: 'Por tiempo:\\n30 Snatches (135/95 lb)'},
-            { name: 'Annie', category: 'The Girls', description: '50-40-30-20-10 repeticiones por tiempo:\\nDouble-Unders\\nSit-ups'},
-            { name: 'Amanda', category: 'The Girls', description: '9-7-5 repeticiones por tiempo:\\nMuscle-ups\\nSnatches (135/95 lb)'},
-            { name: 'Helen', category: 'The Girls', description: '3 rondas por tiempo:\\n400 metros de carrera\\n21 Kettlebell Swings (1.5/1 pood)\\n12 Pull-ups'},
-            { name: 'Fight Gone Bad', category: 'Triplet', description: '3 rondas, 1 minuto por estación, 1 minuto de descanso entre rondas:\\nWall-Ball Shots (20/14 lb)\\nSumo Deadlift High-Pulls (75/55 lb)\\nBox Jumps (20 in)\\nPush Press (75/55 lb)\\nRow (Calorías)\\n(La puntuación es el total de repeticiones)'},
-            { name: 'Karen', category: 'The Girls', description: 'Por tiempo:\\n150 Wall-Ball Shots (20/14 lb)'},
-            { name: 'Filthy 50', category: 'Endurance', description: 'Por tiempo:\\n50 Box Jumps (24/20 in)\\n50 Jumping Pull-ups\\n50 Kettlebell Swings (1 pood)\\n50 Walking Lunges\\n50 Knees to Elbows\\n50 Push Press (45/35 lb)\\n50 Back Extensions\\n50 Wall Ball Shots (20/14 lb)\\n50 Burpees\\n50 Double-Unders'},
-            { name: 'The Seven', category: 'Heroes', description: '7 rondas por tiempo:\\n7 Handstand Push-ups\\n7 Thrusters (135/95 lb)\\n7 Knees-to-Elbows\\n7 Deadlifts (245/165 lb)\\n7 Burpees\\n7 Kettlebell Swings (2 pood)\\n7 Pull-ups'},
-            { name: 'Diane', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\\nDeadlifts (225/155 lb)\\nHandstand Push-ups'},
-            { name: 'Elizabeth', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\\nCleans (135/95 lb)\\nRing Dips'},
-            { name: 'For Time: 21-15-9', category: 'Couplet', description: 'Por tiempo:\\n21-15-9 repeticiones de:\\nDeadlifts (pesado)\\nBurpees over bar'},
-            { name: 'AMRAP: 12 min', category: 'Couplet', description: 'AMRAP 12 minutos:\\n10 Toes-to-Bar\\n10 Wall Walks'},
-            { name: 'EMOM: 10 min', category: 'Endurance', description: 'EMOM 10 minutos:\\nMinuto 1: 15/12 Calorías en Remo\\nMinuto 2: 12/9 Calorías en Bicicleta'},
-            { name: 'Cindy Variation', category: 'Bodyweight', description: 'AMRAP en 15 minutos:\\n5 Pull-ups\\n10 Push-ups\\n15 Air Squats'},
-            { name: 'Strict Fran', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\\nStrict Thrusters (95/65 lb)\\nStrict Pull-ups'}
+            { name: 'Fran', category: 'The Girls', description: '21-15-9 reps for time:\nThrusters (95/65 lb)\nPull-ups' },
+            { name: 'Cindy', category: 'The Girls', description: 'AMRAP in 20 minutes:\n5 Pull-ups\n10 Push-ups\n15 Squats' },
+            { name: 'Murph', category: 'Heroes', description: 'For time:\n1 mile Run\n100 Pull-ups\n200 Push-ups\n300 Squats\n1 mile Run\n(con chaleco de 20/14 lb)' },
+            { name: 'DT', category: 'Heroes', description: '5 rondas por tiempo:\n12 Deadlifts (155/105 lb)\n9 Hang Power Cleans (155/105 lb)\n6 Push Jerks (155/105 lb)' },
+            { name: 'Open 11.1', category: 'Open', description: 'AMRAP en 10 minutos:\n30 Double-Unders\n15 Power Snatches (75/55 lb)' },
+            { name: 'Open 21.2', category: 'Open', description: 'Por tiempo:\n10 Dumbbell Snatches\n15 Burpee Box Jump-Overs\n20 Dumbbell Snatches\n15 Burpee Box Jump-Overs\n30 Dumbbell Snatches\n15 Burpee Box Jump-Overs\n40 Dumbbell Snatches\n15 Burpee Box Jump-Overs\n50 Dumbbell Snatches\n15 Burpee Box Jump-Overs\n(50/35 lb, 24/20 in)'},
+            { name: 'Death by Burpees', category: 'Bodyweight', description: 'EMOM hasta el fallo:\nMinuto 1: 1 Burpee\nMinuto 2: 2 Burpees\nMinuto 3: 3 Burpees\n...y así sucesivamente.'},
+            { name: 'Tabata Something Else', category: 'Bodyweight', description: '4 rondas de:\nTabata Pull-ups\nTabata Push-ups\nTabata Sit-ups\nTabata Squats\n(1 minuto de descanso entre ejercicios)'},
+            { name: 'Grace', category: 'The Girls', description: 'Por tiempo:\n30 Clean and Jerks (135/95 lb)'},
+            { name: 'Isabel', category: 'The Girls', description: 'Por tiempo:\n30 Snatches (135/95 lb)'},
+            { name: 'Annie', category: 'The Girls', description: '50-40-30-20-10 repeticiones por tiempo:\nDouble-Unders\nSit-ups'},
+            { name: 'Amanda', category: 'The Girls', description: '9-7-5 repeticiones por tiempo:\nMuscle-ups\nSnatches (135/95 lb)'},
+            { name: 'Helen', category: 'The Girls', description: '3 rondas por tiempo:\n400 metros de carrera\n21 Kettlebell Swings (1.5/1 pood)\n12 Pull-ups'},
+            { name: 'Fight Gone Bad', category: 'Triplet', description: '3 rondas, 1 minuto por estación, 1 minuto de descanso entre rondas:\nWall-Ball Shots (20/14 lb)\nSumo Deadlift High-Pulls (75/55 lb)\nBox Jumps (20 in)\nPush Press (75/55 lb)\nRow (Calorías)\n(La puntuación es el total de repeticiones)'},
+            { name: 'Karen', category: 'The Girls', description: 'Por tiempo:\n150 Wall-Ball Shots (20/14 lb)'},
+            { name: 'Filthy 50', category: 'Endurance', description: 'Por tiempo:\n50 Box Jumps (24/20 in)\n50 Jumping Pull-ups\n50 Kettlebell Swings (1 pood)\n50 Walking Lunges\n50 Knees to Elbows\n50 Push Press (45/35 lb)\n50 Back Extensions\n50 Wall Ball Shots (20/14 lb)\n50 Burpees\n50 Double-Unders'},
+            { name: 'The Seven', category: 'Heroes', description: '7 rondas por tiempo:\n7 Handstand Push-ups\n7 Thrusters (135/95 lb)\n7 Knees-to-Elbows\n7 Deadlifts (245/165 lb)\n7 Burpees\n7 Kettlebell Swings (2 pood)\n7 Pull-ups'},
+            { name: 'Diane', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\nDeadlifts (225/155 lb)\nHandstand Push-ups'},
+            { name: 'Elizabeth', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\nCleans (135/95 lb)\nRing Dips'},
+            { name: 'For Time: 21-15-9', category: 'Couplet', description: 'Por tiempo:\n21-15-9 repeticiones de:\nDeadlifts (pesado)\nBurpees over bar'},
+            { name: 'AMRAP: 12 min', category: 'Couplet', description: 'AMRAP 12 minutos:\n10 Toes-to-Bar\n10 Wall Walks'},
+            { name: 'EMOM: 10 min', category: 'Endurance', description: 'EMOM 10 minutos:\nMinuto 1: 15/12 Calorías en Remo\nMinuto 2: 12/9 Calorías en Bicicleta'},
+            { name: 'Cindy Variation', category: 'Bodyweight', description: 'AMRAP en 15 minutos:\n5 Pull-ups\n10 Push-ups\n15 Air Squats'},
+            { name: 'Strict Fran', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\nStrict Thrusters (95/65 lb)\nStrict Pull-ups'}
         ];
 
         // --- Crossfit Dictionary Database ---
@@ -786,7 +879,7 @@
             { term: 'Toomey, Tia-Clair', definition: 'Ver Tia-Clair Toomey.', category: 'Atletas Famosos' },
             { term: 'Froning, Rich', definition: 'Ver Rich Froning Jr.', category: 'Atletas Famosos' },
             { term: 'Davidsdottir, Katrin', definition: 'Ver Katrin Davidsdottir.', category: 'Atletas Famosos' },
-            { term: 'Ohlsen, Noah', definition: 'Ver Noah Ohlsen.', category: 'Atletas Famosos' } // Added missing comma and closing brace/bracket
+            { term: 'Ohlsen, Noah', definition: 'Ver Noah Ohlsen.', category: 'Atletas Famosos' } 
         ];
 
 
@@ -1363,6 +1456,50 @@
             showWodDetailsModal(randomWod.name, randomWod.description);
         });
         
+        // --- Carousel Logic ---
+        const carouselContainer = document.querySelector('.carousel-container');
+        const carouselSlide = document.getElementById('home-carousel-slide');
+        const carouselImages = carouselSlide.querySelectorAll('img');
+        const prevBtn = document.getElementById('carousel-prev-btn');
+        const nextBtn = document.getElementById('carousel-next-btn');
+
+        let currentIndex = 0;
+
+        const updateCarousel = () => {
+            if (carouselImages.length === 0) return; // Prevent errors if no images
+            const imageWidth = carouselImages[0].clientWidth;
+            carouselSlide.style.transform = `translateX(${-currentIndex * imageWidth}px)`;
+        };
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex === 0) ? carouselImages.length - 1 : currentIndex - 1;
+            updateCarousel();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex === carouselImages.length - 1) ? 0 : currentIndex + 1;
+            updateCarousel();
+        });
+
+        // Optional: Auto-play carousel
+        let autoPlayInterval = setInterval(() => {
+            currentIndex = (currentIndex === carouselImages.length - 1) ? 0 : currentIndex + 1;
+            updateCarousel();
+        }, 5000); // Change image every 5 seconds
+
+        // Stop auto-play on manual interaction and restart after a delay
+        [prevBtn, nextBtn].forEach(btn => {
+            btn.addEventListener('click', () => {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = setInterval(() => {
+                    currentIndex = (currentIndex === carouselImages.length - 1) ? 0 : currentIndex + 1;
+                    updateCarousel();
+                }, 5000);
+            });
+        });
+
+        window.addEventListener('resize', updateCarousel); // Adjust carousel on resize
+
         // --- Initialization ---
         const init = () => {
             renderWodLibrary();
@@ -1394,6 +1531,9 @@
             }
             
             navigateTo('home');
+            // Ensure carousel initializes after images are loaded or DOM is ready
+            // A small delay might be necessary if images are large and cause layout shifts
+            setTimeout(updateCarousel, 100); 
         };
 
         init();
