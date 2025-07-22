@@ -616,12 +616,12 @@
             <div class="carousel-container">
                 <div class="carousel-slide" id="home-carousel-slide">
                     <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0643.jpg" alt="Atleta entrenando con barra">
-                    <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0744.jpg" alt="Atleta realizando un Clean and Jerk">
-                    <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0610.webp" alt="Atleta en posición de sentadilla">
-                    <img src="https://ritesport.es/wp-content/uploads/2025/05/LX1A0849.jpg" alt="Grupo de atletas levantando pesas">
-                    <img src="https://ritesport.es/wp-content/uploads/2025/02/R-I-T-E_4__1_-1.webp" alt="Imagen de atleta con ropa deportiva Rite">
-                    <img src="https://ritesport.es/wp-content/uploads/2024/05/2_1-1.webp" alt="Imagen de atleta haciendo flexiones">
-                    <img src="https://ritesport.es/wp-content/uploads/2024/06/2_1_11zon-8.webp" alt="Imagen de atleta levantando pesas">
+                    <img src="https://ritesport.com/wp-content/uploads/2025/05/LX1A0744.jpg" alt="Atleta realizando un Clean and Jerk">
+                    <img src="https://ritesport.com/wp-content/uploads/2025/05/LX1A0610.webp" alt="Atleta en posición de sentadilla">
+                    <img src="https://ritesport.com/wp-content/uploads/2025/05/LX1A0849.jpg" alt="Grupo de atletas levantando pesas">
+                    <img src="https://ritesport.com/wp-content/uploads/2025/02/R-I-T-E_4__1_-1.webp" alt="Imagen de atleta con ropa deportiva Rite">
+                    <img src="https://ritesport.com/wp-content/uploads/2024/05/2_1-1.webp" alt="Imagen de atleta haciendo flexiones">
+                    <img src="https://ritesport.com/wp-content/uploads/2024/06/2_1_11zon-8.webp" alt="Imagen de atleta levantando pesas">
                 </div>
                 <button class="carousel-button prev" id="carousel-prev-btn">&#10094;</button>
                 <button class="carousel-button next" id="carousel-next-btn">&#10095;</button>
@@ -1622,31 +1622,43 @@
         const startCamera = async () => {
             cameraStatus.textContent = 'Iniciando cámara...';
             try {
-                // Request access to the camera
-                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                cameraFeed.srcObject = mediaStream;
-                cameraFeed.style.display = 'block';
-                cameraStatus.style.display = 'none';
-                startCameraBtn.style.display = 'none';
-                takePhotoBtn.style.display = 'block';
-                retakePhotoBtn.style.display = 'none';
-                shareOptions.style.display = 'none';
-                photoCanvas.style.display = 'none';
-                state.capturedImageBlob = null; // Clear any previous photo
-
-                // Ensure video is loaded before setting canvas dimensions
-                cameraFeed.onloadedmetadata = () => {
-                    photoCanvas.width = cameraFeed.videoWidth;
-                    photoCanvas.height = cameraFeed.videoHeight;
-                };
-
+                // Try to get the rear camera first
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { exact: "environment" }
+                    }
+                });
             } catch (err) {
-                console.error('Error al acceder a la cámara:', err);
-                cameraStatus.textContent = 'Error: No se pudo acceder a la cámara. Asegúrate de haber dado permisos.';
-                cameraStatus.style.color = 'red';
-                startCameraBtn.style.display = 'block'; // Allow retry
-                takePhotoBtn.style.display = 'none';
+                console.warn('No se pudo acceder a la cámara trasera. Intentando con la cámara frontal o predeterminada:', err);
+                // Fallback to front camera or default if rear camera fails
+                try {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                } catch (fallbackErr) {
+                    console.error('Error al acceder a cualquier cámara:', fallbackErr);
+                    cameraStatus.textContent = 'Error: No se pudo acceder a la cámara. Asegúrate de haber dado permisos.';
+                    cameraStatus.style.color = 'red';
+                    startCameraBtn.style.display = 'block'; // Allow retry
+                    takePhotoBtn.style.display = 'none';
+                    return; // Exit if no camera can be accessed
+                }
             }
+
+            // If a stream was successfully obtained
+            cameraFeed.srcObject = mediaStream;
+            cameraFeed.style.display = 'block';
+            cameraStatus.style.display = 'none';
+            startCameraBtn.style.display = 'none';
+            takePhotoBtn.style.display = 'block';
+            retakePhotoBtn.style.display = 'none';
+            shareOptions.style.display = 'none';
+            photoCanvas.style.display = 'none';
+            state.capturedImageBlob = null; // Clear any previous photo
+
+            // Ensure video is loaded before setting canvas dimensions
+            cameraFeed.onloadedmetadata = () => {
+                photoCanvas.width = cameraFeed.videoWidth;
+                photoCanvas.height = cameraFeed.videoHeight;
+            };
         };
 
         const stopCamera = () => {
