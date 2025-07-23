@@ -16,9 +16,9 @@
             --accent-color: #d4af37;
             
             /* --- CAMBIO APLICADO AQUÍ: Nuevo esquema de colores para las semanas --- */
-            --week-past-color: #4a4a4a; /* Gris sólido para el pasado, lo ya escrito. */
-            --week-current-color: var(--accent-color); /* Dorado para el presente, el foco. */
-            --week-future-border-color: #383838; /* Borde visible para el futuro, el potencial. */
+            --week-past-color: #f0e68c;       /* Amarillo claro/pergamino para el pasado */
+            --week-current-color: var(--accent-color); /* Amarillo fuerte para el presente */
+            --week-future-color: #4a4a4a;      /* Gris sólido para el futuro */
         }
 
         * {
@@ -85,19 +85,23 @@
         #life-progress-text { text-align: center; margin-top: 8px; color: var(--secondary-text-color); }
 
         #weeks-grid { display: grid; grid-template-columns: repeat(52, 1fr); gap: 3px; margin-top: 10px; }
-
         .week-box {
             width: 100%;
             aspect-ratio: 1 / 1;
             border-radius: 2px;
         }
         
-        /* --- CAMBIO APLICADO AQUÍ: Nueva definición de los estilos de semana --- */
-        .week-box.past { background-color: var(--week-past-color); }
-        .week-box.current { background-color: var(--week-current-color); animation: pulse 2s infinite; }
+        /* --- CAMBIO APLICADO AQUÍ: Nuevos estilos de semana --- */
+        .week-box.past { 
+            background-color: var(--week-past-color); 
+            border: 1px solid #444; /* Borde oscuro para el amarillo claro */
+        }
+        .week-box.current { 
+            background-color: var(--week-current-color); 
+            animation: pulse 2s infinite; 
+        }
         .week-box.future { 
-            background-color: transparent; /* Un contenedor vacío */
-            border: 1px solid var(--week-future-border-color); /* Un borde visible pero sutil */
+            background-color: var(--week-future-color); 
         }
         
         @keyframes pulse {
@@ -212,7 +216,9 @@
             const wisdomPills = [ { source: "Origen Romano", text: "En la antigua Roma, a un general victorioso le seguía un esclavo que le susurraba 'Recuerda que eres un hombre' para evitar la soberbia y recordar su mortalidad." }, { source: "Memento Mori vs. Carpe Diem", text: "Mientras 'Carpe Diem' puede ser una búsqueda hedonista del placer, el 'Memento Mori' estoico usa la muerte como perspectiva para una vida virtuosa y justa, no como excusa." }, { source: "Arte Vanitas", text: "Las pinturas 'Vanitas' usan símbolos como calaveras y relojes de arena para enfatizar la fugacidad de la vida y la vanidad de los placeres terrenales frente a la muerte." }, { source: "Budismo (Maraṇasati)", text: "En el budismo, la meditación 'Maraṇasati' consiste en recordar la muerte para reducir el apego (fuente de sufrimiento) y vivir con más urgencia y sabiduría." }, { source: "Beneficio: Priorización", text: "Recordar tu finitud te obliga a preguntarte: '¿Es esto realmente importante?'. Ayuda a distinguir lo esencial de lo trivial y a enfocar tu tiempo en lo que verdaderamente valoras." }, { source: "Beneficio: Gratitud", text: "Cuando entiendes que nada es permanente, cada momento, cada persona y cada pequeña alegría se vuelve infinitamente más preciosa. Fomenta el aprecio por el ahora." }, { source: "Beneficio: Impulso a la Acción", text: "La conciencia de que el tiempo es limitado es el mejor antídoto contra la procrastinación. Te impulsa a dejar de posponer tus sueños y a actuar hoy." }, { source: "Beneficio: Humildad", text: "La muerte es el gran ecualizador. Recordarla te protege del exceso de ego y fomenta la empatía, recordándote que todos compartimos el mismo destino." }, { source: "Cultura Pop: 'Six Feet Under'", text: "La aclamada serie de HBO 'Six Feet Under' es una exploración moderna del 'Memento Mori', mostrando cómo la constante presencia de la muerte afecta a una familia y nos enseña a vivir." }, { source: "Cultura Pop: 'Coco'", text: "La película de Pixar 'Coco' explora la mortalidad de una forma accesible y alegre, enseñando que el recuerdo y el legado son una forma de trascender la muerte física." }, { source: "Aplicación Práctica: Recordatorios Físicos", text: "Algunos practicantes del estoicismo usan objetos como monedas o calaveras en su escritorio para mantener el 'Memento Mori' presente en su día a día." }, { source: "Aplicación Práctica: Cuestionamiento de Prioridades", text: "Marco Aurelio se preguntaba ante una tarea: '¿La muerte es terrible porque me priva de... esto?'. Este ejercicio revela lo que realmente importa." }, { source: "Cristianismo Medieval", text: "La frase bíblica 'En todo lo que hagas piensa en el final, y nunca pecarás' (Eclesiástico 7:36) fue una forma de 'Memento Mori' para advertir sobre la fugacidad de la vida y la necesidad de la salvación." }, { source: "Tecnología y Productividad", text: "Han surgido apps y planificadores en Notion basados en 'Memento Mori' para gestionar tareas y objetivos con una perspectiva de finitud, aumentando la productividad con propósito." } ];
             const lastTimeReflections = [ "Si esta fuera la última vez que pudieras <strong>${activity}</strong>, ¿qué detalles cobrarían vida? ¿Qué sonidos, olores o sensaciones, que normalmente ignoras, se volverían inolvidables? Sumérgete en esa percepción.", "Considera la actividad: <strong>${activity}</strong>. Ahora, imagina que es la última vez. ¿Qué palabras de gratitud o aprecio, que has pospuesto, dirías a las personas involucradas o a ti mismo? ¿Qué sentimiento te embargaría?", "Al pensar en <strong>${activity}</strong> como la vez final, ¿qué pequeñas frustraciones o quejas se desvanecerían por completo? ¿Qué es lo que realmente importaría de esa experiencia, despojada de todo lo trivial?", "Sabiendo que esta podría ser la última oportunidad para <strong>${activity}</strong>, ¿cómo cambiaría tu presencia? ¿Dejarías el móvil a un lado? ¿Escucharías más atentamente? ¿Actuarías con más paciencia y amor? Aplica esa lección ahora.", "Reflexiona sobre <strong>${activity}</strong>. Si fuera la última vez, ¿cómo querrías ser recordado en ese preciso momento? ¿Con qué energía, paciencia o alegría te gustaría impregnar ese recuerdo final?" ];
             const consciousReminders = { stage1: [ "Ya has vivido un ${progress}% de tu vida. Estás construyendo los cimientos. Cada acción de hoy define el resto de tu estructura. ¿Estás construyendo con propósito?", "Con un ${progress}% de tu vida transcurrido, estás plantando las semillas de tu futuro. Cada hábito, cada lección, es una semilla. ¿Qué tipo de jardín estás cultivando?", "Al ${progress}%, el tiempo parece infinito, pero es una ilusión poderosa. Usa esta energía para explorar y aprender, no solo para pasar el rato. La curiosidad de hoy es la sabiduría de mañana.", "Estás escribiendo los primeros capítulos de tu biografía con un ${progress}% ya completado. Asegúrate de que sean dignos de ser leídos. El protagonista eres tú." ], stage2: [ "Con un ${progress}% de tu vida recorrido, estás en pleno apogeo. La energía es alta, pero el tiempo no es infinito. ¿Estás invirtiendo esta etapa en lo que realmente te hará pleno?", "Has alcanzado el ${progress}%. El sol está en su punto más alto para ti. Es el momento de la acción audaz y de crear impacto. No dejes que este mediodía pase en la sombra de la indecisión.", "Al ${progress}%, ya tienes suficiente pasado como para haber aprendido, y suficiente futuro como para aplicarlo. Es una posición de poder única. Úsala sabiamente.", "Con el ${progress}% de tu vida vivido, muchos de tus esfuerzos iniciales ya son árboles. ¿Estás podando las ramas muertas y cuidando los frutos, o te distraes con las malas hierbas de lo insignificante?" ], stage3: [ "Has superado el ${progress}% del camino. Has acumulado sabiduría y experiencia. ¿Estás usándola para vivir con más calma, para enseñar a otros y para disfrutar de lo que has construido?", "Al llegar al ${progress}%, la vista desde la montaña es diferente, más clara. Las cosas que realmente importan destacan sobre el ruido. Es el momento de enfocarse exclusivamente en ellas.", "Con un ${progress}% vivido, tu vida es una rica biblioteca. Ahora es menos sobre añadir nuevos volúmenes triviales y más sobre compartir la sabiduría de los que ya están en tus estanterías.", "Has cruzado el ecuador con un ${progress}%. La segunda mitad del viaje se gana con estrategia y sabiduría, no solo con energía. Haz que cada movimiento sea deliberado y cuente." ], stage4: [ "Al ${progress}%, cada día es un regalo invaluable. Has visto mucho. Ahora es el momento de la serenidad, de saborear las pequeñas cosas y de ser una fuente de paz para los que te rodean.", "Con un ${progress}% de tu vida detrás, el sol se está poniendo, pintando el cielo con colores hermosos. Esto no es un final que temer, sino un espectáculo que saborear. Aprecia la belleza de este preciso momento.", "Has alcanzado el ${progress}%. Has ganado tu perspectiva. Tu presencia, ahora más que nunca, es un regalo. Es tiempo de soltar viejas batallas y abrazar la paz del presente.", "En el ${progress}%, la carrera está casi completa. Ya no se trata de la velocidad, sino de cómo cruzas la línea de meta: con gracia, con gratitud y con un corazón tranquilo." ] };
-
+            const daysOfWeek = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+            const months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            
             // --- ELEMENTOS DEL DOM ---
             const configSection = document.getElementById('config-section');
             const dashboardSection = document.getElementById('dashboard-section');
@@ -267,7 +273,7 @@
                 const activity = activityInput.value.trim();
                 if (!activity) { alert("Por favor, introduce una actividad para reflexionar."); return; }
                 const randomReflectionTemplate = lastTimeReflections[Math.floor(Math.random() * lastTimeReflections.length)];
-                const finalReflection = randomReflectionTemplate.replace(/\${activity}/g, activity);
+                const finalReflection = randomReflectionTemplate.replace(/\${activity}/g, `<strong>${activity}</strong>`);
                 lastTimeOutput.style.display = 'block';
                 lastTimeOutput.innerHTML = finalReflection;
                 activityInput.value = '';
@@ -275,7 +281,7 @@
 
             mementoMoriBtn.addEventListener('click', () => {
                 const progressText = document.getElementById('life-progress-text').textContent;
-                const roundedProgress = parseInt(progressText, 10);
+                const roundedProgress = parseInt(progressText.match(/\d+/)[0], 10);
                 
                 let stageMessages;
                 if (roundedProgress < 25) { stageMessages = consciousReminders.stage1; } 
@@ -334,8 +340,14 @@
                 let progress = (livedMillis / lifeInMillis) * 100;
                 progress = Math.min(progress, 100);
 
+                const dayName = daysOfWeek[now.getDay()];
+                const monthName = months[now.getMonth()];
+                const dayNumber = now.getDate();
+                const year = now.getFullYear();
+                const roundedProgress = Math.round(progress);
+                
                 document.getElementById('life-progress-bar').style.width = `${progress}%`;
-                document.getElementById('life-progress-text').textContent = `${Math.round(progress)}% de tu vida ha transcurrido.`;
+                document.getElementById('life-progress-text').textContent = `Hoy es ${dayName} ${dayNumber} de ${monthName} de ${year} y ha transcurrido un ${roundedProgress}% de tu vida.`;
 
                 const weeksGrid = document.getElementById('weeks-grid');
                 weeksGrid.innerHTML = '';
