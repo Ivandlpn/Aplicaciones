@@ -1983,9 +1983,9 @@
         // ensure it's hosted on the same domain as this HTML file, or that the server
         // provides appropriate CORS headers (Access-Control-Allow-Origin: *).
         const riteLogoSticker = {
-            src: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDYwMCAxNTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiM2NmNjY2MiLz4KICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Ik9zd2FsZCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI4MCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPlJJVEU8L3RleHQ+Cjwvc3ZnPg==',
-            width: 600, 
-            height: 150 
+            src: './img/logos/letrasRITE.png', // Updated path to the local image
+            width: 600, // Placeholder, actual width will be determined on load
+            height: 150  // Placeholder, actual height will be determined on load
         };
 
         const startCamera = async () => {
@@ -2068,33 +2068,41 @@
 
             // Draw the RITE logo
             const img = new Image();
-            // No need for crossOrigin for data URLs, but it doesn't hurt.
-            // If you switch back to an external URL, ensure the server supports CORS.
-            img.crossOrigin = 'Anonymous'; 
+            img.crossOrigin = 'Anonymous'; // Required for loading images from different origins
             img.src = riteLogoSticker.src;
             img.onload = () => {
-                // Position the logo: centered horizontally at the top with some margin
-                const margin = 20;
-                // Scale logo to fit canvas width, maintaining aspect ratio
-                const scaleFactor = (photoCanvas.width * 0.7) / riteLogoSticker.width; // Use 70% of canvas width
-                const logoWidth = riteLogoSticker.width * scaleFactor;
-                const logoHeight = riteLogoSticker.height * scaleFactor;
+                // Calculate logo dimensions to fit within the canvas, maintaining aspect ratio
+                const maxLogoWidth = photoCanvas.width * 0.7; // Logo takes up 70% of canvas width
+                const maxLogoHeight = photoCanvas.height * 0.2; // Logo takes up 20% of canvas height (adjust as needed)
+
+                let logoWidth = img.width;
+                let logoHeight = img.height;
+
+                // Scale down if image is too large
+                if (logoWidth > maxLogoWidth) {
+                    logoHeight = (maxLogoWidth / logoWidth) * logoHeight;
+                    logoWidth = maxLogoWidth;
+                }
+                if (logoHeight > maxLogoHeight) {
+                    logoWidth = (maxLogoHeight / logoHeight) * logoWidth;
+                    logoHeight = maxLogoHeight;
+                }
 
                 const x = (photoCanvas.width - logoWidth) / 2; // Centered horizontally
-                const y = margin; // Top with margin
+                const y = 20; // 20px from the top
+
                 context.drawImage(img, x, y, logoWidth, logoHeight);
 
-                // Add the @ritesport text below the logo
+                // Add the @ritesport text below the logo, centered on the logo
                 const text = '@ritesport';
-                // Adjust font size dynamically based on logo size or canvas width
-                const fontSize = Math.max(24, logoHeight * 0.2); // Min 24px, or 20% of logo height
+                const fontSize = Math.max(20, logoHeight * 0.15); // Dynamic font size based on logo height
                 context.font = `bold ${fontSize}px ${getComputedStyle(document.body).fontFamily}`; 
                 context.fillStyle = 'white'; 
                 context.textAlign = 'center'; 
 
-                // Calculate text position: centered horizontally, below the logo
+                // Calculate text position: centered horizontally relative to the logo, and below it
                 const textX = photoCanvas.width / 2;
-                const textY = y + logoHeight + (fontSize / 2) + 10; // 10px margin below logo, adjusted for text height
+                const textY = y + logoHeight + (fontSize / 2) + 5; // 5px margin below logo
 
                 context.fillText(text, textX, textY);
 
@@ -2103,7 +2111,8 @@
             };
             img.onerror = () => {
                 console.error('Error loading RITE logo image. It might be due to CORS restrictions or an invalid URL. The image will be saved without the logo.');
-                updateCapturedImageBlob(); // Still update blob even if logo fails
+                // If the image fails to load, still proceed to update the blob without the logo
+                updateCapturedImageBlob();
             };
 
             // Hide video, show canvas
