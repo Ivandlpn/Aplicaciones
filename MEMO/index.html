@@ -263,6 +263,13 @@
                     <div id="life-progress-bar"></div>
                 </div>
                 <p id="life-progress-text"></p>
+
+                <!-- NUEVA SECCIÓN INTEGRADA -->
+                <hr style="border-color: #444; margin: 25px 0 20px 0;">
+                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px; text-align: center;">
+                    Cada porcentaje es un paso. Pulsa para una dosis de perspectiva basada en tu progreso.
+                </p>
+                <button id="memento-mori-btn" class="button">Recordatorio Consciente</button>
             </section>
 
             <section id="weeks-card" class="card">
@@ -294,15 +301,10 @@
                 <p id="journal-status"></p>
             </section>
 
-            <section id="action-card" class="card">
-                <h2>Un Recordatorio Consciente</h2>
-                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px;">Pulsa para recibir una dosis de perspectiva. Recuerda que debes vivir.</p>
-                <button id="memento-mori-btn" class="button">Memento Mori</button>
-            </section>
+            <!-- La tarjeta de acción ha sido eliminada de aquí -->
         </main>
         
         <footer>
-            <!-- El texto del disclaimer ha sido eliminado -->
             <button id="reset-button" class="hidden">Reiniciar Configuración</button>
         </footer>
     </div>
@@ -311,38 +313,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             // --- BASES DE DATOS AMPLIADAS ---
             const lifeExpectancyData = [ { country: "India", female: 74.13, male: 70.95 }, { country: "China", female: 81.25, male: 75.65 }, { country: "Estados Unidos", female: 82.11, male: 77.22 }, { country: "Indonesia", female: 73.61, male: 69.29 }, { country: "Pakistán", female: 70.47, male: 65.58 }, { country: "Nigeria", female: 55.12, male: 54.45 }, { country: "Brasil", female: 79.30, male: 73.14 }, { country: "Bangladés", female: 76.94, male: 73.55 }, { country: "Rusia", female: 79.32, male: 67.69 }, { country: "México", female: 78.17, male: 72.63 }, { country: "Japón", female: 88.03, male: 81.99 }, { country: "Filipinas", female: 73.11, male: 67.10 }, { country: "Vietnam", female: 79.49, male: 70.23 }, { country: "Rep. Dem. del Congo", female: 64.40, male: 60.10 }, { country: "Etiopía", female: 71.30, male: 64.62 }, { country: "Egipto", female: 74.22, male: 69.82 }, { country: "Irán", female: 79.99, male: 76.22 }, { country: "Alemania", female: 84.01, male: 79.42 }, { country: "Turquía", female: 80.82, male: 74.94 }, { country: "Tailandia", female: 81.17, male: 72.65 }, { country: "España", female: 86.59, male: 81.27 } ];
-            const stoicQuotes = [ 
-                { quote: "No es que tengamos poco tiempo, sino que perdemos mucho.", author: "Séneca" }, 
-                { quote: "Piensa en tu larga procrastinación... Ya es hora de que te des cuenta de qué universo formas parte.", author: "Marco Aurelio" }, 
-                { quote: "Recordar que voy a morir pronto es la herramienta más importante que me ha encontrado para ayudarme a tomar las grandes decisiones de la vida.", author: "Steve Jobs"}, 
-                { quote: "No te expliques tu filosofía, encárnala.", author: "Epicteto" },
-                { quote: "La muerte no nos concierne, pues mientras existimos, la muerte no está presente. Y cuando la muerte está presente, nosotros no existimos.", author: "Epicuro" },
-                { quote: "El que teme a la muerte nunca hará nada digno de un hombre vivo.", author: "Séneca" },
-                { quote: "Podrías dejar la vida ahora mismo. Deja que eso determine lo que haces, dices y piensas.", author: "Marco Aurelio" },
-                { quote: "No actúes como si fueras a vivir diez mil años. La muerte te acecha. Mientras vivas, mientras esté en tu poder, sé bueno.", author: "Marco Aurelio" },
-                { quote: "La duración de la vida de un hombre es un punto, y su sustancia un flujo, y su percepción débil.", author: "Marco Aurelio" },
-                { quote: "La vida no es esperar a que pase la tormenta, es aprender a bailar bajo la lluvia.", author: "Séneca" },
-                { quote: "La felicidad de tu vida depende de la calidad de tus pensamientos.", author: "Marco Aurelio" },
-                { quote: "El primer paso para vivir sabiamente es no temer a la muerte.", author: "Lucano" },
-                { quote: "¿Amas la vida? Entonces no malgastes el tiempo, porque de eso está hecha la vida.", author: "Benjamin Franklin" },
-                { quote: "No se nos da una vida corta, sino que la hacemos corta; no estamos mal provistos, sino que somos derrochadores.", author: "Séneca" }
-            ];
-            const wisdomPills = [ 
-                { source: "Origen Romano", text: "En la antigua Roma, a un general victorioso le seguía un esclavo que le susurraba 'Recuerda que eres un hombre' para evitar la soberbia y recordar su mortalidad." },
-                { source: "Memento Mori vs. Carpe Diem", text: "Mientras 'Carpe Diem' puede ser una búsqueda hedonista del placer, el 'Memento Mori' estoico usa la muerte como perspectiva para una vida virtuosa y justa, no como excusa." },
-                { source: "Arte Vanitas", text: "Las pinturas 'Vanitas' usan símbolos como calaveras y relojes de arena para enfatizar la fugacidad de la vida y la vanidad de los placeres terrenales frente a la muerte." },
-                { source: "Budismo (Maraṇasati)", text: "En el budismo, la meditación 'Maraṇasati' consiste en recordar la muerte para reducir el apego (fuente de sufrimiento) y vivir con más urgencia y sabiduría." },
-                { source: "Beneficio: Priorización", text: "Recordar tu finitud te obliga a preguntarte: '¿Es esto realmente importante?'. Ayuda a distinguir lo esencial de lo trivial y a enfocar tu tiempo en lo que verdaderamente valoras." },
-                { source: "Beneficio: Gratitud", text: "Cuando entiendes que nada es permanente, cada momento, cada persona y cada pequeña alegría se vuelve infinitamente más preciosa. Fomenta el aprecio por el ahora." },
-                { source: "Beneficio: Impulso a la Acción", text: "La conciencia de que el tiempo es limitado es el mejor antídoto contra la procrastinación. Te impulsa a dejar de posponer tus sueños y a actuar hoy." },
-                { source: "Beneficio: Humildad", text: "La muerte es el gran ecualizador. Recordarla te protege del exceso de ego y fomenta la empatía, recordándote que todos compartimos el mismo destino." },
-                { source: "Cultura Pop: 'Six Feet Under'", text: "La aclamada serie de HBO 'Six Feet Under' es una exploración moderna del 'Memento Mori', mostrando cómo la constante presencia de la muerte afecta a una familia y nos enseña a vivir." },
-                { source: "Cultura Pop: 'Coco'", text: "La película de Pixar 'Coco' explora la mortalidad de una forma accesible y alegre, enseñando que el recuerdo y el legado son una forma de trascender la muerte física." },
-                { source: "Aplicación Práctica: Recordatorios Físicos", text: "Algunos practicantes del estoicismo usan objetos como monedas o calaveras en su escritorio para mantener el 'Memento Mori' presente en su día a día." },
-                { source: "Aplicación Práctica: Cuestionamiento de Prioridades", text: "Marco Aurelio se preguntaba ante una tarea: '¿La muerte es terrible porque me priva de... esto?'. Este ejercicio revela lo que realmente importa." },
-                { source: "Cristianismo Medieval", text: "La frase bíblica 'En todo lo que hagas piensa en el final, y nunca pecarás' (Eclesiástico 7:36) fue una forma de 'Memento Mori' para advertir sobre la fugacidad de la vida y la necesidad de la salvación." },
-                { source: "Tecnología y Productividad", text: "Han surgido apps y planificadores en Notion basados en 'Memento Mori' para gestionar tareas y objetivos con una perspectiva de finitud, aumentando la productividad con propósito." }
-            ];
+            const stoicQuotes = [ { quote: "No es que tengamos poco tiempo, sino que perdemos mucho.", author: "Séneca" }, { quote: "Piensa en tu larga procrastinación... Ya es hora de que te des cuenta de qué universo formas parte.", author: "Marco Aurelio" }, { quote: "Recordar que voy a morir pronto es la herramienta más importante que me ha encontrado para ayudarme a tomar las grandes decisiones de la vida.", author: "Steve Jobs"}, { quote: "No te expliques tu filosofía, encárnala.", author: "Epicteto" }, { quote: "La muerte no nos concierne, pues mientras existimos, la muerte no está presente. Y cuando la muerte está presente, nosotros no existimos.", author: "Epicuro" }, { quote: "El que teme a la muerte nunca hará nada digno de un hombre vivo.", author: "Séneca" }, { quote: "Podrías dejar la vida ahora mismo. Deja que eso determine lo que haces, dices y piensas.", author: "Marco Aurelio" }, { quote: "No actúes como si fueras a vivir diez mil años. La muerte te acecha. Mientras vivas, mientras esté en tu poder, sé bueno.", author: "Marco Aurelio" }, { quote: "La duración de la vida de un hombre es un punto, y su sustancia un flujo, y su percepción débil.", author: "Marco Aurelio" }, { quote: "La vida no es esperar a que pase la tormenta, es aprender a bailar bajo la lluvia.", author: "Séneca" }, { quote: "La felicidad de tu vida depende de la calidad de tus pensamientos.", author: "Marco Aurelio" }, { quote: "El primer paso para vivir sabiamente es no temer a la muerte.", author: "Lucano" }, { quote: "¿Amas la vida? Entonces no malgastes el tiempo, porque de eso está hecha la vida.", author: "Benjamin Franklin" }, { quote: "No se nos da una vida corta, sino que la hacemos corta; no estamos mal provistos, sino que somos derrochadores.", author: "Séneca" } ];
+            const wisdomPills = [ { source: "Origen Romano", text: "En la antigua Roma, a un general victorioso le seguía un esclavo que le susurraba 'Recuerda que eres un hombre' para evitar la soberbia y recordar su mortalidad." }, { source: "Memento Mori vs. Carpe Diem", text: "Mientras 'Carpe Diem' puede ser una búsqueda hedonista del placer, el 'Memento Mori' estoico usa la muerte como perspectiva para una vida virtuosa y justa, no como excusa." }, { source: "Arte Vanitas", text: "Las pinturas 'Vanitas' usan símbolos como calaveras y relojes de arena para enfatizar la fugacidad de la vida y la vanidad de los placeres terrenales frente a la muerte." }, { source: "Budismo (Maraṇasati)", text: "En el budismo, la meditación 'Maraṇasati' consiste en recordar la muerte para reducir el apego (fuente de sufrimiento) y vivir con más urgencia y sabiduría." }, { source: "Beneficio: Priorización", text: "Recordar tu finitud te obliga a preguntarte: '¿Es esto realmente importante?'. Ayuda a distinguir lo esencial de lo trivial y a enfocar tu tiempo en lo que verdaderamente valoras." }, { source: "Beneficio: Gratitud", text: "Cuando entiendes que nada es permanente, cada momento, cada persona y cada pequeña alegría se vuelve infinitamente más preciosa. Fomenta el aprecio por el ahora." }, { source: "Beneficio: Impulso a la Acción", text: "La conciencia de que el tiempo es limitado es el mejor antídoto contra la procrastinación. Te impulsa a dejar de posponer tus sueños y a actuar hoy." }, { source: "Beneficio: Humildad", text: "La muerte es el gran ecualizador. Recordarla te protege del exceso de ego y fomenta la empatía, recordándote que todos compartimos el mismo destino." }, { source: "Cultura Pop: 'Six Feet Under'", text: "La aclamada serie de HBO 'Six Feet Under' es una exploración moderna del 'Memento Mori', mostrando cómo la constante presencia de la muerte afecta a una familia y nos enseña a vivir." }, { source: "Cultura Pop: 'Coco'", text: "La película de Pixar 'Coco' explora la mortalidad de una forma accesible y alegre, enseñando que el recuerdo y el legado son una forma de trascender la muerte física." }, { source: "Aplicación Práctica: Recordatorios Físicos", text: "Algunos practicantes del estoicismo usan objetos como monedas o calaveras en su escritorio para mantener el 'Memento Mori' presente en su día a día." }, { source: "Aplicación Práctica: Cuestionamiento de Prioridades", text: "Marco Aurelio se preguntaba ante una tarea: '¿La muerte es terrible porque me priva de... esto?'. Este ejercicio revela lo que realmente importa." }, { source: "Cristianismo Medieval", text: "La frase bíblica 'En todo lo que hagas piensa en el final, y nunca pecarás' (Eclesiástico 7:36) fue una forma de 'Memento Mori' para advertir sobre la fugacidad de la vida y la necesidad de la salvación." }, { source: "Tecnología y Productividad", text: "Han surgido apps y planificadores en Notion basados en 'Memento Mori' para gestionar tareas y objetivos con una perspectiva de finitud, aumentando la productividad con propósito." } ];
 
             // --- ELEMENTOS DEL DOM ---
             const configSection = document.getElementById('config-section');
@@ -405,6 +377,27 @@
                 activityInput.value = '';
             });
 
+            mementoMoriBtn.addEventListener('click', () => {
+                const progressText = document.getElementById('life-progress-text').textContent;
+                const roundedProgress = parseInt(progressText, 10); // Extrae el número del texto
+                let message = "";
+
+                if (roundedProgress < 25) {
+                    message = `Ya has vivido un ${roundedProgress}% de tu vida. Estás construyendo los cimientos. Cada acción de hoy define el resto de tu estructura. ¿Estás construyendo con propósito?`;
+                } else if (roundedProgress < 50) {
+                    message = `Con un ${roundedProgress}% de tu vida recorrido, estás en pleno apogeo. La energía es alta, pero el tiempo no es infinito. ¿Estás invirtiendo esta etapa en lo que realmente te hará pleno?`;
+                } else if (roundedProgress < 75) {
+                    message = `Has superado el ${roundedProgress}% del camino. Has acumulado sabiduría y experiencia. ¿Estás usándola para vivir con más calma, para enseñar a otros y para disfrutar de lo que has construido?`;
+                } else {
+                    message = `Al ${roundedProgress}%, cada día es un regalo invaluable. Has visto mucho. Ahora es el momento de la serenidad, de saborear las pequeñas cosas y de ser una fuente de paz para los que te rodean. Vive este momento plenamente.`;
+                }
+                
+                message += "\n\nRecuerda que debes vivir. Actúa en consecuencia.";
+                
+                alert(message);
+            });
+
+
             // --- EJECUCIÓN INICIAL Y FUNCIONES ESTABLES ---
             function populateCountryDropdown() {
                 lifeExpectancyData.sort((a, b) => a.country.localeCompare(b.country));
@@ -450,7 +443,6 @@
                 let progress = (livedMillis / lifeInMillis) * 100;
                 progress = Math.min(progress, 100);
 
-                // --- CAMBIO APLICADO AQUÍ ---
                 document.getElementById('life-progress-bar').style.width = `${progress}%`;
                 document.getElementById('life-progress-text').textContent = `${Math.round(progress)}% de tu vida ha transcurrido.`;
 
@@ -488,9 +480,6 @@
                  document.getElementById('journal-status').textContent = 'Escribiendo...';
                  clearTimeout(journalSaveTimeout);
                  journalSaveTimeout = setTimeout(saveJournal, 1000);
-            });
-            mementoMoriBtn.addEventListener('click', () => {
-                alert("Recuerda que morirás. Y recuerda que debes vivir.\n\n¿Estás usando este momento sabiamente? ¿Estás siendo la persona que quieres ser? El tiempo no se detiene. Actúa.");
             });
 
             initializeApp();
