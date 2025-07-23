@@ -1,1 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memento Mori: Vive Plenamente</title>
+    <style>
+        /* --- FUENTES Y ESTILO BASE --- */
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;1,300&family=Roboto:wght@300;400;700&display=swap');
 
+        :root {
+            --bg-color: #1a1a1a;
+            --surface-color: #2b2b2b;
+            --primary-text-color: #e0e0e0;
+            --secondary-text-color: #a0a0a0;
+            --accent-color: #d4af37; /* Un dorado sutil */
+            --week-past-color: #4a4a4a;
+            --week-current-color: var(--accent-color);
+            --week-future-color: #222222;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        #app-container {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            font-family: 'Merriweather', serif;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        /* --- CABECERA Y CITA --- */
+        header h1 {
+            font-family: 'Merriweather', serif;
+            text-align: center;
+            color: var(--accent-color);
+            font-weight: 400;
+        }
+
+        #quote-container {
+            text-align: center;
+        }
+
+        #quote-text {
+            font-family: 'Merriweather', serif;
+            font-style: italic;
+            font-size: 1.1em;
+            color: var(--primary-text-color);
+        }
+
+        #quote-author {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+        }
+
+        /* --- SECCIÓN DE CONFIGURACIÓN --- */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--secondary-text-color);
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: var(--primary-text-color);
+            font-size: 1em;
+        }
+
+        /* --- BOTONES --- */
+        .button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #111;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 700;
+            transition: background-color 0.3s, transform 0.1s;
+            width: 100%;
+        }
+        .button:hover {
+            background-color: #e7c357;
+        }
+        .button:active {
+            transform: scale(0.98);
+        }
+
+        /* --- PANEL DE CONTROL (DASHBOARD) --- */
+        #dashboard-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Progreso de Vida */
+        #life-progress-bar-container {
+            width: 100%;
+            background-color: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 25px;
+            margin-top: 5px; 
+        }
+        #life-progress-bar {
+            width: 0%; 
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: width 1.5s ease-in-out;
+        }
+        #life-progress-text {
+            text-align: center;
+            margin-top: 8px;
+            color: var(--secondary-text-color);
+        }
+
+        /* Mosaico de Semanas de Vida */
+        #weeks-grid {
+            display: grid;
+            grid-template-columns: repeat(52, 1fr);
+            gap: 3px;
+            margin-top: 10px;
+        }
+
+        .week-box {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 2px;
+        }
+        .week-box.past { background-color: var(--week-past-color); }
+        .week-box.current { background-color: var(--week-current-color); animation: pulse 2s infinite; }
+        .week-box.future { background-color: var(--week-future-color); border: 1px solid #282828; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        /* Diario y Nuevos Ejercicios */
+        #journal-textarea {
+            width: 100%;
+            min-height: 150px;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 4px;
+            color: var(--primary-text-color);
+            padding: 10px;
+            font-family: 'Merriweather', serif;
+            font-size: 1em;
+            resize: vertical;
+        }
+        #journal-status { font-size: 0.8em; color: var(--secondary-text-color); text-align: right; height: 1em; }
+        .exercise-output {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-color);
+            color: var(--primary-text-color);
+            display: none; 
+        }
+        .wisdom-pill { font-style: italic; }
+
+        /* --- CLASE UTILITARIA Y FOOTER --- */
+        .hidden { display: none !important; }
+        footer { text-align: center; padding: 20px; }
+        #reset-button {
+            background: none;
+            border: 1px solid var(--secondary-text-color);
+            color: var(--secondary-text-color);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: color 0.3s, border-color 0.3s;
+        }
+        #reset-button:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <header>
+            <h1>Memento Mori</h1>
+        </header>
+
+        <div id="quote-container" class="card">
+            <p id="quote-text"></p>
+            <p id="quote-author"></p>
+        </div>
+
+        <section id="config-section" class="card">
+            <h2>Bienvenido. La vida es finita, haz que cuente.</h2>
+            <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 20px;">
+                Para personalizar tu experiencia, dinos quién eres. La esperanza de vida se calculará automáticamente.
+            </p>
+            <div class="input-group">
+                <label for="birthdate">Tu fecha de nacimiento</label>
+                <input type="date" id="birthdate">
+            </div>
+            <div class="input-group">
+                <label for="gender">Género</label>
+                <select id="gender">
+                    <option value="">Selecciona...</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="country">País</label>
+                <select id="country">
+                    <option value="">Selecciona tu país...</option>
+                </select>
+            </div>
+            <button id="save-config-btn" class="button">Comenzar a Vivir Plenamente</button>
+        </section>
+
+        <main id="dashboard-section" class="hidden">
+            <section id="life-progress-card" class="card">
+                <h2>El Progreso de Tu Vida</h2>
+                <div id="life-progress-bar-container">
+                    <div id="life-progress-bar"></div>
+                </div>
+                <p id="life-progress-text"></p>
+            </section>
+
+            <section id="weeks-card" class="card">
+                <h2>Las Semanas de Tu Vida</h2>
+                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px;">Cada cuadro es una semana. El tiempo es finito y precioso.</p>
+                <div id="weeks-grid"></div>
+            </section>
+            
+            <section id="last-time-card" class="card">
+                <h2>Ejercicio: La Última Vez</h2>
+                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px;">Visualiza que esta es la última vez que realizarás una actividad para apreciarla profundamente.</p>
+                <div class="input-group">
+                    <input type="text" id="last-time-activity" placeholder="Ej: Cenar con mis padres, pasear...">
+                </div>
+                <button id="last-time-btn" class="button">Reflexionar</button>
+                <div id="last-time-output" class="exercise-output"></div>
+            </section>
+
+            <section id="wisdom-card" class="card">
+                <h2>Píldora de Sabiduría</h2>
+                <p id="wisdom-text" class="wisdom-pill"></p>
+                <p id="wisdom-source" style="text-align: right; font-size: 0.8em; color: var(--secondary-text-color); margin-top: 10px;"></p>
+            </section>
+
+            <section id="journal-card" class="card">
+                <h2>Diario de Reflexión</h2>
+                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px;">¿Qué has aprendido? ¿Por qué estás agradecido? ¿Actuaste con virtud?</p>
+                <textarea id="journal-textarea" placeholder="Escribe tus pensamientos aquí..."></textarea>
+                <p id="journal-status"></p>
+            </section>
+
+            <section id="action-card" class="card">
+                <h2>Un Recordatorio Consciente</h2>
+                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px;">Pulsa para recibir una dosis de perspectiva. Recuerda que debes vivir.</p>
+                <button id="memento-mori-btn" class="button">Memento Mori</button>
+            </section>
+        </main>
+        
+        <footer>
+            <!-- El texto del disclaimer ha sido eliminado -->
+            <button id="reset-button" class="hidden">Reiniciar Configuración</button>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- BASES DE DATOS AMPLIADAS ---
+            const lifeExpectancyData = [ { country: "India", female: 74.13, male: 70.95 }, { country: "China", female: 81.25, male: 75.65 }, { country: "Estados Unidos", female: 82.11, male: 77.22 }, { country: "Indonesia", female: 73.61, male: 69.29 }, { country: "Pakistán", female: 70.47, male: 65.58 }, { country: "Nigeria", female: 55.12, male: 54.45 }, { country: "Brasil", female: 79.30, male: 73.14 }, { country: "Bangladés", female: 76.94, male: 73.55 }, { country: "Rusia", female: 79.32, male: 67.69 }, { country: "México", female: 78.17, male: 72.63 }, { country: "Japón", female: 88.03, male: 81.99 }, { country: "Filipinas", female: 73.11, male: 67.10 }, { country: "Vietnam", female: 79.49, male: 70.23 }, { country: "Rep. Dem. del Congo", female: 64.40, male: 60.10 }, { country: "Etiopía", female: 71.30, male: 64.62 }, { country: "Egipto", female: 74.22, male: 69.82 }, { country: "Irán", female: 79.99, male: 76.22 }, { country: "Alemania", female: 84.01, male: 79.42 }, { country: "Turquía", female: 80.82, male: 74.94 }, { country: "Tailandia", female: 81.17, male: 72.65 }, { country: "España", female: 86.59, male: 81.27 } ];
+            const stoicQuotes = [ 
+                { quote: "No es que tengamos poco tiempo, sino que perdemos mucho.", author: "Séneca" }, 
+                { quote: "Piensa en tu larga procrastinación... Ya es hora de que te des cuenta de qué universo formas parte.", author: "Marco Aurelio" }, 
+                { quote: "Recordar que voy a morir pronto es la herramienta más importante que me ha encontrado para ayudarme a tomar las grandes decisiones de la vida.", author: "Steve Jobs"}, 
+                { quote: "No te expliques tu filosofía, encárnala.", author: "Epicteto" },
+                { quote: "La muerte no nos concierne, pues mientras existimos, la muerte no está presente. Y cuando la muerte está presente, nosotros no existimos.", author: "Epicuro" },
+                { quote: "El que teme a la muerte nunca hará nada digno de un hombre vivo.", author: "Séneca" },
+                { quote: "Podrías dejar la vida ahora mismo. Deja que eso determine lo que haces, dices y piensas.", author: "Marco Aurelio" },
+                { quote: "No actúes como si fueras a vivir diez mil años. La muerte te acecha. Mientras vivas, mientras esté en tu poder, sé bueno.", author: "Marco Aurelio" },
+                { quote: "La duración de la vida de un hombre es un punto, y su sustancia un flujo, y su percepción débil.", author: "Marco Aurelio" },
+                { quote: "La vida no es esperar a que pase la tormenta, es aprender a bailar bajo la lluvia.", author: "Séneca" },
+                { quote: "La felicidad de tu vida depende de la calidad de tus pensamientos.", author: "Marco Aurelio" },
+                { quote: "El primer paso para vivir sabiamente es no temer a la muerte.", author: "Lucano" },
+                { quote: "¿Amas la vida? Entonces no malgastes el tiempo, porque de eso está hecha la vida.", author: "Benjamin Franklin" },
+                { quote: "No se nos da una vida corta, sino que la hacemos corta; no estamos mal provistos, sino que somos derrochadores.", author: "Séneca" }
+            ];
+            const wisdomPills = [ 
+                { source: "Origen Romano", text: "En la antigua Roma, a un general victorioso le seguía un esclavo que le susurraba 'Recuerda que eres un hombre' para evitar la soberbia y recordar su mortalidad." },
+                { source: "Memento Mori vs. Carpe Diem", text: "Mientras 'Carpe Diem' puede ser una búsqueda hedonista del placer, el 'Memento Mori' estoico usa la muerte como perspectiva para una vida virtuosa y justa, no como excusa." },
+                { source: "Arte Vanitas", text: "Las pinturas 'Vanitas' usan símbolos como calaveras y relojes de arena para enfatizar la fugacidad de la vida y la vanidad de los placeres terrenales frente a la muerte." },
+                { source: "Budismo (Maraṇasati)", text: "En el budismo, la meditación 'Maraṇasati' consiste en recordar la muerte para reducir el apego (fuente de sufrimiento) y vivir con más urgencia y sabiduría." },
+                { source: "Beneficio: Priorización", text: "Recordar tu finitud te obliga a preguntarte: '¿Es esto realmente importante?'. Ayuda a distinguir lo esencial de lo trivial y a enfocar tu tiempo en lo que verdaderamente valoras." },
+                { source: "Beneficio: Gratitud", text: "Cuando entiendes que nada es permanente, cada momento, cada persona y cada pequeña alegría se vuelve infinitamente más preciosa. Fomenta el aprecio por el ahora." },
+                { source: "Beneficio: Impulso a la Acción", text: "La conciencia de que el tiempo es limitado es el mejor antídoto contra la procrastinación. Te impulsa a dejar de posponer tus sueños y a actuar hoy." },
+                { source: "Beneficio: Humildad", text: "La muerte es el gran ecualizador. Recordarla te protege del exceso de ego y fomenta la empatía, recordándote que todos compartimos el mismo destino." },
+                { source: "Cultura Pop: 'Six Feet Under'", text: "La aclamada serie de HBO 'Six Feet Under' es una exploración moderna del 'Memento Mori', mostrando cómo la constante presencia de la muerte afecta a una familia y nos enseña a vivir." },
+                { source: "Cultura Pop: 'Coco'", text: "La película de Pixar 'Coco' explora la mortalidad de una forma accesible y alegre, enseñando que el recuerdo y el legado son una forma de trascender la muerte física." },
+                { source: "Aplicación Práctica: Recordatorios Físicos", text: "Algunos practicantes del estoicismo usan objetos como monedas o calaveras en su escritorio para mantener el 'Memento Mori' presente en su día a día." },
+                { source: "Aplicación Práctica: Cuestionamiento de Prioridades", text: "Marco Aurelio se preguntaba ante una tarea: '¿La muerte es terrible porque me priva de... esto?'. Este ejercicio revela lo que realmente importa." },
+                { source: "Cristianismo Medieval", text: "La frase bíblica 'En todo lo que hagas piensa en el final, y nunca pecarás' (Eclesiástico 7:36) fue una forma de 'Memento Mori' para advertir sobre la fugacidad de la vida y la necesidad de la salvación." },
+                { source: "Tecnología y Productividad", text: "Han surgido apps y planificadores en Notion basados en 'Memento Mori' para gestionar tareas y objetivos con una perspectiva de finitud, aumentando la productividad con propósito." }
+            ];
+
+            // --- ELEMENTOS DEL DOM ---
+            const configSection = document.getElementById('config-section');
+            const dashboardSection = document.getElementById('dashboard-section');
+            const saveConfigBtn = document.getElementById('save-config-btn');
+            const birthdateInput = document.getElementById('birthdate');
+            const genderSelect = document.getElementById('gender');
+            const countrySelect = document.getElementById('country');
+            const journalTextarea = document.getElementById('journal-textarea');
+            const mementoMoriBtn = document.getElementById('memento-mori-btn');
+            const resetButton = document.getElementById('reset-button');
+            const lastTimeBtn = document.getElementById('last-time-btn');
+            
+            // --- LÓGICA DE LA APLICACIÓN ---
+
+            function displayRandomWisdom() {
+                const wisdomText = document.getElementById('wisdom-text');
+                const wisdomSource = document.getElementById('wisdom-source');
+                const randomWisdom = wisdomPills[Math.floor(Math.random() * wisdomPills.length)];
+                wisdomText.textContent = `“${randomWisdom.text}”`;
+                wisdomSource.textContent = `— ${randomWisdom.source}`;
+            }
+
+            function initializeApp() {
+                populateCountryDropdown();
+                const savedBirthdate = localStorage.getItem('mementoMoriBirthdate');
+                if (savedBirthdate) {
+                    configSection.classList.add('hidden');
+                    dashboardSection.classList.remove('hidden');
+                    resetButton.classList.remove('hidden');
+                    updateDashboard();
+                    loadJournal();
+                    displayRandomWisdom();
+                } else {
+                    configSection.classList.remove('hidden');
+                    dashboardSection.classList.add('hidden');
+                    resetButton.classList.add('hidden');
+                }
+                displayRandomQuote();
+            }
+
+            // --- EVENT LISTENERS ---
+            resetButton.addEventListener('click', () => {
+                if (confirm("¿Estás seguro de que quieres borrar tu configuración? Esto te llevará de vuelta a la pantalla de inicio.")) {
+                    localStorage.clear();
+                    location.reload();
+                }
+            });
+
+            lastTimeBtn.addEventListener('click', () => {
+                const activityInput = document.getElementById('last-time-activity');
+                const lastTimeOutput = document.getElementById('last-time-output');
+                const activity = activityInput.value.trim();
+                if (!activity) {
+                    alert("Por favor, introduce una actividad para reflexionar.");
+                    return;
+                }
+                lastTimeOutput.style.display = 'block';
+                lastTimeOutput.innerHTML = `Imagina que acabas de <strong>${activity}</strong> por última vez. ¿Qué detalles notarías? ¿Qué palabras no dichas dirías? ¿Cómo cambiaría tu aprecio por ese momento? Lleva esa sensación contigo.`;
+                activityInput.value = '';
+            });
+
+            // --- EJECUCIÓN INICIAL Y FUNCIONES ESTABLES ---
+            function populateCountryDropdown() {
+                lifeExpectancyData.sort((a, b) => a.country.localeCompare(b.country));
+                lifeExpectancyData.forEach(data => {
+                    const option = document.createElement('option');
+                    option.value = data.country;
+                    option.textContent = data.country;
+                    countrySelect.appendChild(option);
+                });
+            }
+
+            function displayRandomQuote() {
+                const quoteText = document.getElementById('quote-text');
+                const quoteAuthor = document.getElementById('quote-author');
+                const randomQuote = stoicQuotes[Math.floor(Math.random() * stoicQuotes.length)];
+                quoteText.textContent = `“${randomQuote.quote}”`;
+                quoteAuthor.textContent = `— ${randomQuote.author}`;
+            }
+
+            function saveConfiguration() {
+                const birthdate = birthdateInput.value;
+                const gender = genderSelect.value;
+                const country = countrySelect.value;
+                if (!birthdate || !gender || !country) { alert("Por favor, completa todos los campos para continuar."); return; }
+                const countryData = lifeExpectancyData.find(c => c.country === country);
+                if (!countryData) { alert("Error al encontrar datos para el país seleccionado."); return; }
+                const lifeExpectancy = (gender === 'Mujer') ? countryData.female : countryData.male;
+                localStorage.setItem('mementoMoriBirthdate', birthdate);
+                localStorage.setItem('mementoMoriGender', gender);
+                localStorage.setItem('mementoMoriCountry', country);
+                localStorage.setItem('mementoMoriLifeExpectancy', lifeExpectancy);
+                initializeApp();
+            }
+            
+            function updateDashboard() {
+                const birthdate = new Date(localStorage.getItem('mementoMoriBirthdate'));
+                const lifeExpectancy = parseFloat(localStorage.getItem('mementoMoriLifeExpectancy'));
+                if (isNaN(birthdate) || isNaN(lifeExpectancy)) return;
+                
+                const now = new Date();
+                const lifeInMillis = lifeExpectancy * 365.25 * 24 * 60 * 60 * 1000;
+                const livedMillis = now.getTime() - birthdate.getTime();
+                let progress = (livedMillis / lifeInMillis) * 100;
+                progress = Math.min(progress, 100);
+
+                // --- CAMBIO APLICADO AQUÍ ---
+                document.getElementById('life-progress-bar').style.width = `${progress}%`;
+                document.getElementById('life-progress-text').textContent = `${Math.round(progress)}% de tu vida ha transcurrido.`;
+
+                const weeksGrid = document.getElementById('weeks-grid');
+                weeksGrid.innerHTML = '';
+                const totalWeeks = Math.floor(lifeExpectancy * 52);
+                const weeksLived = Math.floor(livedMillis / (1000 * 60 * 60 * 24 * 7));
+
+                for (let i = 1; i <= totalWeeks; i++) {
+                    const weekBox = document.createElement('div');
+                    weekBox.classList.add('week-box');
+                    if (i < weeksLived) { weekBox.classList.add('past'); } 
+                    else if (i === weeksLived) { weekBox.classList.add('current'); } 
+                    else { weekBox.classList.add('future'); }
+                    weeksGrid.appendChild(weekBox);
+                }
+            }
+
+            let journalSaveTimeout;
+            function saveJournal() {
+                const journalStatus = document.getElementById('journal-status');
+                localStorage.setItem('mementoMoriJournal', journalTextarea.value);
+                journalStatus.textContent = 'Guardado.';
+                clearTimeout(journalSaveTimeout);
+                journalSaveTimeout = setTimeout(() => { journalStatus.textContent = ''; }, 2000);
+            }
+            
+            function loadJournal() {
+                const savedText = localStorage.getItem('mementoMoriJournal');
+                if (savedText) { journalTextarea.value = savedText; }
+            }
+
+            saveConfigBtn.addEventListener('click', saveConfiguration);
+            journalTextarea.addEventListener('input', () => {
+                 document.getElementById('journal-status').textContent = 'Escribiendo...';
+                 clearTimeout(journalSaveTimeout);
+                 journalSaveTimeout = setTimeout(saveJournal, 1000);
+            });
+            mementoMoriBtn.addEventListener('click', () => {
+                alert("Recuerda que morirás. Y recuerda que debes vivir.\n\n¿Estás usando este momento sabiamente? ¿Estás siendo la persona que quieres ser? El tiempo no se detiene. Actúa.");
+            });
+
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
