@@ -110,6 +110,15 @@
             transform: scale(1.1);
         }
 
+        /* Restaura los iconos de Font Awesome para los elementos de navegación */
+        .nav-item i {
+            display: block; /* Asegura que los iconos estén visibles por defecto */
+        }
+        /* Elimina los estilos específicos del logo en la barra de navegación */
+        .nav-item .nav-logo {
+            display: none; /* Oculta los logos que se habían añadido aquí */
+        }
+
         /* --- COMPONENTES REUTILIZABLES --- */
         .header {
             font-family: var(--font-display);
@@ -117,10 +126,16 @@
             color: var(--color-primary);
             margin-bottom: 20px;
             text-transform: uppercase;
-            text-align: center; /* Centrar el título */
+            /* Explicitly ensure full width to avoid potential issues */
+            width: 100%;
+            /* Centering for flex items */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Espacio entre el logo y el texto */
         }
         
-        /* Estilo para el logo en el encabezado */
+        /* Estilo para el logo en el encabezado general */
         .header img {
             max-width: 80%; /* Asegura que la imagen no sea demasiado grande */
             height: auto; /* Mantiene la proporción de la imagen */
@@ -130,11 +145,12 @@
             padding-bottom: 20px; /* Espacio inferior para el logo */
         }
 
-        /* Estilo específico para el logo dentro del título de Temporizadores */
-        #utilities .header .rite-logo-title { /* Updated ID */
-            height: 40px; /* Tamaño del logo para el título */
+        /* Estilo específico para el logo dentro de los títulos de sección (ahora no se usa pero se mantiene por si acaso) */
+        .header .header-logo-inline {
+            height: 20px; /* Tamaño del logo para el título */
             width: auto;
             vertical-align: middle; /* Alinea verticalmente con el texto */
+            margin-right: 10px; /* Espacio a la derecha del logo */
         }
 
         /* Nuevo estilo para la imagen del logo en la cabecera de Inicio */
@@ -493,7 +509,7 @@
             line-height: 1.6;
         }
         
-        .modal-body .detail-label {
+    .modal-body .detail-label {
             color: var(--color-text-secondary);
             font-size: 0.9rem;
             margin-top: 15px;
@@ -682,17 +698,17 @@
             </h1>
             <div class="carousel-container">
                 <div class="carousel-slide" id="home-carousel-slide">
-                    <img src="./img/carrusel/Captura de pantalla 2025-07-22 155716.jpg" alt="Captura de pantalla 1">
-                    <img src="./img/carrusel/Captura de pantalla 2025-07-22 155839.jpg" alt="Captura de pantalla 2">
-                    <img src="./img/carrusel/Captura de pantalla 2025-07-22 155915.jpg" alt="Captura de pantalla 3">
-                    <img src="./img/carrusel/Captura de pantalla 2025-07-22 155945.jpg" alt="Captura de pantalla 4">
-                    <img src="./img/carrusel/LX1A0648.jpg" alt="Atleta con camiseta rosa">
-                    <img src="./img/carrusel/LX1A0669.jpg" alt="Atleta con sudadera naranja">
-                    <img src="./img/carrusel/LX1A0711.jpg" alt="Atleta estirando">
-                    <img src="./img/carrusel/LX1A0744.jpg" alt="Atleta realizando un Clean and Jerk">
-                    <img src="./img/carrusel/LX1A0815.jpg" alt="Atleta con camiseta rosa y pantalón corto">
-                    <img src="./img/carrusel/LX1A0839.jpg" alt="Atleta con pantalón corto naranja">
-                    <img src="./img/carrusel/LX1A0849.jpg" alt="Grupo de atletas levantando pesas">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+1" alt="Captura de pantalla 1">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+2" alt="Captura de pantalla 2">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+3" alt="Captura de pantalla 3">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+4" alt="Captura de pantalla 4">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+5" alt="Atleta con camiseta rosa">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+6" alt="Atleta con sudadera naranja">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+7" alt="Atleta estirando">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+8" alt="Atleta realizando un Clean and Jerk">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+9" alt="Atleta con camiseta rosa y pantalón corto">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+10" alt="Atleta con pantalón corto naranja">
+                    <img src="https://placehold.co/600x300/66cccc/ffffff?text=Carousel+Image+11" alt="Grupo de atletas levantando pesas">
                 </div>
                 <button class="carousel-button prev" id="carousel-prev-btn">&#10094;</button>
                 <button class="carousel-button next" id="carousel-next-btn">&#10095;</button>
@@ -705,7 +721,9 @@
 
         <!-- VISTA: LINKS (Anteriormente Instagram) -->
         <div id="links" class="view">
-            <h1 class="header">+ RITE</h1>
+            <h1 class="header">
+                + RITE
+            </h1>
             <div class="links-content">
                 <p>
                     Visita nuestros canales oficiales para más información, productos y contenido exclusivo.
@@ -735,7 +753,9 @@
 
         <!-- VISTA: WIKI (Reemplaza WODs) -->
         <div id="wiki" class="view">
-            <h1 class="header">Wiki</h1>
+            <h1 class="header">
+                Wiki
+            </h1>
             
             <div class="wiki-tabs">
                 <button class="tab-button active" data-tab="wod-library">Biblioteca</button>
@@ -790,9 +810,7 @@
         <!-- VISTA: UTILITIES -->
         <div id="utilities" class="view">
             <h1 class="header">
-                <h1 class="header">
                 Utilidades
-            </h1>
             </h1>
             <div class="timer-grid">
                 <div class="timer-option" data-timer="stopwatch">
@@ -825,7 +843,9 @@
 
         <!-- VISTA: SHARE (Nueva sección) -->
         <div id="share" class="view">
-            <h1 class="header">Comparte tu RITE</h1>
+            <h1 class="header">
+                Comparte tu RITE
+            </h1>
             <div class="card">
                 <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 20px;">
                     ¡Haz una foto con tu ropa RITE y compártela en redes sociales! El logo de RITE se añadirá automáticamente.
@@ -858,16 +878,16 @@
             <i class="fa-solid fa-house"></i>
             <span>Inicio</span>
         </div>
-        <div class="nav-item" data-view="utilities"> <!-- Updated data-view -->
-            <i class="fa-solid fa-wrench"></i> <!-- Changed icon to wrench for utilities -->
-            <span>Utilidades</span> <!-- Updated text -->
+        <div class="nav-item" data-view="utilities">
+            <i class="fa-solid fa-wrench"></i>
+            <span>Utilidades</span>
         </div>
         <div class="nav-item" data-view="wiki">
-            <i class="fa-solid fa-book"></i> <!-- Changed icon to a book for Wiki -->
+            <i class="fa-solid fa-book"></i>
             <span>Wiki</span>
         </div>
         <div class="nav-item" data-view="share">
-            <i class="fa-solid fa-camera"></i> <!-- New icon for Share -->
+            <i class="fa-solid fa-camera"></i>
             <span>Comparte</span>
         </div>
         <div class="nav-item" data-view="links">
@@ -950,7 +970,8 @@
                 </div>
             </div>
 
-            <button class="btn" onclick="closeModal(document.getElementById('calculator-modal'))" style="margin-top: 20px;">Cerrar</button>
+            <!-- Botón de cierre eliminado según la solicitud del usuario -->
+            <!-- <button class="btn" onclick="closeModal(document.getElementById('calculator-modal'))" style="margin-top: 20px;">Cerrar</button> -->
         </div>
     </div>
 
@@ -1399,7 +1420,6 @@
             body.innerHTML = `
                 <p class="detail-label">Descripción</p>
                 <p class="detail-value">${description.replace(/\\n/g, '<br>')}</p>
-                <button class="btn" onclick="closeModal(logModal)" style="margin-top: 20px;">Cerrar</button>
             `;
             openModal(logModal);
         };
@@ -1965,7 +1985,7 @@
         };
 
         const startCamera = async () => {
-            cameraStatus.textContent = 'Iniciando cámara...';
+            cameraStatus.textContent = 'Tu foto RITE aquí...';
             try {
                 // Try to get the rear camera first with high resolution ideal values
                 mediaStream = await navigator.mediaDevices.getUserMedia({
