@@ -909,10 +909,7 @@
             <i class="fa-solid fa-camera"></i>
             <span>Comparte</span>
         </div>
-        <div class="nav-item" data-view="boxes">
-            <i class="fa-solid fa-shop"></i>
-            <span>Punto de Venta</span>
-        </div>
+        <!-- Se ha eliminado el elemento de navegación "Punto de Venta" de la barra inferior -->
         <div class="nav-item" data-view="links">
             <i class="fa-solid fa-link"></i>
             <span>+ RITE</span>
@@ -1409,8 +1406,14 @@
             state.currentView = viewId;
             views.forEach(view => view.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
+            
             navItems.forEach(item => item.classList.remove('active'));
-            document.querySelector(`.nav-item[data-view="${viewId}"]`).classList.add('active');
+            // Only try to add 'active' class to nav item if it exists in the bottom nav
+            const targetNavItem = document.querySelector(`.nav-item[data-view="${viewId}"]`);
+            if (targetNavItem) {
+                targetNavItem.classList.add('active');
+            }
+            
             window.scrollTo(0, 0);
 
             // Render boxes if navigating to the boxes view
