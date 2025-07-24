@@ -26,6 +26,10 @@
     <!-- Font Awesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Leaflet.js para el mapa interactivo -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <!-- Chart.js para las gráficas de progreso (se mantiene, aunque no se usen directamente en esta versión simplificada) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -390,13 +394,13 @@
             justify-content: center; /* Centra verticalmente */
         }
         
-        #utilities .timer-option i { /* Updated ID */
+        #utilities .timer-option i {
             font-size: 2.5rem;
             color: var(--color-primary);
             margin-bottom: 10px; /* Espacio entre el icono y el texto */
         }
 
-        #utilities .timer-option span { /* Updated ID */
+        #utilities .timer-option span {
             font-family: var(--font-display);
         }
 
@@ -695,6 +699,35 @@
         .calculator-result span {
             color: var(--color-primary);
         }
+
+        /* --- MAP STYLES --- */
+        #map-container {
+            height: 400px;
+            border-radius: 12px;
+            margin-top: 20px;
+            background-color: var(--color-surface);
+            z-index: 1; /* Ensure map is rendered correctly */
+        }
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+            background-color: var(--color-surface);
+            color: var(--color-text-primary);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .leaflet-popup-content {
+            font-family: var(--font-body);
+        }
+        .leaflet-popup-content a {
+            color: var(--color-primary);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .leaflet-control-attribution {
+            display: none !important;
+        }
+        .leaflet-control-attribution a {
+            color: var(--color-text-secondary);
+        }
         
     </style>
 </head>
@@ -902,6 +935,7 @@
             <div id="boxes-list" class="card">
                 <!-- Boxes will be rendered here by JavaScript -->
             </div>
+            <div id="map-container"></div>
         </div>
     </div>
 
@@ -1137,124 +1171,125 @@
         let state = {
             currentView: 'home', // Inicia en la vista de inicio
             cameraStream: null, // To store the camera stream
-            capturedImageBlob: null // To store the captured image as Blob
+            capturedImageBlob: null, // To store the captured image as Blob
+            map: null // To store the map instance
         };
         
         // --- WOD Database ---
         const wodDatabase = [
-            { name: 'Fran', category: 'The Girls', description: '21-15-9 reps for time:\\nThrusters (95/65 lb)\\nPull-ups' },
-            { name: 'Cindy', category: 'The Girls', description: 'AMRAP in 20 minutes:\\n5 Pull-ups\\n10 Push-ups\\n15 Squats' },
-            { name: 'Murph', category: 'Heroes', description: 'For time:\\n1 mile Run\\n100 Pull-ups\\n200 Push-ups\\n300 Squats\\n1 mile Run\\n(con chaleco de 20/14 lb)' },
-            { name: 'DT', category: 'Heroes', description: '5 rondas por tiempo:\\n12 Deadlifts (155/105 lb)\\n9 Hang Power Cleans (155/105 lb)\\n6 Push Jerks (155/105 lb)' },
-            { name: 'Death by Burpees', category: 'Bodyweight', description: 'EMOM hasta el fallo:\\nMinuto 1: 1 Burpee\\nMinuto 2: 2 Burpees\\nMinuto 3: 3 Burpees\\n...y así sucesivamente.'},
-            { name: 'Tabata Something Else', category: 'Bodyweight', description: '4 rondas de:\\nTabata Pull-ups\\nTabata Push-ups\\nTabata Sit-ups\\nTabata Squats\\n(1 minuto de descanso entre ejercicios)'},
-            { name: 'Grace', category: 'The Girls', description: 'Por tiempo:\\n30 Clean and Jerks (135/95 lb)'},
-            { name: 'Isabel', category: 'The Girls', description: 'Por tiempo:\\n30 Snatches (135/95 lb)'},
-            { name: 'Annie', category: 'The Girls', description: '50-40-30-20-10 repeticiones por tiempo:\\nDouble-Unders\\nSit-ups'},
-            { name: 'Amanda', category: 'The Girls', description: '9-7-5 repeticiones por tiempo:\\nMuscle-ups\\nSnatches (135/95 lb)'},
-            { name: 'Helen', category: 'The Girls', description: '3 rondas por tiempo:\\n400 metros de carrera\\n21 Kettlebell Swings (1.5/1 pood)\\n12 Pull-ups'},
-            { name: 'Fight Gone Bad', category: 'Triplet', description: '3 rondas, 1 minuto por estación, 1 minuto de descanso entre rondas:\\nWall-Ball Shots (20/14 lb)\\nSumo Deadlift High-Pulls (75/55 lb)\\nBox Jumps (20 in)\\nPush Press (75/55 lb)\\nRow (Calorías)\\n(La puntuación es el total de repeticiones)'},
-            { name: 'Karen', category: 'The Girls', description: 'Por tiempo:\\n150 Wall-Ball Shots (20/14 lb)'},
-            { name: 'Filthy 50', category: 'Endurance', description: 'Por tiempo:\\n50 Box Jumps (24/20 in)\\n50 Jumping Pull-ups\\n50 Kettlebell Swings (1 pood)\\n50 Walking Lunges\\n50 Knees to Elbows\\n50 Push Press (45/35 lb)\\n50 Back Extensions\\n50 Wall Ball Shots (20/14 lb)\\n50 Burpees\\n50 Double-Unders'},
-            { name: 'The Seven', category: 'Heroes', description: '7 rondas por tiempo:\\n7 Handstand Push-ups\\n7 Thrusters (135/95 lb)\\n7 Knees-to-Elbows\\n7 Deadlifts (245/165 lb)\\n7 Burpees\\n7 Kettlebell Swings (2 pood)\\n7 Pull-ups'},
-            { name: 'Diane', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\\nDeadlifts (225/155 lb)\\nHandstand Push-ups'},
-            { name: 'Elizabeth', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\\nCleans (135/95 lb)\\nRing Dips'},
-            { name: 'For Time: 21-15-9', category: 'Couplet', description: 'Por tiempo:\\n21-15-9 repeticiones de:\\nDeadlifts (pesado)\\nBurpees over bar'},
-            { name: 'AMRAP: 12 min', category: 'Couplet', description: 'AMRAP 12 minutos:\\n10 Toes-to-Bar\\n10 Wall Walks'},
-            { name: 'EMOM: 10 min', category: 'Endurance', description: 'EMOM 10 minutos:\\nMinuto 1: 15/12 Calorías en Remo\\nMinuto 2: 12/9 Calorías en Bicicleta'},
-            { name: 'Cindy Variation', category: 'Bodyweight', description: 'AMRAP en 15 minutos:\\n5 Pull-ups\\n10 Push-ups\\n15 Air Squats'},
-            { name: 'Strict Fran', category: 'Bodyweight', description: '21-15-9 repeticiones por tiempo:\\nStrict Thrusters (95/65 lb)\\nStrict Pull-ups'},
+            { name: 'Fran', category: 'The Girls', description: '21-15-9 reps for time:\nThrusters (95/65 lb)\nPull-ups' },
+            { name: 'Cindy', category: 'The Girls', description: 'AMRAP in 20 minutes:\n5 Pull-ups\n10 Push-ups\n15 Squats' },
+            { name: 'Murph', category: 'Heroes', description: 'For time:\n1 mile Run\n100 Pull-ups\n200 Push-ups\n300 Squats\n1 mile Run\n(con chaleco de 20/14 lb)' },
+            { name: 'DT', category: 'Heroes', description: '5 rondas por tiempo:\n12 Deadlifts (155/105 lb)\n9 Hang Power Cleans (155/105 lb)\n6 Push Jerks (155/105 lb)' },
+            { name: 'Death by Burpees', category: 'Bodyweight', description: 'EMOM hasta el fallo:\nMinuto 1: 1 Burpee\nMinuto 2: 2 Burpees\nMinuto 3: 3 Burpees\n...y así sucesivamente.'},
+            { name: 'Tabata Something Else', category: 'Bodyweight', description: '4 rondas de:\nTabata Pull-ups\nTabata Push-ups\nTabata Sit-ups\nTabata Squats\n(1 minuto de descanso entre ejercicios)'},
+            { name: 'Grace', category: 'The Girls', description: 'Por tiempo:\n30 Clean and Jerks (135/95 lb)'},
+            { name: 'Isabel', category: 'The Girls', description: 'Por tiempo:\n30 Snatches (135/95 lb)'},
+            { name: 'Annie', category: 'The Girls', description: '50-40-30-20-10 repeticiones por tiempo:\nDouble-Unders\nSit-ups'},
+            { name: 'Amanda', category: 'The Girls', description: '9-7-5 repeticiones por tiempo:\nMuscle-ups\nSnatches (135/95 lb)'},
+            { name: 'Helen', category: 'The Girls', description: '3 rondas por tiempo:\n400 metros de carrera\n21 Kettlebell Swings (1.5/1 pood)\n12 Pull-ups'},
+            { name: 'Fight Gone Bad', category: 'Triplet', description: '3 rondas, 1 minuto por estación, 1 minuto de descanso entre rondas:\nWall-Ball Shots (20/14 lb)\nSumo Deadlift High-Pulls (75/55 lb)\nBox Jumps (20 in)\nPush Press (75/55 lb)\nRow (Calorías)\n(La puntuación es el total de repeticiones)'},
+            { name: 'Karen', category: 'The Girls', description: 'Por tiempo:\n150 Wall-Ball Shots (20/14 lb)'},
+            { name: 'Filthy 50', category: 'Endurance', description: 'Por tiempo:\n50 Box Jumps (24/20 in)\n50 Jumping Pull-ups\n50 Kettlebell Swings (1 pood)\n50 Walking Lunges\n50 Knees to Elbows\n50 Push Press (45/35 lb)\n50 Back Extensions\n50 Wall Ball Shots (20/14 lb)\n50 Burpees\n50 Double-Unders'},
+            { name: 'The Seven', category: 'Heroes', description: '7 rondas por tiempo:\n7 Handstand Push-ups\n7 Thrusters (135/95 lb)\n7 Knees-to-Elbows\n7 Deadlifts (245/165 lb)\n7 Burpees\n7 Kettlebell Swings (2 pood)\n7 Pull-ups'},
+            { name: 'Diane', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\nDeadlifts (225/155 lb)\nHandstand Push-ups'},
+            { name: 'Elizabeth', category: 'The Girls', description: '21-15-9 repeticiones por tiempo:\nCleans (135/95 lb)\nRing Dips'},
+            { name: 'For Time: 21-15-9', category: 'Couplet', description: 'Por tiempo:\n21-15-9 repeticiones de:\nDeadlifts (pesado)\nBurpees over bar'},
+            { name: 'AMRAP: 12 min', category: 'Couplet', description: 'AMRAP 12 minutos:\n10 Toes-to-Bar\n10 Wall Walks'},
+            { name: 'EMOM: 10 min', category: 'Couplet', description: 'EMOM 10 minutos:\nMinuto 1: 15/12 Calorías en Remo\nMinuto 2: 12/9 Calorías en Bicicleta'},
+            { name: 'Cindy Variation', category: 'Bodyweight', description: 'AMRAP en 15 minutos:\n5 Pull-ups\n10 Push-ups\n15 Air Squats'},
+            { name: 'Strict Fran', category: 'Bodyweight', description: '21-15-9 repeticiones por tiempo:\nStrict Thrusters (95/65 lb)\nStrict Pull-ups'},
             // CrossFit Open WODs (Last 5 years)
             // Open 2024
-            { name: '24.1', category: 'Open 2024', description: 'Por tiempo:\\n21-15-9 repeticiones de:\\nDumbbell Snatches (50/35 lb)\\nBurpee Box Jump Overs (cajón de 24/20 pulgadas)' },
-            { name: '24.2', category: 'Open 2024', description: 'AMRAP en 10 minutos:\\n300m Remo\\n10 Deadlifts (185/125 lb)\\n50 Double-Unders\\n(Si se completa, entonces 300m Remo, 20 Deadlifts, 50 Double-Unders, etc.)' },
-            { name: '24.3', category: 'Open 2024', description: 'Por tiempo:\\n50 Thrusters (65/45 lb)\\n50 Chest-to-Bar Pull-ups\\n50 Wall-Ball Shots (20/14 lb a objetivo de 10/9 pies)\\n50 Handstand Push-ups' },
+            { name: '24.1', category: 'Open 2024', description: 'Por tiempo:\n21-15-9 repeticiones de:\nDumbbell Snatches (50/35 lb)\nBurpee Box Jump Overs (cajón de 24/20 pulgadas)' },
+            { name: '24.2', category: 'Open 2024', description: 'AMRAP en 10 minutos:\n300m Remo\n10 Deadlifts (185/125 lb)\n50 Double-Unders\n(Si se completa, entonces 300m Remo, 20 Deadlifts, 50 Double-Unders, etc.)' },
+            { name: '24.3', category: 'Open 2024', description: 'Por tiempo:\n50 Thrusters (65/45 lb)\n50 Chest-to-Bar Pull-ups\n50 Wall-Ball Shots (20/14 lb a objetivo de 10/9 pies)\n50 Handstand Push-ups' },
             // Open 2023
-            { name: '23.1', category: 'Open 2023', description: 'AMRAP en 15 minutos:\\n60 Calorías en Remo\\n50 Toes-to-Bar\\n40 Wall-Ball Shots (20/14 lb a objetivo de 10/9 pies)\\n30 Cleans (135/95 lb)\\n20 Ring Muscle-ups' },
-            { name: '23.2', category: 'Open 2023', description: 'Por tiempo:\\n5 rondas de:\\n5 Burpee Pull-ups\\n10 Shuttle Runs (25 pies)\\nLuego, 5 rondas de:\\n5 Burpee Chest-to-Bar Pull-ups\\n10 Shuttle Runs\\nLuego, 5 rondas de:\\n5 Burpee Bar Muscle-ups\\n10 Shuttle Runs\\n(Límite de tiempo 15 min)' },
-            { name: '23.3', category: 'Open 2023', description: 'AMRAP en 7 minutos:\\n5 Wall Walks\\n15 Dumbbell Snatches (50/35 lb)\\nLuego, si se completa, AMRAP en 7 minutos:\\n50 Double-Unders\\n15 Sit-ups\\nLuego, si se completa, AMRAP en 7 minutos:\\n50 Double-Unders\\n15 GHD Sit-ups\\n(Límite de tiempo total 21 min)' },
+            { name: '23.1', category: 'Open 2023', description: 'AMRAP en 15 minutos:\n60 Calorías en Remo\n50 Toes-to-Bar\n40 Wall-Ball Shots (20/14 lb a objetivo de 10/9 pies)\n30 Cleans (135/95 lb)\n20 Ring Muscle-ups' },
+            { name: '23.2', category: 'Open 2023', description: 'Por tiempo:\n5 rondas de:\n5 Burpee Pull-ups\n10 Shuttle Runs (25 pies)\nLuego, 5 rondas de:\n5 Burpee Chest-to-Bar Pull-ups\n10 Shuttle Runs\nLuego, 5 rondas de:\n5 Burpee Bar Muscle-ups\n10 Shuttle Runs\n(Límite de tiempo 15 min)' },
+            { name: '23.3', category: 'Open 2023', description: 'AMRAP en 7 minutos:\n5 Wall Walks\n15 Dumbbell Snatches (50/35 lb)\nLuego, si se completa, AMRAP en 7 minutos:\n50 Double-Unders\n15 Sit-ups\nLuego, si se completa, AMRAP en 7 minutos:\n50 Double-Unders\n15 GHD Sit-ups\n(Límite de tiempo total 21 min)' },
             // Open 2022
-            { name: '22.1', category: 'Open 2022', description: 'AMRAP en 15 minutos:\\n3 Wall Walks\\n12 Dumbbell Snatches (50/35 lb)\\n15 Box Jump Overs (cajón de 24/20 pulgadas)' },
-            { name: '22.2', category: 'Open 2022', description: 'AMRAP en 10 minutos:\\n4 Deadlifts (225/155 lb)\\n6 Bar-Facing Burpees\\n(Si se completa, entonces 8 Deadlifts, 6 Bar-Facing Burpees, etc.)' },
-            { name: '22.3', category: 'Open 2022', description: 'Por tiempo:\\n21 Pull-ups\\n42 Double-Unders\\n21 Thrusters (95/65 lb)\\nLuego 18 Pull-ups, 36 Double-Unders, 18 Thrusters.\\nLuego 15 Pull-ups, 30 Double-Unders, 15 Thrusters.\\nLuego 9 Pull-ups, 18 Double-Unders, 9 Thrusters.\\n(Límite de tiempo 12 min)' },
+            { name: '22.1', category: 'Open 2022', description: 'AMRAP en 15 minutos:\n3 Wall Walks\n12 Dumbbell Snatches (50/35 lb)\n15 Box Jump Overs (cajón de 24/20 pulgadas)' },
+            { name: '22.2', category: 'Open 2022', description: 'AMRAP en 10 minutos:\n4 Deadlifts (225/155 lb)\n6 Bar-Facing Burpees\n(Si se completa, entonces 8 Deadlifts, 6 Bar-Facing Burpees, etc.)' },
+            { name: '22.3', category: 'Open 2022', description: 'Por tiempo:\n21 Pull-ups\n42 Double-Unders\n21 Thrusters (95/65 lb)\nLuego 18 Pull-ups, 36 Double-Unders, 18 Thrusters.\nLuego 15 Pull-ups, 30 Double-Unders, 15 Thrusters.\nLuego 9 Pull-ups, 18 Double-Unders, 9 Thrusters.\n(Límite de tiempo 12 min)' },
             // Open 2021
-            { name: '21.1', category: 'Open 2021', description: 'Por tiempo:\\n1 Wall Walk\\n10 Dumbbell Snatches (50/35 lb)\\n1 Wall Walk\\n20 Dumbbell Snatches\\n1 Wall Walk\\n30 Dumbbell Snatches\\n1 Wall Walk\\n40 Dumbbell Snatches\\n1 Wall Walk\\n50 Dumbbell Snatches\\n(Límite de tiempo 15 min)' },
-            { name: '21.2', category: 'Open 2021', description: 'Por tiempo:\\n10 Dumbbell Snatches (50/35 lb)\\n15 Burpee Box Jump Overs (cajón de 24/20 pulgadas)\\nLuego 20 Dumbbell Snatches, 15 Burpee Box Jump Overs, etc. (hasta 50 Dumbbell Snatches).\\n(Límite de tiempo 20 min)' },
-            { name: '21.3', category: 'Open 2021', description: 'Por tiempo:\\n15 Front Squats (135/95 lb)\\n30 Toes-to-Bar\\n15 Thrusters (135/95 lb)\\nLuego 15 Front Squats (85/65 lb)\\n30 Chest-to-Bar Pull-ups\\n15 Thrusters (85/65 lb)\\n(Límite de tiempo 15 min)' },
+            { name: '21.1', category: 'Open 2021', description: 'Por tiempo:\n1 Wall Walk\n10 Dumbbell Snatches (50/35 lb)\n1 Wall Walk\n20 Dumbbell Snatches\n1 Wall Walk\n30 Dumbbell Snatches\n1 Wall Walk\n40 Dumbbell Snatches\n1 Wall Walk\n50 Dumbbell Snatches\n(Límite de tiempo 15 min)' },
+            { name: '21.2', category: 'Open 2021', description: 'Por tiempo:\n10 Dumbbell Snatches (50/35 lb)\n15 Burpee Box Jump Overs (cajón de 24/20 pulgadas)\nLuego 20 Dumbbell Snatches, 15 Burpee Box Jump Overs, etc. (hasta 50 Dumbbell Snatches).\n(Límite de tiempo 20 min)' },
+            { name: '21.3', category: 'Open 2021', description: 'Por tiempo:\n15 Front Squats (135/95 lb)\n30 Toes-to-Bar\n15 Thrusters (135/95 lb)\nLuego 15 Front Squats (85/65 lb)\n30 Chest-to-Bar Pull-ups\n15 Thrusters (85/65 lb)\n(Límite de tiempo 15 min)' },
             // Open 2020
-            { name: '20.1', category: 'Open 2020', description: '10 rondas por tiempo de:\\n8 Ground-to-Overheads (95/65 lb)\\n10 Bar-Facing Burpees\\n(Límite de tiempo 15 min)' },
-            { name: '20.2', category: 'Open 2020', description: 'AMRAP en 20 minutos de:\\n4 Dumbbell Thrusters (50/35 lb)\\n6 Toes-to-Bar\\n24 Double-Unders' },
-            { name: '20.3', category: 'Open 2020', description: 'Por tiempo:\\n21-15-9 repeticiones de:\\nDeadlifts (275/185 lb)\\nHandstand Push-ups\\nLuego 21-15-9 repeticiones de:\\nDeadlifts (225/155 lb)\\nHandstand Push-ups\\n(Límite de tiempo 15 min)' },
+            { name: '20.1', category: 'Open 2020', description: '10 rondas por tiempo de:\n8 Ground-to-Overheads (95/65 lb)\n10 Bar-Facing Burpees\n(Límite de tiempo 15 min)' },
+            { name: '20.2', category: 'Open 2020', description: 'AMRAP en 20 minutos de:\n4 Dumbbell Thrusters (50/35 lb)\n6 Toes-to-Bar\n24 Double-Unders' },
+            { name: '20.3', category: 'Open 2020', description: 'Por tiempo:\n21-15-9 repeticiones de:\nDeadlifts (275/185 lb)\nHandstand Push-ups\nLuego 21-15-9 repeticiones de:\nDeadlifts (225/155 lb)\nHandstand Push-ups\n(Límite de tiempo 15 min)' },
             // Nuevos WODs añadidos
             // The Girls
-            { name: 'Angie', category: 'The Girls', description: 'Por tiempo:\\n100 Pull-ups\\n100 Push-ups\\n100 Sit-ups\\n100 Squats' },
-            { name: 'Eva', category: 'The Girls', description: '5 rondas por tiempo:\\n800m Carrera\\n30 Kettlebell Swings (2 pood)\\n30 Pull-ups' },
-            { name: 'Nancy', category: 'The Girls', description: '5 rondas por tiempo:\\n400m Carrera\\n15 Overhead Squats (95/65 lb)' },
-            { name: 'Jackie', category: 'The Girls', description: 'Por tiempo:\\n1000m Remo\\n50 Thrusters (45/35 lb)\\n30 Pull-ups' },
-            { name: 'Lynne', category: 'The Girls', description: '5 rondas para máximo de repeticiones de:\\nBench Press (peso corporal)\\nPull-ups' },
-            { name: 'Mary', category: 'The Girls', description: 'AMRAP en 20 minutos:\\n5 Handstand Push-ups\\n10 Pistol Squats\\n15 Pull-ups' },
-            { name: 'Nicole', category: 'The Girls', description: 'AMRAP en 20 minutos:\\n400m Carrera\\nMax repeticiones de Pull-ups' },
-            { name: 'Grace (Dumbbell)', category: 'The Girls', description: 'Por tiempo:\\n30 Dumbbell Clean & Jerks (50/35 lb)' },
-            { name: 'Christine', category: 'The Girls', description: '3 rondas por tiempo:\\n500m Remo\\n12 Deadlifts (peso corporal)\\n21 Box Jumps (20 in)' },
-            { name: 'Kelly', category: 'The Girls', description: '5 rondas por tiempo:\\n400m Carrera\\n30 Box Jumps (24/20 in)\\n30 Wall Ball Shots (20/14 lb)' },
-            { name: 'Annie Are You OK?', category: 'The Girls', description: 'Por tiempo:\\n50-40-30-20-10 repeticiones de:\\nSit-ups\\nPush-ups\\nAir Squats' },
-            { name: 'Barbara', category: 'The Girls', description: '5 rondas por tiempo de:\\n20 Pull-ups\\n30 Push-ups\\n40 Sit-ups\\n50 Squats\\n(3 minutos de descanso entre rondas)' },
-            { name: 'Chelsea', category: 'The Girls', description: 'EMOM hasta el fallo:\\n5 Pull-ups\\n10 Push-ups\\n15 Squats' },
+            { name: 'Angie', category: 'The Girls', description: 'Por tiempo:\n100 Pull-ups\n100 Push-ups\n100 Sit-ups\n100 Squats' },
+            { name: 'Eva', category: 'The Girls', description: '5 rondas por tiempo:\n800m Carrera\n30 Kettlebell Swings (2 pood)\n30 Pull-ups' },
+            { name: 'Nancy', category: 'The Girls', description: '5 rondas por tiempo:\n400m Carrera\n15 Overhead Squats (95/65 lb)' },
+            { name: 'Jackie', category: 'The Girls', description: 'Por tiempo:\n1000m Remo\n50 Thrusters (45/35 lb)\n30 Pull-ups' },
+            { name: 'Lynne', category: 'The Girls', description: '5 rondas para máximo de repeticiones de:\nBench Press (peso corporal)\nPull-ups' },
+            { name: 'Mary', category: 'The Girls', description: 'AMRAP en 20 minutos:\n5 Handstand Push-ups\n10 Pistol Squats\n15 Pull-ups' },
+            { name: 'Nicole', category: 'The Girls', description: 'AMRAP en 20 minutos:\n400m Carrera\nMax repeticiones de Pull-ups' },
+            { name: 'Grace (Dumbbell)', category: 'The Girls', description: 'Por tiempo:\n30 Dumbbell Clean & Jerks (50/35 lb)' },
+            { name: 'Christine', category: 'The Girls', description: '3 rondas por tiempo:\n500m Remo\n12 Deadlifts (peso corporal)\n21 Box Jumps (20 in)' },
+            { name: 'Kelly', category: 'The Girls', description: '5 rondas por tiempo:\n400m Carrera\n30 Box Jumps (24/20 in)\n30 Wall Ball Shots (20/14 lb)' },
+            { name: 'Annie Are You OK?', category: 'The Girls', description: 'Por tiempo:\n50-40-30-20-10 repeticiones de:\nSit-ups\nPush-ups\nAir Squats' },
+            { name: 'Barbara', category: 'The Girls', description: '5 rondas por tiempo de:\n20 Pull-ups\n30 Push-ups\n40 Sit-ups\n50 Squats\n(3 minutos de descanso entre rondas)' },
+            { name: 'Chelsea', category: 'The Girls', description: 'EMOM hasta el fallo:\n5 Pull-ups\n10 Push-ups\n15 Squats' },
             // Heroes
-            { name: 'Randy', category: 'Heroes', description: 'Por tiempo:\\n75 Power Snatches (75/55 lb)' },
-            { name: 'Badger', category: 'Heroes', description: '3 rondas por tiempo:\\n30 Clean & Jerks (95/65 lb)\\n30 Pull-ups\\n800m Carrera' },
-            { name: 'Glen', category: 'Heroes', description: 'Por tiempo:\\n30 Clean and Jerks (135/95 lb)\\n1 milla de Carrera\\n100 Toes-to-Bar\\n1 milla de Carrera\\n30 Clean and Jerks (135/95 lb)' },
-            { name: 'Holleyman', category: 'Heroes', description: '30 rondas por tiempo de:\\n5 Wall Ball Shots (20/14 lb)\\n3 Handstand Push-ups\\n1 Power Clean (225/155 lb)' },
-            { name: 'Jack', category: 'Heroes', description: '20 rondas por tiempo de:\\n10 Push Press (135/95 lb)\\n10 Kettlebell Swings (1.5/1 pood)\\n10 Box Jumps (24/20 in)' },
-            { name: 'Jerry', category: 'Heroes', description: 'Por tiempo:\\n1 milla Carrera\\n2000m Remo\\n1 milla Carrera' },
-            { name: 'Nate', category: 'Heroes', description: 'AMRAP en 20 minutos:\\n2 Muscle-ups\\n4 Handstand Push-ups\\n8 Kettlebell Swings (2 pood)' },
-            { name: 'Ryan', category: 'Heroes', description: '5 rondas por tiempo de:\\n7 Muscle-ups\\n21 Burpees' },
-            { name: 'Severin', category: 'Heroes', description: 'Por tiempo:\\n50 Handstand Push-ups\\n100 Pull-ups\\n200 Push-ups\\n400 Squats\\n5 millas de Carrera' },
-            { name: 'Wes', category: 'Heroes', description: 'Por tiempo:\\n10 rondas de:\\n10 Burpee Pull-ups\\n10 Box Jumps (24/20 in)' },
+            { name: 'Randy', category: 'Heroes', description: 'Por tiempo:\n75 Power Snatches (75/55 lb)' },
+            { name: 'Badger', category: 'Heroes', description: '3 rondas por tiempo:\n30 Clean & Jerks (95/65 lb)\n30 Pull-ups\n800m Carrera' },
+            { name: 'Glen', category: 'Heroes', description: 'Por tiempo:\n30 Clean and Jerks (135/95 lb)\n1 milla de Carrera\n100 Toes-to-Bar\n1 milla de Carrera\n30 Clean and Jerks (135/95 lb)' },
+            { name: 'Holleyman', category: 'Heroes', description: '30 rondas por tiempo de:\n5 Wall Ball Shots (20/14 lb)\n3 Handstand Push-ups\n1 Power Clean (225/155 lb)' },
+            { name: 'Jack', category: 'Heroes', description: '20 rondas por tiempo de:\n10 Push Press (135/95 lb)\n10 Kettlebell Swings (1.5/1 pood)\n10 Box Jumps (24/20 in)' },
+            { name: 'Jerry', category: 'Heroes', description: 'Por tiempo:\n1 milla Carrera\n2000m Remo\n1 milla Carrera' },
+            { name: 'Nate', category: 'Heroes', description: 'AMRAP en 20 minutos:\n2 Muscle-ups\n4 Handstand Push-ups\n8 Kettlebell Swings (2 pood)' },
+            { name: 'Ryan', category: 'Heroes', description: '5 rondas por tiempo de:\n7 Muscle-ups\n21 Burpees' },
+            { name: 'Severin', category: 'Heroes', description: 'Por tiempo:\n50 Handstand Push-ups\n100 Pull-ups\n200 Push-ups\n400 Squats\n5 millas de Carrera' },
+            { name: 'Wes', category: 'Heroes', description: 'Por tiempo:\n10 rondas de:\n10 Burpee Pull-ups\n10 Box Jumps (24/20 in)' },
             // Nuevos WODs de Heroes
-            { name: 'Danny', category: 'Heroes', description: 'Por tiempo:\\n30 Handstand Push-ups\\n20 Front Squats (115/75 lb)\\n30 Pull-ups\\n20 Push Jerks (115/75 lb)\\n30 Toes-to-Bar\\n20 Overhead Squats (115/75 lb)' },
-            { name: 'Nutts', category: 'Heroes', description: 'Por tiempo:\\n10 Handstand Push-ups\\n15 Deadlifts (250/175 lb)\\n25 Box Jumps (30/24 in)\\n50 Pull-ups\\n100 Wall Ball Shots (20/14 lb)\\n200 Double-Unders\\n400m Carrera (con chaleco de 20/14 lb)' },
-            { name: 'Griff', category: 'Heroes', description: 'Por tiempo:\\n800m Carrera\\n400m Carrera de espaldas\\n800m Carrera\\n400m Carrera de espaldas' },
-            { name: 'Hammer', category: 'Heroes', description: '5 rondas por tiempo de:\\n5 Power Cleans (135/95 lb)\\n10 Front Squats (135/95 lb)\\n5 Jerks (135/95 lb)\\n20 Pull-ups' },
-            { name: 'Jason', category: 'Heroes', description: '100 Squats\\n50 Muscle-ups\\n100 Squats' },
-            { name: 'Luce', category: 'Heroes', description: '5 rondas por tiempo de:\\n1k Remo\\n10 Muscle-ups\\n100 Squats' },
-            { name: 'Rahoi', category: 'Heroes', description: 'Por tiempo:\\n12 Burpee Box Jump Overs (24/20 in)\\n6 Overhead Squats (95/65 lb)\\n12 Burpee Box Jump Overs (24/20 in)\\n12 Overhead Squats (95/65 lb)\\n12 Burpee Box Jump Overs (24/20 in)\\n18 Overhead Squats (95/65 lb)\\n... (aumenta 6 Overhead Squats cada ronda hasta 30)' },
-            { name: 'Roy', category: 'Heroes', description: '5 rondas por tiempo de:\\n15 Deadlifts (225/155 lb)\\n20 Burpees\\n25 Pull-ups' },
-            { name: 'Small', category: 'Heroes', description: 'Por tiempo:\\n1000m Remo\\n50 Burpees\\n50 Wall Ball Shots (20/14 lb)\\n50 Pull-ups' },
-            { name: 'Whitten', category: 'Heroes', description: '5 rondas por tiempo de:\\n22 Kettlebell Swings (2/1.5 pood)\\n22 Box Jumps (24/20 in)\\n22 Burpees\\n22 Wall Ball Shots (20/14 lb)' },
+            { name: 'Danny', category: 'Heroes', description: 'Por tiempo:\n30 Handstand Push-ups\n20 Front Squats (115/75 lb)\n30 Pull-ups\n20 Push Jerks (115/75 lb)\n30 Toes-to-Bar\n20 Overhead Squats (115/75 lb)' },
+            { name: 'Nutts', category: 'Heroes', description: 'Por tiempo:\n10 Handstand Push-ups\n15 Deadlifts (250/175 lb)\n25 Box Jumps (30/24 in)\n50 Pull-ups\n100 Wall Ball Shots (20/14 lb)\n200 Double-Unders\n400m Carrera (con chaleco de 20/14 lb)' },
+            { name: 'Griff', category: 'Heroes', description: 'Por tiempo:\n800m Carrera\n400m Carrera de espaldas\n800m Carrera\n400m Carrera de espaldas' },
+            { name: 'Hammer', category: 'Heroes', description: '5 rondas por tiempo de:\n5 Power Cleans (135/95 lb)\n10 Front Squats (135/95 lb)\n5 Jerks (135/95 lb)\n20 Pull-ups' },
+            { name: 'Jason', category: 'Heroes', description: '100 Squats\n50 Muscle-ups\n100 Squats' },
+            { name: 'Luce', category: 'Heroes', description: '5 rondas por tiempo de:\n1k Remo\n10 Muscle-ups\n100 Squats' },
+            { name: 'Rahoi', category: 'Heroes', description: 'Por tiempo:\n12 Burpee Box Jump Overs (24/20 in)\n6 Overhead Squats (95/65 lb)\n12 Burpee Box Jump Overs (24/20 in)\n12 Overhead Squats (95/65 lb)\n12 Burpee Box Jump Overs (24/20 in)\n18 Overhead Squats (95/65 lb)\n... (aumenta 6 Overhead Squats cada ronda hasta 30)' },
+            { name: 'Roy', category: 'Heroes', description: '5 rondas por tiempo de:\n15 Deadlifts (225/155 lb)\n20 Burpees\n25 Pull-ups' },
+            { name: 'Small', category: 'Heroes', description: 'Por tiempo:\n1000m Remo\n50 Burpees\n50 Wall Ball Shots (20/14 lb)\n50 Pull-ups' },
+            { name: 'Whitten', category: 'Heroes', description: '5 rondas por tiempo de:\n22 Kettlebell Swings (2/1.5 pood)\n22 Box Jumps (24/20 in)\n22 Burpees\n22 Wall Ball Shots (20/14 lb)' },
             // Bodyweight
-            { name: 'Burpee Mile', category: 'Bodyweight', description: 'Por tiempo:\\nBurpee Broad Jumps por 1 milla (1600 metros)' },
-            { name: 'Strict Cindy', category: 'Bodyweight', description: 'AMRAP en 20 minutos:\\n5 Strict Pull-ups\\n10 Strict Push-ups\\n15 Air Squats' },
-            { name: 'Double Tabata', category: 'Bodyweight', description: 'Tabata de 8 rondas de:\\n20s Trabajo / 10s Descanso de Burpees\\nSeguido por Tabata de 8 rondas de:\\n20s Trabajo / 10s Descanso de Air Squats' },
+            { name: 'Burpee Mile', category: 'Bodyweight', description: 'Por tiempo:\nBurpee Broad Jumps por 1 milla (1600 metros)' },
+            { name: 'Strict Cindy', category: 'Bodyweight', description: 'AMRAP en 20 minutos:\n5 Strict Pull-ups\n10 Strict Push-ups\n15 Air Squats' },
+            { name: 'Double Tabata', category: 'Bodyweight', description: 'Tabata de 8 rondas de:\n20s Trabajo / 10s Descanso de Burpees\nSeguido por Tabata de 8 rondas de:\n20s Trabajo / 10s Descanso de Air Squats' },
             // Couplet
-            { name: 'Half Cindy', category: 'Couplet', description: 'AMRAP en 10 minutos:\\n5 Pull-ups\\n10 Push-ups' },
-            { name: 'Row & Thruster', category: 'Couplet', description: '5 rondas por tiempo:\\n200m Remo\\n10 Thrusters (95/65 lb)' },
-            { name: 'Deadlift & Box Jump', category: 'Couplet', description: 'Por tiempo:\\n21-15-9 repeticiones de:\\nDeadlifts (225/155 lb)\\nBox Jumps (24/20 in)' },
+            { name: 'Half Cindy', category: 'Couplet', description: 'AMRAP en 10 minutos:\n5 Pull-ups\n10 Push-ups' },
+            { name: 'Row & Thruster', category: 'Couplet', description: '5 rondas por tiempo:\n200m Remo\n10 Thrusters (95/65 lb)' },
+            { name: 'Deadlift & Box Jump', category: 'Couplet', description: 'Por tiempo:\n21-15-9 repeticiones de:\nDeadlifts (225/155 lb)\nBox Jumps (24/20 in)' },
             // Triplet
-            { name: 'Triple 3', category: 'Triplet', description: 'Por tiempo:\\n3000m Remo\\n300 Double-Unders\\n3 millas de Carrera' },
-            { name: 'King Kong', category: 'Triplet', description: '3 rondas por tiempo:\\n1 Deadlift (455/315 lb)\\n2 Muscle-ups\\n3 Squat Cleans (250/175 lb)' },
-            { name: 'Zeus', category: 'Triplet', description: '3 rondas por tiempo:\\n30 Wall Ball Shots (20/14 lb)\\n30 Sumo Deadlift High-Pulls (75/55 lb)\\n30 Box Jumps (20 in)\\n30 Push Press (75/55 lb)\\n30 Remo (calorías)\\n30 Burpees\\n30 Double-Unders' },
+            { name: 'Triple 3', category: 'Triplet', description: 'Por tiempo:\n3000m Remo\n300 Double-Unders\n3 millas de Carrera' },
+            { name: 'King Kong', category: 'Triplet', description: '3 rondas por tiempo:\n1 Deadlift (455/315 lb)\n2 Muscle-ups\n3 Squat Cleans (250/175 lb)' },
+            { name: 'Zeus', category: 'Triplet', description: '3 rondas por tiempo:\n30 Wall Ball Shots (20/14 lb)\n30 Sumo Deadlift High-Pulls (75/55 lb)\n30 Box Jumps (20 in)\n30 Push Press (75/55 lb)\n30 Remo (calorías)\n30 Burpees\n30 Double-Unders' },
             // Endurance
-            { name: 'Long Chipper', category: 'Endurance', description: 'Por tiempo:\\n100 Burpees\\n100 Sit-ups\\n100 Air Squats\\n100 Push-ups\\n100 Pull-ups' },
-            { name: 'Marathon Row', category: 'Endurance', description: 'Por tiempo:\\n42,195m Remo' },
-            { name: 'Half Marathon Run', category: 'Endurance', description: 'Por tiempo:\\n21.1 km Carrera' },
-            { name: 'Iron Triathlon', category: 'Endurance', description: 'Por tiempo:\\n1500m Natación\\n40km Bicicleta\\n10km Carrera' },
+            { name: 'Long Chipper', category: 'Endurance', description: 'Por tiempo:\n100 Burpees\n100 Sit-ups\n100 Air Squats\n100 Push-ups\n100 Pull-ups' },
+            { name: 'Marathon Row', category: 'Endurance', description: 'Por tiempo:\n42,195m Remo' },
+            { name: 'Half Marathon Run', category: 'Endurance', description: 'Por tiempo:\n21.1 km Carrera' },
+            { name: 'Iron Triathlon', category: 'Endurance', description: 'Por tiempo:\n1500m Natación\n40km Bicicleta\n10km Carrera' },
             // Nuevos WODs de Resistencia
-            { name: 'Max Effort Run', category: 'Endurance', description: 'Por tiempo:\\n5k Carrera' },
-            { name: 'Rowing Intervals', category: 'Endurance', description: '5 rondas de:\\n500m Remo (rápido)\\n1 minuto de descanso' },
-            { name: 'Bike Erg Intervals', category: 'Endurance', description: '10 rondas de:\\n1 minuto de trabajo en Bike Erg (máxima potencia)\\n1 minuto de descanso' },
-            { name: 'Swim 2k', category: 'Endurance', description: 'Por tiempo:\\n2000m Natación' },
-            { name: 'Long Chipper II', category: 'Endurance', description: 'Por tiempo:\\n200 Double-Unders\\n150 Air Squats\\n100 Push-ups\\n50 Pull-ups\\n1000m Remo' },
-            { name: 'Run, Row, Bike', category: 'Endurance', description: '3 rondas por tiempo:\\n800m Carrera\\n1000m Remo\\n2000m Bicicleta' },
-            { name: 'Half Marathon Row', category: 'Endurance', description: 'Por tiempo:\\n21,097m Remo' },
-            { name: 'Long EMOM Cardio', category: 'Endurance', description: 'EMOM 30 minutos:\\nMinuto 1: 15 Burpees\\nMinuto 2: 20/15 Calorías en Remo\\nMinuto 3: 20/15 Calorías en Bicicleta' },
-            { name: 'Endurance Triplet', category: 'Endurance', description: 'Por tiempo:\\n1000m Remo\\n100 Box Jumps (24/20 in)\\n100 Wall Ball Shots (20/14 lb)' },
-            { name: 'Long Distance Run', category: 'Endurance', description: 'Por tiempo:\\n10k Carrera' }
+            { name: 'Max Effort Run', category: 'Endurance', description: 'Por tiempo:\n5k Carrera' },
+            { name: 'Rowing Intervals', category: 'Endurance', description: '5 rondas de:\n500m Remo (rápido)\n1 minuto de descanso' },
+            { name: 'Bike Erg Intervals', category: 'Endurance', description: '10 rondas de:\n1 minuto de trabajo en Bike Erg (máxima potencia)\n1 minuto de descanso' },
+            { name: 'Swim 2k', category: 'Endurance', description: 'Por tiempo:\n2000m Natación' },
+            { name: 'Long Chipper II', category: 'Endurance', description: 'Por tiempo:\n200 Double-Unders\n150 Air Squats\n100 Push-ups\n50 Pull-ups\n1000m Remo' },
+            { name: 'Run, Row, Bike', category: 'Endurance', description: '3 rondas por tiempo:\n800m Carrera\n1000m Remo\n2000m Bicicleta' },
+            { name: 'Half Marathon Row', category: 'Endurance', description: 'Por tiempo:\n21,097m Remo' },
+            { name: 'Long EMOM Cardio', category: 'Endurance', description: 'EMOM 30 minutos:\nMinuto 1: 15 Burpees\nMinuto 2: 20/15 Calorías en Remo\nMinuto 3: 20/15 Calorías en Bicicleta' },
+            { name: 'Endurance Triplet', category: 'Endurance', description: 'Por tiempo:\n1000m Remo\n100 Box Jumps (24/20 in)\n100 Wall Ball Shots (20/14 lb)' },
+            { name: 'Long Distance Run', category: 'Endurance', description: 'Por tiempo:\n10k Carrera' }
         ];
 
         // Aplica viñetas a las descripciones de los WODs para mejorar la legibilidad
         wodDatabase.forEach(wod => {
-            const lines = wod.description.split('\\n');
+            const lines = wod.description.split('\n');
             if (lines.length > 1) {
                 const formattedLines = [lines[0]]; // Mantiene la primera línea tal cual (encabezado del WOD)
                 for (let i = 1; i < lines.length; i++) {
@@ -1263,7 +1298,7 @@
                         formattedLines.push(` ${lines[i].trim()}`);
                     }
                 }
-                wod.description = formattedLines.join('\\n');
+                wod.description = formattedLines.join('\n');
             }
         });
 
@@ -1475,19 +1510,19 @@
 
         // --- Data for Collaborating Boxes ---
         const boxesData = [
-            { name: 'TRIBOO', instagram: 'https://www.instagram.com/betriboo/', address: 'Jose Sanchez Saez 9, Elche 03202' },
-            { name: 'RAIONATO', instagram: 'https://www.instagram.com/raionhato_fitness_club/', address: 'Calle Manuel Alcaraz Mora 7, Elche 03204' },
-            { name: 'FGY', instagram: 'https://www.instagram.com/fgyfunctionalfitness/', address: 'Ctra. de Bigastro, Km 3, 2, Orihuela 03300' },
-            { name: 'ELITE FITNESS', instagram: 'https://www.instagram.com/elitefitness.laspalmas/', address: 'Calle Dr. Juan Domínguez Pérez 57, Las Palmas de Gran Canaria 35008' },
-            { name: 'ATIS CROOSFIT', instagram: 'https://www.instagram.com/atiscrossfit/', address: 'Beneficiado José Estupiñán 17, Telde 35219' },
-            { name: 'CROSSFIT EL FARO', instagram: 'https://www.instagram.com/crossboxelfaro/', address: 'Avda. Escandinavia 92 Local 1 de Gran Alacant (Santa Pola)' },
-            { name: 'ATBOX', instagram: 'https://www.instagram.com/atboxelche/', address: 'Ronda Vall d\'Uixó, 74, 03206 Elx, Alicante' }
+            { name: 'TRIBOO', instagram: 'https://www.instagram.com/betriboo/', address: 'Jose Sanchez Saez 9, Elche 03202', lat: 38.2698, lon: -0.6885 },
+            { name: 'RAIONATO', instagram: 'https://www.instagram.com/raionhato_fitness_club/', address: 'Calle Manuel Alcaraz Mora 7, Elche 03204', lat: 38.2583, lon: -0.6901 },
+            { name: 'FGY', instagram: 'https://www.instagram.com/fgyfunctionalfitness/', address: 'Ctra. de Bigastro, Km 3, 2, Orihuela 03300', lat: 38.0835, lon: -0.9447 },
+            { name: 'ELITE FITNESS', instagram: 'https://www.instagram.com/elitefitness.laspalmas/', address: 'Calle Dr. Juan Domínguez Pérez 57, Las Palmas de Gran Canaria 35008', lat: 28.1153, lon: -15.4486 },
+            { name: 'ATIS CROOSFIT', instagram: 'https://www.instagram.com/atiscrossfit/', address: 'Beneficiado José Estupiñán 17, Telde 35219', lat: 27.9958, lon: -15.3957 },
+            { name: 'CROSSFIT EL FARO', instagram: 'https://www.instagram.com/crossboxelfaro/', address: 'Avda. Escandinavia 92 Local 1 de Gran Alacant (Santa Pola)', lat: 38.2333, lon: -0.5245 },
+            { name: 'ATBOX', instagram: 'https://www.instagram.com/atboxelche/', address: 'Ronda Vall d\'Uixó, 74, 03206 Elx, Alicante', lat: 38.2751, lon: -0.7012 }
         ];
 
 
         // Aplica viñetas a las descripciones de los WODs para mejorar la legibilidad
         wodDatabase.forEach(wod => {
-            const lines = wod.description.split('\\n');
+            const lines = wod.description.split('\n');
             if (lines.length > 1) {
                 const formattedLines = [lines[0]]; // Mantiene la primera línea tal cual (encabezado del WOD)
                 for (let i = 1; i < lines.length; i++) {
@@ -1496,9 +1531,44 @@
                         formattedLines.push(`- ${lines[i].trim()}`);
                     }
                 }
-                wod.description = formattedLines.join('\\n');
+                wod.description = formattedLines.join('\n');
             }
         });
+
+        // --- Map Logic ---
+        const initMap = () => {
+            if (state.map) {
+                state.map.invalidateSize();
+                return;
+            }
+
+            state.map = L.map('map-container').setView([38.265, -0.698], 12);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(state.map);
+
+            const riteIcon = L.icon({
+                iconUrl: './img/logos/logoRITE.png',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+                popupAnchor: [0, -15]
+            });
+
+            boxesData.forEach(box => {
+                if (box.lat && box.lon) {
+                    const marker = L.marker([box.lat, box.lon], { icon: riteIcon }).addTo(state.map);
+                    marker.bindPopup(`
+                        <div style="text-align: center;">
+                            <strong>${box.name}</strong><br>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(box.address)}" target="_blank">Ver en Google Maps</a>
+                        </div>
+                    `);
+                }
+            });
+        };
 
         // --- Navigation Logic ---
         const navigateTo = (viewId) => {
@@ -1519,9 +1589,10 @@
             
             window.scrollTo(0, 0);
 
-            // Render boxes if navigating to the boxes view
+            // Render boxes and initialize map if navigating to the boxes view
             if (viewId === 'boxes') {
                 renderBoxes();
+                setTimeout(initMap, 100); // Delay map initialization to ensure container is visible
             }
         };
 
@@ -1564,7 +1635,7 @@
             wodList.innerHTML = filteredWods.map(w => `
                 <div class="wod-item" data-name="${w.name}" data-desc="${w.description}">
                     <div class="wod-name">${w.name}</div>
-                    <div class="wod-desc">${w.description.replace(/\\n/g, '<br>')}</div>
+                    <div class="wod-desc">${w.description.replace(/\n/g, '<br>')}</div>
                 </div>
             `).join('');
             
@@ -1585,7 +1656,7 @@
             header.textContent = name;
             body.innerHTML = `
                 <p class="detail-label">Descripción</p>
-                <p class="detail-value">${description.replace(/\\n/g, '<br>')}</p>
+                <p class="detail-value">${description.replace(/\n/g, '<br>')}</p>
             `;
             openModal(logModal);
         };
@@ -2070,7 +2141,7 @@
             } else if (type === 'countdown' || type === 'amrap') {
                 timerDisplay.textContent = formatTime(timerState.duration / 1000);
             } else { // emom or tabata
-                timerDisplay.textContent = formatTime(60); // Initial display for EMOM/Tabata round start
+                timerDisplay.textContent = formatTime(60);
             }
             countdownAndStart(startTimer);
         };
