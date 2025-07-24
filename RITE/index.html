@@ -732,6 +732,10 @@
                 <a href="https://ritesport.es/" target="_blank" rel="noopener noreferrer" class="link-item">
                     <i class="fa-solid fa-globe"></i> Tienda
                 </a>
+                <!-- Nuevo enlace para Boxes Colaboradores que ahora navega a la vista interna -->
+                <a href="#" class="link-item" data-view="boxes">
+                    <i class="fa-solid fa-shop"></i> Puntos de Venta
+                </a>
                 <a href="https://www.instagram.com/ritesport/" target="_blank" rel="noopener noreferrer" class="link-item">
                     <i class="fab fa-instagram"></i> Instagram
                 </a>
@@ -874,6 +878,17 @@
                 </div>
             </div>
         </div>
+
+        <!-- VISTA: BOXES COLABORADORES (Nueva sección) -->
+        <div id="boxes" class="view">
+            <h1 class="header" style="display: flex; justify-content: center; align-items: center;">
+                <img src="img/logos/logoRITE.png" alt="Logo RITE" style="height: 1em; vertical-align: middle; margin: 1px; padding-top: 1px; padding-bottom: 1px;">
+                Punto de Venta
+            </h1>
+            <div id="boxes-list" class="card">
+                <!-- Boxes will be rendered here by JavaScript -->
+            </div>
+        </div>
     </div>
 
     <!-- BARRA DE NAVEGACIÓN -->
@@ -893,6 +908,10 @@
         <div class="nav-item" data-view="share">
             <i class="fa-solid fa-camera"></i>
             <span>Comparte</span>
+        </div>
+        <div class="nav-item" data-view="boxes">
+            <i class="fa-solid fa-shop"></i>
+            <span>Punto de Venta</span>
         </div>
         <div class="nav-item" data-view="links">
             <i class="fa-solid fa-link"></i>
@@ -1254,7 +1273,7 @@
             { term: 'Strength Bias', definition: 'Periodo de entrenamiento donde el enfoque principal es el desarrollo de la fuerza.', category: 'Tipos de Entrenamiento' },
             { term: 'Endurance WOD', definition: 'Entrenamiento enfocado en mejorar la resistencia cardiovascular y muscular, a menudo con carreras o remos largos.', category: 'Tipos de Entrenamiento' },
             { term: 'Skill Work', definition: 'Tiempo dedicado a practicar y mejorar la técnica de movimientos específicos de gimnasia u halterofilia.', category: 'Tipos de Entrenamiento' },
-            { term: 'Team WOD', definition: 'Entrenamiento diseñado para ser realizado en equipo, fomentando la colaboración y la estrategia.', category: 'Tipos de Entrenamiento' },
+            { term: 'Team WOD', definition: 'Entrenamiento diseñado para ser realizado en equipo, fomentando la colaboración y la estrategia.', category: 'Tipos de Entrenamiento' , category: 'Tipos de Entrenamiento' },
             { term: 'Ascending Ladder', definition: 'WOD donde el número de repeticiones de un ejercicio aumenta en cada ronda.', category: 'Tipos de Entrenamiento' },
             { term: 'Descending Ladder', definition: 'WOD donde el número de repeticiones de un ejercicio disminuye en cada ronda.', category: 'Tipos de Entrenamiento' },
             { term: 'Every 2 Minutes On the Minute (E2MOM)', definition: 'Realizar una tarea al comienzo de cada 2 minutos. El tiempo restante en los 2 minutos es de descanso.', category: 'Tipos de Entrenamiento' },
@@ -1354,6 +1373,32 @@
             { term: 'Samuel Gallego', definition: 'Atleta español con buen rendimiento en la escena nacional.', category: 'Atletas' }
         ];
 
+        // --- Data for Collaborating Boxes ---
+        const boxesData = [
+            { name: 'TRIBOO', instagram: 'https://www.instagram.com/betriboo/', address: 'Jose Sanchez Saez 9, Elche 03202' },
+            { name: 'RAIONATO', instagram: 'https://www.instagram.com/raionhato_fitness_club/', address: 'Calle Manuel Alcaraz Mora 7, Elche 03204' },
+            { name: 'FGY', instagram: 'https://www.instagram.com/fgyfunctionalfitness/', address: 'Ctra. de Bigastro, Km 3, 2, Orihuela 03300' },
+            { name: 'ELITE FITNESS', instagram: 'https://www.instagram.com/elitefitness.laspalmas/', address: 'Calle Dr. Juan Domínguez Pérez 57, Las Palmas de Gran Canaria 35008' },
+            { name: 'ATIS CROOSFIT', instagram: 'https://www.instagram.com/atiscrossfit/', address: 'Beneficiado José Estupiñán 17, Telde 35219' },
+            { name: 'CROSSFIT EL FARO', instagram: 'https://www.instagram.com/crossboxelfaro/', address: 'Avda. Escandinavia 92 Local 1 de Gran Alacant (Santa Pola)' },
+            { name: 'ATBOX', instagram: 'https://www.instagram.com/atboxelche/', address: 'Ronda Vall d\'Uixó, 74, 03206 Elx, Alicante' }
+        ];
+
+
+        // Aplica viñetas a las descripciones de los WODs para mejorar la legibilidad
+        wodDatabase.forEach(wod => {
+            const lines = wod.description.split('\\n');
+            if (lines.length > 1) {
+                const formattedLines = [lines[0]]; // Mantiene la primera línea tal cual (encabezado del WOD)
+                for (let i = 1; i < lines.length; i++) {
+                    // Solo añade viñeta si la línea no está vacía
+                    if (lines[i].trim() !== '') {
+                        formattedLines.push(`- ${lines[i].trim()}`);
+                    }
+                }
+                wod.description = formattedLines.join('\\n');
+            }
+        });
 
         // --- Navigation Logic ---
         const navigateTo = (viewId) => {
@@ -1367,10 +1412,21 @@
             navItems.forEach(item => item.classList.remove('active'));
             document.querySelector(`.nav-item[data-view="${viewId}"]`).classList.add('active');
             window.scrollTo(0, 0);
+
+            // Render boxes if navigating to the boxes view
+            if (viewId === 'boxes') {
+                renderBoxes();
+            }
         };
 
         navItems.forEach(item => {
             item.addEventListener('click', () => navigateTo(item.dataset.view));
+        });
+
+        // Add event listener for the "Boxes Colaboradores" link in the "+ RITE" section
+        document.querySelector('#links a[data-view="boxes"]').addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior
+            navigateTo('boxes');
         });
 
         // --- Modal Logic ---
@@ -1442,6 +1498,32 @@
                 </div>
             `).join('');
         };
+
+        // --- Boxes Rendering Logic ---
+        const renderBoxes = () => {
+            const boxesListDiv = document.getElementById('boxes-list');
+            boxesListDiv.innerHTML = boxesData.map(box => `
+                <div class="box-item" style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #333;">
+                    <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--color-primary); margin-bottom: 10px;">${box.name}</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="${box.instagram}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="flex-grow: 1; padding: 10px 15px; font-size: 1rem;">
+                            <i class="fab fa-instagram"></i> 
+                        </a>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(box.address)}" target="_blank" rel="noopener noreferrer" class="btn" style="flex-grow: 1; padding: 10px 15px; font-size: 1rem;">
+                            <i class="fa-solid fa-location-dot"></i> 
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+            // Remove border-bottom from the last item
+            const lastBoxItem = boxesListDiv.querySelector('.box-item:last-child');
+            if (lastBoxItem) {
+                lastBoxItem.style.borderBottom = 'none';
+                lastBoxItem.style.marginBottom = '0';
+                lastBoxItem.style.paddingBottom = '0';
+            }
+        };
+
 
         // --- Wiki Tab Switching Logic ---
         const showWikiTab = (tabId) => {
