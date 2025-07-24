@@ -885,6 +885,10 @@
                 <img src="img/logos/logoRITE.png" alt="Logo RITE" style="height: 1em; vertical-align: middle; margin: 1px; padding-top: 1px; padding-bottom: 1px;">
                 Punto de Venta
             </h1>
+            <!-- Pequeño texto añadido aquí -->
+            <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 20px;">
+                Encuentra nuestros productos RITE en los siguientes boxes colaboradores:
+            </p>
             <div id="boxes-list" class="card">
                 <!-- Boxes will be rendered here by JavaScript -->
             </div>
@@ -1246,7 +1250,7 @@
                 for (let i = 1; i < lines.length; i++) {
                     // Solo añade viñeta si la línea no está vacía
                     if (lines[i].trim() !== '') {
-                        formattedLines.push(`- ${lines[i].trim()}`);
+                        formattedLines.push(` ${lines[i].trim()}`);
                     }
                 }
                 wod.description = formattedLines.join('\\n');
@@ -1410,7 +1414,7 @@
             navItems.forEach(item => item.classList.remove('active'));
             // Only try to add 'active' class to nav item if it exists in the bottom nav
             const targetNavItem = document.querySelector(`.nav-item[data-view="${viewId}"]`);
-            if (targetNavItem) {
+            if (targetNavItem) { // Check if the element exists before trying to access its classList
                 targetNavItem.classList.add('active');
             }
             
