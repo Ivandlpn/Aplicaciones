@@ -4,389 +4,824 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memento Mori: Vive Plenamente</title>
+    <!-- Google Fonts: Merriweather para títulos, Roboto para texto general -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- FUENTES Y ESTILO BASE --- */
-        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;1,300&family=Roboto:wght@300;400;700&display=swap');
-
+        /* Variables CSS para un tema oscuro */
         :root {
-            --bg-color: #1a1a1a;
-            --surface-color: #2b2b2b;
-            --primary-text-color: #e0e0e0;
-            --secondary-text-color: #a0a0a0;
-            --accent-color: #d4af37;
-            
-            /* --- CAMBIO APLICADO AQUÍ: Nuevo esquema de colores para las semanas --- */
-            --week-past-color: #f0e68c;       /* Amarillo claro/pergamino para el pasado */
-            --week-current-color: var(--accent-color); /* Amarillo fuerte para el presente */
-            --week-future-color: #4a4a4a;      /* Gris sólido para el futuro */
+            --bg-color: #1a1a2e; /* Fondo principal oscuro */
+            --surface-color: #16213e; /* Color de las tarjetas/superficies */
+            --text-primary: #e0e0e0; /* Color de texto principal */
+            --text-secondary: #a0a0a0; /* Color de texto secundario */
+            --accent-color: #d4af37; /* Color de acento (dorado) */
+            --button-bg: #0f3460; /* Color de fondo de los botones */
+            --button-hover-bg: #1b5299; /* Color de fondo de los botones al pasar el ratón */
+            --week-past-color: #4a4a4a; /* Color para semanas pasadas */
+            --week-current-color: #d4af37; /* Color para la semana actual (acento) */
+            --week-future-color: #2e2e2e; /* Color para semanas futuras */
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* Estilos generales del cuerpo */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: var(--bg-color);
-            color: var(--primary-text-color);
-            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            padding: 20px;
+            align-items: flex-start; /* Alinea al inicio verticalmente */
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow-y: auto; /* Permite el scroll si el contenido es largo */
         }
 
+        /* Contenedor principal de la aplicación */
         #app-container {
-            max-width: 900px;
             width: 100%;
+            max-width: 900px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
+            padding: 20px;
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
+        /* Estilo para todas las tarjetas */
         .card {
             background-color: var(--surface-color);
-            border-radius: 8px;
-            padding: 20px;
-            border: 1px solid #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            /* Animación de aparición */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInSlideUp 0.6s ease-out forwards;
+        }
+
+        /* Retraso para la animación de las tarjetas */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+        .card:nth-child(7) { animation-delay: 0.7s; } /* Para el footer */
+
+
+        /* Títulos de las secciones */
+        h1 {
+            font-family: 'Merriweather', serif;
+            color: var(--accent-color);
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
         h2 {
             font-family: 'Merriweather', serif;
-            font-weight: 400;
+            color: var(--accent-color);
+            font-size: 1.8em;
             margin-bottom: 15px;
         }
 
-        header h1 {
-            font-family: 'Merriweather', serif;
-            text-align: center;
-            color: var(--accent-color);
-            font-weight: 400;
+        p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 10px;
         }
 
-        #quote-container { text-align: center; }
-        #quote-text { font-family: 'Merriweather', serif; font-style: italic; font-size: 1.1em; color: var(--primary-text-color); }
-        #quote-author { margin-top: 8px; font-size: 0.9em; color: var(--secondary-text-color); }
+        /* Estilos de formulario */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
 
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 5px; color: var(--secondary-text-color); }
-        .input-group input, .input-group select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #555; background-color: #333; color: var(--primary-text-color); font-size: 1em; }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+            font-weight: bold;
+        }
 
-        .button { display: inline-block; background-color: var(--accent-color); color: #111; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; text-align: center; font-weight: 700; transition: background-color 0.3s, transform 0.1s; width: 100%; }
-        .button:hover { background-color: #e7c357; }
-        .button:active { transform: scale(0.98); }
+        input[type="date"],
+        select,
+        input[type="text"],
+        textarea {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            background-color: #2a2a4a;
+            color: var(--text-primary);
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-        #dashboard-section { display: flex; flex-direction: column; gap: 25px; }
+        input[type="date"]:focus,
+        select:focus,
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+            outline: none;
+        }
 
-        #life-progress-bar-container { width: 100%; background-color: #333; border-radius: 5px; overflow: hidden; height: 25px; margin-top: 5px; }
-        #life-progress-bar { width: 0%; height: 100%; background-color: var(--accent-color); transition: width 1.5s ease-in-out; }
-        #life-progress-text { text-align: center; margin-top: 8px; color: var(--secondary-text-color); }
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
 
-        #weeks-grid { display: grid; grid-template-columns: repeat(52, 1fr); gap: 3px; margin-top: 10px; }
-        .week-box {
+        /* Estilos de botones */
+        button {
+            background-color: var(--button-bg);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: var(--button-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Mensajes de error y éxito */
+        #error-message, #journal-status {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #journal-status {
+            color: #6bff9b;
+        }
+
+        /* Secciones ocultas */
+        .hidden {
+            display: none;
+        }
+
+        /* Barra de progreso de la vida */
+        #life-progress-bar-container {
             width: 100%;
-            aspect-ratio: 1 / 1;
+            background-color: #2e2e2e;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 25px;
+            margin-top: 20px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #life-progress-bar {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0%; /* Se inicializa en 0 y se anima con JS */
+            border-radius: 10px;
+            transition: width 1.5s ease-out; /* Transición para el cambio de ancho */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a2e;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Cuadrícula de semanas */
+        #weeks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(10px, 1fr)); /* 52 columnas */
+            gap: 2px;
+            margin-top: 20px;
+            max-height: 400px; /* Limita la altura para evitar un scroll excesivo */
+            overflow-y: auto; /* Permite scroll si hay muchas semanas */
+            padding: 5px;
+            background-color: #2a2a4a;
+            border-radius: 8px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .week-box {
+            width: 10px;
+            height: 10px;
+            background-color: var(--week-future-color);
             border-radius: 2px;
+            opacity: 0; /* Inicialmente oculto para la animación */
+            transform: scale(0.8); /* Empieza más pequeño */
+            animation: scaleInFadeIn 0.3s ease-out forwards;
         }
-        
-        /* --- CAMBIO APLICADO AQUÍ: Nuevos estilos de semana --- */
-        .week-box.past { 
-            background-color: var(--week-past-color); 
-            border: 1px solid #444; /* Borde oscuro para el amarillo claro */
+
+        .week-box.past {
+            background-color: var(--week-past-color);
         }
-        .week-box.current { 
-            background-color: var(--week-current-color); 
-            animation: pulse 2s infinite; 
+
+        .week-box.current {
+            background-color: var(--week-current-color);
+            box-shadow: 0 0 8px var(--accent-color);
+            animation: pulse 1.5s infinite alternate, scaleInFadeIn 0.3s ease-out forwards; /* Pulso y aparición */
         }
-        .week-box.future { 
-            background-color: var(--week-future-color); 
-        }
-        
+
+        /* Animación de pulso para la semana actual */
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+            0% { box-shadow: 0 0 8px var(--accent-color); transform: scale(1); }
+            100% { box-shadow: 0 0 15px var(--accent-color); transform: scale(1.1); }
         }
 
-        #journal-textarea { width: 100%; min-height: 150px; background-color: #333; border: 1px solid #555; border-radius: 4px; color: var(--primary-text-color); padding: 10px; font-family: 'Merriweather', serif; font-size: 1em; resize: vertical; }
-        #journal-status { font-size: 0.8em; color: var(--secondary-text-color); text-align: right; height: 1em; }
-        .exercise-output { margin-top: 15px; padding: 15px; background-color: #1a1a1a; border-radius: 4px; border-left: 3px solid var(--accent-color); color: var(--primary-text-color); display: none; }
-        .wisdom-pill { font-style: italic; }
+        /* Animación general de aparición de elementos */
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-        .hidden { display: none !important; }
-        footer { text-align: center; padding: 20px; }
-        #reset-button { background: none; border: 1px solid var(--secondary-text-color); color: var(--secondary-text-color); padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 15px; transition: color 0.3s, border-color 0.3s; }
-        #reset-button:hover { color: var(--accent-color); border-color: var(--accent-color); }
+        /* Animación para las cajas de semanas */
+        @keyframes scaleInFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Media queries para responsividad */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            body {
+                padding: 10px;
+            }
+            #app-container {
+                padding: 15px;
+                gap: 15px;
+            }
+            .card {
+                padding: 20px;
+            }
+            input[type="date"],
+            select,
+            input[type="text"],
+            textarea {
+                padding: 10px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+            #weeks-grid {
+                grid-template-columns: repeat(auto-fill, minmax(8px, 1fr));
+                gap: 1px;
+            }
+            .week-box {
+                width: 8px;
+                height: 8px;
+            }
+        }
     </style>
 </head>
 <body>
-
     <div id="app-container">
-        <header>
-            <h1>Memento Mori</h1>
+        <header class="card">
+            <h1>Memento Mori: Vive Plenamente</h1>
+            <p id="quote-display">"La vida es muy corta para ser pequeña." - Séneca</p>
         </header>
 
-        <div id="quote-container" class="card">
-            <p id="quote-text"></p>
-            <p id="quote-author"></p>
-        </div>
-
+        <!-- Sección de Configuración Inicial -->
         <section id="config-section" class="card">
-            <h2>Bienvenido. La vida es finita, haz que cuente.</h2>
-            <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 20px;">
-                Para personalizar tu experiencia, dinos quién eres. La esperanza de vida se calculará automáticamente.
-            </p>
-            <div class="input-group">
-                <label for="birthdate">Tu fecha de nacimiento</label>
-                <input type="date" id="birthdate">
+            <h2>Configura tu Viaje</h2>
+            <p>Para comenzar, necesitamos algunos datos para calcular tu esperanza de vida y personalizar tu experiencia.</p>
+            <div class="form-group">
+                <label for="dob">Fecha de Nacimiento:</label>
+                <input type="date" id="dob" required>
             </div>
-            <div class="input-group">
-                <label for="gender">Género</label>
-                <select id="gender">
-                    <option value="">Selecciona...</option>
-                    <option value="Hombre">Hombre</option>
-                    <option value="Mujer">Mujer</option>
+            <div class="form-group">
+                <label for="gender">Género:</label>
+                <select id="gender" required>
+                    <option value="">Selecciona tu género</option>
+                    <option value="male">Masculino</option>
+                    <option value="female">Femenino</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label for="country">País</label>
-                <select id="country">
-                    <option value="">Selecciona tu país...</option>
+            <div class="form-group">
+                <label for="country">País:</label>
+                <select id="country" required>
+                    <option value="">Selecciona tu país</option>
+                    <!-- Las opciones se llenarán con JavaScript -->
                 </select>
             </div>
-            <button id="save-config-btn" class="button">Comenzar a Vivir Plenamente</button>
+            <button id="save-config-btn">Comenzar a Vivir Plenamente</button>
+            <p id="error-message" style="color: #ff6b6b; margin-top: 10px;"></p>
         </section>
 
+        <!-- Sección del Dashboard (visible después de la configuración) -->
         <main id="dashboard-section" class="hidden">
             <section id="life-progress-card" class="card">
-                <h2>El Progreso de Tu Vida</h2>
+                <h2>Progreso de tu Vida</h2>
+                <p id="progress-text">Cargando progreso...</p>
                 <div id="life-progress-bar-container">
                     <div id="life-progress-bar"></div>
                 </div>
-                <p id="life-progress-text"></p>
-                <hr style="border-color: #444; margin: 25px 0 20px 0;">
-                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px; text-align: center;">
-                    Cada porcentaje es un paso. Pulsa para una dosis de perspectiva basada en tu progreso.
-                </p>
-                <button id="memento-mori-btn" class="button">Recordatorio Consciente</button>
+                <button id="memento-mori-btn">Recordatorio Consciente</button>
             </section>
 
             <section id="weeks-card" class="card">
-                <h2>Las Semanas de Tu Vida</h2>
-                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px;">Cada cuadro es una semana. El tiempo es finito y precioso.</p>
-                <div id="weeks-grid"></div>
-            </section>
-            
-            <section id="last-time-card" class="card">
-                <h2>Ejercicio: La Última Vez</h2>
-                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px;">Visualiza que esta es la última vez que realizarás una actividad para apreciarla profundamente.</p>
-                <div class="input-group">
-                    <input type="text" id="last-time-activity" placeholder="Ej: Cenar con mis padres, pasear...">
+                <h2>Semanas de Vida</h2>
+                <p>Cada cuadrado es una semana. ¡Aprovéchalas!</p>
+                <div id="weeks-grid">
+                    <!-- Las semanas se generarán con JavaScript -->
                 </div>
-                <button id="last-time-btn" class="button">Reflexionar</button>
-                <div id="last-time-output" class="exercise-output"></div>
+            </section>
+
+            <section id="last-time-card" class="card">
+                <h2>La Última Vez</h2>
+                <p>Reflexiona sobre apreciar cada momento. ¿Cuál es una actividad que disfrutas?</p>
+                <div class="form-group">
+                    <input type="text" id="last-time-activity" placeholder="Ej: Beber café, ver el atardecer...">
+                </div>
+                <button id="last-time-btn">Reflexionar</button>
+                <p id="last-time-reflection-display" style="margin-top: 15px;"></p>
             </section>
 
             <section id="wisdom-card" class="card">
                 <h2>Píldora de Sabiduría</h2>
-                <p id="wisdom-text" class="wisdom-pill"></p>
-                <p id="wisdom-source" style="text-align: right; font-size: 0.8em; color: var(--secondary-text-color); margin-top: 10px;"></p>
+                <p id="wisdom-display">"El tiempo es la moneda de tu vida. Es la única moneda que tienes, y solo tú puedes determinar cómo se gastará."</p>
             </section>
 
             <section id="journal-card" class="card">
                 <h2>Diario de Reflexión</h2>
-                <p style="color: var(--secondary-text-color); font-size: 0.9em; margin-bottom: 15px;">¿Qué has aprendido? ¿Por qué estás agradecido? ¿Actuaste con virtud?</p>
-                <textarea id="journal-textarea" placeholder="Escribe tus pensamientos aquí..."></textarea>
-                <p id="journal-status"></p>
+                <p>Escribe tus pensamientos diarios sobre la mortalidad y la vida consciente.</p>
+                <textarea id="journal-textarea" placeholder="Escribe aquí tus reflexiones..."></textarea>
+                <p id="journal-status" style="margin-top: 5px; font-size: 0.9em;"></p>
             </section>
         </main>
-        
-        <footer>
-            <button id="reset-button" class="hidden">Reiniciar Configuración</button>
+
+        <footer class="card">
+            <button id="reset-button">Reiniciar Configuración</button>
         </footer>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- BASES DE DATOS ---
-            const lifeExpectancyData = [ { country: "India", female: 74.13, male: 70.95 }, { country: "China", female: 81.25, male: 75.65 }, { country: "Estados Unidos", female: 82.11, male: 77.22 }, { country: "Indonesia", female: 73.61, male: 69.29 }, { country: "Pakistán", female: 70.47, male: 65.58 }, { country: "Nigeria", female: 55.12, male: 54.45 }, { country: "Brasil", female: 79.30, male: 73.14 }, { country: "Bangladés", female: 76.94, male: 73.55 }, { country: "Rusia", female: 79.32, male: 67.69 }, { country: "México", female: 78.17, male: 72.63 }, { country: "Japón", female: 88.03, male: 81.99 }, { country: "Filipinas", female: 73.11, male: 67.10 }, { country: "Vietnam", female: 79.49, male: 70.23 }, { country: "Rep. Dem. del Congo", female: 64.40, male: 60.10 }, { country: "Etiopía", female: 71.30, male: 64.62 }, { country: "Egipto", female: 74.22, male: 69.82 }, { country: "Irán", female: 79.99, male: 76.22 }, { country: "Alemania", female: 84.01, male: 79.42 }, { country: "Turquía", female: 80.82, male: 74.94 }, { country: "Tailandia", female: 81.17, male: 72.65 }, { country: "España", female: 86.59, male: 81.27 } ];
-            const stoicQuotes = [ { quote: "No es que tengamos poco tiempo, sino que perdemos mucho.", author: "Séneca" }, { quote: "Piensa en tu larga procrastinación... Ya es hora de que te des cuenta de qué universo formas parte.", author: "Marco Aurelio" }, { quote: "Recordar que voy a morir pronto es la herramienta más importante que me ha encontrado para ayudarme a tomar las grandes decisiones de la vida.", author: "Steve Jobs"}, { quote: "No te expliques tu filosofía, encárnala.", author: "Epicteto" }, { quote: "La muerte no nos concierne, pues mientras existimos, la muerte no está presente. Y cuando la muerte está presente, nosotros no existimos.", author: "Epicuro" }, { quote: "El que teme a la muerte nunca hará nada digno de un hombre vivo.", author: "Séneca" }, { quote: "Podrías dejar la vida ahora mismo. Deja que eso determine lo que haces, dices y piensas.", author: "Marco Aurelio" }, { quote: "No actúes como si fueras a vivir diez mil años. La muerte te acecha. Mientras vivas, mientras esté en tu poder, sé bueno.", author: "Marco Aurelio" }, { quote: "La duración de la vida de un hombre es un punto, y su sustancia un flujo, y su percepción débil.", author: "Marco Aurelio" }, { quote: "La vida no es esperar a que pase la tormenta, es aprender a bailar bajo la lluvia.", author: "Séneca" }, { quote: "La felicidad de tu vida depende de la calidad de tus pensamientos.", author: "Marco Aurelio" }, { quote: "El primer paso para vivir sabiamente es no temer a la muerte.", author: "Lucano" }, { quote: "¿Amas la vida? Entonces no malgastes el tiempo, porque de eso está hecha la vida.", author: "Benjamin Franklin" }, { quote: "No se nos da una vida corta, sino que la hacemos corta; no estamos mal provistos, sino que somos derrochadores.", author: "Séneca" } ];
-            const wisdomPills = [ { source: "Origen Romano", text: "En la antigua Roma, a un general victorioso le seguía un esclavo que le susurraba 'Recuerda que eres un hombre' para evitar la soberbia y recordar su mortalidad." }, { source: "Memento Mori vs. Carpe Diem", text: "Mientras 'Carpe Diem' puede ser una búsqueda hedonista del placer, el 'Memento Mori' estoico usa la muerte como perspectiva para una vida virtuosa y justa, no como excusa." }, { source: "Arte Vanitas", text: "Las pinturas 'Vanitas' usan símbolos como calaveras y relojes de arena para enfatizar la fugacidad de la vida y la vanidad de los placeres terrenales frente a la muerte." }, { source: "Budismo (Maraṇasati)", text: "En el budismo, la meditación 'Maraṇasati' consiste en recordar la muerte para reducir el apego (fuente de sufrimiento) y vivir con más urgencia y sabiduría." }, { source: "Beneficio: Priorización", text: "Recordar tu finitud te obliga a preguntarte: '¿Es esto realmente importante?'. Ayuda a distinguir lo esencial de lo trivial y a enfocar tu tiempo en lo que verdaderamente valoras." }, { source: "Beneficio: Gratitud", text: "Cuando entiendes que nada es permanente, cada momento, cada persona y cada pequeña alegría se vuelve infinitamente más preciosa. Fomenta el aprecio por el ahora." }, { source: "Beneficio: Impulso a la Acción", text: "La conciencia de que el tiempo es limitado es el mejor antídoto contra la procrastinación. Te impulsa a dejar de posponer tus sueños y a actuar hoy." }, { source: "Beneficio: Humildad", text: "La muerte es el gran ecualizador. Recordarla te protege del exceso de ego y fomenta la empatía, recordándote que todos compartimos el mismo destino." }, { source: "Cultura Pop: 'Six Feet Under'", text: "La aclamada serie de HBO 'Six Feet Under' es una exploración moderna del 'Memento Mori', mostrando cómo la constante presencia de la muerte afecta a una familia y nos enseña a vivir." }, { source: "Cultura Pop: 'Coco'", text: "La película de Pixar 'Coco' explora la mortalidad de una forma accesible y alegre, enseñando que el recuerdo y el legado son una forma de trascender la muerte física." }, { source: "Aplicación Práctica: Recordatorios Físicos", text: "Algunos practicantes del estoicismo usan objetos como monedas o calaveras en su escritorio para mantener el 'Memento Mori' presente en su día a día." }, { source: "Aplicación Práctica: Cuestionamiento de Prioridades", text: "Marco Aurelio se preguntaba ante una tarea: '¿La muerte es terrible porque me priva de... esto?'. Este ejercicio revela lo que realmente importa." }, { source: "Cristianismo Medieval", text: "La frase bíblica 'En todo lo que hagas piensa en el final, y nunca pecarás' (Eclesiástico 7:36) fue una forma de 'Memento Mori' para advertir sobre la fugacidad de la vida y la necesidad de la salvación." }, { source: "Tecnología y Productividad", text: "Han surgido apps y planificadores en Notion basados en 'Memento Mori' para gestionar tareas y objetivos con una perspectiva de finitud, aumentando la productividad con propósito." } ];
-            const lastTimeReflections = [ "Si esta fuera la última vez que pudieras <strong>${activity}</strong>, ¿qué detalles cobrarían vida? ¿Qué sonidos, olores o sensaciones, que normalmente ignoras, se volverían inolvidables? Sumérgete en esa percepción.", "Considera la actividad: <strong>${activity}</strong>. Ahora, imagina que es la última vez. ¿Qué palabras de gratitud o aprecio, que has pospuesto, dirías a las personas involucradas o a ti mismo? ¿Qué sentimiento te embargaría?", "Al pensar en <strong>${activity}</strong> como la vez final, ¿qué pequeñas frustraciones o quejas se desvanecerían por completo? ¿Qué es lo que realmente importaría de esa experiencia, despojada de todo lo trivial?", "Sabiendo que esta podría ser la última oportunidad para <strong>${activity}</strong>, ¿cómo cambiaría tu presencia? ¿Dejarías el móvil a un lado? ¿Escucharías más atentamente? ¿Actuarías con más paciencia y amor? Aplica esa lección ahora.", "Reflexiona sobre <strong>${activity}</strong>. Si fuera la última vez, ¿cómo querrías ser recordado en ese preciso momento? ¿Con qué energía, paciencia o alegría te gustaría impregnar ese recuerdo final?" ];
-            const consciousReminders = { stage1: [ "Ya has vivido un ${progress}% de tu vida. Estás construyendo los cimientos. Cada acción de hoy define el resto de tu estructura. ¿Estás construyendo con propósito?", "Con un ${progress}% de tu vida transcurrido, estás plantando las semillas de tu futuro. Cada hábito, cada lección, es una semilla. ¿Qué tipo de jardín estás cultivando?", "Al ${progress}%, el tiempo parece infinito, pero es una ilusión poderosa. Usa esta energía para explorar y aprender, no solo para pasar el rato. La curiosidad de hoy es la sabiduría de mañana.", "Estás escribiendo los primeros capítulos de tu biografía con un ${progress}% ya completado. Asegúrate de que sean dignos de ser leídos. El protagonista eres tú." ], stage2: [ "Con un ${progress}% de tu vida recorrido, estás en pleno apogeo. La energía es alta, pero el tiempo no es infinito. ¿Estás invirtiendo esta etapa en lo que realmente te hará pleno?", "Has alcanzado el ${progress}%. El sol está en su punto más alto para ti. Es el momento de la acción audaz y de crear impacto. No dejes que este mediodía pase en la sombra de la indecisión.", "Al ${progress}%, ya tienes suficiente pasado como para haber aprendido, y suficiente futuro como para aplicarlo. Es una posición de poder única. Úsala sabiamente.", "Con el ${progress}% de tu vida vivido, muchos de tus esfuerzos iniciales ya son árboles. ¿Estás podando las ramas muertas y cuidando los frutos, o te distraes con las malas hierbas de lo insignificante?" ], stage3: [ "Has superado el ${progress}% del camino. Has acumulado sabiduría y experiencia. ¿Estás usándola para vivir con más calma, para enseñar a otros y para disfrutar de lo que has construido?", "Al llegar al ${progress}%, la vista desde la montaña es diferente, más clara. Las cosas que realmente importan destacan sobre el ruido. Es el momento de enfocarse exclusivamente en ellas.", "Con un ${progress}% vivido, tu vida es una rica biblioteca. Ahora es menos sobre añadir nuevos volúmenes triviales y más sobre compartir la sabiduría de los que ya están en tus estanterías.", "Has cruzado el ecuador con un ${progress}%. La segunda mitad del viaje se gana con estrategia y sabiduría, no solo con energía. Haz que cada movimiento sea deliberado y cuente." ], stage4: [ "Al ${progress}%, cada día es un regalo invaluable. Has visto mucho. Ahora es el momento de la serenidad, de saborear las pequeñas cosas y de ser una fuente de paz para los que te rodean.", "Con un ${progress}% de tu vida detrás, el sol se está poniendo, pintando el cielo con colores hermosos. Esto no es un final que temer, sino un espectáculo que saborear. Aprecia la belleza de este preciso momento.", "Has alcanzado el ${progress}%. Has ganado tu perspectiva. Tu presencia, ahora más que nunca, es un regalo. Es tiempo de soltar viejas batallas y abrazar la paz del presente.", "En el ${progress}%, la carrera está casi completa. Ya no se trata de la velocidad, sino de cómo cruzas la línea de meta: con gracia, con gratitud y con un corazón tranquilo." ] };
-            const daysOfWeek = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
-            const months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-            
-            // --- ELEMENTOS DEL DOM ---
-            const configSection = document.getElementById('config-section');
-            const dashboardSection = document.getElementById('dashboard-section');
-            const saveConfigBtn = document.getElementById('save-config-btn');
-            const birthdateInput = document.getElementById('birthdate');
-            const genderSelect = document.getElementById('gender');
-            const countrySelect = document.getElementById('country');
-            const journalTextarea = document.getElementById('journal-textarea');
-            const mementoMoriBtn = document.getElementById('memento-mori-btn');
-            const resetButton = document.getElementById('reset-button');
-            const lastTimeBtn = document.getElementById('last-time-btn');
-            
-            // --- LÓGICA DE LA APLICACIÓN ---
+        // Datos de esperanza de vida por país y género (fuente ficticia para el ejemplo)
+        const lifeExpectancyData = [
+            { country: "España", male: 81.27, female: 86.59 },
+            { country: "Alemania", male: 78.6, female: 83.4 },
+            { country: "Francia", male: 79.5, female: 85.5 },
+            { country: "Italia", male: 80.9, female: 85.4 },
+            { country: "Reino Unido", male: 79.4, female: 83.1 },
+            { country: "Estados Unidos", male: 76.1, female: 81.2 },
+            { country: "Japón", male: 81.6, female: 87.7 },
+            { country: "Canadá", male: 80.4, female: 84.1 },
+            { country: "Australia", male: 81.3, female: 85.3 },
+            { country: "México", male: 73.0, female: 78.5 },
+            { country: "Argentina", male: 75.3, female: 80.8 },
+            { country: "Colombia", male: 72.0, female: 78.0 },
+            { country: "Chile", male: 77.8, female: 82.8 },
+            { country: "Perú", male: 73.0, female: 78.0 },
+            { country: "Venezuela", male: 71.0, female: 76.0 },
+            { country: "Brasil", male: 73.0, female: 79.0 },
+            { country: "Portugal", male: 78.9, female: 84.8 },
+            { country: "Bélgica", male: 79.2, female: 83.8 },
+            { country: "Países Bajos", male: 80.4, female: 83.3 },
+            { country: "Suecia", male: 81.4, female: 84.7 },
+            { country: "Noruega", male: 81.4, female: 84.7 },
+            { country: "Dinamarca", male: 79.6, female: 83.4 },
+            { country: "Finlandia", male: 79.3, female: 84.5 },
+            { country: "Suiza", male: 81.9, female: 85.6 },
+            { country: "Austria", male: 79.7, female: 84.2 },
+            { country: "Grecia", male: 79.8, female: 84.4 },
+            { country: "Irlanda", male: 80.4, female: 84.0 },
+            { country: "Polonia", male: 74.0, female: 81.8 },
+            { country: "República Checa", male: 75.8, female: 81.7 },
+            { country: "Hungría", male: 73.0, female: 79.8 },
+            { country: "Rumanía", male: 72.0, female: 79.0 },
+            { country: "Bulgaria", male: 71.0, female: 78.0 },
+            { country: "Croacia", male: 75.0, female: 81.0 },
+            { country: "Serbia", male: 73.0, female: 78.0 },
+            { country: "Ucrania", male: 68.0, female: 77.0 },
+            { country: "Rusia", male: 69.0, female: 79.0 },
+            { country: "China", male: 76.0, female: 79.0 },
+            { country: "India", male: 69.0, female: 72.0 },
+            { country: "Sudáfrica", male: 62.0, female: 68.0 },
+            { country: "Egipto", male: 71.0, female: 75.0 },
+            { country: "Nigeria", male: 54.0, female: 56.0 },
+            { country: "Kenia", male: 61.0, female: 65.0 },
+            { country: "Arabia Saudita", male: 75.0, female: 78.0 },
+            { country: "Emiratos Árabes Unidos", male: 77.0, female: 80.0 },
+            { country: "Turquía", male: 75.0, female: 78.0 },
+            { country: "Corea del Sur", male: 80.0, female: 86.0 },
+            { country: "Vietnam", male: 73.0, female: 78.0 },
+            { country: "Indonesia", male: 69.0, female: 73.0 },
+            { country: "Malasia", male: 75.0, female: 79.0 },
+            { country: "Tailandia", male: 74.0, female: 78.0 },
+            { country: "Filipinas", male: 69.0, female: 75.0 },
+            { country: "Nueva Zelanda", male: 80.9, female: 84.4 }
+        ];
 
-            function displayRandomWisdom() {
-                const wisdomText = document.getElementById('wisdom-text');
-                const wisdomSource = document.getElementById('wisdom-source');
-                const randomWisdom = wisdomPills[Math.floor(Math.random() * wisdomPills.length)];
-                wisdomText.textContent = `“${randomWisdom.text}”`;
-                wisdomSource.textContent = `— ${randomWisdom.source}`;
+        // Citas estoicas para inspirar la reflexión
+        const stoicQuotes = [
+            "La vida es muy corta para ser pequeña.",
+            "No es lo que te ocurre, sino cómo reaccionas a ello lo que importa.",
+            "La felicidad de tu vida depende de la calidad de tus pensamientos.",
+            "No busques que las cosas sucedan como deseas, sino desea que sucedan como suceden, y serás feliz.",
+            "El obstáculo es el camino.",
+            "No tenemos control sobre los eventos externos, pero sí sobre nuestras respuestas.",
+            "El hombre sabio no lamenta lo que no tiene, sino que se regocija en lo que tiene.",
+            "La muerte se burla de nosotros; despreciemos la muerte y enfrentémosla con un corazón alegre.",
+            "No te comportes como si fueras a vivir por diez mil años. La muerte te acecha. Mientras vives, mientras es posible, sé bueno.",
+            "La mejor venganza es no ser como tu enemigo."
+        ];
+
+        // Pequeñas píldoras de sabiduría sobre Memento Mori
+        const wisdomPills = [
+            "La frase 'Memento Mori' significa 'Recuerda que morirás' en latín.",
+            "Los estoicos usaban la meditación sobre la mortalidad para apreciar el presente.",
+            "Un 'memento mori' histórico común era un cráneo en el escritorio.",
+            "En la antigua Roma, un esclavo recordaba a los generales 'memento mori' durante los desfiles de la victoria.",
+            "La conciencia de la muerte puede ser un poderoso motivador para vivir plenamente.",
+            "No es la duración de la vida, sino la profundidad de la vida lo que importa.",
+            "Cada día es una pequeña vida, y cada despertar una pequeña muerte."
+        ];
+
+        // Plantillas para el ejercicio "La Última Vez"
+        const lastTimeReflections = [
+            "Imagina que esta es la última vez que {actividad}. ¿Cómo la disfrutarías de manera diferente?",
+            "Si supieras que nunca más volverías a {actividad}, ¿qué harías para saborear este momento?",
+            "Considera este {actividad} como un regalo único. ¿Qué detalles notarías, qué sentimientos experimentarías?",
+            "Enfócate completamente en {actividad} ahora mismo. No hay pasado ni futuro, solo este instante.",
+            "¿Cómo te sentirías si este {actividad} fuera tu despedida de esta experiencia? Vívela con gratitud."
+        ];
+
+        // Mensajes de recordatorio conscientes basados en el progreso
+        const consciousReminders = {
+            '0-24': "¡La vida es una aventura! Estás en las primeras etapas de tu viaje. Explora, aprende, y no temas cometer errores. El tiempo es un lienzo en blanco esperando tus pinceladas más audaces.",
+            '25-49': "Estás en el corazón de tu vida, con experiencia y energía. Es un momento crucial para construir, contribuir y profundizar tus relaciones. Cada decisión ahora moldea gran parte de tu futuro.",
+            '50-74': "Has acumulado sabiduría y perspectiva. Este es un tiempo para la reflexión profunda, para compartir tu conocimiento y para disfrutar de los frutos de tu esfuerzo. La gratitud y la conexión son tus mayores tesoros.",
+            '75-100': "Has vivido una vida rica en experiencias. Abraza la serenidad, el legado que dejas y la belleza de cada día restante. Tu presencia es un regalo y tu historia, una inspiración."
+        };
+
+        const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+        // Elementos del DOM
+        const configSection = document.getElementById('config-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const dobInput = document.getElementById('dob');
+        const genderSelect = document.getElementById('gender');
+        const countrySelect = document.getElementById('country');
+        const saveConfigBtn = document.getElementById('save-config-btn');
+        const errorMessage = document.getElementById('error-message');
+        const resetButton = document.getElementById('reset-button');
+
+        const quoteDisplay = document.getElementById('quote-display');
+        const lifeProgressBar = document.getElementById('life-progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const weeksGrid = document.getElementById('weeks-grid');
+        const lastTimeActivityInput = document.getElementById('last-time-activity');
+        const lastTimeBtn = document.getElementById('last-time-btn');
+        const lastTimeReflectionDisplay = document.getElementById('last-time-reflection-display');
+        const wisdomDisplay = document.getElementById('wisdom-display');
+        const journalTextarea = document.getElementById('journal-textarea');
+        const journalStatus = document.getElementById('journal-status');
+        const mementoMoriBtn = document.getElementById('memento-mori-btn');
+
+        let journalSaveTimeout; // Para el autoguardado del diario
+
+        // --- Funciones de Inicialización y Configuración ---
+
+        /**
+         * Inicializa la aplicación: carga la configuración o muestra la pantalla de configuración.
+         * También muestra una cita estoica aleatoria al inicio.
+         */
+        function initializeApp() {
+            populateCountryDropdown();
+            displayRandomQuote();
+            displayRandomWisdom(); // Muestra una píldora de sabiduría al inicio
+
+            const savedDob = localStorage.getItem('dob');
+            const savedGender = localStorage.getItem('gender');
+            const savedCountry = localStorage.getItem('country');
+            const savedLifeExpectancy = localStorage.getItem('lifeExpectancy');
+
+            if (savedDob && savedGender && savedCountry && savedLifeExpectancy) {
+                // Si hay configuración guardada, muestra el dashboard
+                configSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+                updateDashboard();
+                loadJournal(); // Carga el diario al iniciar
+            } else {
+                // Si no hay configuración, muestra la sección de configuración
+                configSection.classList.remove('hidden');
+                dashboardSection.classList.add('hidden');
+            }
+        }
+
+        /**
+         * Rellena el dropdown de países con los datos de esperanza de vida.
+         */
+        function populateCountryDropdown() {
+            // Ordenar los países alfabéticamente
+            const sortedCountries = [...lifeExpectancyData].sort((a, b) => a.country.localeCompare(b.country));
+
+            sortedCountries.forEach(data => {
+                const option = document.createElement('option');
+                option.value = data.country;
+                option.textContent = data.country;
+                countrySelect.appendChild(option);
+            });
+        }
+
+        /**
+         * Muestra una cita estoica aleatoria.
+         */
+        function displayRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * stoicQuotes.length);
+            quoteDisplay.textContent = `"${stoicQuotes[randomIndex]}"`;
+        }
+
+        /**
+         * Muestra una píldora de sabiduría aleatoria.
+         */
+        function displayRandomWisdom() {
+            const randomIndex = Math.floor(Math.random() * wisdomPills.length);
+            wisdomDisplay.textContent = `"${wisdomPills[randomIndex]}"`;
+        }
+
+        /**
+         * Guarda la configuración del usuario en localStorage y actualiza la vista.
+         */
+        function saveConfiguration() {
+            const dob = dobInput.value;
+            const gender = genderSelect.value;
+            const country = countrySelect.value;
+
+            if (!dob || !gender || !country) {
+                errorMessage.textContent = "Por favor, completa todos los campos.";
+                return;
             }
 
-            function initializeApp() {
-                populateCountryDropdown();
-                const savedBirthdate = localStorage.getItem('mementoMoriBirthdate');
-                if (savedBirthdate) {
-                    configSection.classList.add('hidden');
-                    dashboardSection.classList.remove('hidden');
-                    resetButton.classList.remove('hidden');
-                    updateDashboard();
-                    loadJournal();
-                    displayRandomWisdom();
+            // Validar que la fecha de nacimiento no sea en el futuro
+            const birthDate = new Date(dob);
+            const today = new Date();
+            if (birthDate > today) {
+                errorMessage.textContent = "La fecha de nacimiento no puede ser en el futuro.";
+                return;
+            }
+
+            errorMessage.textContent = ""; // Limpiar mensaje de error
+
+            const countryData = lifeExpectancyData.find(data => data.country === country);
+            let lifeExpectancyYears = 0;
+
+            if (countryData) {
+                lifeExpectancyYears = gender === 'male' ? countryData.male : countryData.female;
+            } else {
+                // Fallback si no se encuentra el país (debería ser raro con el dropdown)
+                lifeExpectancyYears = gender === 'male' ? 75 : 80; // Valores por defecto
+            }
+
+            try {
+                localStorage.setItem('dob', dob);
+                localStorage.setItem('gender', gender);
+                localStorage.setItem('country', country);
+                localStorage.setItem('lifeExpectancy', lifeExpectancyYears.toString());
+                initializeApp(); // Recarga la app para mostrar el dashboard
+            } catch (e) {
+                errorMessage.textContent = "Error al guardar la configuración. Por favor, inténtalo de nuevo.";
+                console.error("Error saving to localStorage:", e);
+            }
+        }
+
+        /**
+         * Actualiza el dashboard con el progreso de vida y la cuadrícula de semanas.
+         */
+        function updateDashboard() {
+            const dobString = localStorage.getItem('dob');
+            const lifeExpectancyYears = parseFloat(localStorage.getItem('lifeExpectancy'));
+
+            if (!dobString || isNaN(lifeExpectancyYears)) {
+                progressText.textContent = "Datos de configuración incompletos.";
+                return;
+            }
+
+            const birthDate = new Date(dobString);
+            const now = new Date();
+
+            // Calcular edad en años y meses (más preciso que solo años)
+            let ageInYears = now.getFullYear() - birthDate.getFullYear();
+            let ageInMonths = now.getMonth() - birthDate.getMonth();
+            if (ageInMonths < 0 || (ageInMonths === 0 && now.getDate() < birthDate.getDate())) {
+                ageInYears--;
+            }
+            ageInMonths = (now.getMonth() - birthDate.getMonth() + 12) % 12; // Meses transcurridos en el año actual
+
+            // Calcular el progreso en milisegundos
+            const totalLifeMs = lifeExpectancyYears * 365.25 * 24 * 60 * 60 * 1000;
+            const livedLifeMs = now.getTime() - birthDate.getTime();
+            const progressPercentage = (livedLifeMs / totalLifeMs) * 100;
+
+            // Actualizar la barra de progreso
+            lifeProgressBar.style.width = `${Math.min(progressPercentage, 100)}%`; // Limitar a 100%
+            lifeProgressBar.textContent = `${progressPercentage.toFixed(2)}% de vida transcurrida`;
+            progressText.textContent = `Tienes ${ageInYears} años y ${ageInMonths} meses. Tu esperanza de vida es de ${lifeExpectancyYears} años.`;
+
+            // Generar la cuadrícula de semanas
+            generateWeeksGrid(birthDate, lifeExpectancyYears);
+        }
+
+        /**
+         * Genera la cuadrícula visual de semanas.
+         * @param {Date} birthDate - La fecha de nacimiento del usuario.
+         * @param {number} lifeExpectancyYears - La esperanza de vida en años.
+         */
+        function generateWeeksGrid(birthDate, lifeExpectancyYears) {
+            weeksGrid.innerHTML = ''; // Limpiar la cuadrícula existente
+            const totalWeeks = lifeExpectancyYears * 52;
+            const now = new Date();
+
+            // Calcular semanas vividas
+            const diffTime = Math.abs(now.getTime() - birthDate.getTime());
+            const livedWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+
+            // Obtener el número de la semana actual del año (ISO week date)
+            const getWeekNumber = (d) => {
+                d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+                d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+                const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+                return weekNo;
+            };
+
+            const currentYearWeek = getWeekNumber(now);
+            const currentYear = now.getFullYear();
+            const birthYear = birthDate.getFullYear();
+
+            for (let i = 0; i < totalWeeks; i++) {
+                const weekBox = document.createElement('div');
+                weekBox.classList.add('week-box');
+
+                // Calcular la fecha de inicio de esta semana específica
+                const weekStartDate = new Date(birthDate.getTime());
+                weekStartDate.setDate(birthDate.getDate() + (i * 7));
+
+                // Determinar si la semana es pasada, actual o futura
+                if (i < livedWeeks) {
+                    weekBox.classList.add('past');
+                } else if (i === livedWeeks) {
+                    weekBox.classList.add('current');
                 } else {
-                    configSection.classList.remove('hidden');
-                    dashboardSection.classList.add('hidden');
-                    resetButton.classList.add('hidden');
+                    weekBox.classList.add('future');
                 }
-                displayRandomQuote();
+                // Añadir un pequeño retraso a la animación de cada caja de semana
+                weekBox.style.animationDelay = `${0.005 * i}s`;
+                weeksGrid.appendChild(weekBox);
+            }
+        }
+
+        /**
+         * Maneja el ejercicio "La Última Vez".
+         */
+        function handleLastTimeReflection() {
+            const activity = lastTimeActivityInput.value.trim();
+            if (!activity) {
+                lastTimeReflectionDisplay.textContent = "Por favor, introduce una actividad.";
+                return;
             }
 
-            // --- EVENT LISTENERS ---
-            resetButton.addEventListener('click', () => {
-                if (confirm("¿Estás seguro de que quieres borrar tu configuración? Esto te llevará de vuelta a la pantalla de inicio.")) {
+            const randomIndex = Math.floor(Math.random() * lastTimeReflections.length);
+            let reflectionText = lastTimeReflections[randomIndex];
+            reflectionText = reflectionText.replace('{actividad}', activity);
+
+            lastTimeReflectionDisplay.textContent = reflectionText;
+            lastTimeActivityInput.value = ''; // Limpiar el input
+        }
+
+        /**
+         * Muestra un recordatorio consciente basado en el progreso de vida.
+         */
+        function showConsciousReminder() {
+            const dobString = localStorage.getItem('dob');
+            const lifeExpectancyYears = parseFloat(localStorage.getItem('lifeExpectancy'));
+
+            if (!dobString || isNaN(lifeExpectancyYears)) {
+                alert("Por favor, configura tu información primero.");
+                return;
+            }
+
+            const birthDate = new Date(dobString);
+            const now = new Date();
+            const totalLifeMs = lifeExpectancyYears * 365.25 * 24 * 60 * 60 * 1000;
+            const livedLifeMs = now.getTime() - birthDate.getTime();
+            const progressPercentage = (livedLifeMs / totalLifeMs) * 100;
+
+            let reminderMessage = "Reflexiona sobre tu vida.";
+
+            if (progressPercentage >= 0 && progressPercentage < 25) {
+                reminderMessage = consciousReminders['0-24'];
+            } else if (progressPercentage >= 25 && progressPercentage < 50) {
+                reminderMessage = consciousReminders['25-49'];
+            } else if (progressPercentage >= 50 && progressPercentage < 75) {
+                reminderMessage = consciousReminders['50-74'];
+            } else if (progressPercentage >= 75 && progressPercentage <= 100) {
+                reminderMessage = consciousReminders['75-100'];
+            }
+
+            // Usar un modal personalizado sería ideal aquí en lugar de alert()
+            // Por ahora, para mantener la funcionalidad existente, usamos alert.
+            alert(`Recordatorio Consciente:\n\n${reminderMessage}`);
+        }
+
+
+        /**
+         * Guarda el contenido del diario en localStorage.
+         */
+        function saveJournal() {
+            try {
+                localStorage.setItem('journalEntry', journalTextarea.value);
+                journalStatus.textContent = "Guardado.";
+                setTimeout(() => {
+                    journalStatus.textContent = "";
+                }, 2000); // Borra el mensaje después de 2 segundos
+            } catch (e) {
+                journalStatus.textContent = "Error al guardar el diario.";
+                console.error("Error saving journal to localStorage:", e);
+            }
+        }
+
+        /**
+         * Carga el contenido del diario desde localStorage.
+         */
+        function loadJournal() {
+            try {
+                const savedEntry = localStorage.getItem('journalEntry');
+                if (savedEntry) {
+                    journalTextarea.value = savedEntry;
+                }
+            } catch (e) {
+                console.error("Error loading journal from localStorage:", e);
+            }
+        }
+
+        // --- Event Listeners ---
+
+        // Guarda la configuración al hacer clic en el botón
+        saveConfigBtn.addEventListener('click', saveConfiguration);
+
+        // Reinicia la configuración y borra localStorage
+        resetButton.addEventListener('click', () => {
+            if (confirm("¿Estás seguro de que quieres reiniciar la configuración? Se borrarán todos tus datos guardados.")) {
+                try {
                     localStorage.clear();
-                    location.reload();
-                }
-            });
-
-            lastTimeBtn.addEventListener('click', () => {
-                const activityInput = document.getElementById('last-time-activity');
-                const lastTimeOutput = document.getElementById('last-time-output');
-                const activity = activityInput.value.trim();
-                if (!activity) { alert("Por favor, introduce una actividad para reflexionar."); return; }
-                const randomReflectionTemplate = lastTimeReflections[Math.floor(Math.random() * lastTimeReflections.length)];
-                const finalReflection = randomReflectionTemplate.replace(/\${activity}/g, `<strong>${activity}</strong>`);
-                lastTimeOutput.style.display = 'block';
-                lastTimeOutput.innerHTML = finalReflection;
-                activityInput.value = '';
-            });
-
-            mementoMoriBtn.addEventListener('click', () => {
-                const progressText = document.getElementById('life-progress-text').textContent;
-                const roundedProgress = parseInt(progressText.match(/\d+/)[0], 10);
-                
-                let stageMessages;
-                if (roundedProgress < 25) { stageMessages = consciousReminders.stage1; } 
-                else if (roundedProgress < 50) { stageMessages = consciousReminders.stage2; } 
-                else if (roundedProgress < 75) { stageMessages = consciousReminders.stage3; } 
-                else { stageMessages = consciousReminders.stage4; }
-
-                const randomTemplate = stageMessages[Math.floor(Math.random() * stageMessages.length)];
-                const finalMessage = randomTemplate.replace(/\${progress}/g, roundedProgress);
-                
-                alert(finalMessage + "\n\nRecuerda que debes vivir. Actúa en consecuencia.");
-            });
-
-            // --- EJECUCIÓN INICIAL Y FUNCIONES ESTABLES ---
-            function populateCountryDropdown() {
-                lifeExpectancyData.sort((a, b) => a.country.localeCompare(b.country));
-                lifeExpectancyData.forEach(data => {
-                    const option = document.createElement('option');
-                    option.value = data.country;
-                    option.textContent = data.country;
-                    countrySelect.appendChild(option);
-                });
-            }
-
-            function displayRandomQuote() {
-                const quoteText = document.getElementById('quote-text');
-                const quoteAuthor = document.getElementById('quote-author');
-                const randomQuote = stoicQuotes[Math.floor(Math.random() * stoicQuotes.length)];
-                quoteText.textContent = `“${randomQuote.quote}”`;
-                quoteAuthor.textContent = `— ${randomQuote.author}`;
-            }
-
-            function saveConfiguration() {
-                const birthdate = birthdateInput.value;
-                const gender = genderSelect.value;
-                const country = countrySelect.value;
-                if (!birthdate || !gender || !country) { alert("Por favor, completa todos los campos para continuar."); return; }
-                const countryData = lifeExpectancyData.find(c => c.country === country);
-                if (!countryData) { alert("Error al encontrar datos para el país seleccionado."); return; }
-                const lifeExpectancy = (gender === 'Mujer') ? countryData.female : countryData.male;
-                localStorage.setItem('mementoMoriBirthdate', birthdate);
-                localStorage.setItem('mementoMoriGender', gender);
-                localStorage.setItem('mementoMoriCountry', country);
-                localStorage.setItem('mementoMoriLifeExpectancy', lifeExpectancy);
-                initializeApp();
-            }
-            
-            function updateDashboard() {
-                const birthdate = new Date(localStorage.getItem('mementoMoriBirthdate'));
-                const lifeExpectancy = parseFloat(localStorage.getItem('mementoMoriLifeExpectancy'));
-                if (isNaN(birthdate) || isNaN(lifeExpectancy)) return;
-                
-                const now = new Date();
-                const lifeInMillis = lifeExpectancy * 365.25 * 24 * 60 * 60 * 1000;
-                const livedMillis = now.getTime() - birthdate.getTime();
-                let progress = (livedMillis / lifeInMillis) * 100;
-                progress = Math.min(progress, 100);
-
-                const dayName = daysOfWeek[now.getDay()];
-                const monthName = months[now.getMonth()];
-                const dayNumber = now.getDate();
-                const year = now.getFullYear();
-                const roundedProgress = Math.round(progress);
-                
-                document.getElementById('life-progress-bar').style.width = `${progress}%`;
-                document.getElementById('life-progress-text').textContent = `Hoy es ${dayName} ${dayNumber} de ${monthName} de ${year} y ha transcurrido un ${roundedProgress}% de tu vida.`;
-
-                const weeksGrid = document.getElementById('weeks-grid');
-                weeksGrid.innerHTML = '';
-                const totalWeeks = Math.floor(lifeExpectancy * 52);
-                const weeksLived = Math.floor(livedMillis / (1000 * 60 * 60 * 24 * 7));
-
-                for (let i = 1; i <= totalWeeks; i++) {
-                    const weekBox = document.createElement('div');
-                    weekBox.classList.add('week-box');
-                    if (i < weeksLived) { weekBox.classList.add('past'); } 
-                    else if (i === weeksLived) { weekBox.classList.add('current'); } 
-                    else { weekBox.classList.add('future'); }
-                    weeksGrid.appendChild(weekBox);
+                    location.reload(); // Recarga la página para volver a la configuración inicial
+                } catch (e) {
+                    alert("Error al reiniciar la configuración.");
+                    console.error("Error clearing localStorage:", e);
                 }
             }
-
-            let journalSaveTimeout;
-            function saveJournal() {
-                const journalStatus = document.getElementById('journal-status');
-                localStorage.setItem('mementoMoriJournal', journalTextarea.value);
-                journalStatus.textContent = 'Guardado.';
-                clearTimeout(journalSaveTimeout);
-                journalSaveTimeout = setTimeout(() => { journalStatus.textContent = ''; }, 2000);
-            }
-            
-            function loadJournal() {
-                const savedText = localStorage.getItem('mementoMoriJournal');
-                if (savedText) { journalTextarea.value = savedText; }
-            }
-
-            saveConfigBtn.addEventListener('click', saveConfiguration);
-            journalTextarea.addEventListener('input', () => {
-                 document.getElementById('journal-status').textContent = 'Escribiendo...';
-                 clearTimeout(journalSaveTimeout);
-                 journalSaveTimeout = setTimeout(saveJournal, 1000);
-            });
-
-            initializeApp();
         });
+
+        // Maneja el botón de "Reflexionar" en el ejercicio "La Última Vez"
+        lastTimeBtn.addEventListener('click', handleLastTimeReflection);
+
+        // Maneja el botón de "Recordatorio Consciente"
+        mementoMoriBtn.addEventListener('click', showConsciousReminder);
+
+        // Autoguardado del diario
+        journalTextarea.addEventListener('input', () => {
+            journalStatus.textContent = "Escribiendo...";
+            clearTimeout(journalSaveTimeout); // Limpia cualquier temporizador anterior
+            journalSaveTimeout = setTimeout(saveJournal, 1500); // Guarda después de 1.5 segundos de inactividad
+        });
+
+        // Inicializa la aplicación cuando el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
