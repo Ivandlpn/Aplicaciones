@@ -935,6 +935,14 @@
             <div id="boxes-list" class="card">
                 <!-- Boxes will be rendered here by JavaScript -->
             </div>
+
+            <!-- ===== CÓDIGO A AÑADIR EMPIEZA AQUÍ ===== -->
+            <h3 style="text-align: center; margin-top: 30px; margin-bottom: 15px; font-family: var(--font-display); color: var(--color-primary); font-size: 1.4rem; text-transform: uppercase;">
+                Busca tu box + cercano
+            </h3>
+            <!-- ===== CÓDIGO A AÑADIR TERMINA AQUÍ ===== -->
+
+
             <div id="map-container"></div>
         </div>
     </div>
@@ -1510,13 +1518,13 @@
 
         // --- Data for Collaborating Boxes ---
         const boxesData = [
-            { name: 'TRIBOO', instagram: 'https://www.instagram.com/betriboo/', address: 'Jose Sanchez Saez 9, Elche 03202', lat: 38.2698, lon: -0.6885 },
-            { name: 'RAIONATO', instagram: 'https://www.instagram.com/raionhato_fitness_club/', address: 'Calle Manuel Alcaraz Mora 7, Elche 03204', lat: 38.2583, lon: -0.6901 },
-            { name: 'FGY', instagram: 'https://www.instagram.com/fgyfunctionalfitness/', address: 'Ctra. de Bigastro, Km 3, 2, Orihuela 03300', lat: 38.0835, lon: -0.9447 },
-            { name: 'ELITE FITNESS', instagram: 'https://www.instagram.com/elitefitness.laspalmas/', address: 'Calle Dr. Juan Domínguez Pérez 57, Las Palmas de Gran Canaria 35008', lat: 28.1153, lon: -15.4486 },
-            { name: 'ATIS CROOSFIT', instagram: 'https://www.instagram.com/atiscrossfit/', address: 'Beneficiado José Estupiñán 17, Telde 35219', lat: 27.9958, lon: -15.3957 },
-            { name: 'CROSSFIT EL FARO', instagram: 'https://www.instagram.com/crossboxelfaro/', address: 'Avda. Escandinavia 92 Local 1 de Gran Alacant (Santa Pola)', lat: 38.2333, lon: -0.5245 },
-            { name: 'ATBOX', instagram: 'https://www.instagram.com/atboxelche/', address: 'Ronda Vall d\'Uixó, 74, 03206 Elx, Alicante', lat: 38.2751, lon: -0.7012 }
+            { name: 'TRIBOO (ELCHE)', instagram: 'https://www.instagram.com/betriboo/', address: 'Jose Sanchez Saez 9, Elche 03202', lat: 38.2698, lon: -0.6885 },
+            { name: 'RAIONATO (ELCHE)', instagram: 'https://www.instagram.com/raionhato_fitness_club/', address: 'Calle Manuel Alcaraz Mora 7, Elche 03204', lat: 38.2583, lon: -0.6901 },
+            { name: 'FGY (ORIHUELA)', instagram: 'https://www.instagram.com/fgyfunctionalfitness/', address: 'Ctra. de Bigastro, Km 3, 2, Orihuela 03300', lat: 38.0835, lon: -0.9447 },
+            { name: 'ELITE FITNESS (LAS PALMAS)', instagram: 'https://www.instagram.com/elitefitness.laspalmas/', address: 'Calle Dr. Juan Domínguez Pérez 57, Las Palmas de Gran Canaria 35008', lat: 28.1153, lon: -15.4486 },
+            { name: 'ATIS CROOSFIT (LAS PALMAS)', instagram: 'https://www.instagram.com/atiscrossfit/', address: 'Beneficiado José Estupiñán 17, Telde 35219', lat: 27.9958, lon: -15.3957 },
+            { name: 'CROSSFIT EL FARO (G.ALACANT)', instagram: 'https://www.instagram.com/crossboxelfaro/', address: 'Avda. Escandinavia 92 Local 1 de Gran Alacant (Santa Pola)', lat: 38.2333, lon: -0.5245 },
+            { name: 'ATBOX (ELCHE)', instagram: 'https://www.instagram.com/atboxelche/', address: 'Ronda Vall d\'Uixó, 74, 03206 Elx, Alicante', lat: 38.2751, lon: -0.7012 }
         ];
 
 
@@ -1544,14 +1552,12 @@
 
             state.map = L.map('map-container').setView([38.265, -0.698], 12);
 
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 20
-            }).addTo(state.map);
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles © Esri — Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+}).addTo(state.map);
 
             const riteIcon = L.icon({
-                iconUrl: './img/logos/logoRITE.png',
+                iconUrl: './img/logos/logoRITEmapa.png',
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
                 popupAnchor: [0, -15]
