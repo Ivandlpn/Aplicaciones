@@ -31,13 +31,19 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--ineco-azul-principal) 0%, var(--ineco-azul-claro) 100%);
+            /* Gradiente más dinámico y textura sutil de líneas que evocan vías de tren */
+            background-image:
+                linear-gradient(0deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(135deg, var(--ineco-azul-principal) 0%, var(--ineco-azul-claro) 50%, var(--ineco-azul-aun-mas-claro) 100%);
+            background-size: 20px 20px; /* Tamaño del patrón */
             color: var(--ineco-gris-oscuro);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            /* Eliminado overflow: hidden; para permitir el scroll en el body */
             position: relative;
         }
 
@@ -45,10 +51,10 @@
         .game-container {
             background-color: var(--ineco-blanco-puro);
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            /* Sombra mejorada */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
             width: 90%;
             max-width: 900px;
-            /* Eliminado min-height: 600px; para permitir altura dinámica */
             display: flex;
             flex-direction: column;
             overflow: hidden; /* Mantiene el overflow oculto para el contenedor principal */
@@ -126,11 +132,13 @@
         .btn:hover {
             background-color: var(--ineco-azul-claro);
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            /* Sombra con glow en hover */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 15px var(--ineco-azul-principal);
         }
 
         .btn:active {
             transform: translateY(0);
+            /* Sombra de botón presionado */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
@@ -267,7 +275,8 @@
         .player-input-group input[type="text"]:focus {
             outline: none;
             border-color: var(--ineco-azul-claro);
-            box-shadow: 0 0 0 3px rgba(52, 99, 172, 0.3);
+            /* Sombra de foco mejorada */
+            box-shadow: 0 0 0 4px rgba(52, 99, 172, 0.5);
         }
 
         .player-input-group .random-name-btn {
@@ -383,7 +392,8 @@
             padding: 30px;
             margin-bottom: 20px;
             width: 100%;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            /* Sombra mejorada */
+            box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.15);
             position: relative;
             overflow: hidden; /* Para animaciones de texto */
             display: flex; /* Usar flexbox para organizar elementos internos */
@@ -454,11 +464,13 @@
         .option-btn:hover {
             background-color: var(--ineco-azul-principal);
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            /* Sombra con glow en hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 0 10px var(--ineco-azul-principal);
         }
 
         .option-btn:active {
             transform: translateY(0);
+            /* Sombra de botón presionado */
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -499,7 +511,8 @@
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            /* Sombra mejorada */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             text-align: left;
             position: relative; /* Necesario para posicionar el botón de cerrar */
         }
@@ -658,7 +671,8 @@
             background-color: var(--ineco-blanco-puro);
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            /* Sombra mejorada */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             width: 90%;
             max-width: 450px;
             position: relative;
@@ -1642,7 +1656,7 @@
             confettiContainer.innerHTML = ''; // Limpiar confeti anterior
             confettiContainer.classList.add('show-confetti');
 
-            for (let i = 0; i < 50; i++) { // Generar 50 piezas de confeti
+            for (let i = 0; i < 100; i++) { // Generar 100 piezas de confeti (antes 50)
                 const confettiPiece = document.createElement('div');
                 confettiPiece.classList.add('confetti-piece');
                 confettiPiece.style.left = `${Math.random() * 100}%`; // Posición horizontal aleatoria
