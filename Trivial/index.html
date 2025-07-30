@@ -37,7 +37,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden; /* Evita barras de desplazamiento durante transiciones */
+            /* Eliminado overflow: hidden; para permitir el scroll en el body */
             position: relative;
         }
 
@@ -51,7 +51,7 @@
             /* Eliminado min-height: 600px; para permitir altura dinámica */
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* Mantiene el overflow oculto para el contenedor principal */
             position: relative;
             transition: all 0.5s ease-in-out;
         }
@@ -72,6 +72,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            overflow-y: auto; /* Permite el scroll vertical dentro de cada pantalla si el contenido es largo */
         }
 
         .screen.active {
