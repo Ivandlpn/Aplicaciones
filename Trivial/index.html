@@ -289,34 +289,12 @@
         /* Estilos de la pantalla de juego */
         #game-screen {
             padding: 30px;
+            display: flex; /* Make it a flex container */
+            flex-direction: column; /* Stack children vertically */
             justify-content: flex-start;
-            align-items: stretch; /* Permite que los elementos internos se estiren */
+            align-items: center; /* Center items horizontally */
             position: relative;
-        }
-
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--ineco-gris-claro);
-            position: relative; /* Para posicionar el botón del marcador */
-        }
-
-        .game-header .category-display {
-            font-size: 1.4em;
-            font-weight: 500;
-            color: var(--ineco-azul-principal);
-            display: flex;
-            align-items: center;
-        }
-
-        .game-header .category-display i {
-            margin-right: 10px;
-            font-size: 1.2em;
-            color: var(--ineco-rojo-acento);
+            padding-top: 100px; /* Give space for logo, buttons, and player turn display */
         }
 
         /* Estilo para el texto del turno del jugador */
@@ -327,15 +305,54 @@
             position: absolute; /* Posicionamiento absoluto para centrarlo */
             left: 50%;
             transform: translateX(-50%);
-            top: 15px; /* Ajusta según sea necesario para que no se solape con el logo */
+            top: 60px; /* Ajusta según sea necesario para que no se solape con el logo y botones */
             white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+            z-index: 15; /* Asegura que esté por encima del logo si se solapan */
         }
 
+        /* Botón de cerrar (X) */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            color: var(--ineco-gris-oscuro);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+            z-index: 20; /* Asegura que esté por encima de otros elementos */
+        }
+
+        .close-btn:hover {
+            color: var(--ineco-rojo-acento);
+            transform: scale(1.1);
+        }
+
+        /* Botón para abrir el marcador */
+        #show-score-btn {
+            position: absolute;
+            top: 20px; /* Alineado con el close-btn */
+            right: 70px; /* Desplazado a la izquierda para no solaparse con la X */
+            background: none;
+            border: none;
+            font-size: 2em; /* Tamaño del icono */
+            color: var(--ineco-azul-principal);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 5px; /* Para hacer el área de clic más grande */
+            border-radius: 50%;
+            z-index: 20; /* Asegura que esté por encima de otros elementos */
+        }
+
+        #show-score-btn:hover {
+            color: var(--ineco-rojo-acento);
+            transform: scale(1.1);
+        }
 
         /* El marcador en línea se ha eliminado, pero mantenemos las clases si se usan en el modal */
         .score-board {
             display: none; /* Ocultar el marcador en la pantalla de juego */
-            /* gap: 20px; */ /* No necesario si display es none */
         }
 
         .player-score {
@@ -357,27 +374,7 @@
             margin-right: 5px;
         }
 
-        /* Botón para abrir el marcador */
-        #show-score-btn {
-            position: absolute;
-            top: 20px; /* Alineado con el close-btn */
-            right: 60px; /* Desplazado a la izquierda para no solaparse con la X */
-            background: none;
-            border: none;
-            font-size: 2em; /* Tamaño del icono */
-            color: var(--ineco-azul-principal);
-            cursor: pointer;
-            transition: color 0.3s ease, transform 0.2s ease;
-            padding: 5px; /* Para hacer el área de clic más grande */
-            border-radius: 50%;
-            z-index: 20; /* Asegura que esté por encima de otros elementos */
-        }
-
-        #show-score-btn:hover {
-            color: var(--ineco-rojo-acento);
-            transform: scale(1.1);
-        }
-
+        /* Estilos para el contenedor de la pregunta */
         #question-area {
             background-color: var(--ineco-gris-claro);
             border-radius: 15px;
@@ -387,6 +384,29 @@
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden; /* Para animaciones de texto */
+            display: flex; /* Usar flexbox para organizar elementos internos */
+            flex-direction: column; /* Apilar elementos verticalmente */
+            align-items: center; /* Centrar contenido horizontalmente */
+        }
+
+        /* Estilos para la categoría dentro de la tarjeta de pregunta */
+        #question-area .category-display {
+            font-size: 1.2em; /* Un poco más pequeño que el original de la cabecera */
+            font-weight: 500;
+            color: var(--ineco-azul-principal);
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* Espacio entre la categoría y la pregunta */
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Línea divisoria sutil */
+            width: 100%; /* Ocupa todo el ancho de la tarjeta */
+            justify-content: center; /* Centrar el texto de la categoría */
+        }
+
+        #question-area .category-display i {
+            margin-right: 10px;
+            font-size: 1em; /* Ajustar tamaño del icono */
+            color: var(--ineco-rojo-acento);
         }
 
         #question-text {
@@ -876,18 +896,14 @@
         <div id="game-screen" class="screen">
             <button class="close-btn" data-target-screen="confirm-exit">&times;</button> <!-- Confirmación para salir -->
             <button id="show-score-btn" class="fas fa-medal"></button> <!-- Botón para el marcador -->
-            <div class="game-header">
-                <div class="category-display">
+            <span id="current-player-turn-display"></span> <!-- Nuevo elemento para el turno del jugador -->
+            <!-- El game-header ya no contiene la categoría, solo se mantiene si hay otros elementos en el futuro -->
+            <!-- <div class="game-header"></div> -->
+            <div id="question-area">
+                <div class="category-display"> <!-- La categoría ahora está dentro de question-area -->
                     <i id="category-icon" class="fas fa-question-circle"></i>
                     <span id="category-name">Categoría</span>
                 </div>
-                <span id="current-player-turn-display"></span> <!-- Nuevo elemento para el turno del jugador -->
-                <!-- El marcador en línea se ha eliminado según la solicitud del usuario -->
-                <!-- <div id="score-board" class="score-board"> -->
-                    <!-- Los marcadores de jugadores se generarán aquí dinámicamente -->
-                <!-- </div> -->
-            </div>
-            <div id="question-area">
                 <p id="question-text">Cargando pregunta...</p>
                 <div id="options-grid" class="options-grid">
                     <button class="option-btn" data-option="A">A) Opción 1</button>
@@ -1273,118 +1289,6 @@
                         "respuestaCorrecta": "B",
                         "explicacion": "La monitorización estructural permite detectar cualquier anomalía o deterioro en tiempo real, facilitando el mantenimiento predictivo y asegurando la integridad de las grandes estructuras."
                     }
-                ],
-                "Operaciones y Personal": [
-                    {
-                        "pregunta": "¿Cuál es el objetivo principal del mantenimiento predictivo en una línea de alta velocidad?",
-                        "opciones": [
-                            "Reparar los fallos una vez que ocurren.",
-                            "Realizar el mantenimiento a intervalos fijos, sin importar el estado del componente.",
-                            "Detectar fallos incipientes y predecir cuándo ocurrirán, para intervenir antes de que se produzcan averías.",
-                            "Reducir el personal de mantenimiento."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "El mantenimiento predictivo, basado en la monitorización de la condición, es fundamental en alta velocidad para maximizar la disponibilidad de la infraestructura y minimizar las interrupciones del servicio."
-                    },
-                    {
-                        "pregunta": "¿Qué tipo de plan de mantenimiento se basa en la programación de tareas a intervalos regulares o tras un determinado uso, independientemente del estado real del componente?",
-                        "opciones": [
-                            "Mantenimiento correctivo.",
-                            "Mantenimiento predictivo.",
-                            "Mantenimiento de oportunidad.",
-                            "Mantenimiento preventivo programado."
-                        ],
-                        "respuestaCorrecta": "D",
-                        "explicacion": "El mantenimiento preventivo programado busca evitar fallos mediante intervenciones planificadas, como revisiones o sustituciones de componentes por tiempo o kilómetros."
-                    },
-                    {
-                        "pregunta": "¿Qué rol del personal ferroviario es el encargado de verificar la correcta aplicación de la normativa de seguridad y el estado de la vía en un tramo asignado?",
-                        "opciones": [
-                            "Maquinista.",
-                            "Factor de circulación.",
-                            "Inspector de vía.",
-                            "Agente comercial."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "El inspector de vía es una figura clave en el mantenimiento, cuya función es realizar revisiones periódicas y detectar anomalías en la superestructura y la infraestructura."
-                    },
-                    {
-                        "pregunta": "¿Cuál es la función principal del 'jefe de equipo' en una brigada de mantenimiento de vía?",
-                        "opciones": [
-                            "Conducir la maquinaria de vía.",
-                            "Gestionar los recursos humanos y materiales, y asegurar la correcta ejecución de los trabajos y la seguridad.",
-                            "Realizar la limpieza de las herramientas.",
-                            "Elaborar los informes financieros del proyecto."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "El jefe de equipo es el responsable directo de la operación y la seguridad de su equipo en la ejecución de las tareas de mantenimiento."
-                    },
-                    {
-                        "pregunta": "¿Qué es un 'corte de vía' y cuándo se aplica en el mantenimiento de alta velocidad?",
-                        "opciones": [
-                            "Un tramo de vía en el que no hay balasto.",
-                            "Una interrupción programada de la circulación ferroviaria en un tramo para permitir la realización de trabajos de mantenimiento de gran envergadura.",
-                            "Un tramo de vía sin electrificación.",
-                            "Un punto donde la vía se divide en dos."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "Los cortes de vía son esenciales para realizar trabajos que requieren la ausencia de tráfico, como el reemplazo masivo de carriles, la intervención en estructuras o el bateo profundo."
-                    },
-                    {
-                        "pregunta": "¿Qué documento de seguridad es fundamental consultar antes de iniciar cualquier trabajo en la vía?",
-                        "opciones": [
-                            "El menú de la cantina.",
-                            "El parte meteorológico.",
-                            "El Plan de Autoprotección y las consignas de seguridad del tramo.",
-                            "El horario de los trenes de mercancías."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "La seguridad es prioritaria. Los planes y consignas detallan los riesgos, las medidas preventivas y los procedimientos a seguir para trabajar de forma segura en el entorno ferroviario."
-                    },
-                    {
-                        "pregunta": "¿Qué es el sistema de 'consignación y descargo' en el mantenimiento ferroviario?",
-                        "opciones": [
-                            "Un sistema para gestionar el inventario de materiales.",
-                            "El procedimiento que asegura la desenergización de una instalación antes de intervenir y su energización segura al finalizar el trabajo.",
-                            "Un método para el transporte de balasto.",
-                            "El registro de las horas trabajadas por el personal."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "La consignación eléctrica (o de otros tipos de energía) es un procedimiento crítico para garantizar que el personal no sea expuesto a riesgos eléctricos o mecánicos durante el mantenimiento."
-                    },
-                    {
-                        "pregunta": "¿Qué ventaja principal ofrece el mantenimiento basado en la condición (monitorización) para las líneas de alta velocidad?",
-                        "opciones": [
-                            "Reduce la necesidad de personal de mantenimiento.",
-                            "Permite optimizar las intervenciones, actuando solo cuando es necesario, reduciendo costes y maximizando la disponibilidad.",
-                            "Elimina por completo la necesidad de inspecciones visuales.",
-                            "Prolonga indefinidamente la vida útil de los componentes sin reemplazo."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "Al actuar solo cuando la condición del activo lo requiere, se evitan mantenimientos innecesarios y se previene la aparición de averías, lo que es crucial para la eficiencia y fiabilidad de la alta velocidad."
-                    },
-                    {
-                        "pregunta": "¿Qué importancia tiene la 'trazabilidad' en los trabajos de mantenimiento de una infraestructura de alta velocidad?",
-                        "opciones": [
-                            "Ayuda a los trenes a seguir el trazado de la vía.",
-                            "Permite seguir el origen y el historial de cada componente o intervención, fundamental para la gestión de activos y la resolución de problemas.",
-                            "Determina la velocidad máxima permitida en una curva.",
-                            "Define el ancho de la plataforma ferroviaria."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "La trazabilidad es vital para el control de calidad, la gestión de la garantía y el análisis de fallos, asegurando que se utilizan los componentes correctos y que las intervenciones están documentadas."
-                    },
-                    {
-                        "pregunta": "¿Cuál es el objetivo de los 'Equipos de Protección Individual (EPIs)' en el entorno ferroviario?",
-                        "opciones": [
-                            "Proteger el material rodante de la corrosión.",
-                            "Proteger al trabajador de riesgos que no pueden eliminarse o reducirse suficientemente por otros medios.",
-                            "Proteger la vía de actos vandálicos.",
-                            "Proteger el medio ambiente de la contaminación."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "Los EPIs son la última barrera de protección para el personal, e incluyen elementos como cascos, guantes, calzado de seguridad y ropa de alta visibilidad."
-                    }
                 ]
             }
         };
@@ -1429,8 +1333,8 @@
         const roundCountSpan = document.getElementById('round-count');
         const startGameFromRoundsBtn = document.getElementById('start-game-from-rounds-btn');
 
-        const categoryIcon = document.getElementById('category-icon');
-        const categoryNameSpan = document.getElementById('category-name');
+        // const categoryIcon = document.getElementById('category-icon'); // Ahora se busca dentro de question-area
+        // const categoryNameSpan = document.getElementById('category-name'); // Ahora se busca dentro de question-area
         const currentPlayerTurnDisplay = document.getElementById('current-player-turn-display'); // Nuevo elemento
         const questionTextP = document.getElementById('question-text');
         const optionsGridDiv = document.getElementById('options-grid');
@@ -1448,6 +1352,10 @@
         const confirmExitModal = document.getElementById('confirm-exit-modal'); // Modal de confirmación de salida
         const confirmExitYesBtn = document.getElementById('confirm-exit-yes');
         const confirmExitNoBtn = document.getElementById('confirm-exit-no');
+
+        // Referencias a elementos de categoría que ahora están dentro de #question-area
+        let categoryIcon;
+        let categoryNameSpan;
 
 
         // Colores de confeti basados en la paleta INECO
@@ -1538,6 +1446,11 @@
          * Muestra la pregunta actual y sus opciones.
          */
         function displayQuestion() {
+            // Asegurarse de que las referencias a categoryIcon y categoryNameSpan estén actualizadas
+            // Esto es importante porque los elementos se movieron dentro de #question-area
+            categoryIcon = document.getElementById('category-icon');
+            categoryNameSpan = document.getElementById('category-name');
+
             // Ocultar mensaje de feedback
             feedbackMessageDiv.classList.remove('show');
             feedbackMessageDiv.textContent = '';
