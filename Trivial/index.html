@@ -48,7 +48,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             width: 90%;
             max-width: 900px;
-            min-height: 600px;
+            /* Eliminado min-height: 600px; para permitir altura dinámica */
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -78,6 +78,7 @@
             opacity: 1;
             pointer-events: all;
             position: relative; /* Para que ocupe espacio cuando está activo */
+            flex-grow: 1; /* Permite que la pantalla activa crezca para llenar el espacio disponible */
         }
 
         /* Animaciones de entrada/salida */
@@ -499,11 +500,32 @@
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             text-align: left;
+            position: relative; /* Necesario para posicionar el botón de cerrar */
         }
 
         #feedback-message.show {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Estilos para el botón de cerrar la explicación */
+        #close-feedback-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            font-size: 1.5em; /* Tamaño del icono */
+            color: var(--ineco-blanco-puro);
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+            padding: 5px; /* Aumenta el área de clic */
+            line-height: 1; /* Alineación vertical de la 'X' */
+        }
+
+        #close-feedback-btn:hover {
+            transform: scale(1.1);
+            color: var(--ineco-gris-claro);
         }
 
         /* Estilos de la pantalla de fin de juego */
@@ -689,7 +711,7 @@
         @media (max-width: 768px) {
             .game-container {
                 width: 95%;
-                min-height: 500px;
+                min-height: 500px; /* Mantener un min-height para móviles si es necesario */
             }
 
             .ineco-logo {
@@ -912,7 +934,10 @@
                     <button class="option-btn" data-option="D">D) Opción 4</button>
                 </div>
             </div>
-            <div id="feedback-message"></div>
+            <div id="feedback-message">
+                <p id="feedback-text"></p>
+                <button id="close-feedback-btn" class="close-feedback-btn">&times;</button>
+            </div>
         </div>
 
         <!-- Pantalla de Fin de Juego -->
@@ -1300,6 +1325,7 @@
         let questionsPerGame = 0; // Número total de preguntas por partida (se establecerá dinámicamente)
         let questionsPerPlayer = 5; // Número de preguntas por jugador (valor por defecto, mínimo 1)
         let shuffledQuestions = []; // Array de preguntas mezcladas para la partida actual
+        let feedbackTimer = null; // Variable para almacenar el ID del temporizador de la explicación
 
         // Nombres aleatorios divertidos relacionados con el ferrocarril
         const randomRailwayNames = [
@@ -1333,13 +1359,13 @@
         const roundCountSpan = document.getElementById('round-count');
         const startGameFromRoundsBtn = document.getElementById('start-game-from-rounds-btn');
 
-        // const categoryIcon = document.getElementById('category-icon'); // Ahora se busca dentro de question-area
-        // const categoryNameSpan = document.getElementById('category-name'); // Ahora se busca dentro de question-area
         const currentPlayerTurnDisplay = document.getElementById('current-player-turn-display'); // Nuevo elemento
         const questionTextP = document.getElementById('question-text');
         const optionsGridDiv = document.getElementById('options-grid');
         const optionButtons = optionsGridDiv.querySelectorAll('.option-btn');
         const feedbackMessageDiv = document.getElementById('feedback-message');
+        const feedbackTextP = document.getElementById('feedback-text'); // Nuevo elemento para el texto de la explicación
+        const closeFeedbackBtn = document.getElementById('close-feedback-btn'); // Nuevo botón de cerrar explicación
 
         const winnerDisplayH3 = document.getElementById('winner-display');
         const finalScoresDiv = document.getElementById('final-scores');
@@ -1453,7 +1479,12 @@
 
             // Ocultar mensaje de feedback
             feedbackMessageDiv.classList.remove('show');
-            feedbackMessageDiv.textContent = '';
+            feedbackTextP.textContent = ''; // Limpiar el texto de la explicación
+            if (feedbackTimer) {
+                clearTimeout(feedbackTimer);
+                feedbackTimer = null;
+            }
+
 
             // Deshabilitar botones de opción para evitar clicks dobles durante la transición
             optionButtons.forEach(button => {
@@ -1529,25 +1560,36 @@
             }
 
             // Mostrar explicación
-            feedbackMessageDiv.textContent = currentQuestion.explicacion;
+            feedbackTextP.textContent = currentQuestion.explicacion; // Asignar el texto al nuevo párrafo
             feedbackMessageDiv.classList.add('show');
 
-            // Esperar un momento antes de pasar a la siguiente pregunta/turno
-            setTimeout(() => {
+            // Limpiar cualquier temporizador existente antes de establecer uno nuevo
+            if (feedbackTimer) {
+                clearTimeout(feedbackTimer);
+            }
+            // Esperar un momento antes de pasar a la siguiente pregunta/turno (5 segundos)
+            feedbackTimer = setTimeout(() => {
                 nextTurn();
-            }, 3000); // 3 segundos para leer la explicación y ver la animación
+            }, 5000); // 5 segundos para leer la explicación y ver la animación
         }
 
         /**
          * Pasa al siguiente turno o a la siguiente pregunta.
          */
         function nextTurn() {
+            // Limpiar el temporizador si está activo (por si se llama nextTurn antes de tiempo)
+            if (feedbackTimer) {
+                clearTimeout(feedbackTimer);
+                feedbackTimer = null;
+            }
+
             // Limpiar clases de animación y feedback
             optionButtons.forEach(button => {
                 button.classList.remove('correct', 'incorrect');
                 button.disabled = false;
             });
             feedbackMessageDiv.classList.remove('show');
+            feedbackTextP.textContent = ''; // Limpiar el texto de la explicación
 
             // Incrementar el índice de la pregunta para que el siguiente jugador obtenga una nueva
             currentQuestionIndex++;
@@ -1858,6 +1900,11 @@
 
             confirmExitNoBtn.addEventListener('click', () => {
                 hideConfirmExitModal();
+            });
+
+            // Event listener para el nuevo botón de cerrar la explicación
+            closeFeedbackBtn.addEventListener('click', () => {
+                nextTurn(); // Llama a nextTurn para limpiar y avanzar
             });
         });
     </script>
