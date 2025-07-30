@@ -132,6 +132,34 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
+        /* Botón de cerrar (X) */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            color: var(--ineco-gris-oscuro);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+            z-index: 20; /* Asegura que esté por encima de otros elementos */
+        }
+
+        .close-btn:hover {
+            color: var(--ineco-rojo-acento);
+            transform: scale(1.1);
+        }
+        
+        /* Ajuste para el botón de cerrar en splash-screen si es necesario */
+        #splash-screen .close-btn {
+            color: var(--ineco-blanco-puro); /* Blanco sobre fondo oscuro */
+        }
+        #splash-screen .close-btn:hover {
+            color: var(--ineco-gris-claro);
+        }
+
+
         /* Estilos específicos de la pantalla de inicio (Splash Screen) */
         #splash-screen {
             justify-content: center;
@@ -274,6 +302,7 @@
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 2px solid var(--ineco-gris-claro);
+            position: relative; /* Para posicionar el botón del marcador */
         }
 
         .game-header .category-display {
@@ -312,6 +341,26 @@
 
         .player-score span:first-child {
             margin-right: 5px;
+        }
+
+        /* Botón para abrir el marcador */
+        #show-score-btn {
+            position: absolute;
+            top: 0px; /* Ajustado para estar dentro del header pero visible */
+            right: 0px; /* Ajustado para estar dentro del header pero visible */
+            background: none;
+            border: none;
+            font-size: 2em; /* Tamaño del icono */
+            color: var(--ineco-azul-principal);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 5px; /* Para hacer el área de clic más grande */
+            border-radius: 50%;
+        }
+
+        #show-score-btn:hover {
+            color: var(--ineco-rojo-acento);
+            transform: scale(1.1);
         }
 
         #question-area {
@@ -525,6 +574,81 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Estilos para el modal del marcador */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Fondo semitransparente oscuro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background-color: var(--ineco-blanco-puro);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-content h3 {
+            font-size: 1.8em;
+            color: var(--ineco-azul-principal);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .modal-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .modal-content ul li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--ineco-gris-claro);
+            font-size: 1.2em;
+            color: var(--ineco-gris-oscuro);
+        }
+
+        .modal-content ul li:last-child {
+            border-bottom: none;
+        }
+
+        .modal-content ul li .player-name-modal {
+            font-weight: 500;
+        }
+
+        .modal-content ul li .player-score-modal {
+            font-weight: 600;
+            color: var(--ineco-azul-principal);
+        }
 
         /* Estilos responsivos */
         @media (max-width: 768px) {
@@ -636,6 +760,30 @@
             .final-player-score {
                 font-size: 1.1em;
             }
+
+            .close-btn {
+                font-size: 1.5em;
+                top: 15px;
+                right: 15px;
+            }
+
+            #show-score-btn {
+                font-size: 1.8em;
+                top: 10px;
+                right: 10px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .modal-content h3 {
+                font-size: 1.5em;
+            }
+
+            .modal-content ul li {
+                font-size: 1em;
+            }
         }
 
         @media (max-width: 480px) {
@@ -684,6 +832,7 @@
 
         <!-- Pantalla de Configuración de Jugadores -->
         <div id="player-config-screen" class="screen">
+            <button class="close-btn" data-target-screen="splash-screen">&times;</button>
             <h2>Configuración de Partida</h2>
             <div class="player-count-selector">
                 <button id="decrease-players-btn">-</button>
@@ -698,6 +847,7 @@
 
         <!-- Pantalla de Configuración de Rondas -->
         <div id="round-config-screen" class="screen">
+            <button class="close-btn" data-target-screen="player-config-screen">&times;</button>
             <h2>¿Cuántas preguntas por jugador?</h2>
             <div class="round-count-selector">
                 <button id="decrease-rounds-btn">-</button>
@@ -709,6 +859,8 @@
 
         <!-- Pantalla de Juego Principal -->
         <div id="game-screen" class="screen">
+            <button class="close-btn" data-target-screen="confirm-exit">&times;</button> <!-- Confirmación para salir -->
+            <button id="show-score-btn" class="fas fa-medal"></button> <!-- Botón para el marcador -->
             <div class="game-header">
                 <div class="category-display">
                     <i id="category-icon" class="fas fa-question-circle"></i>
@@ -732,6 +884,7 @@
 
         <!-- Pantalla de Fin de Juego -->
         <div id="end-screen" class="screen">
+            <button class="close-btn" data-target-screen="splash-screen">&times;</button>
             <div id="confetti-container"></div> <!-- Contenedor para el confeti -->
             <h2>¡Partida Terminada!</h2>
             <h3 id="winner-display"></h3>
@@ -740,6 +893,28 @@
             </div>
             <button id="play-again-btn" class="btn">Volver a Jugar</button>
         </div>
+
+        <!-- Modal del Marcador -->
+        <div id="score-modal" class="modal-overlay">
+            <div class="modal-content">
+                <button class="close-btn" data-target-screen="hide-modal">&times;</button>
+                <h3>Clasificación Actual</h3>
+                <ul id="modal-score-list">
+                    <!-- Las puntuaciones se cargarán aquí dinámicamente -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmación de Salida (para game-screen) -->
+        <div id="confirm-exit-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3>¿Estás seguro que quieres salir?</h3>
+                <p>Se perderá el progreso actual de la partida.</p>
+                <button id="confirm-exit-yes" class="btn">Sí, salir</button>
+                <button id="confirm-exit-no" class="btn">No, continuar</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -1250,6 +1425,14 @@
         const playAgainBtn = document.getElementById('play-again-btn');
         const confettiContainer = document.getElementById('confetti-container'); // Nueva referencia al contenedor de confeti
 
+        const scoreModal = document.getElementById('score-modal'); // Referencia al modal del marcador
+        const modalScoreList = document.getElementById('modal-score-list'); // Lista dentro del modal
+        const showScoreBtn = document.getElementById('show-score-btn'); // Botón para abrir el marcador
+        const confirmExitModal = document.getElementById('confirm-exit-modal'); // Modal de confirmación de salida
+        const confirmExitYesBtn = document.getElementById('confirm-exit-yes');
+        const confirmExitNoBtn = document.getElementById('confirm-exit-no');
+
+
         // Colores de confeti basados en la paleta INECO
         const inecoConfettiColors = [
             'var(--ineco-rojo-acento)',
@@ -1594,6 +1777,43 @@
             }, 3000); // Mensaje visible por 3 segundos
         }
 
+        /**
+         * Muestra el modal del marcador con las puntuaciones actuales.
+         */
+        function showScoreModal() {
+            modalScoreList.innerHTML = '';
+            // Clonar el array de jugadores y ordenarlo para el modal, sin afectar el orden original del juego
+            const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+
+            sortedPlayers.forEach(player => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<span class="player-name-modal">${player.name}</span> <span class="player-score-modal">${player.score} puntos</span>`;
+                modalScoreList.appendChild(listItem);
+            });
+            scoreModal.classList.add('active');
+        }
+
+        /**
+         * Oculta el modal del marcador.
+         */
+        function hideScoreModal() {
+            scoreModal.classList.remove('active');
+        }
+
+        /**
+         * Muestra el modal de confirmación de salida.
+         */
+        function showConfirmExitModal() {
+            confirmExitModal.classList.add('active');
+        }
+
+        /**
+         * Oculta el modal de confirmación de salida.
+         */
+        function hideConfirmExitModal() {
+            confirmExitModal.classList.remove('active');
+        }
+
 
         // --- EVENT LISTENERS ---
 
@@ -1687,10 +1907,39 @@
             });
         });
 
+        // Botón para mostrar el marcador
+        showScoreBtn.addEventListener('click', showScoreModal);
+
         // Pantalla de Fin de Juego
         playAgainBtn.addEventListener('click', () => {
             showScreen(splashScreen); // Volver a la pantalla de inicio
         });
+
+        // Manejo de los botones de cerrar (X)
+        document.querySelectorAll('.close-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const targetScreen = event.target.dataset.targetScreen;
+                if (targetScreen === 'confirm-exit') {
+                    showConfirmExitModal();
+                } else if (targetScreen === 'hide-modal') {
+                    hideScoreModal();
+                }
+                else {
+                    showScreen(document.getElementById(targetScreen));
+                }
+            });
+        });
+
+        // Manejo de los botones del modal de confirmación de salida
+        confirmExitYesBtn.addEventListener('click', () => {
+            hideConfirmExitModal();
+            showScreen(splashScreen); // Volver a la pantalla de inicio
+        });
+
+        confirmExitNoBtn.addEventListener('click', () => {
+            hideConfirmExitModal();
+        });
+
 
         // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
