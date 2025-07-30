@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -103,7 +102,7 @@
             gap: 15px; /* Espacio entre los botones del header */
         }
 
-        .sound-toggle, .exit-game-button { /* Clase para botones de icono en header */
+        .sound-toggle, .exit-game-button, .leaderboard-button { /* Clase para botones de icono en header */
             background: none;
             border: none;
             color: var(--ineco-blanco-puro);
@@ -112,7 +111,7 @@
             transition: color 0.3s ease;
             outline: none;
         }
-        .sound-toggle:hover, .exit-game-button:hover {
+        .sound-toggle:hover, .exit-game-button:hover, .leaderboard-button:hover {
             color: var(--ineco-rojo-acento);
         }
 
@@ -413,6 +412,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             min-width: 180px;
             text-align: center;
+            position: relative; /* Para posicionar el botón de cerrar */
         }
         .player-score-card span {
             display: block;
@@ -423,6 +423,23 @@
         .player-score-card strong {
             font-size: 2.5em;
             font-weight: 700; /* Poppins Bold */
+        }
+        .close-card-btn { /* Estilo para el botón 'X' en las tarjetas de puntuación */
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: var(--ineco-blanco-puro);
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .close-card-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--ineco-rojo-acento);
         }
         .end-screen-buttons { /* Nuevo contenedor para botones en end-screen */
             display: flex;
@@ -452,6 +469,95 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
+        /* Leaderboard Modal */
+        #leaderboard-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #leaderboard-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .leaderboard-content {
+            background-color: var(--ineco-blanco-puro);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh; /* Limitar altura para scroll si hay muchos jugadores */
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease-in-out;
+        }
+        #leaderboard-modal.show .leaderboard-content {
+            transform: translateY(0);
+        }
+        .leaderboard-content h2 {
+            color: var(--ineco-azul-principal);
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--ineco-gris-claro);
+            text-align: left;
+            font-size: 1.1em;
+        }
+        .leaderboard-table th {
+            background-color: var(--ineco-azul-claro);
+            color: var(--ineco-blanco-puro);
+            font-weight: 600;
+            position: sticky; /* Encabezado pegajoso para scroll */
+            top: 0;
+            z-index: 1;
+        }
+        .leaderboard-table tbody tr:nth-child(even) {
+            background-color: var(--ineco-gris-claro);
+        }
+        .leaderboard-table tbody tr:hover {
+            background-color: var(--ineco-azul-aun-mas-claro);
+            color: var(--ineco-blanco-puro);
+            cursor: default;
+        }
+        .leaderboard-table td:first-child { /* Columna de rango */
+            font-weight: 700;
+            color: var(--ineco-rojo-acento);
+        }
+        .leaderboard-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--ineco-gris-oscuro);
+            font-size: 2em;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .leaderboard-close-btn:hover {
+            color: var(--ineco-rojo-acento);
+        }
+
+
         /* Responsive Design */
         @media (max-width: 768px) {
             #app-container {
@@ -466,7 +572,7 @@
                 font-size: 1.8em;
                 padding-left: 1em;
             }
-            .sound-toggle, .exit-game-button {
+            .sound-toggle, .exit-game-button, .leaderboard-button {
                 font-size: 1.5em;
             }
             .screen {
@@ -546,6 +652,19 @@
                 padding: 12px 25px;
                 font-size: 1.1em;
             }
+            .leaderboard-content {
+                padding: 20px;
+            }
+            .leaderboard-content h2 {
+                font-size: 2em;
+            }
+            .leaderboard-table th, .leaderboard-table td {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+            .leaderboard-close-btn {
+                font-size: 1.5em;
+            }
         }
 
         @media (max-width: 480px) {
@@ -561,7 +680,7 @@
                 font-size: 1.5em;
                 padding-left: 0.8em;
             }
-            .sound-toggle, .exit-game-button {
+            .sound-toggle, .exit-game-button, .leaderboard-button {
                 font-size: 1.2em;
             }
             #splash-screen h2 {
@@ -585,6 +704,9 @@
             #player-inputs {
                 padding: 0; /* Eliminar padding en pantallas muy pequeñas */
             }
+            .leaderboard-table th, .leaderboard-table td {
+                font-size: 0.8em;
+            }
         }
     </style>
 </head>
@@ -594,7 +716,10 @@
             <h1 class="logo">ineco</h1>
             <div class="header-buttons">
                 <button id="soundToggle" class="sound-toggle">
-                    <i class="fas fa-volume-up"></i>
+                    <i class="fas fa-volume-mute"></i> <!-- Icono de sonido apagado por defecto -->
+                </button>
+                <button id="leaderboardButton" class="leaderboard-button">
+                    <i class="fas fa-trophy"></i>
                 </button>
                 <button id="exitGameButton" class="exit-game-button">
                     <i class="fas fa-times-circle"></i>
@@ -662,6 +787,31 @@
             <p id="feedbackText"></p>
             <p class="explanation" id="explanationText"></p>
         </div>
+
+        <!-- Leaderboard Modal -->
+        <div id="leaderboard-modal">
+            <div class="leaderboard-content">
+                <button id="leaderboardCloseBtn" class="leaderboard-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2>Clasificación</h2>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Pos.</th>
+                            <th>Nombre</th>
+                            <th>Correctas</th>
+                            <th>Puntos</th>
+                            <th>Preguntas Vistas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardTableBody">
+                        <!-- Contenido de la clasificación se generará aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -889,262 +1039,35 @@
                             "Soldadura por arco sumergido."
                         ],
                         "respuestaCorrecta": "C",
-                        "explicacion": "La soldadura aluminotérmica es ampliamente utilizada por su rapidez y por no requerir equipos eléctricos complejos en campo, aunque la soldadura por resistencia es el método preferido en talleres para la fabricación de carriles largos."
-                    }
-                ],
-                "Sistemas y Tecnologías": [
-                    {
-                        "pregunta": "¿Qué sistema de señalización y control de trenes es el estándar europeo para las líneas de alta velocidad?",
-                        "opciones": [
-                            "ASFA (Anuncio de Señales y Frenado Automático).",
-                            "ERTMS (European Rail Traffic Management System).",
-                            "CTC (Control de Tráfico Centralizado).",
-                            "ATO (Automatic Train Operation)."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "ERTMS, con sus niveles ETCS (European Train Control System) y GSM-R (Global System for Mobile Communications – Railway), es el sistema interoperable que permite la circulación segura de trenes de alta velocidad a través de diferentes países europeos."
-                    },
-                    {
-                        "pregunta": "¿Cuál es la función principal de los circuitos de vía en una línea ferroviaria electrificada de alta velocidad?",
-                        "opciones": [
-                            "Suministrar energía a los trenes.",
-                            "Detectar la presencia de trenes y la integridad del carril para la señalización.",
-                            "Calentar los carriles en invierno.",
-                            "Comunicar al maquinista la velocidad máxima permitida."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "Los circuitos de vía son fundamentales para la detección de ocupación y la supervisión de la continuidad del carril, enviando información al enclavamiento y al sistema de señalización."
-                    },
-                    {
-                        "pregunta": "¿Qué característica principal tiene la catenaria rígida frente a la catenaria flexible en túneles de alta velocidad?",
-                        "opciones": [
-                            "Mayor flexibilidad para adaptarse a las curvas.",
-                            "Menor coste de instalación inicial.",
-                            "Mayor resistencia al fuego y menor necesidad de mantenimiento.",
-                            "Mayor facilidad para la detección de averías."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "La catenaria rígida es preferida en túneles por su robustez, menor número de puntos de fijación y su resistencia a las deformaciones por la onda de presión generada por los trenes de alta velocidad."
-                    },
-                    {
-                        "pregunta": "¿Qué se utiliza para la transmisión de datos y voz en el sistema GSM-R de las líneas de alta velocidad?",
-                        "opciones": [
-                            "Cables de cobre coaxiales.",
-                            "Ondas de radio de baja frecuencia.",
-                            "Fibra óptica y radioenlaces digitales.",
-                            "Señales luminosas."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "La fibra óptica es la 'columna vertebral' de las comunicaciones en alta velocidad, proporcionando el ancho de banda y la fiabilidad necesarios para GSM-R, SCADA y otros sistemas."
-                    },
-                    {
-                        "pregunta": "¿Cuál es el principal objetivo de un sistema SCADA (Supervisory Control And Data Acquisition) en la infraestructura de alta velocidad?",
-                        "opciones": [
-                            "Controlar las taquillas de las estaciones.",
-                            "Gestionar y supervisar remotamente las instalaciones fijas como subestaciones, sistemas de ventilación o iluminación.",
-                            "Automatizar la limpieza de los trenes.",
-                            "Regular el flujo de pasajeros en los andenes."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "SCADA permite a los operadores monitorizar y controlar la infraestructura desde un centro de control, facilitando la detección de anomalías y la respuesta rápida."
-                    },
-                    {
-                        "pregunta": "¿Qué tipo de pruebas se realizan periódicamente en los sistemas de balizas ERTMS para asegurar su correcto funcionamiento?",
-                        "opciones": [
-                            "Pruebas de resistencia mecánica.",
-                            "Pruebas de impermeabilidad.",
-                            "Pruebas de lectura y escritura de telegramas, y calibración de frecuencia.",
-                            "Pruebas de impacto a alta velocidad."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "Las balizas transmiten información vital al tren, por lo que su correcta calibración y funcionamiento son esenciales para la seguridad operativa."
-                    },
-                    {
-                        "pregunta": "¿Qué es la 'zona de paso' en un sistema de electrificación ferroviario y por qué es crítica para el mantenimiento?",
-                        "opciones": [
-                            "El espacio por donde pasan los trenes.",
-                            "Un tramo de vía sin catenaria para maniobras.",
-                            "El punto donde se unen dos zonas de alimentación eléctrica diferentes con distinto potencial, requiriendo un aislamiento o cambio de tensión.",
-                            "La zona de amortiguación de ruido."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "La zona de paso requiere procedimientos específicos para los trenes (bajada de pantógrafo, desconexión de tracción) y un mantenimiento riguroso de sus elementos (aisladores, seccionadores) para evitar cortocircuitos y arcos eléctricos."
-                    },
-                    {
-                        "pregunta": "¿Cuál es la función de un contador de ejes en un sistema de señalización?",
-                        "opciones": [
-                            "Contar el número de trenes que circulan por una sección.",
-                            "Determinar si una sección de vía está libre u ocupada contando los ejes que entran y salen.",
-                            "Medir el desgaste de las ruedas del tren.",
-                            "Calcular la velocidad del tren."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "Los contadores de ejes son una alternativa a los circuitos de vía para la detección de ocupación, especialmente en túneles o en zonas con problemas de drenaje, ofreciendo una alta fiabilidad."
-                    },
-                    {
-                        "pregunta": "¿Qué se entiende por 'seccionamiento' de la catenaria y cuándo se utiliza en mantenimiento?",
-                        "opciones": [
-                            "La división física de la catenaria en tramos.",
-                            "La interrupción deliberada del suministro eléctrico a un tramo de catenaria para realizar trabajos de mantenimiento con seguridad.",
-                            "La conexión de dos tramos de catenaria para formar un bucle.",
-                            "El proceso de reparación de una catenaria rota."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "El seccionamiento es una medida de seguridad fundamental que garantiza que el personal de mantenimiento pueda trabajar en la catenaria sin riesgo eléctrico, mediante la apertura de seccionadores y la puesta a tierra."
-                    },
-                    {
-                        "pregunta": "¿Qué sistema se utiliza para monitorizar la salud estructural de puentes y viaductos en tiempo real en líneas de alta velocidad?",
-                        "opciones": [
-                            "Cámaras de seguridad de CCTV.",
-                            "Sistemas de auscultación continua con sensores (fibra óptica, acelerómetros, etc.).",
-                            "Inspecciones visuales diarias por parte del maquinista.",
-                            "Análisis de la composición del hormigón."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "La monitorización estructural permite detectar cualquier anomalía o deterioro en tiempo real, facilitando el mantenimiento predictivo y asegurando la integridad de las grandes estructuras."
-                    }
-                ],
-                "Operaciones y Personal": [
-                    {
-                        "pregunta": "¿Cuál es el objetivo principal del mantenimiento predictivo en una línea de alta velocidad?",
-                        "opciones": [
-                            "Reparar los fallos una vez que ocurren.",
-                            "Realizar el mantenimiento a intervalos fijos, sin importar el estado del componente.",
-                            "Detectar fallos incipientes y predecir cuándo ocurrirán, para intervenir antes de que se produzcan averías.",
-                            "Reducir el personal de mantenimiento."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "El mantenimiento predictivo, basado en la monitorización de la condición, es fundamental en alta velocidad para maximizar la disponibilidad de la infraestructura y minimizar las interrupciones del servicio."
-                    },
-                    {
-                        "pregunta": "¿Qué tipo de plan de mantenimiento se basa en la programación de tareas a intervalos regulares o tras un determinado uso, independientemente del estado real del componente?",
-                        "opciones": [
-                            "Mantenimiento correctivo.",
-                            "Mantenimiento predictivo.",
-                            "Mantenimiento de oportunidad.",
-                            "Mantenimiento preventivo programado."
-                        ],
-                        "respuestaCorrecta": "D",
-                        "explicacion": "El mantenimiento preventivo programado busca evitar fallos mediante intervenciones programadas, como revisiones o sustituciones de componentes por tiempo o kilómetros."
-                    },
-                    {
-                        "pregunta": "¿Qué rol del personal ferroviario es el encargado de verificar la correcta aplicación de la normativa de seguridad y el estado de la vía en un tramo asignado?",
-                        "opciones": [
-                            "Maquinista.",
-                            "Factor de circulación.",
-                            "Inspector de vía.",
-                            "Agente comercial."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "El inspector de vía es una figura clave en el mantenimiento, cuya función es realizar revisiones periódicas y detectar anomalías en la superestructura y la infraestructura."
-                    },
-                    {
-                        "pregunta": "¿Cuál es la función principal del 'jefe de equipo' en una brigada de mantenimiento de vía?",
-                        "opciones": [
-                            "Conducir la maquinaria de vía.",
-                            "Gestionar los recursos humanos y materiales, y asegurar la correcta ejecución de los trabajos y la seguridad.",
-                            "Realizar la limpieza de las herramientas.",
-                            "Elaborar los informes financieros del proyecto."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "El jefe de equipo es el responsable directo de la operación y la seguridad de su equipo en la ejecución de las tareas de mantenimiento."
-                    },
-                    {
-                        "pregunta": "¿Qué es un 'corte de vía' y cuándo se aplica en el mantenimiento de alta velocidad?",
-                        "opciones": [
-                            "Un tramo de vía en el que no hay balasto.",
-                            "Una interrupción programada de la circulación ferroviaria en un tramo para permitir la realización de trabajos de mantenimiento de gran envergadura.",
-                            "Un tramo de vía sin electrificación.",
-                            "Un punto donde la vía se divide en dos."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "Los cortes de vía son esenciales para realizar trabajos que requieren la ausencia de tráfico, como el reemplazo masivo de carriles, la intervención en estructuras o el bateo profundo."
-                    },
-                    {
-                        "pregunta": "¿Qué documento de seguridad es fundamental consultar antes de iniciar cualquier trabajo en la vía?",
-                        "opciones": [
-                            "El menú de la cantina.",
-                            "El parte meteorológico.",
-                            "El Plan de Autoprotección y las consignas de seguridad del tramo.",
-                            "El horario de los trenes de mercancías."
-                        ],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "La seguridad es prioritaria. Los planes y consignas detallan los riesgos, las medidas preventivas y los procedimientos a seguir para trabajar de forma segura en el entorno ferroviario."
-                    },
-                    {
-                        "pregunta": "¿Qué es el sistema de 'consignación y descargo' en el mantenimiento ferroviario?",
-                        "opciones": [
-                            "Un sistema para gestionar el inventario de materiales.",
-                            "El procedimiento que asegura la desenergización de una instalación antes de intervenir y su energización segura al finalizar el trabajo.",
-                            "Un método para el transporte de balasto.",
-                            "El registro de las horas trabajadas por el personal."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "La consignación eléctrica (o de otros tipos de energía) es un procedimiento crítico para garantizar que el personal no sea expuesto a riesgos eléctricos o mecánicos durante el mantenimiento."
-                    },
-                    {
-                        "pregunta": "¿Qué ventaja principal ofrece el mantenimiento basado en la condición (monitorización) para las líneas de alta velocidad?",
-                        "opciones": [
-                            "Reduce la necesidad de personal de mantenimiento.",
-                            "Permite optimizar las intervenciones, actuando solo cuando es necesario, reduciendo costes y maximizando la disponibilidad.",
-                            "Elimina por completo la necesidad de inspecciones visuales.",
-                            "Prolonga indefinidamente la vida útil de los componentes sin reemplazo."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "Al actuar solo cuando la condición del activo lo requiere, se evitan mantenimientos innecesarios y se previene la aparición de averías, lo que es crucial para la eficiencia y fiabilidad de la alta velocidad."
-                    },
-                    {
-                        "pregunta": "¿Qué importancia tiene la 'trazabilidad' en los trabajos de mantenimiento de una infraestructura de alta velocidad?",
-                        "opciones": [
-                            "Ayuda a los trenes a seguir el trazado de la vía.",
-                            "Permite seguir el origen y el historial de cada componente o intervención, fundamental para la gestión de activos y la resolución de problemas.",
-                            "Determina la velocidad máxima permitida en una curva.",
-                            "Define el ancho de la plataforma ferroviaria."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "La trazabilidad es vital para el control de calidad, la gestión de la garantía y el análisis de fallos, asegurando que se utilizan los componentes correctos y que las intervenciones están documentadas."
-                    },
-                    {
-                        "pregunta": "¿Cuál es el objetivo de los 'Equipos de Protección Individual (EPIs)' en el entorno ferroviario?",
-                        "opciones": [
-                            "Proteger el material rodante de la corrosión.",
-                            "Proteger al trabajador de riesgos que no pueden eliminarse o reducirse suficientemente por otros medios.",
-                            "Proteger la vía de actos vandálicos.",
-                            "Proteger el medio ambiente de la contaminación."
-                        ],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "Los EPIs son la última barrera de protección para el personal, e incluyen elementos como cascos, guantes, calzado de seguridad y ropa de alta visibilidad."
+                        "explicacion": "La soldadura aluminotérmica es ampliamente utilizada por su rapidez y por no requerir equipos eléctricos complejos en campo, aunque la soldadura por resistencia es el método preferido en talleres para la fabricación de carril continuo."
                     }
                 ]
             }
         };
 
-        // Nombres de jugadores aleatorios
-        const playerNamesList = [
-            "Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss",
-            "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan", "Amolador As",
-            "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil", "Biela Veloz", "Trenelito",
-            "Vía Láctea", "Pantógrafo Power", "Señor Señal", "Cat-enaria", "Ingeniero Rieles",
-            "Desvío Divertido", "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante",
-            "Soldador Sergio", "Frenada Fantástica", "Inspector Javier"
-        ];
-
-        // Elementos del DOM
+        // Referencias a elementos del DOM
         const appContainer = document.getElementById('app-container');
         const splashScreen = document.getElementById('splash-screen');
         const playerSetupScreen = document.getElementById('player-setup');
         const gameScreen = document.getElementById('game-screen');
         const endScreen = document.getElementById('end-screen');
         const startGameButton = document.getElementById('startGameButton');
+        const startQuizButton = document.getElementById('startQuizButton');
+        const restartGameButton = document.getElementById('restartGameButton');
+        const closeGameButton = document.getElementById('closeGameButton');
+        const backToSplashFromSetup = document.getElementById('backToSplashFromSetup');
+        const exitGameButton = document.getElementById('exitGameButton');
         const soundToggle = document.getElementById('soundToggle');
-        const soundIcon = soundToggle.querySelector('i');
-        const exitGameButton = document.getElementById('exitGameButton'); // Nuevo botón de salir
+        const leaderboardButton = document.getElementById('leaderboardButton');
+        const leaderboardModal = document.getElementById('leaderboard-modal');
+        const leaderboardCloseBtn = document.getElementById('leaderboardCloseBtn');
+        const leaderboardTableBody = document.getElementById('leaderboardTableBody');
+
         const decreasePlayersBtn = document.getElementById('decreasePlayers');
         const increasePlayersBtn = document.getElementById('increasePlayers');
         const playerCountSpan = document.getElementById('playerCount');
         const playerInputsDiv = document.getElementById('player-inputs');
-        const startQuizButton = document.getElementById('startQuizButton');
-        const backToSplashFromSetupButton = document.getElementById('backToSplashFromSetup'); // Nuevo botón de volver
+
         const currentPlayerInfo = document.getElementById('currentPlayerInfo');
         const categoryInfo = document.getElementById('categoryInfo');
         const scoreInfo = document.getElementById('scoreInfo');
@@ -1156,266 +1079,263 @@
         const explanationText = document.getElementById('explanationText');
         const winnerMessage = document.getElementById('winnerMessage');
         const finalScoresDiv = document.getElementById('finalScores');
-        const restartGameButton = document.getElementById('restartGameButton');
-        const closeGameButton = document.getElementById('closeGameButton'); // Nuevo botón de cerrar
 
-        // Variables de juego
-        let currentPlayerCount = 1;
+        // Variables de estado del juego
         let players = [];
-        let currentQuestionIndex = 0;
         let currentPlayerIndex = 0;
-        let shuffledQuestions = [];
-        let isSoundOn = true;
+        let currentQuestionIndex = 0;
+        let currentCategory = '';
+        let availableQuestions = {}; // Copia de preguntas para gestionar las ya usadas
+        let gameStarted = false;
+        let soundOn = false; // Estado del sonido
 
-        // Audios (precargados para evitar latencia)
-        // Se han actualizado las URLs de audio a fuentes más fiables con políticas CORS permisivas.
-        const audioCorrect = new Audio('https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3'); // Sonido de acierto
-        const audioIncorrect = new Audio('https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3'); // Sonido de error
-        const audioClick = new Audio('https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3'); // Sonido de click general
+        // Sonidos
+        const correctSound = new Audio('https://www.soundjay.com/buttons/beep-07.mp3'); // Sonido de respuesta correcta
+        const incorrectSound = new Audio('https://www.soundjay.com/buttons/beep-04.mp3'); // Sonido de respuesta incorrecta
+        const clickSound = new Audio('https://www.soundjay.com/buttons/button-1.mp3'); // Sonido de click de botón
 
-        // Función para reproducir sonido
+        // --- Funciones de Utilidad ---
+
+        // Función para reproducir sonido si está activado
         function playSound(audio) {
-            if (isSoundOn) {
-                audio.currentTime = 0; // Reiniciar para poder reproducir rápido
-                audio.play().catch(e => console.error("Error al reproducir audio:", e));
+            if (soundOn) {
+                audio.play();
             }
         }
 
-        // Función para alternar sonido
-        soundToggle.addEventListener('click', () => {
-            isSoundOn = !isSoundOn;
-            soundIcon.className = isSoundOn ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-            playSound(audioClick);
-            // Silenciar o activar todos los audios si ya están cargados
-            audioCorrect.muted = !isSoundOn;
-            audioIncorrect.muted = !isSoundOn;
-            audioClick.muted = !isSoundOn;
-        });
-
-        // Función para mostrar una pantalla con animación
+        // Función para cambiar de pantalla
         function showScreen(screenToShow) {
-            const screens = [splashScreen, playerSetupScreen, gameScreen, endScreen];
+            const screens = document.querySelectorAll('.screen');
             screens.forEach(screen => {
-                if (screen === screenToShow) {
-                    screen.classList.add('active');
-                } else {
-                    screen.classList.remove('active');
+                screen.classList.remove('active');
+            });
+            screenToShow.classList.add('active');
+        }
+
+        // Función para generar un ID de usuario único (para la clasificación)
+        function generateUniqueId() {
+            return 'user_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Función para guardar la clasificación en localStorage
+        function saveLeaderboard(entry) {
+            let leaderboard = JSON.parse(localStorage.getItem('inecoTrivialLeaderboard')) || [];
+            leaderboard.push(entry);
+            // Ordenar por puntos (descendente) y luego por preguntas vistas (descendente)
+            leaderboard.sort((a, b) => {
+                if (b.score !== a.score) {
+                    return b.score - a.score;
                 }
+                return b.questionsSeen - a.questionsSeen;
             });
-            // Ajustar el color de fondo del body según la pantalla principal
-            if (screenToShow === splashScreen) {
-                document.body.style.background = 'linear-gradient(135deg, var(--ineco-azul-principal) 70%, var(--ineco-rojo-acento) 100%)';
-            } else {
-                document.body.style.background = 'var(--ineco-azul-principal)'; /* Fondo azul sólido para otras pantallas */
-            }
+            // Limitar a los 10 mejores resultados
+            leaderboard = leaderboard.slice(0, 10);
+            localStorage.setItem('inecoTrivialLeaderboard', JSON.stringify(leaderboard));
         }
 
-        // --- Lógica de la Pantalla de Configuración de Jugadores ---
+        // Función para cargar y mostrar la clasificación
+        function loadLeaderboard() {
+            const leaderboard = JSON.parse(localStorage.getItem('inecoTrivialLeaderboard')) || [];
+            leaderboardTableBody.innerHTML = ''; // Limpiar tabla
+            if (leaderboard.length === 0) {
+                leaderboardTableBody.innerHTML = '<tr><td colspan="5">No hay datos en la clasificación aún.</td></tr>';
+                return;
+            }
+            leaderboard.forEach((entry, index) => {
+                const row = leaderboardTableBody.insertRow();
+                row.insertCell(0).textContent = index + 1; // Posición
+                row.insertCell(1).textContent = entry.name;
+                row.insertCell(2).textContent = entry.correctAnswers;
+                row.insertCell(3).textContent = entry.score;
+                row.insertCell(4).textContent = entry.questionsSeen;
+            });
+        }
 
-        // Generar campos de entrada para jugadores
-        function generatePlayerInputs() {
-            playerInputsDiv.innerHTML = ''; // Limpiar campos existentes
-            for (let i = 0; i < currentPlayerCount; i++) {
-                const playerGroup = document.createElement('div');
-                playerGroup.className = 'player-input-group';
-                playerGroup.innerHTML = `
-                    <input type="text" placeholder="Nombre Jugador ${i + 1}" id="player${i + 1}Name" value="Jugador ${i + 1}">
-                    <button class="random-name-btn" data-player-id="${i + 1}">Nombre Aleatorio</button>
+        // --- Lógica del Juego ---
+
+        // Inicializa el juego
+        function initializeGame() {
+            players = [];
+            currentPlayerIndex = 0;
+            currentQuestionIndex = 0;
+            gameStarted = false;
+            // Reiniciar preguntas disponibles para una nueva partida
+            availableQuestions = JSON.parse(JSON.stringify(questionsData.preguntas));
+            showScreen(splashScreen);
+        }
+
+        // Genera los campos de entrada para los nombres de los jugadores
+        function generatePlayerInputs(count) {
+            playerInputsDiv.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const playerInputGroup = document.createElement('div');
+                playerInputGroup.className = 'player-input-group';
+                playerInputGroup.innerHTML = `
+                    <label for="player${i + 1}">Jugador ${i + 1}:</label>
+                    <input type="text" id="player${i + 1}" placeholder="Nombre del Jugador ${i + 1}" value="Jugador ${i + 1}">
                 `;
-                playerInputsDiv.appendChild(playerGroup);
-            }
-
-            // Añadir event listeners a los nuevos botones de nombre aleatorio
-            document.querySelectorAll('.random-name-btn').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    playSound(audioClick);
-                    const playerId = event.target.dataset.playerId;
-                    const inputField = document.getElementById(`player${playerId}Name`);
-                    assignRandomName(inputField);
-                });
-            });
-        }
-
-        // Asignar nombre aleatorio
-        function assignRandomName(inputField) {
-            const randomIndex = Math.floor(Math.random() * playerNamesList.length);
-            inputField.value = playerNamesList[randomIndex];
-        }
-
-        // Control de número de jugadores
-        decreasePlayersBtn.addEventListener('click', () => {
-            playSound(audioClick);
-            if (currentPlayerCount > 1) {
-                currentPlayerCount--;
-                playerCountSpan.textContent = currentPlayerCount;
-                generatePlayerInputs();
-            }
-        });
-
-        increasePlayersBtn.addEventListener('click', () => {
-            playSound(audioClick);
-            if (currentPlayerCount < 5) {
-                currentPlayerCount++;
-                playerCountSpan.textContent = currentPlayerCount;
-                generatePlayerInputs();
-            }
-        });
-
-        // --- Lógica de Inicio de Partida ---
-
-        // Mezclar array (Fisher-Yates shuffle)
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        // Preparar preguntas para el juego
-        function prepareQuestions() {
-            shuffledQuestions = [];
-            const categories = Object.keys(questionsData.preguntas);
-            // Para cada categoría, mezclar sus preguntas
-            categories.forEach(category => {
-                const categoryQuestions = questionsData.preguntas[category].map(q => ({ ...q, category: category }));
-                shuffledQuestions = shuffledQuestions.concat(shuffleArray(categoryQuestions));
-            });
-            // Mezclar todas las preguntas juntas para un orden aleatorio entre categorías
-            shuffledQuestions = shuffleArray(shuffledQuestions);
-            // Limitar el número total de preguntas si es necesario (ej. 2 preguntas por jugador)
-            const totalQuestionsDesired = currentPlayerCount * 2; // Ejemplo: 2 preguntas por jugador
-            if (shuffledQuestions.length > totalQuestionsDesired) {
-                shuffledQuestions = shuffledQuestions.slice(0, totalQuestionsDesired);
+                playerInputsDiv.appendChild(playerInputGroup);
             }
         }
 
-        // Iniciar el juego
-        startQuizButton.addEventListener('click', () => {
-            playSound(audioClick);
+        // Comienza la partida desde la configuración de jugadores
+        function startQuiz() {
             players = [];
             let allNamesValid = true;
-            for (let i = 0; i < currentPlayerCount; i++) {
-                const playerNameInput = document.getElementById(`player${i + 1}Name`);
-                const name = playerNameInput.value.trim(); 
-                if (name === "") {
-                    showFeedback("Por favor, introduce un nombre para todos los jugadores.", "error", 2000);
+            for (let i = 0; i < parseInt(playerCountSpan.textContent); i++) {
+                const input = document.getElementById(`player${i + 1}`);
+                const name = input.value.trim();
+                if (name === '') {
                     allNamesValid = false;
-                    break;
+                    input.style.borderColor = varineco-rojo-incorrecto; // Resaltar campo vacío
+                } else {
+                    input.style.borderColor = ''; // Restablecer borde
+                    players.push({
+                        id: generateUniqueId(), // Asignar un ID único
+                        name: name,
+                        score: 0,
+                        correctAnswers: 0,
+                        questionsSeen: 0,
+                        answeredQuestions: [] // Para evitar repetir preguntas
+                    });
                 }
-                players.push({ name: name, score: 0 });
             }
 
-            if (allNamesValid) {
-                currentQuestionIndex = 0;
-                currentPlayerIndex = 0;
-                prepareQuestions(); // Prepara y mezcla las preguntas
-                showScreen(gameScreen);
-                displayQuestion();
+            if (!allNamesValid) {
+                showFeedback('Por favor, introduce todos los nombres de los jugadores.', false, '');
+                return;
             }
-        });
 
-        // Función para mostrar feedback (correcto/incorrecto)
-        function showFeedback(message, type, duration = 1500, explanation = "") {
-            feedbackText.textContent = message;
-            explanationText.textContent = explanation;
-            feedbackMessage.style.backgroundColor = type === 'correct' ? 'var(--ineco-verde-correcto)' : 'var(--ineco-rojo-incorrecto)';
-            feedbackMessage.classList.add('show');
-            setTimeout(() => {
-                feedbackMessage.classList.remove('show');
-            }, duration);
+            gameStarted = true;
+            availableQuestions = JSON.parse(JSON.stringify(questionsData.preguntas)); // Resetear preguntas
+            nextQuestion();
+            showScreen(gameScreen);
         }
 
-        // --- Lógica de la Pantalla de Juego ---
+        // Muestra la siguiente pregunta o termina el juego
+        function nextQuestion() {
+            if (!gameStarted) return; // Asegurarse de que el juego está activo
 
-        // Mostrar la pregunta actual
-        function displayQuestion() {
-            if (currentQuestionIndex >= shuffledQuestions.length) {
+            const currentPlayer = players[currentPlayerIndex];
+            currentPlayerInfo.textContent = `Turno de: ${currentPlayer.name}`;
+            scoreInfo.textContent = `Puntuación: ${currentPlayer.score}`;
+
+            let categories = Object.keys(availableQuestions);
+            if (categories.length === 0) {
+                // Todas las preguntas han sido usadas o no hay preguntas disponibles
                 endGame();
                 return;
             }
 
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            const currentPlayer = players[currentPlayerIndex];
+            // Seleccionar una categoría aleatoria de las disponibles
+            currentCategory = categories[Math.floor(Math.random() * categories.length)];
+            let questionsInCategory = availableQuestions[currentCategory];
 
-            currentPlayerInfo.textContent = `Turno de: ${currentPlayer.name}`;
-            scoreInfo.textContent = `Puntuación: ${currentPlayer.score}`;
-            categoryInfo.textContent = `Categoría: ${currentQuestion.category}`;
-            currentCategoryTag.textContent = currentQuestion.category;
-            questionText.textContent = currentQuestion.pregunta;
+            // Filtrar preguntas que el jugador actual ya ha respondido
+            let unansweredQuestions = questionsInCategory.filter(q => !currentPlayer.answeredQuestions.includes(q.pregunta));
 
+            if (unansweredQuestions.length === 0) {
+                // Si no quedan preguntas sin responder en esta categoría para este jugador,
+                // intentar con otra categoría o terminar el juego si no hay más opciones.
+                delete availableQuestions[currentCategory]; // Eliminar categoría vacía para este jugador
+                nextQuestion(); // Intentar con la siguiente pregunta/categoría
+                return;
+            }
+
+            // Seleccionar una pregunta aleatoria de las no respondidas
+            currentQuestionIndex = Math.floor(Math.random() * unansweredQuestions.length);
+            const question = unansweredQuestions[currentQuestionIndex];
+
+            questionText.textContent = question.pregunta;
+            currentCategoryTag.textContent = currentCategory;
             optionsContainer.innerHTML = ''; // Limpiar opciones anteriores
-            currentQuestion.opciones.forEach((option, index) => {
-                const optionButton = document.createElement('button');
-                optionButton.className = 'option-button';
-                const optionLetter = String.fromCharCode(65 + index); // A, B, C, D
-                optionButton.dataset.option = optionLetter;
-                optionButton.textContent = `${optionLetter}. ${option}`;
-                optionButton.addEventListener('click', () => checkAnswer(optionLetter));
-                optionsContainer.appendChild(optionButton);
+
+            question.opciones.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = option;
+                button.dataset.option = option.charAt(0); // Asigna A, B, C o D
+                button.onclick = () => checkAnswer(button, question.respuestaCorrecta, question.explicacion);
+                optionsContainer.appendChild(button);
+            });
+            currentPlayer.questionsSeen++; // Incrementar preguntas vistas para el jugador actual
+        }
+
+
+        // Comprueba la respuesta del jugador
+        function checkAnswer(selectedButton, correctAnswer, explanation) {
+            playSound(clickSound); // Sonido al hacer click en una opción
+
+            const selectedOption = selectedButton.dataset.option;
+            const isCorrect = selectedOption === correctAnswer;
+            const allOptionButtons = optionsContainer.querySelectorAll('.option-button');
+
+            // Deshabilitar todos los botones de opción para evitar múltiples clicks
+            allOptionButtons.forEach(button => {
+                button.disabled = true;
+                if (button.dataset.option === correctAnswer) {
+                    button.classList.add('correct');
+                } else if (button === selectedButton) {
+                    button.classList.add('incorrect');
+                }
+            });
+
+            const currentPlayer = players[currentPlayerIndex];
+            const currentQuestion = availableQuestions[currentCategory].find(q => q.pregunta === questionText.textContent);
+
+            if (isCorrect) {
+                currentPlayer.score += 10; // Sumar puntos
+                currentPlayer.correctAnswers++;
+                playSound(correctSound);
+                showFeedback('¡Correcto!', true, explanation);
+            } else {
+                playSound(incorrectSound);
+                showFeedback('¡Incorrecto!', false, explanation);
+            }
+
+            // Marcar la pregunta como respondida por este jugador
+            if (currentQuestion) {
+                currentPlayer.answeredQuestions.push(currentQuestion.pregunta);
+            }
+
+            // Pasar al siguiente jugador después de un breve retraso
+            setTimeout(() => {
+                currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+                nextQuestion();
+            }, 2000); // Esperar 2 segundos antes de la siguiente pregunta
+        }
+
+        // Muestra el mensaje de feedback (correcto/incorrecto)
+        function showFeedback(message, isCorrect, explanation) {
+            feedbackText.textContent = message;
+            explanationText.textContent = explanation;
+            feedbackMessage.classList.remove('correct', 'incorrect'); // Limpiar clases anteriores
+            feedbackMessage.classList.add(isCorrect ? 'correct' : 'incorrect', 'show');
+
+            setTimeout(() => {
+                feedbackMessage.classList.remove('show');
+            }, 1800); // Mostrar por 1.8 segundos
+        }
+
+        // Termina el juego y muestra la pantalla final
+        function endGame() {
+            gameStarted = false;
+            showScreen(endScreen);
+            displayFinalScores();
+            determineWinner();
+            // Guardar las puntuaciones de cada jugador en la clasificación
+            players.forEach(player => {
+                saveLeaderboard({
+                    name: player.name,
+                    score: player.score,
+                    correctAnswers: player.correctAnswers,
+                    questionsSeen: player.questionsSeen
+                });
             });
         }
 
-        // Comprobar respuesta
-        function checkAnswer(selectedOption) {
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            const currentPlayer = players[currentPlayerIndex];
-            const optionButtons = optionsContainer.querySelectorAll('.option-button');
-
-            // Desactivar botones para evitar múltiples clics
-            optionButtons.forEach(button => button.disabled = true);
-
-            if (selectedOption === currentQuestion.respuestaCorrecta) {
-                currentPlayer.score += 10; // Sumar puntos
-                scoreInfo.textContent = `Puntuación: ${currentPlayer.score}`;
-                showFeedback("¡Correcto!", "correct", 2500, currentQuestion.explicacion);
-                playSound(audioCorrect);
-                // Resaltar la opción correcta
-                optionButtons.forEach(button => {
-                    if (button.dataset.option === selectedOption) {
-                        button.classList.add('correct');
-                    }
-                });
-            } else {
-                showFeedback("¡Incorrecto!", "incorrect", 3000, `La respuesta correcta era ${currentQuestion.respuestaCorrecta}. ${currentQuestion.explicacion}`);
-                playSound(audioIncorrect);
-                // Resaltar la opción incorrecta y la correcta
-                optionButtons.forEach(button => {
-                    if (button.dataset.option === selectedOption) {
-                        button.classList.add('incorrect');
-                    }
-                    if (button.dataset.option === currentQuestion.respuestaCorrecta) {
-                        button.classList.add('correct'); // Mostrar cuál era la correcta
-                    }
-                });
-            }
-
-            setTimeout(() => {
-                currentQuestionIndex++;
-                nextTurn();
-            }, 3500); // Esperar un poco para que el usuario vea el feedback
-        }
-
-        // Pasar al siguiente turno/jugador
-        function nextTurn() {
-            currentPlayerIndex++;
-            if (currentPlayerIndex >= players.length) {
-                currentPlayerIndex = 0; // Volver al primer jugador
-            }
-
-            displayQuestion(); // Mostrar la siguiente pregunta o finalizar el juego
-        }
-
-        // --- Lógica de la Pantalla de Fin de Juego ---
-
-        function endGame() {
-            showScreen(endScreen);
-            // Determinar el ganador
-            players.sort((a, b) => b.score - a.score); // Ordenar por puntuación descendente
-            const winner = players[0];
-            winnerMessage.textContent = `¡El ganador es ${winner.name} con ${winner.score} puntos!`;
-
-            // Mostrar puntuaciones finales
+        // Muestra las puntuaciones finales en la pantalla de fin de juego
+        function displayFinalScores() {
             finalScoresDiv.innerHTML = '';
             players.forEach(player => {
                 const scoreCard = document.createElement('div');
@@ -1423,63 +1343,132 @@
                 scoreCard.innerHTML = `
                     <span>${player.name}</span>
                     <strong>${player.score}</strong>
+                    <span>Puntos</span>
+                    <button class="close-card-btn" data-player-id="${player.id}"><i class="fas fa-times"></i></button>
                 `;
                 finalScoresDiv.appendChild(scoreCard);
             });
+
+            // Añadir event listeners a los botones de cerrar tarjeta
+            finalScoresDiv.querySelectorAll('.close-card-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const playerIdToRemove = event.currentTarget.dataset.playerId;
+                    players = players.filter(p => p.id !== playerIdToRemove);
+                    displayFinalScores(); // Volver a renderizar las tarjetas
+                });
+            });
         }
 
-        // Reiniciar el juego (resetea el estado y vuelve a la pantalla de inicio)
-        function restartGame() {
-            // Resetear variables de juego
-            currentPlayerCount = 1;
-            players = [];
-            currentQuestionIndex = 0;
-            currentPlayerIndex = 0;
-            shuffledQuestions = [];
+        // Determina y muestra el ganador
+        function determineWinner() {
+            if (players.length === 0) {
+                winnerMessage.textContent = "No hay jugadores para determinar un ganador.";
+                return;
+            }
 
-            // Resetear UI
-            playerCountSpan.textContent = currentPlayerCount;
-            generatePlayerInputs(); // Generar un campo de jugador por defecto
-            showScreen(splashScreen);
+            // Ordenar jugadores por puntuación de mayor a menor
+            const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+
+            if (sortedPlayers.length > 0) {
+                const topScore = sortedPlayers[0].score;
+                const winners = sortedPlayers.filter(player => player.score === topScore);
+
+                if (winners.length === 1) {
+                    winnerMessage.textContent = `¡El ganador es ${winners[0].name} con ${winners[0].score} puntos!`;
+                } else {
+                    const winnerNames = winners.map(player => player.name).join(' y ');
+                    winnerMessage.textContent = `¡Empate entre ${winnerNames} con ${topScore} puntos!`;
+                }
+            } else {
+                winnerMessage.textContent = "No hay puntuaciones para determinar un ganador.";
+            }
         }
 
-        // --- Inicialización del Juego ---
-        function initGame() {
-            showScreen(splashScreen);
-            generatePlayerInputs(); // Generar el campo inicial de jugador
-            appContainer.style.opacity = '1'; // Mostrar el contenedor principal
-            appContainer.style.transform = 'translateY(0)';
-        }
 
-        // Event Listeners iniciales
+        // --- Event Listeners ---
+
+        // Pantalla de inicio -> Configuración de jugadores
         startGameButton.addEventListener('click', () => {
-            playSound(audioClick);
+            playSound(clickSound);
             showScreen(playerSetupScreen);
+            generatePlayerInputs(parseInt(playerCountSpan.textContent));
         });
 
-        // Nuevos Event Listeners para los botones de navegación
-        backToSplashFromSetupButton.addEventListener('click', () => {
-            playSound(audioClick);
+        // Configuración de jugadores -> Empezar partida
+        startQuizButton.addEventListener('click', () => {
+            playSound(clickSound);
+            startQuiz();
+        });
+
+        // Configuración de jugadores -> Volver a pantalla de inicio
+        backToSplashFromSetup.addEventListener('click', () => {
+            playSound(clickSound);
             showScreen(splashScreen);
         });
 
-        exitGameButton.addEventListener('click', () => {
-            playSound(audioClick);
-            restartGame(); // Salir del juego y reiniciar estado
-        });
-
+        // Fin de juego -> Volver a jugar
         restartGameButton.addEventListener('click', () => {
-            playSound(audioClick);
-            restartGame(); // Reutilizar la función para reiniciar y volver al inicio
+            playSound(clickSound);
+            initializeGame(); // Reinicia el estado del juego y vuelve a la pantalla de inicio
         });
 
+        // Fin de juego -> Cerrar (volver a inicio)
         closeGameButton.addEventListener('click', () => {
-            playSound(audioClick);
-            restartGame(); // Cerrar la partida y volver al inicio
+            playSound(clickSound);
+            initializeGame(); // Reinicia el estado del juego y vuelve a la pantalla de inicio
         });
 
-        // Iniciar la aplicación cuando el DOM esté completamente cargado
-        document.addEventListener('DOMContentLoaded', initGame);
+        // Botón de salir del juego en el header (desde cualquier pantalla)
+        exitGameButton.addEventListener('click', () => {
+            playSound(clickSound);
+            if (confirm('¿Estás seguro de que quieres salir de la partida actual y volver al inicio?')) {
+                initializeGame();
+            }
+        });
+
+        // Control de sonido
+        soundToggle.addEventListener('click', () => {
+            soundOn = !soundOn;
+            soundToggle.innerHTML = soundOn ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+            playSound(clickSound); // Sonido de confirmación del toggle
+        });
+
+        // Botones de aumentar/disminuir jugadores
+        decreasePlayersBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            let count = parseInt(playerCountSpan.textContent);
+            if (count > 1) {
+                count--;
+                playerCountSpan.textContent = count;
+                generatePlayerInputs(count);
+            }
+        });
+
+        increasePlayersBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            let count = parseInt(playerCountSpan.textContent);
+            if (count < 4) { // Límite de 4 jugadores
+                count++;
+                playerCountSpan.textContent = count;
+                generatePlayerInputs(count);
+            }
+        });
+
+        // Botón de clasificación
+        leaderboardButton.addEventListener('click', () => {
+            playSound(clickSound);
+            loadLeaderboard();
+            leaderboardModal.classList.add('show');
+        });
+
+        // Cerrar modal de clasificación
+        leaderboardCloseBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            leaderboardModal.classList.remove('show');
+        });
+
+        // Inicializar el juego al cargar la página
+        window.onload = initializeGame;
 
     </script>
 </body>
