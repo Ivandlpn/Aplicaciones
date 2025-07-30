@@ -319,9 +319,23 @@
             color: var(--ineco-rojo-acento);
         }
 
+        /* Estilo para el texto del turno del jugador */
+        #current-player-turn-display {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--ineco-azul-principal);
+            position: absolute; /* Posicionamiento absoluto para centrarlo */
+            left: 50%;
+            transform: translateX(-50%);
+            top: 15px; /* Ajusta según sea necesario para que no se solape con el logo */
+            white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+        }
+
+
+        /* El marcador en línea se ha eliminado, pero mantenemos las clases si se usan en el modal */
         .score-board {
-            display: flex;
-            gap: 20px;
+            display: none; /* Ocultar el marcador en la pantalla de juego */
+            /* gap: 20px; */ /* No necesario si display es none */
         }
 
         .player-score {
@@ -346,8 +360,8 @@
         /* Botón para abrir el marcador */
         #show-score-btn {
             position: absolute;
-            top: 0px; /* Ajustado para estar dentro del header pero visible */
-            right: 0px; /* Ajustado para estar dentro del header pero visible */
+            top: 20px; /* Alineado con el close-btn */
+            right: 60px; /* Desplazado a la izquierda para no solaparse con la X */
             background: none;
             border: none;
             font-size: 2em; /* Tamaño del icono */
@@ -356,6 +370,7 @@
             transition: color 0.3s ease, transform 0.2s ease;
             padding: 5px; /* Para hacer el área de clic más grande */
             border-radius: 50%;
+            z-index: 20; /* Asegura que esté por encima de otros elementos */
         }
 
         #show-score-btn:hover {
@@ -770,7 +785,7 @@
             #show-score-btn {
                 font-size: 1.8em;
                 top: 10px;
-                right: 10px;
+                right: 50px; /* Ajustado para móviles */
             }
 
             .modal-content {
@@ -866,9 +881,11 @@
                     <i id="category-icon" class="fas fa-question-circle"></i>
                     <span id="category-name">Categoría</span>
                 </div>
-                <div id="score-board" class="score-board">
+                <span id="current-player-turn-display"></span> <!-- Nuevo elemento para el turno del jugador -->
+                <!-- El marcador en línea se ha eliminado según la solicitud del usuario -->
+                <!-- <div id="score-board" class="score-board"> -->
                     <!-- Los marcadores de jugadores se generarán aquí dinámicamente -->
-                </div>
+                <!-- </div> -->
             </div>
             <div id="question-area">
                 <p id="question-text">Cargando pregunta...</p>
@@ -1414,7 +1431,7 @@
 
         const categoryIcon = document.getElementById('category-icon');
         const categoryNameSpan = document.getElementById('category-name');
-        const scoreBoardDiv = document.getElementById('score-board');
+        const currentPlayerTurnDisplay = document.getElementById('current-player-turn-display'); // Nuevo elemento
         const questionTextP = document.getElementById('question-text');
         const optionsGridDiv = document.getElementById('options-grid');
         const optionButtons = optionsGridDiv.querySelectorAll('.option-btn');
@@ -1518,22 +1535,6 @@
         }
 
         /**
-         * Actualiza el marcador de puntos en la pantalla de juego.
-         */
-        function updateScoreBoard() {
-            scoreBoardDiv.innerHTML = '';
-            players.forEach((player, index) => {
-                const playerScoreDiv = document.createElement('div');
-                playerScoreDiv.classList.add('player-score');
-                if (index === currentPlayerIndex) {
-                    playerScoreDiv.classList.add('current-turn');
-                }
-                playerScoreDiv.innerHTML = `<span>${player.name}:</span> <span>${player.score}</span>`;
-                scoreBoardDiv.appendChild(playerScoreDiv);
-            });
-        }
-
-        /**
          * Muestra la pregunta actual y sus opciones.
          */
         function displayQuestion() {
@@ -1579,6 +1580,9 @@
                         categoryIcon.className = 'fas fa-question-circle'; // Icono por defecto
                 }
 
+                // Actualizar el texto del turno del jugador
+                currentPlayerTurnDisplay.textContent = `Turno de: ${players[currentPlayerIndex].name}`;
+
                 questionTextP.textContent = question.pregunta;
                 questionTextP.classList.remove('fade-out-text');
                 questionTextP.classList.add('fade-in-text'); // Animación de entrada
@@ -1587,8 +1591,6 @@
                     button.textContent = question.opciones[index];
                     button.disabled = false; // Habilitar botones de nuevo
                 });
-
-                updateScoreBoard(); // Actualizar el tablero de puntuaciones
             }, 500); // Esperar a que termine la animación de salida
         }
 
@@ -1616,8 +1618,6 @@
             // Mostrar explicación
             feedbackMessageDiv.textContent = currentQuestion.explicacion;
             feedbackMessageDiv.classList.add('show');
-
-            updateScoreBoard(); // Actualizar marcador inmediatamente
 
             // Esperar un momento antes de pasar a la siguiente pregunta/turno
             setTimeout(() => {
@@ -1785,9 +1785,13 @@
             // Clonar el array de jugadores y ordenarlo para el modal, sin afectar el orden original del juego
             const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
-            sortedPlayers.forEach(player => {
+            sortedPlayers.forEach((player, index) => {
                 const listItem = document.createElement('li');
                 listItem.innerHTML = `<span class="player-name-modal">${player.name}</span> <span class="player-score-modal">${player.score} puntos</span>`;
+                // Resaltar el jugador actual en el modal
+                if (players[currentPlayerIndex] && players[currentPlayerIndex].name === player.name) {
+                    listItem.classList.add('current-turn');
+                }
                 modalScoreList.appendChild(listItem);
             });
             scoreModal.classList.add('active');
@@ -1815,135 +1819,133 @@
         }
 
 
-        // --- EVENT LISTENERS ---
-
-        // Pantalla de Inicio
-        startGameBtn.addEventListener('click', () => {
-            showScreen(playerConfigScreen);
-            updatePlayerInputs(); // Inicializar campos de jugador
-        });
-
-        // Pantalla de Configuración de Jugadores
-        decreasePlayersBtn.addEventListener('click', () => {
-            let count = parseInt(playerCountSpan.textContent);
-            if (count > 1) {
-                count--;
-                playerCountSpan.textContent = count;
-                updatePlayerInputs();
-            }
-        });
-
-        increasePlayersBtn.addEventListener('click', () => {
-            let count = parseInt(playerCountSpan.textContent);
-            if (count < 5) { // Máximo 5 jugadores
-                count++;
-                playerCountSpan.textContent = count;
-                updatePlayerInputs();
-            }
-        });
-
-        startMatchBtn.addEventListener('click', () => {
-            players = [];
-            const playerCount = parseInt(playerCountSpan.textContent);
-            let allNamesEntered = true;
-            for (let i = 0; i < playerCount; i++) {
-                const nameInput = document.getElementById(`player-name-${i + 1}`);
-                const name = nameInput.value.trim();
-                if (name === "") {
-                    allNamesEntered = false;
-                    // Ahora usamos los valores RGB directos para el borde
-                    nameInput.style.borderColor = 'rgb(203, 24, 35)'; // Rojo INECO
-                    nameInput.placeholder = "¡Nombre requerido!";
-                } else {
-                    // Ahora usamos los valores RGB directos para el borde
-                    nameInput.style.borderColor = 'rgb(230, 230, 230)'; // Gris claro INECO
-                    players.push({ name: name, score: 0 });
-                }
-            }
-
-            if (allNamesEntered && players.length > 0) {
-                showScreen(roundConfigScreen);
-                // Asegurar que questionsPerPlayer sea un valor válido para el número actual de jugadores
-                const maxQuestionsPerPersonAllowed = Math.floor(maxQuestionsAvailable / players.length);
-                questionsPerPlayer = Math.min(questionsPerPlayer, maxQuestionsPerPersonAllowed);
-                questionsPerPlayer = Math.max(questionsPerPlayer, 1); // Asegurar mínimo 1 pregunta por persona
-                roundCountSpan.textContent = questionsPerPlayer;
-            } else {
-                console.warn("Por favor, introduce los nombres de todos los jugadores.");
-                displayUIMessage("Por favor, introduce los nombres de todos los jugadores.", 'error');
-            }
-        });
-
-        // Pantalla de Configuración de Rondas
-        decreaseRoundsBtn.addEventListener('click', () => {
-            let count = parseInt(roundCountSpan.textContent);
-            if (count > 1) { // Mínimo 1 pregunta por jugador
-                count--;
-                roundCountSpan.textContent = count;
-                questionsPerPlayer = count;
-            }
-        });
-
-        increaseRoundsBtn.addEventListener('click', () => {
-            let count = parseInt(roundCountSpan.textContent);
-            const maxQuestionsPerPersonAllowed = Math.floor(maxQuestionsAvailable / players.length);
-            if (count < maxQuestionsPerPersonAllowed) { // Máximo el número total de preguntas disponibles dividido por el número de jugadores
-                count++;
-                roundCountSpan.textContent = count;
-                questionsPerPlayer = count;
-            }
-        });
-
-        startGameFromRoundsBtn.addEventListener('click', () => {
-            questionsPerGame = questionsPerPlayer * players.length; // Establecer el número total de preguntas
-            startGame(); // Iniciar el juego
-        });
-
-
-        // Pantalla de Juego
-        optionButtons.forEach(button => {
-            button.addEventListener('click', (event) => {
-                checkAnswer(event.target.dataset.option);
-            });
-        });
-
-        // Botón para mostrar el marcador
-        showScoreBtn.addEventListener('click', showScoreModal);
-
-        // Pantalla de Fin de Juego
-        playAgainBtn.addEventListener('click', () => {
-            showScreen(splashScreen); // Volver a la pantalla de inicio
-        });
-
-        // Manejo de los botones de cerrar (X)
-        document.querySelectorAll('.close-btn').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const targetScreen = event.target.dataset.targetScreen;
-                if (targetScreen === 'confirm-exit') {
-                    showConfirmExitModal();
-                } else if (targetScreen === 'hide-modal') {
-                    hideScoreModal();
-                }
-                else {
-                    showScreen(document.getElementById(targetScreen));
-                }
-            });
-        });
-
-        // Manejo de los botones del modal de confirmación de salida
-        confirmExitYesBtn.addEventListener('click', () => {
-            hideConfirmExitModal();
-            showScreen(splashScreen); // Volver a la pantalla de inicio
-        });
-
-        confirmExitNoBtn.addEventListener('click', () => {
-            hideConfirmExitModal();
-        });
-
-
         // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
             showScreen(splashScreen); // Mostrar la pantalla de inicio al cargar
+
+            // --- EVENT LISTENERS ---
+            // Pantalla de Inicio
+            startGameBtn.addEventListener('click', () => {
+                showScreen(playerConfigScreen);
+                updatePlayerInputs(); // Inicializar campos de jugador
+            });
+
+            // Pantalla de Configuración de Jugadores
+            decreasePlayersBtn.addEventListener('click', () => {
+                let count = parseInt(playerCountSpan.textContent);
+                if (count > 1) {
+                    count--;
+                    playerCountSpan.textContent = count;
+                    updatePlayerInputs();
+                }
+            });
+
+            increasePlayersBtn.addEventListener('click', () => {
+                let count = parseInt(playerCountSpan.textContent);
+                if (count < 5) { // Máximo 5 jugadores
+                    count++;
+                    playerCountSpan.textContent = count;
+                    updatePlayerInputs();
+                }
+            });
+
+            startMatchBtn.addEventListener('click', () => {
+                players = [];
+                const playerCount = parseInt(playerCountSpan.textContent);
+                let allNamesEntered = true;
+                for (let i = 0; i < playerCount; i++) {
+                    const nameInput = document.getElementById(`player-name-${i + 1}`);
+                    const name = nameInput.value.trim();
+                    if (name === "") {
+                        allNamesEntered = false;
+                        // Ahora usamos los valores RGB directos para el borde
+                        nameInput.style.borderColor = 'rgb(203, 24, 35)'; // Rojo INECO
+                        nameInput.placeholder = "¡Nombre requerido!";
+                    } else {
+                        // Ahora usamos los valores RGB directos para el borde
+                        nameInput.style.borderColor = 'rgb(230, 230, 230)'; // Gris claro INECO
+                        players.push({ name: name, score: 0 });
+                    }
+                }
+
+                if (allNamesEntered && players.length > 0) {
+                    showScreen(roundConfigScreen);
+                    // Asegurar que questionsPerPlayer sea un valor válido para el número actual de jugadores
+                    const maxQuestionsPerPersonAllowed = Math.floor(maxQuestionsAvailable / players.length);
+                    questionsPerPlayer = Math.min(questionsPerPlayer, maxQuestionsPerPersonAllowed);
+                    questionsPerPlayer = Math.max(questionsPerPlayer, 1); // Asegurar mínimo 1 pregunta por persona
+                    roundCountSpan.textContent = questionsPerPlayer;
+                } else {
+                    console.warn("Por favor, introduce los nombres de todos los jugadores.");
+                    displayUIMessage("Por favor, introduce los nombres de todos los jugadores.", 'error');
+                }
+            });
+
+            // Pantalla de Configuración de Rondas
+            decreaseRoundsBtn.addEventListener('click', () => {
+                let count = parseInt(roundCountSpan.textContent);
+                if (count > 1) { // Mínimo 1 pregunta por jugador
+                    count--;
+                    roundCountSpan.textContent = count;
+                    questionsPerPlayer = count;
+                }
+            });
+
+            increaseRoundsBtn.addEventListener('click', () => {
+                let count = parseInt(roundCountSpan.textContent);
+                const maxQuestionsPerPersonAllowed = Math.floor(maxQuestionsAvailable / players.length);
+                if (count < maxQuestionsPerPersonAllowed) { // Máximo el número total de preguntas disponibles dividido por el número de jugadores
+                    count++;
+                    roundCountSpan.textContent = count;
+                    questionsPerPlayer = count;
+                }
+            });
+
+            startGameFromRoundsBtn.addEventListener('click', () => {
+                questionsPerGame = questionsPerPlayer * players.length; // Establecer el número total de preguntas
+                startGame(); // Iniciar el juego
+            });
+
+
+            // Pantalla de Juego
+            optionButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    checkAnswer(event.target.dataset.option);
+                });
+            });
+
+            // Botón para mostrar el marcador
+            showScoreBtn.addEventListener('click', showScoreModal);
+
+            // Pantalla de Fin de Juego
+            playAgainBtn.addEventListener('click', () => {
+                showScreen(splashScreen); // Volver a la pantalla de inicio
+            });
+
+            // Manejo de los botones de cerrar (X)
+            document.querySelectorAll('.close-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const targetScreen = event.target.dataset.targetScreen;
+                    if (targetScreen === 'confirm-exit') {
+                        showConfirmExitModal();
+                    } else if (targetScreen === 'hide-modal') {
+                        hideScoreModal();
+                    }
+                    else {
+                        showScreen(document.getElementById(targetScreen));
+                    }
+                });
+            });
+
+            // Manejo de los botones del modal de confirmación de salida
+            confirmExitYesBtn.addEventListener('click', () => {
+                hideConfirmExitModal();
+                showScreen(splashScreen); // Volver a la pantalla de inicio
+            });
+
+            confirmExitNoBtn.addEventListener('click', () => {
+                hideConfirmExitModal();
+            });
         });
     </script>
 </body>
