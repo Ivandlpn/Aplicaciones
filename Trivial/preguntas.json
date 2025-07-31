@@ -1,0 +1,340 @@
+{
+    "preguntas": {
+        "Elementos Estructurales de la Vía": [
+            {
+                "pregunta": "¿Cuál es la función principal del balasto en una vía de alta velocidad?",
+                "opciones": [
+                    "Asegurar la conductividad eléctrica de los carriles.",
+                    "Transmitir las cargas de los trenes al terreno y asegurar la estabilidad de la vía.",
+                    "Reducir la fricción entre la rueda y el carril.",
+                    "Actuar como aislante térmico."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "El balasto distribuye las cargas de las traviesas al terraplén, proporciona drenaje y contribuye a la estabilidad lateral y longitudinal de la vía, esencial para las altas velocidades."
+            },
+            {
+                "pregunta": "¿Qué técnica se utiliza comúnmente para el mantenimiento del perfil del carril y la eliminación de defectos superficiales en vías de alta velocidad?",
+                "opciones": [
+                    "Bateo de balasto.",
+                    "Reemplazo completo de carril.",
+                    "Esmerilado o amolado de carril.",
+                    "Engrasado de las sujeciones."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "El esmerilado de carril permite restaurar el perfil óptimo, eliminar ondulaciones y grietas superficiales, prolongando la vida útil del carril y mejorando la calidad de rodadura."
+            },
+            {
+                "pregunta": "¿Qué tipo de sujeción es más común en las vías de alta velocidad para asegurar la rigidez y el aislamiento eléctrico?",
+                "opciones": [
+                    "Brida metálica.",
+                    "Sujeción rígida con tornillos de banco.",
+                    "Sujeción elástica con almohadilla de caucho y grapas.",
+                    "Clavos de vía."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las sujeciones elásticas, como las de tipo Pandrol o Vossloh, proporcionan una fijación constante del carril a la traviesa, absorben vibraciones y garantizan el aislamiento eléctrico, crucial para los sistemas de señalización."
+            },
+            {
+                "pregunta": "¿Cuál es la principal diferencia entre una traviesa monobloque y una bibloque en términos de su comportamiento en la vía de alta velocidad?",
+                "opciones": [
+                    "La monobloque es más flexible y la bibloque más rígida.",
+                    "La monobloque es de madera y la bibloque de hormigón.",
+                    "La monobloque ofrece mayor rigidez transversal y mejor comportamiento frente a la deformación lateral.",
+                    "La bibloque permite un menor ancho de vía."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las traviesas monobloque de hormigón pretensado son el estándar en alta velocidad debido a su mayor masa y rigidez, que optimizan la transmisión de cargas y la estabilidad geométrica de la vía."
+            },
+            {
+                "pregunta": "¿Cuál es el propósito de los cordones de soldadura en los carriles de una vía de alta velocidad?",
+                "opciones": [
+                    "Aumentar la resistencia a la abrasión del carril.",
+                    "Unir los tramos de carril de forma continua para evitar juntas y mejorar la rodadura.",
+                    "Facilitar la dilatación térmica de los carriles.",
+                    "Servir como punto de anclaje para los sistemas de señalización."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "La soldadura continua de carril (CRC) elimina las juntas, lo que mejora el confort de viaje, reduce el ruido y las vibraciones, y minimiza el mantenimiento de la superestructura."
+            },
+            {
+                "pregunta": "¿Qué se busca optimizar al realizar una compactación dinámica del balasto en una vía de alta velocidad?",
+                "opciones": [
+                    "La capacidad de drenaje del balasto.",
+                    "La resistencia del balasto a la pulverización.",
+                    "La uniformidad de la densidad y la resistencia al asiento de la banqueta de balasto.",
+                    "La temperatura del balasto para evitar dilataciones."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La compactación dinámica mejora la estabilidad y la resistencia del balasto, asegurando que la geometría de la vía se mantenga estable bajo las cargas dinámicas de los trenes de alta velocidad."
+            },
+            {
+                "pregunta": "¿Cuál es el objetivo principal del mantenimiento de la explanación y el terraplén en una línea de alta velocidad?",
+                "opciones": [
+                    "Mejorar el paisaje circundante.",
+                    "Asegurar la estabilidad geotécnica de la plataforma y el drenaje adecuado.",
+                    "Reducir el coste de construcción de la vía.",
+                    "Facilitar la instalación de la catenaria."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Una plataforma estable y un buen drenaje son fundamentales para evitar asientos diferenciales y deformaciones de la vía, que comprometerían la seguridad y el confort a altas velocidades."
+            },
+            {
+                "pregunta": "¿Qué tipo de sistema de drenaje es crucial en túneles de alta velocidad para evitar la acumulación de agua?",
+                "opciones": [
+                    "Acequias a cielo abierto.",
+                    "Bombas de achique manuales.",
+                    "Cunetas, colectores y pozos de bombeo integrados en la infraestructura.",
+                    "Filtración natural a través del balasto."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "El drenaje en túneles es vital para prevenir la inundación, la corrosión de elementos metálicos y el deterioro de la infraestructura, asegurando la operatividad de la línea."
+            },
+            {
+                "pregunta": "¿Qué función cumple la capa de subbalasto en la superestructura de una vía de alta velocidad?",
+                "opciones": [
+                    "Aislar térmicamente el balasto.",
+                    "Evitar la mezcla del balasto con el material del terraplén y mejorar la distribución de cargas.",
+                    "Actuar como elemento conductor de la señalización.",
+                    "Soportar directamente el peso de los trenes."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "El subbalasto actúa como una capa de transición entre el balasto y la explanación, impidiendo la contaminación del balasto y mejorando la uniformidad de la transmisión de tensiones."
+            },
+            {
+                "pregunta": "¿Qué se entiende por 'recalzado' de traviesas en el mantenimiento ferroviario?",
+                "opciones": [
+                    "El proceso de añadir una nueva traviesa a la vía.",
+                    "La sustitución de los carriles sobre las traviesas existentes.",
+                    "La adición de balasto bajo las traviesas para mejorar el apoyo y la nivelación.",
+                    "La limpieza de la superficie de las traviesas."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "El recalzado consiste en introducir balasto debajo de las traviesas, generalmente mediante bateadoras, para corregir la nivelación y alineación de la vía."
+            }
+        ],
+        "Maquinaria y Herramientas": [
+            {
+                "pregunta": "¿Cuál es la función principal de una bateadora pesada en el mantenimiento de vías de alta velocidad?",
+                "opciones": [
+                    "Soldar automáticamente los carriles.",
+                    "Limpiar la superficie de los carriles.",
+                    "Compactar el balasto bajo las traviesas para corregir la geometría de la vía.",
+                    "Inspeccionar visualmente el estado de la catenaria."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las bateadoras son máquinas esenciales para el mantenimiento de la geometría de la vía (alineación, nivelación, peralte) mediante la vibración y compactación del balasto."
+            },
+            {
+                "pregunta": "¿Qué equipo se utiliza para medir con precisión la altura y la flecha de la catenaria en una línea de alta velocidad?",
+                "opciones": [
+                    "Un nivel óptico y una mira topográfica.",
+                    "Un carro de auscultación de catenaria o drones con sistemas láser.",
+                    "Un voltímetro de alta tensión.",
+                    "Un dinamómetro."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "La precisión en la medición de la catenaria es crítica para asegurar el correcto contacto con el pantógrafo a altas velocidades y evitar desprendimientos."
+            },
+            {
+                "pregunta": "¿Cuál es la principal ventaja de utilizar detectores de defectos por ultrasonidos en los carriles de alta velocidad?",
+                "opciones": [
+                    "Identificar la temperatura de la superficie del carril.",
+                    "Detectar fisuras internas y defectos ocultos que no son visibles a simple vista.",
+                    "Medir la resistencia eléctrica del carril.",
+                    "Determinar la composición química del acero del carril."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los ultrasonidos permiten un mantenimiento predictivo, detectando fallos incipientes antes de que se propaguen y comprometan la seguridad."
+            },
+            {
+                "pregunta": "¿Qué tipo de máquina es fundamental para el reperfilado de los carriles, mejorando la interacción rueda-carril y reduciendo el ruido?",
+                "opciones": [
+                    "Una desguarnecedora.",
+                    "Una perfiladora de carril (o amoladora de grandes dimensiones).",
+                    "Una soldadora aluminotérmica.",
+                    "Una bateadora ligera."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "La perfiladora restaura la forma óptima de la cabeza del carril, mejorando la calidad de la rodadura y prolongando la vida útil del carril y de las ruedas."
+            },
+            {
+                "pregunta": "¿Cuál es el propósito de una máquina desguarnecedora en el mantenimiento de la vía?",
+                "opciones": [
+                    "Retirar los residuos de balasto y limpiar la plataforma de la vía.",
+                    "Soldar tramos de carril largos.",
+                    "Perforar las traviesas para instalar sujeciones.",
+                    "Transportar material de obra."
+                ],
+                "respuestaCorrecta": "A",
+                "explicacion": "La desguarnecedora limpia el balasto sucio o contaminado, lo que es vital para mantener la capacidad de drenaje y la elasticidad de la superestructura."
+            },
+            {
+                "pregunta": "¿Qué herramienta manual es esencial para comprobar el apriete correcto de los tornillos en las uniones de carril o sujeciones?",
+                "opciones": [
+                    "Un martillo de bola.",
+                    "Una llave de grifa.",
+                    "Una llave dinamométrica.",
+                    "Un taladro percutor."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La llave dinamométrica asegura que el par de apriete sea el especificado, evitando tanto aflojamientos como sobretensiones que puedan dañar los elementos."
+            },
+            {
+                "pregunta": "¿Qué tipo de vehículo auxiliar se utiliza para el transporte de personal y pequeñas herramientas a lo largo de la vía?",
+                "opciones": [
+                    "Un tren de obras.",
+                    "Una locomotora de línea.",
+                    "Una dresina o vagoneta de vía.",
+                    "Un tren de socorro."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las dresinas son vehículos ligeros y versátiles, diseñados para moverse sobre la vía con rapidez y eficacia en operaciones de inspección y pequeño mantenimiento."
+            },
+            {
+                "pregunta": "¿Cuál es la función principal de los trenes de auscultación en alta velocidad?",
+                "opciones": [
+                    "Transportar viajeros a alta velocidad.",
+                    "Medir y registrar continuamente los parámetros geométricos y dinámicos de la vía y la catenaria.",
+                    "Realizar operaciones de soldadura en movimiento.",
+                    "Apagar incendios en la infraestructura."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los trenes de auscultación son clave para el mantenimiento predictivo, permitiendo identificar anomalías y planificar intervenciones antes de que surjan problemas críticos."
+            },
+            {
+                "pregunta": "¿Qué se mide con una galga de vía?",
+                "opciones": [
+                    "La altura de la catenaria.",
+                    "El ancho de la vía (entre caras activas de los carriles).",
+                    "La temperatura del carril.",
+                    "La tensión de los cables de señalización."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "El ancho de vía es un parámetro crítico para la seguridad y el confort, especialmente en alta velocidad, y su control es fundamental."
+            },
+            {
+                "pregunta": "¿Qué tipo de soldadura se utiliza más comúnmente para unir tramos de carril de forma rápida y eficiente en campo?",
+                "opciones": [
+                    "Soldadura por resistencia eléctrica.",
+                    "Soldadura TIG.",
+                    "Soldadura aluminotérmica.",
+                    "Soldadura por arco sumergido."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La soldadura aluminotérmica es ampliamente utilizada por su rapidez y por no requerir equipos eléctricos complejos en campo, aunque la soldadura por resistencia es el método preferido en talleres para la fabricación de carriles largos."
+            }
+        ],
+        "Sistemas y Tecnologías": [
+            {
+                "pregunta": "¿Qué sistema de señalización y control de trenes es el estándar europeo para las líneas de alta velocidad?",
+                "opciones": [
+                    "ASFA (Anuncio de Señales y Frenado Automático).",
+                    "ERTMS (European Rail Traffic Management System).",
+                    "CTC (Control de Tráfico Centralizado).",
+                    "ATO (Automatic Train Operation)."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "ERTMS, con sus niveles ETCS (European Train Control System) y GSM-R (Global System for Mobile Communications – Railway), es el sistema interoperable que permite la circulación segura de trenes de alta velocidad a través de diferentes países europeos."
+            },
+            {
+                "pregunta": "¿Cuál es la función principal de los circuitos de vía en una línea ferroviaria electrificada de alta velocidad?",
+                "opciones": [
+                    "Suministrar energía a los trenes.",
+                    "Detectar la presencia de trenes y la integridad del carril para la señalización.",
+                    "Calentar los carriles en invierno.",
+                    "Comunicar al maquinista la velocidad máxima permitida."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los circuitos de vía son fundamentales para la detección de ocupación y la supervisión de la continuidad del carril, enviando información al enclavamiento y al sistema de señalización."
+            },
+            {
+                "pregunta": "¿Qué característica principal tiene la catenaria rígida frente a la catenaria flexible en túneles de alta velocidad?",
+                "opciones": [
+                    "Mayor flexibilidad para adaptarse a las curvas.",
+                    "Menor coste de instalación inicial.",
+                    "Mayor resistencia al fuego y menor necesidad de mantenimiento.",
+                    "Mayor facilidad para la detección de averías."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La catenaria rígida es preferida en túneles por su robustez, menor número de puntos de fijación y su resistencia a las deformaciones por la onda de presión generada por los trenes de alta velocidad."
+            },
+            {
+                "pregunta": "¿Qué se utiliza para la transmisión de datos y voz en el sistema GSM-R de las líneas de alta velocidad?",
+                "opciones": [
+                    "Cables de cobre coaxiales.",
+                    "Ondas de radio de baja frecuencia.",
+                    "Fibra óptica y radioenlaces digitales.",
+                    "Señales luminosas."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La fibra óptica es la 'columna vertebral' de las comunicaciones en alta velocidad, proporcionando el ancho de banda y la fiabilidad necesarios para GSM-R, SCADA y otros sistemas."
+            },
+            {
+                "pregunta": "¿Cuál es el principal objetivo de un sistema SCADA (Supervisory Control And Data Acquisition) en la infraestructura de alta velocidad?",
+                "opciones": [
+                    "Controlar las taquillas de las estaciones.",
+                    "Gestionar y supervisar remotamente las instalaciones fijas como subestaciones, sistemas de ventilación o iluminación.",
+                    "Automatizar la limpieza de los trenes.",
+                    "Regular el flujo de pasajeros en los andenes."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "SCADA permite a los operadores monitorizar y controlar la infraestructura desde un centro de control, facilitando la detección de anomalías y la respuesta rápida."
+            },
+            {
+                "pregunta": "¿Qué tipo de pruebas se realizan periódicamente en los sistemas de balizas ERTMS para asegurar su correcto funcionamiento?",
+                "opciones": [
+                    "Pruebas de resistencia mecánica.",
+                    "Pruebas de impermeabilidad.",
+                    "Pruebas de lectura y escritura de telegramas, y calibración de frecuencia.",
+                    "Pruebas de impacto a alta velocidad."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las balizas transmiten información vital al tren, por lo que su correcta calibración y funcionamiento son esenciales para la seguridad operativa."
+            },
+            {
+                "pregunta": "¿Qué es la 'zona de paso' en un sistema de electrificación ferroviario y por qué es crítica para el mantenimiento?",
+                "opciones": [
+                    "El espacio por donde pasan los trenes.",
+                    "Un tramo de vía sin catenaria para maniobras.",
+                    "El punto donde se unen dos zonas de alimentación eléctrica diferentes con distinto potencial, requiriendo un aislamiento o cambio de tensión.",
+                    "La zona de amortiguación de ruido."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La zona de paso requiere procedimientos específicos para los trenes (bajada de pantógrafo, desconexión de tracción) y un mantenimiento riguroso de sus elementos (aisladores, seccionadores) para evitar cortocircuitos y arcos eléctricos."
+            },
+            {
+                "pregunta": "¿Cuál es la función de un contador de ejes en un sistema de señalización?",
+                "opciones": [
+                    "Contar el número de trenes que circulan por una sección.",
+                    "Determinar si una sección de vía está libre u ocupada contando los ejes que entran y salen.",
+                    "Medir el desgaste de las ruedas del tren.",
+                    "Calcular la velocidad del tren."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los contadores de ejes son una alternativa a los circuitos de vía para la detección de ocupación, especialmente en túneles o en zonas con problemas de drenaje, ofreciendo una alta fiabilidad."
+            },
+            {
+                "pregunta": "¿Qué se entiende por 'seccionamiento' de la catenaria y cuándo se utiliza en mantenimiento?",
+                "opciones": [
+                    "La división física de la catenaria en tramos.",
+                    "La interrupción deliberada del suministro eléctrico a un tramo de catenaria para realizar trabajos de mantenimiento con seguridad.",
+                    "La conexión de dos tramos de catenaria para formar un bucle.",
+                    "El proceso de reparación de una catenaria rota."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "El seccionamiento es una medida de seguridad fundamental que garantiza que el personal de mantenimiento pueda trabajar en la catenaria sin riesgo eléctrico, mediante la apertura de seccionadores y la puesta a tierra."
+            },
+            {
+                "pregunta": "¿Qué sistema se utiliza para monitorizar la salud estructural de puentes y viaductos en tiempo real en líneas de alta velocidad?",
+                "opciones": [
+                    "Cámaras de seguridad de CCTV.",
+                    "Sistemas de auscultación continua con sensores (fibra óptica, acelerómetros, etc.).",
+                    "Inspecciones visuales diarias por parte del maquinista.",
+                    "Análisis de la composición del hormigón."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "La monitorización estructural permite detectar cualquier anomalía o deterioro en tiempo real, facilitando el mantenimiento predictivo y asegurando la integridad de las grandes estructuras."
+            }
+        ]
+    }
+}
