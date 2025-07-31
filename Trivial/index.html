@@ -24,6 +24,10 @@
             --bronze: #CD7F32;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html {
+            /* Mejora la fluidez del escalado de fuentes */
+            font-size: 16px;
+        }
         body { 
             font-family: 'Poppins', sans-serif; 
             background-image: linear-gradient(135deg, var(--ineco-azul-principal) 0%, var(--ineco-azul-claro) 50%, var(--ineco-azul-aun-mas-claro) 100%); 
@@ -31,7 +35,7 @@
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
-            font-size: 16px; /* Base font size for responsive scaling */
+            padding: 1rem 0; /* Añadir padding vertical para evitar que el contenedor toque los bordes en móvil */
         }
         .game-container { 
             background-color: var(--ineco-blanco-puro); 
@@ -43,10 +47,11 @@
             flex-direction: column; 
             overflow: hidden; 
             position: relative; 
+            min-height: 600px; /* Altura mínima para escritorio */
         }
         .screen { 
             width: 100%; 
-            min-height: 600px; /* Default desktop min-height */
+            height: 100%;
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -67,7 +72,7 @@
             top: 30px; 
             left: 30px; 
             font-weight: 600; 
-            font-size: 36px; 
+            font-size: 2.25rem; 
             color: var(--ineco-azul-principal); 
             z-index: 10; 
         }
@@ -79,7 +84,7 @@
             border-radius: 10px; 
             font-family: 'Poppins', sans-serif; 
             font-weight: 600; 
-            font-size: 1.2em; 
+            font-size: 1.2rem; 
             cursor: pointer; 
             transition: all 0.3s ease; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
@@ -92,7 +97,7 @@
             right: 20px; 
             background: none; 
             border: none; 
-            font-size: 1.8em; 
+            font-size: 1.8rem; 
             color: var(--ineco-gris-oscuro); 
             cursor: pointer; 
             transition: color 0.3s ease, transform 0.2s ease; 
@@ -105,14 +110,14 @@
         }
         #splash-screen .ineco-logo { color: var(--ineco-blanco-puro); }
         #splash-screen h1 { 
-            font-size: 3.5em; 
+            font-size: 3.5rem; 
             font-weight: 700; 
             margin-bottom: 30px; 
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
         }
-        #player-config-screen, #round-config-screen { padding: 60px; justify-content: flex-start; }
+        #player-config-screen, #round-config-screen { padding: 60px 40px; justify-content: flex-start; }
         #player-config-screen h2, #round-config-screen h2 { 
-            font-size: 2.2em; 
+            font-size: 2.2rem; 
             color: var(--ineco-azul-principal); 
             margin-bottom: 30px; 
         }
@@ -132,20 +137,20 @@
             width: 40px; 
             height: 40px; 
             border-radius: 50%; 
-            font-size: 1.5em; 
+            font-size: 1.5rem; 
             cursor: pointer; 
         }
         .player-count-selector span, .round-count-selector span { 
-            font-size: 1.8em; 
+            font-size: 1.8rem; 
             font-weight: 600; 
             color: var(--ineco-azul-principal); 
             margin: 0 20px; 
         }
         #player-inputs { width: 100%; max-width: 600px; margin-bottom: 30px; }
-        .player-input-group { display: flex; align-items: center; margin-bottom: 15px; }
+        .player-input-group { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
         .player-input-group label { 
             font-weight: 500; 
-            margin-right: 15px; 
+            margin-right: 5px; 
             min-width: 80px; 
             text-align: right; 
         }
@@ -154,6 +159,7 @@
             padding: 12px 15px; 
             border: 2px solid var(--ineco-gris-claro); 
             border-radius: 8px; 
+            font-size: 1rem;
         }
         .player-input-group .random-name-btn { 
             background-color: var(--ineco-rojo-acento); 
@@ -162,14 +168,13 @@
             padding: 10px 15px; 
             border-radius: 8px; 
             cursor: pointer; 
-            margin-left: 10px; 
+            margin-left: 0; 
         }
         .player-input-group .player-color-input {
             width: 40px;
             height: 40px;
             border: none;
             padding: 0;
-            margin-left: 10px;
             border-radius: 8px;
             cursor: pointer;
             -webkit-appearance: none; 
@@ -184,7 +189,7 @@
 
         #game-screen { padding: 30px; justify-content: flex-start; padding-top: 100px; }
         #current-player-turn-display { 
-            font-size: 1.5em; 
+            font-size: 1.5rem; 
             font-weight: 600; 
             color: var(--ineco-blanco-puro); 
             background-color: var(--ineco-azul-principal); 
@@ -192,7 +197,7 @@
             left: 50%; 
             transform: translateX(-50%); 
             top: 55px; 
-            white-space: nowrap; 
+            /* FIX: Eliminado white-space: nowrap; para permitir que el texto se divida en líneas en móviles */
             z-index: 15; 
             padding: 10px 25px; 
             border-radius: 15px; 
@@ -201,6 +206,8 @@
             align-items: center; 
             gap: 10px; 
             opacity: 0; 
+            width: max-content; /* Se ajusta al contenido */
+            max-width: 90%; /* Evita que sea más ancho que el contenedor en móviles */
         }
         #current-player-turn-display.animate-in { animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes bounce-in { 0% { opacity: 0; transform: translateX(-50%) scale(0.3) translateY(-50px); } 50% { opacity: 1; transform: translateX(-50%) scale(1.1) translateY(0); } 70% { transform: translateX(-50%) scale(0.9) translateY(0); } 100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); } }
@@ -210,7 +217,7 @@
             right: 70px; 
             background: none; 
             border: none; 
-            font-size: 2em; 
+            font-size: 2rem; 
             color: var(--ineco-azul-principal); 
             cursor: pointer; 
             z-index: 20; 
@@ -224,7 +231,7 @@
             box-shadow: inset 0 3px 8px rgba(0,0,0,0.15); 
         }
         .category-display { 
-            font-size: 1.2em; 
+            font-size: 1.2rem; 
             font-weight: 500; 
             color: var(--ineco-azul-principal); 
             display: flex; 
@@ -232,23 +239,15 @@
             justify-content: center; 
             margin-bottom: 15px; 
         }
-        .category-display i { color: var(--ineco-rojo-acento); margin-right: 10px; }
-
-        /* New animation for category icon */
-        .category-display i.animate-category {
-            animation: category-pulse 0.8s ease-out;
-        }
-        @keyframes category-pulse {
-            0% { transform: scale(1); color: var(--ineco-rojo-acento); }
-            50% { transform: scale(1.2); color: var(--ineco-azul-principal); }
-            100% { transform: scale(1); color: var(--ineco-rojo-acento); }
-        }
-
+        .category-display i { color: var(--ineco-rojo-acento); margin-right: 10px; font-size: 2rem; }
+        .category-display i.animate-category { animation: category-pulse 0.8s ease-out; }
+        @keyframes category-pulse { 0% { transform: scale(1); color: var(--ineco-rojo-acento); } 50% { transform: scale(1.2); color: var(--ineco-azul-principal); } 100% { transform: scale(1); color: var(--ineco-rojo-acento); } }
         #question-text { 
-            font-size: 1.6em; 
+            font-size: 1.6rem; 
             font-weight: 600; 
             color: var(--ineco-azul-principal); 
             margin-bottom: 25px; 
+            min-height: 80px; /* Evita saltos de layout */
         }
         .options-grid { 
             display: grid; 
@@ -262,33 +261,16 @@
             border: none; 
             padding: 15px 20px; 
             border-radius: 10px; 
-            font-size: 1.1em; 
+            font-size: 1.1rem; 
             text-align: left; 
             cursor: pointer; 
+            transition: background-color 0.3s;
         }
         .option-btn:hover { background-color: var(--ineco-azul-principal); }
-
-        /* Updated Animations for Feedback */
-        .option-btn.correct {
-            background-color: var(--ineco-verde-correcto);
-            animation: pulse-correct 0.6s ease-out forwards;
-        }
-        @keyframes pulse-correct {
-            0% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0.7); }
-            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(76, 175, 80, 0.9); }
-            100% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0); }
-        }
-
-        .option-btn.incorrect {
-            background-color: var(--ineco-rojo-incorrecto);
-            animation: shake-incorrect 0.6s ease-out;
-        }
-        @keyframes shake-incorrect {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
-        }
-
+        .option-btn.correct { background-color: var(--ineco-verde-correcto); animation: pulse-correct 0.6s ease-out forwards; }
+        @keyframes pulse-correct { 0% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(76, 175, 80, 0.9); } 100% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0); } }
+        .option-btn.incorrect { background-color: var(--ineco-rojo-incorrecto); animation: shake-incorrect 0.6s ease-out; }
+        @keyframes shake-incorrect { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } }
         #feedback-message { 
             background-color: var(--ineco-azul-aun-mas-claro); 
             color: white; 
@@ -298,6 +280,7 @@
             opacity: 0; 
             transition: opacity 0.5s; 
             position:relative; 
+            width: 100%;
         }
         #feedback-message.show { opacity: 1; }
         #close-feedback-btn { 
@@ -306,12 +289,12 @@
             right: 5px; 
             background: none; 
             border: none; 
-            font-size: 1.5em; 
+            font-size: 1.5rem; 
             color: white; 
             cursor: pointer; 
         }
         .modal-overlay { 
-            position: absolute; 
+            position: fixed; /* FIX: Usar fixed para cubrir toda la pantalla incluso con scroll */
             top: 0; 
             left: 0; 
             width: 100%; 
@@ -324,20 +307,22 @@
             opacity: 0; 
             pointer-events: none; 
             transition: opacity 0.3s; 
+            padding: 1rem;
         }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         .modal-content { 
             background: white; 
             border-radius: 15px; 
             padding: 30px; 
-            width: 90%; 
+            width: 100%; 
             max-width: 450px; 
             position: relative; 
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
         }
         .modal-content h3 { 
             color: var(--ineco-rojo-acento); 
             margin-bottom: 20px; 
-            font-size: 2.2em; 
+            font-size: 2.2rem; 
             font-weight: 700; 
             text-shadow: 1px 1px 3px rgba(0,0,0,0.2); 
             text-transform: uppercase; 
@@ -363,7 +348,7 @@
         .score-card-modal.is-leader { border-left-color: var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
         .score-card-modal.is-current-player { box-shadow: 0 0 15px var(--ineco-azul-aun-mas-claro); border-left-color: var(--ineco-azul-principal); }
         .score-card-rank { 
-            font-size: 1.5em; 
+            font-size: 1.5rem; 
             font-weight: 700; 
             color: var(--ineco-gris-oscuro); 
             min-width: 40px; 
@@ -371,17 +356,17 @@
         }
         .score-card-rank .fa-crown { color: var(--gold); }
         .score-card-details { flex-grow: 1; }
-        .score-card-name { font-weight: 600; font-size: 1.1em; color: var(--ineco-gris-oscuro); }
+        .score-card-name { font-weight: 600; font-size: 1.1rem; color: var(--ineco-gris-oscuro); }
         .score-progress-bar-bg { background-color: #d1d1d1; border-radius: 5px; height: 10px; margin-top: 5px; overflow: hidden; }
         .score-progress-bar-fg { background: linear-gradient(90deg, var(--ineco-azul-claro), var(--ineco-azul-principal)); height: 100%; width: 0%; border-radius: 5px; transition: width 0.5s ease-out; }
         .score-card-score { 
-            font-size: 1.6em; 
+            font-size: 1.6rem; 
             font-weight: 700; 
             color: var(--ineco-azul-principal); 
         }
         #end-screen { justify-content: space-around; }
         #end-screen h2 { 
-            font-size: 2.5em; 
+            font-size: 2.5rem; 
             font-weight: 800; 
             color: var(--ineco-azul-principal); 
             animation: fadeInDown 0.8s ease-out; 
@@ -404,28 +389,28 @@
         .winner-card.animate { animation: winner-card-appear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 0.5s; }
         @keyframes winner-card-appear { to { opacity: 1; transform: scale(1); } }
         .winner-card h3 { 
-            font-size: 2em; 
+            font-size: 2rem; 
             font-weight: 700; 
             text-transform: uppercase; 
             letter-spacing: 2px; 
         }
         .winner-card .trophy-icon { 
-            font-size: 4em; 
+            font-size: 4rem; 
             color: var(--gold); 
             margin: 15px 0; 
             text-shadow: 0 0 15px white; 
         }
         .winner-card .winner-name { 
-            font-size: 2.2em; 
+            font-size: 2.2rem; 
             font-weight: 800; 
             margin-bottom: 5px; 
         }
         .winner-card .winner-score { 
-            font-size: 1.5em; 
+            font-size: 1.5rem; 
             font-weight: 500; 
         }
         .winner-card .winner-names-tie { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
-        .winner-card .winner-names-tie .winner-name { font-size: 1.8em; }
+        .winner-card .winner-names-tie .winner-name { font-size: 1.8rem; }
         .podium-container { 
             display: flex; 
             align-items: flex-end; 
@@ -433,8 +418,7 @@
             gap: 10px; 
             width: 100%; 
             height: 200px; 
-            margin-top: 10px; 
-            margin-bottom: 20px; 
+            margin: 10px 0 20px; 
         }
         .podium-place { 
             width: 30%; 
@@ -456,16 +440,16 @@
         .podium-place.bronze { background-color: var(--bronze); height: 60%; animation-delay: 1.6s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes podium-rise { to { opacity: 1; transform: translateY(0); } }
         .podium-place .podium-name { 
-            font-size: 1.2em; 
+            font-size: 1.2rem; 
             font-weight: 700; 
             word-break: break-word; 
         }
         .podium-place .podium-score { 
-            font-size: 1em; 
+            font-size: 1rem; 
             font-weight: 500; 
         }
         .podium-place .podium-rank { 
-            font-size: 2.5em; 
+            font-size: 2.5rem; 
             font-weight: 800; 
             margin-bottom: 5px; 
         }
@@ -489,404 +473,153 @@
             animation: card-appear 0.5s ease-out forwards; 
         }
         @keyframes card-appear { to { opacity: 1; transform: scale(1); } }
-        .player-card .rank { 
-            font-size: 1.2em; 
-            font-weight: 600; 
-            color: var(--ineco-gris-oscuro); 
-        }
-        .player-card .name { 
-            font-size: 1.2em; 
-            font-weight: 500; 
-        }
-        .player-card .score { 
-            font-size: 1.2em; 
-            font-weight: 700; 
-            color: var(--ineco-azul-principal); 
-        }
-        #confetti-container { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden; 
-            pointer-events: none; 
-            z-index: 0; 
-        }
-        .confetti-piece { 
-            position: absolute; 
-            width: 10px; 
-            height: 10px; 
-            border-radius: 2px; 
-            opacity: 0; 
-            animation: confetti-fall 4s ease-out forwards; 
-        }
+        .player-card .rank { font-size: 1.2rem; font-weight: 600; color: var(--ineco-gris-oscuro); }
+        .player-card .name { font-size: 1.2rem; font-weight: 500; }
+        .player-card .score { font-size: 1.2rem; font-weight: 700; color: var(--ineco-azul-principal); }
+        #confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: 0; }
+        .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; opacity: 0; animation: confetti-fall 4s ease-out forwards; }
         @keyframes confetti-fall { 0% { transform: translateY(-100px); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(100vh); opacity: 0; } }
         
+        #timer-container { width: 100%; height: 10px; background-color: var(--ineco-gris-claro); border: 2px solid var(--ineco-azul-aun-mas-claro); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--ineco-rojo-acento), var(--ineco-azul-claro)); border-radius: 8px; transition: width 1s linear, background 1s ease; }
+        
+        .player-avatar-container { width: 50px; height: 50px; border-radius: 50%; background-color: var(--ineco-azul-claro); display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid var(--ineco-azul-principal); transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); flex-shrink: 0; }
+        .player-avatar-container:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .player-avatar { font-size: 1.8rem; color: white; }
+
+        #avatar-selection-modal .modal-content { max-width: 600px; }
+        #avatar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 15px; margin-top: 20px; }
+        .avatar-option { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; background-color: var(--ineco-gris-claro); display: flex; justify-content: center; align-items: center; cursor: pointer; border: 3px solid transparent; transition: all 0.2s ease; }
+        .avatar-option:hover { background-color: var(--ineco-azul-aun-mas-claro); border-color: var(--ineco-azul-principal); transform: scale(1.05); }
+        .avatar-option.selected { border-color: var(--ineco-rojo-acento); box-shadow: 0 0 15px rgba(203, 24, 35, 0.5); transform: scale(1.1); }
+        .avatar-option i { font-size: 2.5rem; color: var(--ineco-azul-principal); }
+
+        .player-score-avatar, .winner-avatar, .podium-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--ineco-azul-claro); display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0; }
+        .player-score-avatar i, .winner-avatar i, .podium-avatar i { font-size: 1.5rem; color: white; }
+
         /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
 
         /* Ajustes para pantallas de tamaño tablet y móvil (hasta 768px de ancho) */
         @media (max-width: 768px) {
             .game-container {
-                width: 95%; /* Ligeramente más ancho en pantallas pequeñas */
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+                width: 95vw;
+                min-height: 0; /* Permitir que la altura se ajuste al contenido en móvil */
+                height: auto;
+                max-height: 95vh;
+                display: flex; /* Asegurar que flexbox está activo */
+                flex-direction: column;
             }
             .screen {
-                padding: 20px; /* Reducir el padding */
-                min-height: auto; /* Permitir que la altura se ajuste al contenido */
-            }
-            .ineco-logo {
-                font-size: 2em; /* Logo más pequeño */
-                top: 15px;
-                left: 15px;
-            }
-            .close-btn {
-                font-size: 1.5em; /* Botón de cerrar más pequeño */
-                top: 15px;
-                right: 15px;
-            }
-            #show-score-btn {
-                font-size: 1.5em; /* Botón de puntuación más pequeño */
-                top: 15px;
-                right: 50px; /* Ajustar posición */
-            }
-            #splash-screen h1 {
-                font-size: 2.5em; /* Título más pequeño */
-                margin-bottom: 20px;
-            }
-            .btn {
-                padding: 12px 25px; /* Botones más pequeños */
-                font-size: 1em;
-                margin: 8px;
-            }
-            #player-config-screen h2, #round-config-screen h2 {
-                font-size: 1.8em; /* Encabezados más pequeños */
-                margin-bottom: 20px;
-            }
-            .player-count-selector, .round-count-selector {
-                padding: 8px 15px;
-                margin-bottom: 20px;
-            }
-            .player-count-selector button, .round-count-selector button {
-                width: 35px; /* Botones de control más pequeños */
-                height: 35px;
-                font-size: 1.2em;
-            }
-            .player-count-selector span, .round-count-selector span {
-                font-size: 1.5em; /* Número de jugadores/rondas más pequeño */
-                margin: 0 15px;
-            }
-            .player-input-group label {
-                min-width: 60px; /* Ajustar ancho de etiqueta */
-                margin-right: 10px;
-                font-size: 0.9em;
-            }
-            .player-input-group input[type="text"] {
-                padding: 10px 12px; /* Padding de input más pequeño */
-                font-size: 0.9em;
-            }
-            .player-input-group .random-name-btn {
-                padding: 8px 12px; /* Botón de nombre aleatorio más pequeño */
-                font-size: 0.9em;
-                margin-left: 8px;
-            }
-            .player-input-group .player-color-input {
-                width: 35px;
-                height: 35px;
-            }
-
-            #current-player-turn-display {
-                font-size: 1.2em; /* Indicador de turno más pequeño */
-                padding: 8px 15px;
-                top: 45px; /* Ajustar posición */
-            }
-            #question-area {
-                padding: 20px; /* Padding de área de pregunta más pequeño */
-                margin-bottom: 15px;
-            }
-            .category-display {
-                font-size: 1em; /* Texto de categoría más pequeño */
-                margin-bottom: 10px;
-            }
-            .category-display i {
-                font-size: 1.8em; /* Ajustar tamaño de icono de categoría */
-            }
-            #question-text {
-                font-size: 1.3em; /* Texto de pregunta más pequeño */
-                margin-bottom: 20px;
-            }
-            .options-grid {
-                grid-template-columns: 1fr; /* Una sola columna en móvil */
-                gap: 10px;
-            }
-            .option-btn {
-                padding: 12px 15px; /* Botones de opción más pequeños */
-                font-size: 1em;
-            }
-            #feedback-message {
-                padding: 12px;
-                margin-top: 15px;
-            }
-            #feedback-text {
-                font-size: 0.95em;
-            }
-            #close-feedback-btn {
-                font-size: 1.2em;
-            }
-
-            #end-screen h2 {
-                font-size: 2em; /* Título de fin de partida más pequeño */
-            }
-            .winner-card {
                 padding: 20px;
-                margin: 15px 0;
+                min-height: 0; /* Permitir que la altura se ajuste al contenido */
+                height: auto;
+                position: relative; /* Cambiar a relativo para un flujo natural */
+                flex-grow: 1; /* Permitir que la pantalla crezca */
             }
-            .winner-card h3 {
-                font-size: 1.6em;
+            .screen.active {
+                 display: flex; /* Asegurar que la pantalla activa sea visible y flexible */
             }
-            .winner-card .trophy-icon {
-                font-size: 3em;
-                margin: 10px 0;
+            .screen:not(.active) {
+                display: none; /* Ocultar pantallas no activas de forma más robusta */
             }
-            .winner-card .winner-name {
-                font-size: 1.8em;
-            }
-            .winner-card .winner-score {
-                font-size: 1.2em;
-            }
-            .podium-container {
-                height: 150px; /* Podio más pequeño */
-                margin-top: 5px;
-                margin-bottom: 15px;
-            }
-            .podium-place {
-                padding: 8px;
-            }
-            .podium-place .podium-name {
-                font-size: 1em;
-            }
-            .podium-place .podium-score {
-                font-size: 0.9em;
-            }
-            .podium-place .podium-rank {
-                font-size: 2em;
-            }
-            .player-card {
-                padding: 12px 15px;
-            }
-            .player-card .rank, .player-card .name, .player-card .score {
-                font-size: 1em;
-            }
-            .player-score-avatar, .winner-avatar, .podium-avatar {
-                width: 35px;
-                height: 35px;
-                margin-right: 8px;
-            }
-            .player-score-avatar i, .winner-avatar i, .podium-avatar i {
-                font-size: 1.3em;
-            }
-
-            /* Ajustes del modal */
-            .modal-content {
-                padding: 20px;
-            }
-            .modal-content h3 {
-                font-size: 1.8em;
+            
+            .ineco-logo { font-size: 2rem; top: 15px; left: 15px; }
+            .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
+            #show-score-btn { font-size: 1.5rem; top: 15px; right: 50px; }
+            
+            #splash-screen h1 { font-size: 2.5rem; }
+            .btn { padding: 12px 25px; font-size: 1rem; margin: 8px; }
+            
+            #player-config-screen, #round-config-screen { padding: 40px 20px; }
+            #player-config-screen h2, #round-config-screen h2 { font-size: 1.8rem; margin-bottom: 20px; }
+            .player-count-selector, .round-count-selector { padding: 8px 15px; margin-bottom: 20px; }
+            .player-count-selector button, .round-count-selector button { width: 35px; height: 35px; font-size: 1.2rem; }
+            .player-count-selector span, .round-count-selector span { font-size: 1.5rem; margin: 0 15px; }
+            
+            /* FIX: Asegurar que el contenedor de inputs no se desborde */
+            #player-inputs { width: 100%; }
+            .player-input-group {
+                flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente línea */
                 gap: 8px;
             }
-            .score-card-modal {
-                padding: 10px;
-                gap: 10px;
+            .player-input-group label { min-width: 60px; margin-right: 5px; font-size: 0.9rem; }
+            .player-input-group input[type="text"] { padding: 10px 12px; font-size: 0.9rem; min-width: 120px; /* Ancho mínimo para que no se comprima demasiado */ }
+            .player-input-group .random-name-btn { padding: 8px 12px; font-size: 0.9rem; margin-left: auto; /* Empuja el botón a la derecha si hay espacio */ }
+            .player-input-group .player-color-input { width: 35px; height: 35px; }
+
+            /* FIX: Reducir padding superior en la pantalla de juego */
+            #game-screen {
+                padding-top: 80px;
             }
-            .score-card-rank {
-                font-size: 1.2em;
-                min-width: 30px;
-            }
-            .score-card-name {
-                font-size: 0.95em;
-            }
-            .score-card-score {
-                font-size: 1.3em;
-            }
-            #avatar-grid {
-                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); /* Opciones de avatar más pequeñas */
-                gap: 10px;
-            }
-            .avatar-option {
-                width: 60px;
-                height: 60px;
-            }
-            .avatar-option i {
-                font-size: 2em;
-            }
+            #current-player-turn-display { font-size: 1.2rem; padding: 8px 15px; top: 20px; }
+            #question-area { padding: 20px; margin-bottom: 15px; }
+            .category-display { font-size: 1rem; margin-bottom: 10px; }
+            .category-display i { font-size: 1.8rem; }
+            #question-text { font-size: 1.3rem; margin-bottom: 20px; min-height: 60px; }
+            
+            /* FIX: Una columna para las opciones en móvil */
+            .options-grid { grid-template-columns: 1fr; gap: 10px; }
+            .option-btn { padding: 12px 15px; font-size: 1rem; }
+            #feedback-message { padding: 12px; margin-top: 15px; }
+            #feedback-text { font-size: 0.95rem; }
+            #close-feedback-btn { font-size: 1.2rem; }
+
+            #end-screen h2 { font-size: 2rem; }
+            .winner-card { padding: 20px; margin: 15px 0; width: 100%; }
+            .winner-card h3 { font-size: 1.6rem; }
+            .winner-card .trophy-icon { font-size: 3rem; margin: 10px 0; }
+            .winner-card .winner-name { font-size: 1.8rem; }
+            .winner-card .winner-score { font-size: 1.2rem; }
+            .podium-container { height: 150px; margin-top: 5px; margin-bottom: 15px; }
+            .podium-place { padding: 8px; }
+            .podium-place .podium-name { font-size: 1rem; }
+            .podium-place .podium-score { font-size: 0.9rem; }
+            .podium-place .podium-rank { font-size: 2rem; }
+            .player-card { padding: 12px 15px; }
+            .player-card .rank, .player-card .name, .player-card .score { font-size: 1rem; }
+            .player-score-avatar, .winner-avatar, .podium-avatar { width: 35px; height: 35px; }
+            .player-score-avatar i, .winner-avatar i, .podium-avatar i { font-size: 1.3rem; }
+
+            .modal-content { padding: 20px; }
+            .modal-content h3 { font-size: 1.8rem; gap: 8px; }
+            .score-card-modal { padding: 10px; gap: 10px; }
+            .score-card-rank { font-size: 1.2rem; min-width: 30px; }
+            .score-card-name { font-size: 0.95rem; }
+            .score-card-score { font-size: 1.3rem; }
+            #avatar-grid { grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); gap: 10px; }
+            .avatar-option i { font-size: 2rem; }
         }
 
         /* Ajustes para pantallas muy pequeñas (hasta 480px de ancho) */
         @media (max-width: 480px) {
-            #splash-screen h1 {
-                font-size: 2em;
-            }
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9em;
-            }
-            #player-config-screen h2, #round-config-screen h2 {
-                font-size: 1.5em;
-            }
-            .player-count-selector span, .round-count-selector span {
-                font-size: 1.2em;
-            }
-            .player-input-group label {
-                min-width: 50px;
-                font-size: 0.9em;
-            }
-            .player-input-group input[type="text"] {
-                padding: 8px 10px;
-                font-size: 0.85em;
-            }
-            .player-input-group .random-name-btn {
-                padding: 6px 10px;
-                font-size: 0.8em;
-            }
-            #current-player-turn-display {
-                font-size: 1em;
-                padding: 6px 12px;
-                top: 40px;
-            }
-            #question-text {
-                font-size: 1.1em;
-            }
-            .option-btn {
-                padding: 10px 12px;
-                font-size: 0.9em;
-            }
-            #end-screen h2 {
-                font-size: 1.8em;
-            }
-            .winner-card h3 {
-                font-size: 1.4em;
-            }
-            .winner-card .winner-name {
-                font-size: 1.6em;
-            }
-            .winner-card .winner-score {
-                font-size: 1.1em;
-            }
-            .podium-container {
-                height: 120px;
-            }
-            .podium-place .podium-rank {
-                font-size: 2em;
-            }
-            .podium-place .podium-name {
-                font-size: 0.9em;
-            }
-            .podium-place .podium-score {
-                font-size: 0.8em;
-            }
-        }
-
-        /* --- ESTILOS PARA EL TEMPORIZADOR --- */
-        #timer-container {
-            width: 100%;
-            height: 10px;
-            background-color: var(--ineco-gris-claro);
-            border: 2px solid var(--ineco-azul-aun-mas-claro);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        #timer-bar {
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(90deg, var(--ineco-rojo-acento), var(--ineco-azul-claro));
-            border-radius: 8px;
-            transition: width 1s linear, background 1s ease;
-        }
-
-        /* --- ESTILOS PARA AVATARES --- */
-        .player-avatar-container {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--ineco-azul-claro);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 15px;
-            cursor: pointer;
-            border: 2px solid var(--ineco-azul-principal);
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .player-avatar-container:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .player-avatar {
-            font-size: 1.8em;
-            color: white;
-        }
-
-        /* Modal para selección de avatar */
-        #avatar-selection-modal .modal-content {
-            max-width: 600px;
-        }
-        #avatar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .avatar-option {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: var(--ineco-gris-claro);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .avatar-option:hover {
-            background-color: var(--ineco-azul-aun-mas-claro);
-            border-color: var(--ineco-azul-principal);
-            transform: scale(1.05);
-        }
-        .avatar-option.selected {
-            border-color: var(--ineco-rojo-acento);
-            box-shadow: 0 0 15px rgba(203, 24, 35, 0.5);
-            transform: scale(1.1);
-        }
-        .avatar-option i {
-            font-size: 2.5em;
-            color: var(--ineco-azul-principal);
-        }
-
-        /* Avatars en pantalla de juego, puntuación y fin de partida */
-        .player-score-avatar, .winner-avatar, .podium-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--ineco-azul-claro);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 10px;
-        }
-        .player-score-avatar i, .winner-avatar i, .podium-avatar i {
-            font-size: 1.5em;
-            color: white;
+            body { padding: 0.5rem 0; }
+            .screen { padding: 15px; }
+            #splash-screen h1 { font-size: 2rem; }
+            .btn { padding: 10px 20px; font-size: 0.9rem; }
+            #player-config-screen h2, #round-config-screen h2 { font-size: 1.5rem; }
+            .player-count-selector span, .round-count-selector span { font-size: 1.3rem; }
+            .player-input-group label { min-width: auto; flex-basis: 100%; text-align: left; } /* La etiqueta ocupa toda la línea */
+            .player-input-group { justify-content: space-between; }
+            .player-input-group input[type="text"] { flex-grow: 1; }
+            .player-input-group .random-name-btn { padding: 6px 10px; font-size: 0.8rem; }
+            #game-screen { padding-top: 70px; }
+            #current-player-turn-display { font-size: 1rem; padding: 6px 12px; top: 15px; }
+            #question-text { font-size: 1.15rem; min-height: 50px; }
+            .option-btn { padding: 10px 12px; font-size: 0.9rem; }
+            #end-screen h2 { font-size: 1.8rem; }
+            .winner-card h3 { font-size: 1.4rem; }
+            .winner-card .winner-name { font-size: 1.6rem; }
+            .winner-card .winner-score { font-size: 1.1rem; }
+            .podium-container { height: 120px; }
+            .podium-place .podium-name { font-size: 0.8rem; }
+            .podium-place .podium-score { font-size: 0.7rem; }
+            .modal-content h3 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <!-- Contenido HTML de las pantallas -->
+        <!-- El contenido HTML (body) no necesita cambios -->
         <div class="ineco-logo">ineco</div>
         <div id="splash-screen" class="screen active">
             <h1>Trivial Ferroviario de Alta Velocidad</h1>
@@ -914,7 +647,6 @@
             <button id="show-score-btn" class="fas fa-medal"></button>
             <span id="current-player-turn-display"></span>
             <div id="question-area">
-                <!-- ELEMENTO HTML PARA EL TEMPORIZADOR -->
                 <div id="timer-container">
                     <div id="timer-bar"></div>
                 </div>
@@ -956,19 +688,18 @@
                 <button id="confirm-exit-no" class="btn">No, continuar</button>
             </div>
         </div>
-        <!-- Nuevo modal para la selección de avatares -->
         <div id="avatar-selection-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-btn" data-target-screen="hide-avatar-modal">×</button>
                 <h3>Elige tu Avatar</h3>
                 <div id="avatar-grid">
-                    <!-- Los avatares se cargarán aquí dinámicamente con JavaScript -->
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // --- El JavaScript no necesita cambios para la parte visual, por lo que se mantiene igual ---
         // --- VARIABLES GLOBALES Y REFERENCIAS ---
         let gameData = {};
         let players = [];
@@ -979,12 +710,10 @@
         let shuffledQuestions = [];
         let feedbackTimer = null;
 
-        // Nuevas variables para el temporizador
-        const TIMER_DURATION = 20; // Segundos por pregunta
+        const TIMER_DURATION = 20; 
         let timeRemaining = TIMER_DURATION;
         let questionTimer = null;
 
-        // Datos de preguntas incrustados para pruebas
         const initialGameData = {
             "preguntas": {
                 "Elementos Estructurales de la Vía": [
@@ -1041,34 +770,10 @@
         const randomRailwayNames = ["Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss", "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan", "Amolador As", "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil", "Biela Veloz", "Trenelito", "Vía Láctea", "Pantógrafo Power", "Señor Señal", "Cat-enaria", "Ingeniero Rieles", "Desvío Divertido", "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante", "Soldador Sergio", "Frenada Fantástica", "Inspector Javier"];
         let usedRandomNames = new Set();
 
-        // Avatares temáticos de ferrocarril y medios de transporte (10 opciones relevantes y atractivas)
-        const avatarIcons = [
-            'fas fa-train',          // Tren genérico
-            'fas fa-locomotive',     // Locomotora
-            'fas fa-subway',         // Metro/Subterráneo
-            'fas fa-tram',           // Tranvía
-            'fas fa-bus',            // Autobús
-            'fas fa-car-side',       // Coche
-            'fas fa-plane',          // Avión
-            'fas fa-ship',           // Barco
-            'fas fa-bicycle',        // Bicicleta
-            'fas fa-truck-ramp-box'  // Camión/Vagón de carga
-        ];
-        let usedRandomAvatars = new Set(); // Para asegurar avatares aleatorios únicos si es posible
+        const avatarIcons = ['fas fa-train', 'fas fa-locomotive', 'fas fa-subway', 'fas fa-tram', 'fas fa-bus', 'fas fa-car-side', 'fas fa-plane', 'fas fa-ship', 'fas fa-bicycle', 'fas fa-truck-ramp-box'];
+        let usedRandomAvatars = new Set(); 
 
-        // Colores predefinidos para los jugadores
-        const defaultPlayerColors = [
-            '#FF6347', // Rojo Tomate
-            '#4682B4', // Azul Acero
-            '#32CD32', // Verde Lima
-            '#FFD700', // Oro
-            '#8A2BE2', // Azul Violeta
-            '#00CED1', // Turquesa Oscuro
-            '#FF8C00', // Naranja Oscuro
-            '#DA70D6', // Orquídea
-            '#ADFF2F', // Verde Amarillo
-            '#DC143C'  // Carmesí
-        ];
+        const defaultPlayerColors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2', '#00CED1', '#FF8C00', '#DA70D6', '#ADFF2F', '#DC143C'];
         let usedRandomColors = new Set();
 
         const splashScreen = document.getElementById('splash-screen');
@@ -1103,24 +808,23 @@
         const confirmExitNoBtn = document.getElementById('confirm-exit-no');
         let categoryIcon, categoryNameSpan;
         
-        // Referencia para la barra del temporizador
         const timerBar = document.getElementById('timer-bar');
 
-        // Referencias para el nuevo modal de avatares
         const avatarSelectionModal = document.getElementById('avatar-selection-modal');
         const avatarGrid = document.getElementById('avatar-grid');
-        let currentPlayerAvatarSelectionIndex = -1; // Para rastrear qué jugador está seleccionando su avatar
+        let currentPlayerAvatarSelectionIndex = -1; 
 
         // --- FUNCIONES ---
-        function showScreen(screenToShow) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); screenToShow.classList.add('active'); }
+        function showScreen(screenToShow) { 
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+            screenToShow.classList.add('active'); 
+        }
         function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
         
         function getRandomRailwayName() {
             if (usedRandomNames.size === randomRailwayNames.length) usedRandomNames.clear();
             let name;
-            do {
-                name = randomRailwayNames[Math.floor(Math.random() * randomRailwayNames.length)];
-            } while (usedRandomNames.has(name));
+            do { name = randomRailwayNames[Math.floor(Math.random() * randomRailwayNames.length)]; } while (usedRandomNames.has(name));
             usedRandomNames.add(name);
             return name;
         }
@@ -1128,9 +832,7 @@
         function getRandomAvatar() {
             if (usedRandomAvatars.size === avatarIcons.length) usedRandomAvatars.clear();
             let avatar;
-            do {
-                avatar = avatarIcons[Math.floor(Math.random() * avatarIcons.length)];
-            } while (usedRandomAvatars.has(avatar));
+            do { avatar = avatarIcons[Math.floor(Math.random() * avatarIcons.length)]; } while (usedRandomAvatars.has(avatar));
             usedRandomAvatars.add(avatar);
             return avatar;
         }
@@ -1138,9 +840,7 @@
         function getRandomColor() {
             if (usedRandomColors.size === defaultPlayerColors.length) usedRandomColors.clear();
             let color;
-            do {
-                color = defaultPlayerColors[Math.floor(Math.random() * defaultPlayerColors.length)];
-            } while (usedRandomColors.has(color));
+            do { color = defaultPlayerColors[Math.floor(Math.random() * defaultPlayerColors.length)]; } while (usedRandomColors.has(color));
             usedRandomColors.add(color);
             return color;
         }
@@ -1148,15 +848,8 @@
         function updatePlayerInputs() {
             const playerCount = parseInt(playerCountSpan.textContent);
             playerInputsDiv.innerHTML = '';
-
-            // Ajusta el tamaño del array de jugadores si el número de jugadores ha cambiado
-            while (players.length < playerCount) {
-                players.push({ name: `Jugador ${players.length + 1}`, score: 0, avatar: getRandomAvatar(), color: getRandomColor() });
-            }
-            while (players.length > playerCount) {
-                players.pop();
-            }
-
+            while (players.length < playerCount) { players.push({ name: `Jugador ${players.length + 1}`, score: 0, avatar: getRandomAvatar(), color: getRandomColor() }); }
+            while (players.length > playerCount) { players.pop(); }
             for (let i = 0; i < playerCount; i++) {
                 const player = players[i];
                 const group = document.createElement('div');
@@ -1172,33 +865,23 @@
                 `;
                 playerInputsDiv.appendChild(group);
             }
-
-            // Asigna eventos a los botones de nombre aleatorio
             playerInputsDiv.querySelectorAll('.random-name-btn').forEach(btn => {
                 btn.onclick = () => {
                     const playerIndex = parseInt(btn.dataset.playerIndex);
                     const newName = getRandomRailwayName();
                     const newAvatar = getRandomAvatar();
-                    const newColor = getRandomColor(); // Obtener un color aleatorio
-                    
+                    const newColor = getRandomColor();
                     document.getElementById(`player-name-${playerIndex + 1}`).value = newName;
-                    document.getElementById(`player-color-${playerIndex + 1}`).value = newColor; // Actualizar el input de color
+                    document.getElementById(`player-color-${playerIndex + 1}`).value = newColor;
                     players[playerIndex].name = newName;
                     players[playerIndex].avatar = newAvatar;
-                    players[playerIndex].color = newColor; // Actualizar el objeto del jugador
+                    players[playerIndex].color = newColor;
                     document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"] .player-avatar`).className = `player-avatar ${newAvatar}`;
                 };
             });
-
-            // Asigna eventos a los contenedores de avatar para abrir el modal de selección
             playerInputsDiv.querySelectorAll('.player-avatar-container').forEach(avatarContainer => {
-                avatarContainer.onclick = (event) => {
-                    const playerIndex = parseInt(event.currentTarget.dataset.playerIndex);
-                    openAvatarSelectionModal(playerIndex);
-                };
+                avatarContainer.onclick = (event) => { openAvatarSelectionModal(parseInt(event.currentTarget.dataset.playerIndex)); };
             });
-
-            // Asigna eventos a los inputs de color para actualizar el color del jugador
             playerInputsDiv.querySelectorAll('.player-color-input').forEach(input => {
                 input.onchange = (event) => {
                     const playerIndex = parseInt(event.target.id.replace('player-color-', '')) - 1;
@@ -1207,19 +890,12 @@
             });
         }
         
-        // Función para actualizar la barra del temporizador
         function updateTimer() {
             timeRemaining--;
             const percentage = (timeRemaining / TIMER_DURATION) * 100;
             timerBar.style.width = `${percentage}%`;
-            // Cambia el color de la barra a medida que el tiempo se agota
-            if (timeRemaining <= TIMER_DURATION / 2) {
-                timerBar.style.background = `linear-gradient(90deg, var(--ineco-rojo-incorrecto), var(--ineco-rojo-acento))`;
-            }
-
-            if (timeRemaining <= 0) {
-                timeUp();
-            }
+            if (timeRemaining <= TIMER_DURATION / 2) { timerBar.style.background = `linear-gradient(90deg, var(--ineco-rojo-incorrecto), var(--ineco-rojo-acento))`; }
+            if (timeRemaining <= 0) { timeUp(); }
         }
 
         function displayQuestion() {
@@ -1230,54 +906,41 @@
             if (feedbackTimer) clearTimeout(feedbackTimer);
             optionButtons.forEach(button => { button.disabled = true; button.classList.remove('correct', 'incorrect'); });
             
-            // Resetea el temporizador visual y lógico
             timeRemaining = TIMER_DURATION;
-            timerBar.style.transition = 'none'; // Desactiva la transición para el reseteo instantáneo
+            timerBar.style.transition = 'none';
             timerBar.style.width = '100%';
             timerBar.style.background = `linear-gradient(90deg, var(--ineco-rojo-acento), var(--ineco-azul-claro))`;
             
             setTimeout(() => {
-                // FIX: Check against the actual length of shuffledQuestions
-                if (currentQuestionIndex >= shuffledQuestions.length) {
-                    endGame();
-                    return;
-                }
+                if (currentQuestionIndex >= shuffledQuestions.length) { endGame(); return; }
                 const question = shuffledQuestions[currentQuestionIndex];
                 categoryNameSpan.textContent = question.category; 
-                
-                // Remove existing animation class before updating icon
                 categoryIcon.classList.remove('animate-category');
-                // Force reflow to restart animation
                 void categoryIcon.offsetWidth; 
-
                 switch (question.category) {
-                    case "Elementos Estructurales de la Vía": categoryIcon.className = 'fas fa-road'; break;
-                    case "Maquinaria y Herramientas": categoryIcon.className = 'fas fa-cogs'; break;
-                    case "Sistemas y Tecnologías": categoryIcon.className = 'fas fa-lightbulb'; break;
-                    default: categoryIcon.className = 'fas fa-question-circle';
+                    case "Elementos Estructurales de la Vía": categoryIcon.className = 'fas fa-road animate-category'; break;
+                    case "Maquinaria y Herramientas": categoryIcon.className = 'fas fa-cogs animate-category'; break;
+                    case "Sistemas y Tecnologías": categoryIcon.className = 'fas fa-lightbulb animate-category'; break;
+                    default: categoryIcon.className = 'fas fa-question-circle animate-category';
                 }
-                // Add animation class after updating icon
-                categoryIcon.classList.add('animate-category');
                 
                 currentPlayerTurnDisplay.classList.remove('animate-in');
-                // Incluye el avatar y el color del jugador actual
                 currentPlayerTurnDisplay.innerHTML = `<div class="player-score-avatar"><i class="${players[currentPlayerIndex].avatar}"></i></div> Turno de: ${players[currentPlayerIndex].name}`;
-                currentPlayerTurnDisplay.style.backgroundColor = players[currentPlayerIndex].color; // Aplicar color del jugador
-                void currentPlayerTurnDisplay.offsetWidth; // Trigger reflow for animation
+                currentPlayerTurnDisplay.style.backgroundColor = players[currentPlayerIndex].color;
+                void currentPlayerTurnDisplay.offsetWidth;
                 currentPlayerTurnDisplay.classList.add('animate-in');
                 questionTextP.textContent = question.pregunta;
                 optionButtons.forEach((button, index) => { button.textContent = question.opciones[index]; button.disabled = false; });
                 
-                // Vuelve a activar la transición y comienza el temporizador
                 timerBar.style.transition = 'width 1s linear, background 1s ease';
                 questionTimer = setInterval(updateTimer, 1000);
             }, 500);
         }
 
         function checkAnswer(selectedOption) {
-            clearInterval(questionTimer); // Detiene el temporizador
+            clearInterval(questionTimer);
             const q = shuffledQuestions[currentQuestionIndex];
-            const correct = q.respuestaCorrecta; // 'correct' ahora es 'A', 'B', 'C' o 'D'
+            const correct = q.respuestaCorrecta;
             const btn = optionsGridDiv.querySelector(`[data-option="${selectedOption}"]`);
             optionButtons.forEach(b => b.disabled = true);
             if (selectedOption === correct) {
@@ -1285,28 +948,21 @@
                 btn.classList.add('correct');
             } else {
                 btn.classList.add('incorrect');
-                // Ahora, 'correct' es la letra de la opción, lo que coincide con data-option
                 const correctButton = optionsGridDiv.querySelector(`[data-option="${correct}"]`);
-                if (correctButton) { // Añadir una comprobación de seguridad por si acaso
-                    correctButton.classList.add('correct');
-                }
+                if (correctButton) { correctButton.classList.add('correct'); }
             }
             feedbackTextP.textContent = q.explicacion;
             feedbackMessageDiv.classList.add('show');
             feedbackTimer = setTimeout(nextTurn, 5000);
         }
         
-        // Función para cuando se acaba el tiempo
         function timeUp() {
             clearInterval(questionTimer);
             const q = shuffledQuestions[currentQuestionIndex];
             const correct = q.respuestaCorrecta;
             optionButtons.forEach(b => b.disabled = true);
             const correctButton = optionsGridDiv.querySelector(`[data-option="${correct}"]`);
-            if (correctButton) { // Añadir una comprobación de seguridad por si acaso
-                correctButton.classList.add('correct');
-            }
-            
+            if (correctButton) { correctButton.classList.add('correct'); }
             feedbackTextP.textContent = "¡Se acabó el tiempo! " + q.explicacion;
             feedbackMessageDiv.classList.add('show');
             feedbackTimer = setTimeout(nextTurn, 5000);
@@ -1317,11 +973,7 @@
             if(questionTimer) clearInterval(questionTimer);
             feedbackMessageDiv.classList.remove('show');
             currentQuestionIndex++;
-            // FIX: Check against the actual length of shuffledQuestions
-            if (currentQuestionIndex >= shuffledQuestions.length) {
-                endGame();
-                return;
-            }
+            if (currentQuestionIndex >= shuffledQuestions.length) { endGame(); return; }
             currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
             displayQuestion();
         }
@@ -1329,10 +981,9 @@
         function startGame() { players.forEach(p => p.score = 0); currentPlayerIndex = 0; currentQuestionIndex = 0; usedRandomNames.clear(); usedRandomAvatars.clear(); usedRandomColors.clear(); const allQuestions = []; for (const category in gameData.preguntas) { gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category })); } shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame); showScreen(gameScreen); displayQuestion(); }
         
         function endGame() {
-            if (questionTimer) clearInterval(questionTimer); // Asegurarse de limpiar el timer
+            if (questionTimer) clearInterval(questionTimer);
             showScreen(endScreen);
             players.sort((a, b) => b.score - a.score);
-
             const podiumContainer = document.getElementById('podium-container');
             const otherScoresContainer = document.getElementById('other-scores-container');
             podiumContainer.innerHTML = '';
@@ -1341,87 +992,43 @@
 
             if (players.length > 0) {
                 const isTie = players.length > 1 && players[0].score === players[1].score;
-                
                 if (isTie) {
                     const tiedWinners = players.filter(p => p.score === players[0].score);
                     const winnerNamesHTML = tiedWinners.map(p => `<div class="winner-name">${p.name}</div>`).join('');
-                    winnerCardContainer.innerHTML = `
-                        <div class="winner-card" style="border-color: ${players[0].color};">
-                            <h3>¡EMPATE!</h3>
-                            <div class="trophy-icon"><i class="fas fa-handshake"></i></div>
-                            <div class="winner-names-tie">${winnerNamesHTML}</div>
-                            <div class="winner-score">Con ${players[0].score} puntos</div>
-                        </div>`;
+                    winnerCardContainer.innerHTML = `<div class="winner-card" style="border-color: var(--silver);"><h3>¡EMPATE!</h3><div class="trophy-icon"><i class="fas fa-handshake"></i></div><div class="winner-names-tie">${winnerNamesHTML}</div><div class="winner-score">Con ${players[0].score} puntos</div></div>`;
                 } else {
                     const winner = players[0];
-                    winnerCardContainer.innerHTML = `
-                        <div class="winner-card" style="border-color: ${winner.color};">
-                            <h3>¡GANADOR!</h3>
-                            <div class="trophy-icon"><i class="fas fa-trophy"></i></div>
-                            <div class="winner-avatar" style="background-color: ${winner.color};"><i class="${winner.avatar}"></i></div>
-                            <div class="winner-name">${winner.name}</div>
-                            <div class="winner-score">Con ${winner.score} puntos</div>
-                        </div>`;
+                    winnerCardContainer.innerHTML = `<div class="winner-card" style="border-color: ${winner.color};"><h3>¡GANADOR!</h3><div class="trophy-icon"><i class="fas fa-trophy"></i></div><div class="winner-avatar" style="background-color: ${winner.color};"><i class="${winner.avatar}"></i></div><div class="winner-name">${winner.name}</div><div class="winner-score">Con ${winner.score} puntos</div></div>`;
                 }
                 document.querySelector('.winner-card').classList.add('animate');
             }
 
             const podiumPlayers = players.slice(0, 3);
-            const podiumElementsWithRank = []; // Store objects with element and its rankClass
-
+            const podiumElementsWithRank = [];
             podiumPlayers.forEach((player, index) => {
                 const place = document.createElement('div');
-                let rankClass = '';
-                let rankIconHtml = '<i class="fas fa-medal"></i>'; // Default icon
-                if (index === 0) {
-                    rankClass = 'gold';
-                    rankIconHtml = '<i class="fas fa-trophy"></i>'; // Trophy icon for 1st place
-                } else if (index === 1) {
-                    rankClass = 'silver';
-                } else if (index === 2) {
-                    rankClass = 'bronze';
-                }
-                
-                // Apply base class and styles that define the *initial* state for animation
-                place.className = `podium-place`; // This class already has opacity: 0; transform: translateY(50px);
-                place.style.backgroundColor = player.color; // Apply player color
-                place.innerHTML = `
-                    <div class="podium-rank">${rankIconHtml}</div>
-                    <div class="podium-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div>
-                    <div class="podium-name">${player.name}</div>
-                    <div class="podium-score">${player.score} pts</div>
-                `;
+                let rankClass = '', rankIconHtml = '<i class="fas fa-medal"></i>';
+                if (index === 0) { rankClass = 'gold'; rankIconHtml = '<i class="fas fa-trophy"></i>'; }
+                else if (index === 1) { rankClass = 'silver'; }
+                else if (index === 2) { rankClass = 'bronze'; }
+                place.className = `podium-place`;
+                place.style.backgroundColor = player.color;
+                place.innerHTML = `<div class="podium-rank">${rankIconHtml}</div><div class="podium-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><div class="podium-name">${player.name}</div><div class="podium-score">${player.score} pts</div>`;
                 podiumElementsWithRank.push({ element: place, rankClass: rankClass });
             });
-            
-            // Append elements to the DOM in the desired order (2nd, 1st, 3rd)
-            // Then apply animation classes after a slight delay or reflow
             const sortedPodiumElementsToAppend = [];
-            if (podiumElementsWithRank[1]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[1]); // Silver
-            if (podiumElementsWithRank[0]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[0]); // Gold
-            if (podiumElementsWithRank[2]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[2]); // Bronze
+            if (podiumElementsWithRank[1]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[1]);
+            if (podiumElementsWithRank[0]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[0]);
+            if (podiumElementsWithRank[2]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[2]);
+            sortedPodiumElementsToAppend.forEach(item => { podiumContainer.appendChild(item.element); void item.element.offsetWidth; item.element.classList.add(item.rankClass); });
 
-            sortedPodiumElementsToAppend.forEach(item => {
-                podiumContainer.appendChild(item.element);
-                // Force reflow - this is crucial for the animation to restart on newly added elements
-                void item.element.offsetWidth;
-                // Add the class that triggers the animation with its specific delay
-                item.element.classList.add(item.rankClass);
-            });
-
-            // FIX: Ensure otherPlayers is only processed if there are players to avoid ReferenceError
-            if (players.length > 0) {
+            if (players.length > 3) {
                 const otherPlayers = players.slice(3);
                 otherPlayers.forEach((player, index) => {
                     const card = document.createElement('div');
                     card.className = 'player-card';
                     card.style.animationDelay = `${1.8 + index * 0.2}s`;
-                    card.innerHTML = `
-                        <span class="rank">#${index + 4}</span>
-                        <div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div>
-                        <span class="name">${player.name}</span>
-                        <span class="score">${player.score} puntos</span>
-                    `;
+                    card.innerHTML = `<span class="rank">#${index + 4}</span><div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><span class="name">${player.name}</span><span class="score">${player.score} puntos</span>`;
                     otherScoresContainer.appendChild(card);
                 });
             }
@@ -1429,17 +1036,17 @@
         }
 
         function generateConfetti() {
-            const confettiContainer = document.getElementById('confetti-container');
-            confettiContainer.innerHTML = ''; // Limpiar confeti anterior
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
             const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
             for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti-piece';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.animationDelay = `${Math.random() * 2}s`;
-                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                confettiContainer.appendChild(confetti);
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.left = `${Math.random() * 100}%`;
+                piece.style.animationDelay = `${Math.random() * 2}s`;
+                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(piece);
             }
         }
         
@@ -1447,17 +1054,16 @@
             modalScoreList.innerHTML = '';
             const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
             const leaderScore = sortedPlayers.length > 0 ? sortedPlayers[0].score : 0;
+            const maxQuestionsPerPlayer = questionsPerPlayer;
             sortedPlayers.forEach((player, index) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'score-card-modal';
                 listItem.style.animationDelay = `${index * 0.1}s`;
-                // Aplicar color del jugador al borde izquierdo
                 listItem.style.borderLeftColor = player.color;
-
                 let rankDisplay = `#${index + 1}`;
                 if (index === 0 && leaderScore > 0) { listItem.classList.add('is-leader'); rankDisplay = '<i class="fas fa-crown"></i>'; }
                 if (players[currentPlayerIndex] && players[currentPlayerIndex].name === player.name) { listItem.classList.add('is-current-player'); }
-                const progress = leaderScore > 0 ? (player.score / leaderScore) * 100 : 0;
+                const progress = maxQuestionsPerPlayer > 0 ? (player.score / maxQuestionsPerPlayer) * 100 : 0;
                 listItem.innerHTML = `
                     <div class="score-card-rank">${rankDisplay}</div>
                     <div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div>
@@ -1467,14 +1073,12 @@
                             <div class="score-progress-bar-fg" style="width: ${progress}%; background: linear-gradient(90deg, ${player.color}, ${lightenColor(player.color, 30)}); "></div>
                         </div>
                     </div>
-                    <div class="score-card-score">${player.score}</div>
-                `;
+                    <div class="score-card-score">${player.score}</div>`;
                 modalScoreList.appendChild(listItem);
             });
             scoreModal.classList.add('active');
         }
 
-        // Función auxiliar para aclarar un color (para el gradiente de la barra de progreso)
         function lightenColor(hex, percent) {
             var f=parseInt(hex.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=(f>>8)&0x00FF,B=(f)&0x0000FF;
             return "#"+(0x1000000+(Math.round((t-R)*p/100)+R)*0x10000+(Math.round((t-G)*p/100)+G)*0x100+(Math.round((t-B)*p/100)+B)).toString(16).slice(1);
@@ -1484,30 +1088,23 @@
         function showConfirmExitModal() { confirmExitModal.classList.add('active'); }
         function hideConfirmExitModal() { confirmExitModal.classList.remove('active'); }
         
-        // Funciones para el modal de selección de avatares
         function openAvatarSelectionModal(playerIndex) {
             currentPlayerAvatarSelectionIndex = playerIndex;
-            avatarGrid.innerHTML = ''; // Limpia el grid de avatares anterior
+            avatarGrid.innerHTML = '';
             avatarIcons.forEach(iconClass => {
-                const avatarOption = document.createElement('div');
-                avatarOption.className = 'avatar-option';
-                avatarOption.innerHTML = `<i class="${iconClass}"></i>`;
-                avatarOption.dataset.iconClass = iconClass;
-                // Marca el avatar actualmente seleccionado
-                if (players[playerIndex].avatar === iconClass) {
-                    avatarOption.classList.add('selected');
-                }
-                avatarOption.onclick = () => {
-                    selectAvatar(playerIndex, iconClass);
-                };
-                avatarGrid.appendChild(avatarOption);
+                const option = document.createElement('div');
+                option.className = 'avatar-option';
+                option.innerHTML = `<i class="${iconClass}"></i>`;
+                option.dataset.iconClass = iconClass;
+                if (players[playerIndex].avatar === iconClass) { option.classList.add('selected'); }
+                option.onclick = () => { selectAvatar(playerIndex, iconClass); };
+                avatarGrid.appendChild(option);
             });
             avatarSelectionModal.classList.add('active');
         }
 
         function selectAvatar(playerIndex, iconClass) {
             players[playerIndex].avatar = iconClass;
-            // Actualiza el avatar visible en la pantalla de configuración de jugadores
             document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"] .player-avatar`).className = `player-avatar ${iconClass}`;
             hideAvatarSelectionModal();
         }
@@ -1517,83 +1114,59 @@
             currentPlayerAvatarSelectionIndex = -1;
         }
 
-        // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Asignar los datos de preguntas incrustados directamente
             gameData = initialGameData;
-            initializeEventListeners();
             
-            function initializeEventListeners() {
-                // Calcular el número máximo de preguntas disponibles a partir de los datos incrustados
-                const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
-                
-                startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); updatePlayerInputs(); });
-                decreasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) > 1) { playerCountSpan.textContent--; updatePlayerInputs(); } });
-                increasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) < 5) { playerCountSpan.textContent++; updatePlayerInputs(); } });
-                
-                startMatchBtn.addEventListener('click', () => { 
-                    let valid = true; 
-                    for (let i = 0; i < parseInt(playerCountSpan.textContent); i++) { 
-                        const input = document.getElementById(`player-name-${i + 1}`); 
-                        const name = input.value.trim(); 
-                        if (!name) { 
-                            valid = false; 
-                            input.style.borderColor = 'red'; 
-                        } else { 
-                            input.style.borderColor = ''; 
-                            // Actualiza el nombre del jugador en el array 'players'
-                            players[i].name = name;
-                        } 
-                    } 
-                    if (valid) {
-                        // Calcular maxQuestionsAvailable aquí ya que depende de gameData
-                        // y players.length puede haber cambiado
-                        const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
-                        const maxRoundsPerPlayer = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 0;
+            const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
+            
+            startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); updatePlayerInputs(); });
+            decreasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) > 1) { playerCountSpan.textContent--; updatePlayerInputs(); } });
+            increasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) < 10) { playerCountSpan.textContent++; updatePlayerInputs(); } });
+            
+            startMatchBtn.addEventListener('click', () => { 
+                let valid = true; 
+                for (let i = 0; i < parseInt(playerCountSpan.textContent); i++) { 
+                    const input = document.getElementById(`player-name-${i + 1}`); 
+                    const name = input.value.trim(); 
+                    if (!name) { valid = false; input.style.borderColor = 'red'; } 
+                    else { input.style.borderColor = ''; players[i].name = name; } 
+                } 
+                if (valid) {
+                    const maxRoundsPerPlayer = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 0;
+                    let currentRoundCount = parseInt(roundCountSpan.textContent);
+                    if (currentRoundCount > maxRoundsPerPlayer) { roundCountSpan.textContent = maxRoundsPerPlayer; }
+                    else if (currentRoundCount === 0 && maxRoundsPerPlayer > 0) { roundCountSpan.textContent = 1; }
+                    showScreen(roundConfigScreen); 
+                }
+            });
 
-                        // Asegurarse de que roundCount no exceda el nuevo maxRoundsPerPlayer
-                        let currentRoundCount = parseInt(roundCountSpan.textContent);
-                        if (currentRoundCount > maxRoundsPerPlayer) {
-                            roundCountSpan.textContent = maxRoundsPerPlayer;
-                        } else if (currentRoundCount === 0 && maxRoundsPerPlayer > 0) {
-                             // Si el contador es 0 y hay preguntas disponibles, establecerlo a 1
-                            roundCountSpan.textContent = 1;
-                        }
-                        showScreen(roundConfigScreen); 
-                    }
-                });
-
-                decreaseRoundsBtn.addEventListener('click', () => { let count = parseInt(roundCountSpan.textContent); if (count > 1) roundCountSpan.textContent = --count; });
-                increaseRoundsBtn.addEventListener('click', () => { 
-                    let count = parseInt(roundCountSpan.textContent); 
-                    // Recalcular max aquí también para asegurar que esté actualizado
-                    const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
-                    const max = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 0;
-                    if (count < max) roundCountSpan.textContent = ++count; 
-                });
-                startGameFromRoundsBtn.addEventListener('click', () => { questionsPerPlayer = parseInt(roundCountSpan.textContent); questionsPerGame = questionsPerPlayer * players.length; startGame(); });
-                optionButtons.forEach(b => b.addEventListener('click', e => checkAnswer(e.target.dataset.option)));
-                showScoreBtn.addEventListener('click', showScoreModal);
-                playAgainBtn.addEventListener('click', () => { winnerCardContainer.innerHTML = ''; showScreen(splashScreen); });
-                
-                // Manejador de eventos para los botones de cerrar
-                document.querySelectorAll('.close-btn').forEach(b => b.addEventListener('click', e => { 
-                    const target = e.target.dataset.targetScreen; 
-                    if (target === 'confirm-exit') showConfirmExitModal(); 
-                    else if (target === 'hide-modal') hideScoreModal(); 
-                    else if (target === 'hide-avatar-modal') hideAvatarSelectionModal(); // Nuevo manejador para el modal de avatar
-                    else showScreen(document.getElementById(target)); 
-                }));
-                
-                confirmExitYesBtn.addEventListener('click', () => { 
-                    if (questionTimer) clearInterval(questionTimer); // Asegurarse de limpiar el timer
-                    hideConfirmExitModal(); 
-                    showScreen(splashScreen); 
-                });
-                
-                confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
-                closeFeedbackBtn.addEventListener('click', nextTurn);
-            }
+            decreaseRoundsBtn.addEventListener('click', () => { let count = parseInt(roundCountSpan.textContent); if (count > 1) roundCountSpan.textContent = --count; });
+            increaseRoundsBtn.addEventListener('click', () => { 
+                let count = parseInt(roundCountSpan.textContent); 
+                const max = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 0;
+                if (count < max) roundCountSpan.textContent = ++count; 
+            });
+            startGameFromRoundsBtn.addEventListener('click', () => { questionsPerPlayer = parseInt(roundCountSpan.textContent); questionsPerGame = questionsPerPlayer * players.length; startGame(); });
+            optionButtons.forEach(b => b.addEventListener('click', e => checkAnswer(e.target.dataset.option)));
+            showScoreBtn.addEventListener('click', showScoreModal);
+            playAgainBtn.addEventListener('click', () => { winnerCardContainer.innerHTML = ''; showScreen(splashScreen); });
+            
+            document.querySelectorAll('.close-btn').forEach(b => b.addEventListener('click', e => { 
+                const target = e.target.dataset.targetScreen; 
+                if (target === 'confirm-exit') showConfirmExitModal(); 
+                else if (target === 'hide-modal') hideScoreModal(); 
+                else if (target === 'hide-avatar-modal') hideAvatarSelectionModal();
+                else showScreen(document.getElementById(target)); 
+            }));
+            
+            confirmExitYesBtn.addEventListener('click', () => { 
+                if (questionTimer) clearInterval(questionTimer);
+                hideConfirmExitModal(); 
+                showScreen(splashScreen); 
+            });
+            
+            confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
+            closeFeedbackBtn.addEventListener('click', nextTurn);
         });
     </script>
 </body>
