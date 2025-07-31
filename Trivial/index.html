@@ -42,29 +42,73 @@
         .player-count-selector button, .round-count-selector button { background-color: var(--ineco-azul-claro); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5em; cursor: pointer; }
         .player-count-selector span, .round-count-selector span { font-size: 1.8em; font-weight: 600; color: var(--ineco-azul-principal); margin: 0 20px; }
         #player-inputs { width: 100%; max-width: 600px; margin-bottom: 30px; }
-        .player-input-group { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .avatar-selector { width: 50px; height: 50px; border-radius: 50%; background-color: var(--ineco-gris-claro); cursor: pointer; font-size: 2em; display: flex; justify-content: center; align-items: center; transition: transform 0.2s; flex-shrink: 0; }
-        .avatar-selector:hover { transform: scale(1.1); }
-        .player-input-group label { display: none; }
+        .player-input-group { display: flex; align-items: center; margin-bottom: 15px; }
+        .player-input-group label { font-weight: 500; margin-right: 15px; min-width: 80px; text-align: right; }
         .player-input-group input[type="text"] { flex-grow: 1; padding: 12px 15px; border: 2px solid var(--ineco-gris-claro); border-radius: 8px; }
-        .player-input-group .random-name-btn { background-color: var(--ineco-rojo-acento); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; flex-shrink: 0; }
+        .player-input-group .random-name-btn { background-color: var(--ineco-rojo-acento); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-left: 10px; }
+        .player-input-group .player-color-input {
+            width: 40px;
+            height: 40px;
+            border: none;
+            padding: 0;
+            margin-left: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            -webkit-appearance: none; /* Remove default styling for Chrome/Safari */
+            -moz-appearance: none;    /* Remove default styling for Firefox */
+            appearance: none;
+            background-color: transparent; /* Make background transparent to show chosen color */
+        }
+        .player-input-group .player-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+        .player-input-group .player-color-input::-webkit-color-swatch { border: none; border-radius: 6px; }
+        .player-input-group .player-color-input::-moz-color-swatch { border: none; border-radius: 6px; }
+
+
         #game-screen { padding: 30px; justify-content: flex-start; padding-top: 100px; }
         #current-player-turn-display { font-size: 1.5em; font-weight: 600; color: var(--ineco-blanco-puro); background-color: var(--ineco-azul-principal); position: absolute; left: 50%; transform: translateX(-50%); top: 55px; white-space: nowrap; z-index: 15; padding: 10px 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; opacity: 0; }
         #current-player-turn-display.animate-in { animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        #current-player-turn-display .avatar-display { font-size: 1.2em; }
         @keyframes bounce-in { 0% { opacity: 0; transform: translateX(-50%) scale(0.3) translateY(-50px); } 50% { opacity: 1; transform: translateX(-50%) scale(1.1) translateY(0); } 70% { transform: translateX(-50%) scale(0.9) translateY(0); } 100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); } }
         #show-score-btn { position: absolute; top: 20px; right: 70px; background: none; border: none; font-size: 2em; color: var(--ineco-azul-principal); cursor: pointer; z-index: 20; }
         #question-area { background-color: var(--ineco-gris-claro); border-radius: 15px; padding: 30px; margin-bottom: 20px; width: 100%; box-shadow: inset 0 3px 8px rgba(0,0,0,0.15); }
         .category-display { font-size: 1.2em; font-weight: 500; color: var(--ineco-azul-principal); display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
         .category-display i { color: var(--ineco-rojo-acento); margin-right: 10px; }
+
+        /* New animation for category icon */
+        .category-display i.animate-category {
+            animation: category-pulse 0.8s ease-out;
+        }
+        @keyframes category-pulse {
+            0% { transform: scale(1); color: var(--ineco-rojo-acento); }
+            50% { transform: scale(1.2); color: var(--ineco-azul-principal); }
+            100% { transform: scale(1); color: var(--ineco-rojo-acento); }
+        }
+
         #question-text { font-size: 1.6em; font-weight: 600; color: var(--ineco-azul-principal); margin-bottom: 25px; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
         .option-btn { background-color: var(--ineco-azul-claro); color: white; border: none; padding: 15px 20px; border-radius: 10px; font-size: 1.1em; text-align: left; cursor: pointer; }
         .option-btn:hover { background-color: var(--ineco-azul-principal); }
-        .option-btn.correct { background-color: var(--ineco-verde-correcto); animation: pulse-correct 0.5s ease-out; }
-        .option-btn.incorrect { background-color: var(--ineco-rojo-incorrecto); animation: shake-incorrect 0.5s ease-out; }
-        @keyframes pulse-correct { 50% { transform: scale(1.03); } }
-        @keyframes shake-incorrect { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+
+        /* Updated Animations for Feedback */
+        .option-btn.correct {
+            background-color: var(--ineco-verde-correcto);
+            animation: pulse-correct 0.6s ease-out forwards;
+        }
+        @keyframes pulse-correct {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(76, 175, 80, 0.9); }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--ineco-rojo-incorrecto);
+            animation: shake-incorrect 0.6s ease-out;
+        }
+        @keyframes shake-incorrect {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
         #feedback-message { background-color: var(--ineco-azul-aun-mas-claro); color: white; padding: 15px; border-radius: 10px; margin-top: 20px; opacity: 0; transition: opacity 0.5s; position:relative; }
         #feedback-message.show { opacity: 1; }
         #close-feedback-btn { position: absolute; top: 5px; right: 5px; background: none; border: none; font-size: 1.5em; color: white; cursor: pointer; }
@@ -77,13 +121,13 @@
         @keyframes slideInFromLeft { to { opacity: 1; transform: translateX(0); } }
         .score-card-modal.is-leader { border-left-color: var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
         .score-card-modal.is-current-player { box-shadow: 0 0 15px var(--ineco-azul-aun-mas-claro); border-left-color: var(--ineco-azul-principal); }
-        .score-card-rank { font-size: 1.5em; font-weight: 700; color: var(--ineco-gris-oscuro); min-width: 40px; text-align: center; flex-shrink: 0; }
+        .score-card-rank { font-size: 1.5em; font-weight: 700; color: var(--ineco-gris-oscuro); min-width: 40px; text-align: center; }
         .score-card-rank .fa-crown { color: var(--gold); }
         .score-card-details { flex-grow: 1; }
         .score-card-name { font-weight: 600; font-size: 1.1em; color: var(--ineco-gris-oscuro); }
         .score-progress-bar-bg { background-color: #d1d1d1; border-radius: 5px; height: 10px; margin-top: 5px; overflow: hidden; }
         .score-progress-bar-fg { background: linear-gradient(90deg, var(--ineco-azul-claro), var(--ineco-azul-principal)); height: 100%; width: 0%; border-radius: 5px; transition: width 0.5s ease-out; }
-        .score-card-score { font-size: 1.6em; font-weight: 700; color: var(--ineco-azul-principal); flex-shrink: 0; }
+        .score-card-score { font-size: 1.6em; font-weight: 700; color: var(--ineco-azul-principal); }
         #end-screen { justify-content: space-around; }
         #end-screen h2 { font-size: 2.5em; font-weight: 800; color: var(--ineco-azul-principal); animation: fadeInDown 0.8s ease-out; }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
@@ -97,10 +141,25 @@
         .winner-card .winner-names-tie { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         .winner-card .winner-names-tie .winner-name { font-size: 1.8em; }
         .podium-container { display: flex; align-items: flex-end; justify-content: center; gap: 10px; width: 100%; height: 200px; margin-top: 10px; margin-bottom: 20px; }
-        .podium-place { width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; border-top-left-radius: 10px; border-top-right-radius: 10px; color: white; padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0; transform: translateY(50px); animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .podium-place.gold { background-color: var(--gold); height: 100%; animation-delay: 1.2s; }
-        .podium-place.silver { background-color: var(--silver); height: 80%; animation-delay: 1.4s; }
-        .podium-place.bronze { background-color: var(--bronze); height: 60%; animation-delay: 1.6s; }
+        .podium-place { 
+            width: 30%; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-end; 
+            text-align: center; 
+            border-top-left-radius: 10px; 
+            border-top-right-radius: 10px; 
+            color: white; 
+            padding: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            opacity: 0; 
+            transform: translateY(50px); 
+            /* animation property moved to specific rank classes */
+        }
+        .podium-place.gold { background-color: var(--gold); height: 100%; animation-delay: 1.2s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .podium-place.silver { background-color: var(--silver); height: 80%; animation-delay: 1.4s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .podium-place.bronze { background-color: var(--bronze); height: 60%; animation-delay: 1.6s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes podium-rise { to { opacity: 1; transform: translateY(0); } }
         .podium-place .podium-name { font-size: 1.2em; font-weight: 700; word-break: break-word; }
         .podium-place .podium-score { font-size: 1em; font-weight: 500; }
@@ -115,11 +174,104 @@
         #confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: 0; }
         .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; opacity: 0; animation: confetti-fall 4s ease-out forwards; }
         @keyframes confetti-fall { 0% { transform: translateY(-100px); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(100vh); opacity: 0; } }
-        #avatar-modal .modal-content { max-width: 700px; }
-        .avatar-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; }
-        .avatar-option { width: 80px; height: 80px; border-radius: 50%; background-color: var(--ineco-gris-claro); font-size: 3em; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; }
-        .avatar-option:hover { background-color: var(--ineco-azul-claro); color: white; transform: scale(1.1); }
+        
         @media (max-width: 768px) { .score-card-rank { font-size: 1.2em; min-width: 30px; } .score-card-name { font-size: 1em; } .score-card-score { font-size: 1.3em; } }
+
+        /* --- ESTILOS PARA EL TEMPORIZADOR --- */
+        #timer-container {
+            width: 100%;
+            height: 10px;
+            background-color: var(--ineco-gris-claro);
+            border: 2px solid var(--ineco-azul-aun-mas-claro);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        #timer-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, var(--ineco-rojo-acento), var(--ineco-azul-claro));
+            border-radius: 8px;
+            transition: width 1s linear, background 1s ease;
+        }
+
+        /* --- ESTILOS PARA AVATARES --- */
+        .player-avatar-container {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--ineco-azul-claro);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            cursor: pointer;
+            border: 2px solid var(--ineco-azul-principal);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .player-avatar-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .player-avatar {
+            font-size: 1.8em;
+            color: white;
+        }
+
+        /* Modal para selección de avatar */
+        #avatar-selection-modal .modal-content {
+            max-width: 600px;
+        }
+        #avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .avatar-option {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--ineco-gris-claro);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .avatar-option:hover {
+            background-color: var(--ineco-azul-aun-mas-claro);
+            border-color: var(--ineco-azul-principal);
+            transform: scale(1.05);
+        }
+        .avatar-option.selected {
+            border-color: var(--ineco-rojo-acento);
+            box-shadow: 0 0 15px rgba(203, 24, 35, 0.5);
+            transform: scale(1.1);
+        }
+        .avatar-option i {
+            font-size: 2.5em;
+            color: var(--ineco-azul-principal);
+        }
+
+        /* Avatars en pantalla de juego, puntuación y fin de partida */
+        .player-score-avatar, .winner-avatar, .podium-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--ineco-azul-claro);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+        }
+        .player-score-avatar i, .winner-avatar i, .podium-avatar i {
+            font-size: 1.5em;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -127,32 +279,47 @@
         <!-- Contenido HTML de las pantallas -->
         <div class="ineco-logo">ineco</div>
         <div id="splash-screen" class="screen active">
-            <h1>Trivial Ferroviario de Alta Velocidad</h1><button id="start-game-btn" class="btn">Iniciar Juego</button>
+            <h1>Trivial Ferroviario de Alta Velocidad</h1>
+            <button id="start-game-btn" class="btn">Iniciar Juego</button>
         </div>
         <div id="player-config-screen" class="screen">
             <button class="close-btn" data-target-screen="splash-screen">×</button>
             <h2>Configuración de Partida</h2>
-            <div class="player-count-selector"><button id="decrease-players-btn">-</button><span id="player-count">1</span><button id="increase-players-btn">+</button></div>
+            <div class="player-count-selector">
+                <button id="decrease-players-btn">-</button><span id="player-count">1</span><button id="increase-players-btn">+</button>
+            </div>
             <div id="player-inputs"></div>
             <button id="start-match-btn" class="btn">Empezar Partida</button>
         </div>
         <div id="round-config-screen" class="screen">
             <button class="close-btn" data-target-screen="player-config-screen">×</button>
             <h2>¿Cuántas preguntas por jugador?</h2>
-            <div class="round-count-selector"><button id="decrease-rounds-btn">-</button><span id="round-count">5</span><button id="increase-rounds-btn">+</button></div>
+            <div class="round-count-selector">
+                <button id="decrease-rounds-btn">-</button><span id="round-count">5</span><button id="increase-rounds-btn">+</button>
+            </div>
             <button id="start-game-from-rounds-btn" class="btn">¡A Jugar!</button>
         </div>
         <div id="game-screen" class="screen">
-            <button class="close-btn" data-target-screen="confirm-exit">×</button><button id="show-score-btn" class="fas fa-medal"></button><span id="current-player-turn-display"></span>
+            <button class="close-btn" data-target-screen="confirm-exit">×</button>
+            <button id="show-score-btn" class="fas fa-medal"></button>
+            <span id="current-player-turn-display"></span>
             <div id="question-area">
+                <!-- ELEMENTO HTML PARA EL TEMPORIZADOR -->
+                <div id="timer-container">
+                    <div id="timer-bar"></div>
+                </div>
                 <div class="category-display"><i id="category-icon" class="fas fa-question-circle"></i><span id="category-name">Categoría</span></div>
                 <p id="question-text">Cargando pregunta...</p>
                 <div id="options-grid" class="options-grid">
-                    <button class="option-btn" data-option="A">A) Opción 1</button><button class="option-btn" data-option="B">B) Opción 2</button><button class="option-btn" data-option="C">C) Opción 3</button><button class="option-btn" data-option="D">D) Opción 4</button>
+                    <button class="option-btn" data-option="A">A) Opción 1</button>
+                    <button class="option-btn" data-option="B">B) Opción 2</button>
+                    <button class="option-btn" data-option="C">C) Opción 3</button>
+                    <button class="option-btn" data-option="D">D) Opción 4</button>
                 </div>
             </div>
             <div id="feedback-message">
-                <p id="feedback-text"></p><button id="close-feedback-btn" class="close-feedback-btn">×</button>
+                <p id="feedback-text"></p>
+                <button id="close-feedback-btn" class="close-feedback-btn">×</button>
             </div>
         </div>
         <div id="end-screen" class="screen">
@@ -173,66 +340,649 @@
         </div>
         <div id="confirm-exit-modal" class="modal-overlay">
             <div class="modal-content">
-                <h3>¿Estás seguro que quieres salir?</h3><p>Se perderá el progreso actual de la partida.</p><button id="confirm-exit-yes" class="btn">Sí, salir</button><button id="confirm-exit-no" class="btn">No, continuar</button>
+                <h3>¿Estás seguro que quieres salir?</h3>
+                <p>Se perderá el progreso actual de la partida.</p>
+                <button id="confirm-exit-yes" class="btn">Sí, salir</button>
+                <button id="confirm-exit-no" class="btn">No, continuar</button>
             </div>
         </div>
-        <div id="avatar-modal" class="modal-overlay">
+        <!-- Nuevo modal para la selección de avatares -->
+        <div id="avatar-selection-modal" class="modal-overlay">
             <div class="modal-content">
-                <button class="close-btn" id="close-avatar-modal">×</button>
+                <button class="close-btn" data-target-screen="hide-avatar-modal">×</button>
                 <h3>Elige tu Avatar</h3>
-                <div id="avatar-gallery" class="avatar-gallery"></div>
+                <div id="avatar-grid">
+                    <!-- Los avatares se cargarán aquí dinámicamente con JavaScript -->
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         // --- VARIABLES GLOBALES Y REFERENCIAS ---
-        let gameData = {}, players = [], currentPlayerIndex = 0, currentQuestionIndex = 0, questionsPerGame = 0, questionsPerPlayer = 5, shuffledQuestions = [], feedbackTimer = null;
-        const availableAvatars = ['🚂', '🚄', '🛤️', '🚦', '🧑‍🔧', '🗺️', '🎫', '🌉', '🔩', '⏱️'];
+        let gameData = {};
+        let players = [];
+        let currentPlayerIndex = 0;
+        let currentQuestionIndex = 0;
+        let questionsPerGame = 0;
+        let questionsPerPlayer = 5;
+        let shuffledQuestions = [];
+        let feedbackTimer = null;
+
+        // Nuevas variables para el temporizador
+        const TIMER_DURATION = 20; // Segundos por pregunta
+        let timeRemaining = TIMER_DURATION;
+        let questionTimer = null;
+
+        // Datos de preguntas incrustados para pruebas
+        const initialGameData = {
+            "preguntas": {
+                "Elementos Estructurales de la Vía": [
+                    {
+                        "pregunta": "¿Qué elemento de la vía férrea se encarga de transmitir las cargas de los carriles al balasto?",
+                        "opciones": ["A) Carril", "B) Brida", "C) Traviesa", "D) Tirafondo"],
+                        "respuestaCorrecta": "C",
+                        "explicacion": "La traviesa es el elemento transversal que recibe la carga del carril y la transmite al balasto, manteniendo la geometría de la vía."
+                    },
+                    {
+                        "pregunta": "¿Cuál es la función principal del balasto en la superestructura de la vía?",
+                        "opciones": ["A) Conducir la electricidad", "B) Drenar el agua y distribuir cargas", "C) Fijar los carriles directamente", "D) Absorber el ruido del tren"],
+                        "respuestaCorrecta": "B",
+                        "explicacion": "El balasto, compuesto por grava, drena el agua y distribuye uniformemente las cargas de las traviesas al terraplén."
+                    },
+                    {
+                        "pregunta": "¿Qué tipo de carril se utiliza comúnmente en las líneas de alta velocidad en España?",
+                        "opciones": ["A) UIC 54", "B) ASCE 60", "C) UIC 60", "D) RE 70"],
+                        "respuestaCorrecta": "C",
+                        "explicacion": "El carril UIC 60 es el estándar en las líneas de alta velocidad españolas debido a su mayor resistencia y capacidad para soportar grandes cargas."
+                    }
+                ],
+                "Maquinaria y Herramientas": [
+                    {
+                        "pregunta": "¿Qué máquina se utiliza para compactar el balasto bajo las traviesas y mejorar la estabilidad de la vía?",
+                        "opciones": ["A) Desguarnecedora", "B) Bateadora", "C) Perfiladora", "D) Soldadora de carril"],
+                        "respuestaCorrecta": "B",
+                        "explicacion": "La bateadora es una máquina fundamental para el mantenimiento de la vía, encargada de compactar el balasto y nivelar la vía."
+                    },
+                    {
+                        "pregunta": "¿Cuál es la función de una perfiladora de balasto?",
+                        "opciones": ["A) Excavar zanjas", "B) Distribuir y dar forma al balasto", "C) Cortar carriles", "D) Medir la geometría de la vía"],
+                        "respuestaCorrecta": "B",
+                        "explicacion": "La perfiladora de balasto se encarga de distribuir el balasto de manera uniforme y darle la forma adecuada en la sección transversal de la vía."
+                    }
+                ],
+                "Sistemas y Tecnologías": [
+                    {
+                        "pregunta": "¿Qué sistema de señalización se utiliza en las líneas de alta velocidad europeas para controlar la velocidad y garantizar la seguridad?",
+                        "opciones": ["A) ASFA", "B) LZB", "C) ERTMS", "D) ATP"],
+                        "respuestaCorrecta": "C",
+                        "explicacion": "El ERTMS (European Rail Traffic Management System) es el sistema de señalización y control de trenes estándar en Europa para las líneas de alta velocidad."
+                    },
+                    {
+                        "pregunta": "¿Qué tecnología permite a los trenes de alta velocidad circular a velocidades muy elevadas sin contacto directo con el carril?",
+                        "opciones": ["A) Levitation magnética (Maglev)", "B) Tracción diésel", "C) Frenado regenerativo", "D) Vía en placa"],
+                        "respuestaCorrecta": "A",
+                        "explicacion": "La levitación magnética o Maglev permite que el tren flote sobre la vía, eliminando la fricción y permitiendo velocidades extremas."
+                    }
+                ]
+            }
+        };
+
         const randomRailwayNames = ["Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss", "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan", "Amolador As", "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil", "Biela Veloz", "Trenelito", "Vía Láctea", "Pantógrafo Power", "Señor Señal", "Cat-enaria", "Ingeniero Rieles", "Desvío Divertido", "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante", "Soldador Sergio", "Frenada Fantástica", "Inspector Javier"];
-        let usedRandomNames = new Set(), playerIndexToEdit = 0;
-        const splashScreen = document.getElementById('splash-screen'), playerConfigScreen = document.getElementById('player-config-screen'), roundConfigScreen = document.getElementById('round-config-screen'), gameScreen = document.getElementById('game-screen'), endScreen = document.getElementById('end-screen'), startGameBtn = document.getElementById('start-game-btn'), decreasePlayersBtn = document.getElementById('decrease-players-btn'), increasePlayersBtn = document.getElementById('increase-players-btn'), playerCountSpan = document.getElementById('player-count'), playerInputsDiv = document.getElementById('player-inputs'), startMatchBtn = document.getElementById('start-match-btn'), decreaseRoundsBtn = document.getElementById('decrease-rounds-btn'), increaseRoundsBtn = document.getElementById('increase-rounds-btn'), roundCountSpan = document.getElementById('round-count'), startGameFromRoundsBtn = document.getElementById('start-game-from-rounds-btn'), currentPlayerTurnDisplay = document.getElementById('current-player-turn-display'), questionTextP = document.getElementById('question-text'), optionsGridDiv = document.getElementById('options-grid'), optionButtons = optionsGridDiv.querySelectorAll('.option-btn'), feedbackMessageDiv = document.getElementById('feedback-message'), feedbackTextP = document.getElementById('feedback-text'), closeFeedbackBtn = document.getElementById('close-feedback-btn'), winnerCardContainer = document.getElementById('winner-announcement-card'), playAgainBtn = document.getElementById('play-again-btn'), scoreModal = document.getElementById('score-modal'), modalScoreList = document.getElementById('modal-score-list'), showScoreBtn = document.getElementById('show-score-btn'), confirmExitModal = document.getElementById('confirm-exit-modal'), confirmExitYesBtn = document.getElementById('confirm-exit-yes'), confirmExitNoBtn = document.getElementById('confirm-exit-no'), avatarModal = document.getElementById('avatar-modal'), avatarGallery = document.getElementById('avatar-gallery'), closeAvatarModalBtn = document.getElementById('close-avatar-modal');
+        let usedRandomNames = new Set();
+
+        // Avatares temáticos de ferrocarril y medios de transporte (10 opciones relevantes y atractivas)
+        const avatarIcons = [
+            'fas fa-train',          // Tren genérico
+            'fas fa-locomotive',     // Locomotora
+            'fas fa-subway',         // Metro/Subterráneo
+            'fas fa-tram',           // Tranvía
+            'fas fa-bus',            // Autobús
+            'fas fa-car-side',       // Coche
+            'fas fa-plane',          // Avión
+            'fas fa-ship',           // Barco
+            'fas fa-bicycle',        // Bicicleta
+            'fas fa-truck-ramp-box'  // Camión/Vagón de carga
+        ];
+        let usedRandomAvatars = new Set(); // Para asegurar avatares aleatorios únicos si es posible
+
+        // Colores predefinidos para los jugadores
+        const defaultPlayerColors = [
+            '#FF6347', // Rojo Tomate
+            '#4682B4', // Azul Acero
+            '#32CD32', // Verde Lima
+            '#FFD700', // Oro
+            '#8A2BE2', // Azul Violeta
+            '#00CED1', // Turquesa Oscuro
+            '#FF8C00', // Naranja Oscuro
+            '#DA70D6', // Orquídea
+            '#ADFF2F', // Verde Amarillo
+            '#DC143C'  // Carmesí
+        ];
+        let usedRandomColors = new Set();
+
+        const splashScreen = document.getElementById('splash-screen');
+        const playerConfigScreen = document.getElementById('player-config-screen');
+        const roundConfigScreen = document.getElementById('round-config-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const decreasePlayersBtn = document.getElementById('decrease-players-btn');
+        const increasePlayersBtn = document.getElementById('increase-players-btn');
+        const playerCountSpan = document.getElementById('player-count');
+        const playerInputsDiv = document.getElementById('player-inputs');
+        const startMatchBtn = document.getElementById('start-match-btn');
+        const decreaseRoundsBtn = document.getElementById('decrease-rounds-btn');
+        const increaseRoundsBtn = document.getElementById('increase-rounds-btn');
+        const roundCountSpan = document.getElementById('round-count');
+        const startGameFromRoundsBtn = document.getElementById('start-game-from-rounds-btn');
+        const currentPlayerTurnDisplay = document.getElementById('current-player-turn-display');
+        const questionTextP = document.getElementById('question-text');
+        const optionsGridDiv = document.getElementById('options-grid');
+        const optionButtons = optionsGridDiv.querySelectorAll('.option-btn');
+        const feedbackMessageDiv = document.getElementById('feedback-message');
+        const feedbackTextP = document.getElementById('feedback-text');
+        const closeFeedbackBtn = document.getElementById('close-feedback-btn');
+        const winnerCardContainer = document.getElementById('winner-announcement-card');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const scoreModal = document.getElementById('score-modal');
+        const modalScoreList = document.getElementById('modal-score-list');
+        const showScoreBtn = document.getElementById('show-score-btn');
+        const confirmExitModal = document.getElementById('confirm-exit-modal');
+        const confirmExitYesBtn = document.getElementById('confirm-exit-yes');
+        const confirmExitNoBtn = document.getElementById('confirm-exit-no');
         let categoryIcon, categoryNameSpan;
+        
+        // Referencia para la barra del temporizador
+        const timerBar = document.getElementById('timer-bar');
+
+        // Referencias para el nuevo modal de avatares
+        const avatarSelectionModal = document.getElementById('avatar-selection-modal');
+        const avatarGrid = document.getElementById('avatar-grid');
+        let currentPlayerAvatarSelectionIndex = -1; // Para rastrear qué jugador está seleccionando su avatar
 
         // --- FUNCIONES ---
         function showScreen(screenToShow) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); screenToShow.classList.add('active'); }
         function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
-        function getRandomAvatar() { return availableAvatars[Math.floor(Math.random() * availableAvatars.length)]; }
-        function getRandomRailwayName() { if (usedRandomNames.size === randomRailwayNames.length) usedRandomNames.clear(); let name; do { name = randomRailwayNames[Math.floor(Math.random() * randomRailwayNames.length)]; } while (usedRandomNames.has(name)); usedRandomNames.add(name); return name; }
-        function updatePlayerInputs() { const playerCount = parseInt(playerCountSpan.textContent); playerInputsDiv.innerHTML = ''; for (let i = 0; i < playerCount; i++) { const group = document.createElement('div'); group.className = 'player-input-group'; group.innerHTML = `<div class="avatar-selector" data-player-index="${i}">${getRandomAvatar()}</div><input type="text" id="player-name-${i + 1}" value="Jugador ${i + 1}"><button type="button" class="random-name-btn" data-player-index="${i}">Aleatorio</button>`; playerInputsDiv.appendChild(group); } playerInputsDiv.querySelectorAll('.random-name-btn').forEach(btn => btn.onclick = () => { const index = btn.dataset.playerIndex; document.getElementById(`player-name-${parseInt(index) + 1}`).value = getRandomRailwayName(); document.querySelector(`.avatar-selector[data-player-index="${index}"]`).innerHTML = getRandomAvatar(); }); playerInputsDiv.querySelectorAll('.avatar-selector').forEach(selector => selector.onclick = () => { playerIndexToEdit = parseInt(selector.dataset.playerIndex); avatarModal.classList.add('active'); }); }
-        function displayQuestion() { categoryIcon = document.getElementById('category-icon'); categoryNameSpan = document.getElementById('category-name'); feedbackMessageDiv.classList.remove('show'); if (feedbackTimer) clearTimeout(feedbackTimer); optionButtons.forEach(button => { button.disabled = true; button.classList.remove('correct', 'incorrect'); }); setTimeout(() => { if (currentQuestionIndex >= questionsPerGame) { endGame(); return; } const question = shuffledQuestions[currentQuestionIndex]; categoryNameSpan.textContent = question.category; switch (question.category) { case "Elementos Estructurales de la Vía": categoryIcon.className = 'fas fa-road'; break; case "Maquinaria y Herramientas": categoryIcon.className = 'fas fa-cogs'; break; case "Sistemas y Tecnologías": categoryIcon.className = 'fas fa-lightbulb'; break; default: categoryIcon.className = 'fas fa-question-circle'; } currentPlayerTurnDisplay.classList.remove('animate-in'); currentPlayerTurnDisplay.innerHTML = `<span class="avatar-display">${players[currentPlayerIndex].avatar}</span> <span>Turno de: ${players[currentPlayerIndex].name}</span>`; void currentPlayerTurnDisplay.offsetWidth; currentPlayerTurnDisplay.classList.add('animate-in'); questionTextP.textContent = question.pregunta; optionButtons.forEach((button, index) => { button.textContent = question.opciones[index]; button.disabled = false; }); }, 500); }
-        function checkAnswer(selectedOption) { const q = shuffledQuestions[currentQuestionIndex]; const correct = q.respuestaCorrecta; const btn = optionsGridDiv.querySelector(`[data-option="${selectedOption}"]`); optionButtons.forEach(b => b.disabled = true); if (selectedOption.charAt(0) === correct) { players[currentPlayerIndex].score++; btn.classList.add('correct'); } else { btn.classList.add('incorrect'); optionsGridDiv.querySelector(`[data-option="${correct}"]`).classList.add('correct'); } feedbackTextP.textContent = q.explicacion; feedbackMessageDiv.classList.add('show'); feedbackTimer = setTimeout(nextTurn, 5000); }
-        function nextTurn() { if (feedbackTimer) clearTimeout(feedbackTimer); feedbackMessageDiv.classList.remove('show'); currentQuestionIndex++; if (currentQuestionIndex >= questionsPerGame) { endGame(); return; } currentPlayerIndex = (currentPlayerIndex + 1) % players.length; displayQuestion(); }
-        function startGame() { players = []; for (let i = 0; i < parseInt(playerCountSpan.textContent); i++) { const name = document.getElementById(`player-name-${i + 1}`).value.trim(); const avatar = document.querySelector(`.avatar-selector[data-player-index="${i}"]`).innerHTML; players.push({ name: name || `Jugador ${i+1}`, avatar, score: 0 }); } currentPlayerIndex = 0; currentQuestionIndex = 0; usedRandomNames.clear(); const allQuestions = []; for (const category in gameData.preguntas) { gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category })); } shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame); showScreen(gameScreen); displayQuestion(); }
-        function endGame() { showScreen(endScreen); players.sort((a, b) => b.score - a.score); const podiumContainer = document.getElementById('podium-container'); const otherScoresContainer = document.getElementById('other-scores-container'); podiumContainer.innerHTML = ''; otherScoresContainer.innerHTML = ''; winnerCardContainer.innerHTML = ''; if (players.length > 0) { const isTie = players.length > 1 && players[0].score === players[1].score; if (isTie) { const tiedWinners = players.filter(p => p.score === players[0].score); const winnerNamesHTML = tiedWinners.map(p => `<div class="winner-name">${p.avatar} ${p.name}</div>`).join(''); winnerCardContainer.innerHTML = `<div class="winner-card"><h3>¡EMPATE!</h3><div class="trophy-icon"><i class="fas fa-handshake"></i></div><div class="winner-names-tie">${winnerNamesHTML}</div><div class="winner-score">Con ${players[0].score} puntos</div></div>`; } else { const winner = players[0]; winnerCardContainer.innerHTML = `<div class="winner-card"><h3>¡GANADOR!</h3><div class="trophy-icon"><i class="fas fa-trophy"></i></div><div class="winner-name">${winner.avatar} ${winner.name}</div><div class="winner-score">Con ${winner.score} puntos</div></div>`; } document.querySelector('.winner-card').classList.add('animate'); } const podiumPlayers = players.slice(0, 3); const otherPlayers = players.slice(3); const podiumElements = []; podiumPlayers.forEach((player, index) => { const place = document.createElement('div'); let rankClass = '', rankIcon = '<i class="fas fa-medal"></i>'; if (index === 0) rankClass = 'gold'; else if (index === 1) rankClass = 'silver'; else if (index === 2) rankClass = 'bronze'; place.className = `podium-place ${rankClass}`; place.innerHTML = `<div class="podium-rank">${rankIcon}</div><div class="podium-name">${player.avatar} ${player.name}</div><div class="podium-score">${player.score} pts</div>`; podiumElements.push(place); }); if (podiumElements[1]) podiumContainer.appendChild(podiumElements[1]); if (podiumElements[0]) podiumContainer.appendChild(podiumElements[0]); if (podiumElements[2]) podiumContainer.appendChild(podiumElements[2]); otherPlayers.forEach((player, index) => { const card = document.createElement('div'); card.className = 'player-card'; card.style.animationDelay = `${1.8 + index * 0.2}s`; card.innerHTML = `<span class="rank">#${index + 4}</span><span class="name">${player.avatar} ${player.name}</span><span class="score">${player.score} puntos</span>`; otherScoresContainer.appendChild(card); }); generateConfetti(); }
-        function generateConfetti() { const confettiContainer = document.getElementById('confetti-container'); /* ... código de confeti ... */ }
-        function showScoreModal() { modalScoreList.innerHTML = ''; const sortedPlayers = [...players].sort((a, b) => b.score - a.score); const leaderScore = sortedPlayers.length > 0 ? sortedPlayers[0].score : 0; sortedPlayers.forEach((player, index) => { const listItem = document.createElement('li'); listItem.className = 'score-card-modal'; listItem.style.animationDelay = `${index * 0.1}s`; let rankDisplay = `#${index + 1}`; if (index === 0 && leaderScore > 0) { listItem.classList.add('is-leader'); rankDisplay = '<i class="fas fa-crown"></i>'; } if (players[currentPlayerIndex] && players[currentPlayerIndex].name === player.name) { listItem.classList.add('is-current-player'); } const progress = leaderScore > 0 ? (player.score / leaderScore) * 100 : 0; listItem.innerHTML = `<div class="score-card-rank">${player.avatar}</div><div class="score-card-details"><span class="score-card-name">${player.name}</span><div class="score-progress-bar-bg"><div class="score-progress-bar-fg" style="width: ${progress}%;"></div></div></div><div class="score-card-score">${player.score}</div>`; modalScoreList.appendChild(listItem); }); scoreModal.classList.add('active'); }
+        
+        function getRandomRailwayName() {
+            if (usedRandomNames.size === randomRailwayNames.length) usedRandomNames.clear();
+            let name;
+            do {
+                name = randomRailwayNames[Math.floor(Math.random() * randomRailwayNames.length)];
+            } while (usedRandomNames.has(name));
+            usedRandomNames.add(name);
+            return name;
+        }
+
+        function getRandomAvatar() {
+            if (usedRandomAvatars.size === avatarIcons.length) usedRandomAvatars.clear();
+            let avatar;
+            do {
+                avatar = avatarIcons[Math.floor(Math.random() * avatarIcons.length)];
+            } while (usedRandomAvatars.has(avatar));
+            usedRandomAvatars.add(avatar);
+            return avatar;
+        }
+
+        function getRandomColor() {
+            if (usedRandomColors.size === defaultPlayerColors.length) usedRandomColors.clear();
+            let color;
+            do {
+                color = defaultPlayerColors[Math.floor(Math.random() * defaultPlayerColors.length)];
+            } while (usedRandomColors.has(color));
+            usedRandomColors.add(color);
+            return color;
+        }
+
+        function updatePlayerInputs() {
+            const playerCount = parseInt(playerCountSpan.textContent);
+            playerInputsDiv.innerHTML = '';
+
+            // Ajusta el tamaño del array de jugadores si el número de jugadores ha cambiado
+            while (players.length < playerCount) {
+                players.push({ name: `Jugador ${players.length + 1}`, score: 0, avatar: getRandomAvatar(), color: getRandomColor() });
+            }
+            while (players.length > playerCount) {
+                players.pop();
+            }
+
+            for (let i = 0; i < playerCount; i++) {
+                const player = players[i];
+                const group = document.createElement('div');
+                group.className = 'player-input-group';
+                group.innerHTML = `
+                    <label for="player-name-${i + 1}">Jugador ${i + 1}:</label>
+                    <div class="player-avatar-container" data-player-index="${i}">
+                        <i class="player-avatar ${player.avatar}"></i>
+                    </div>
+                    <input type="text" id="player-name-${i + 1}" value="${player.name}">
+                    <input type="color" id="player-color-${i + 1}" value="${player.color}" class="player-color-input">
+                    <button type="button" class="random-name-btn" data-player-index="${i}">Nombre Aleatorio</button>
+                `;
+                playerInputsDiv.appendChild(group);
+            }
+
+            // Asigna eventos a los botones de nombre aleatorio
+            playerInputsDiv.querySelectorAll('.random-name-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const playerIndex = parseInt(btn.dataset.playerIndex);
+                    const newName = getRandomRailwayName();
+                    const newAvatar = getRandomAvatar();
+                    const newColor = getRandomColor(); // Obtener un color aleatorio
+                    
+                    document.getElementById(`player-name-${playerIndex + 1}`).value = newName;
+                    document.getElementById(`player-color-${playerIndex + 1}`).value = newColor; // Actualizar el input de color
+                    players[playerIndex].name = newName;
+                    players[playerIndex].avatar = newAvatar;
+                    players[playerIndex].color = newColor; // Actualizar el objeto del jugador
+                    document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"] .player-avatar`).className = `player-avatar ${newAvatar}`;
+                };
+            });
+
+            // Asigna eventos a los contenedores de avatar para abrir el modal de selección
+            playerInputsDiv.querySelectorAll('.player-avatar-container').forEach(avatarContainer => {
+                avatarContainer.onclick = (event) => {
+                    const playerIndex = parseInt(event.currentTarget.dataset.playerIndex);
+                    openAvatarSelectionModal(playerIndex);
+                };
+            });
+
+            // Asigna eventos a los inputs de color para actualizar el color del jugador
+            playerInputsDiv.querySelectorAll('.player-color-input').forEach(input => {
+                input.onchange = (event) => {
+                    const playerIndex = parseInt(event.target.id.replace('player-color-', '')) - 1;
+                    players[playerIndex].color = event.target.value;
+                };
+            });
+        }
+        
+        // Función para actualizar la barra del temporizador
+        function updateTimer() {
+            timeRemaining--;
+            const percentage = (timeRemaining / TIMER_DURATION) * 100;
+            timerBar.style.width = `${percentage}%`;
+            // Cambia el color de la barra a medida que el tiempo se agota
+            if (timeRemaining <= TIMER_DURATION / 2) {
+                timerBar.style.background = `linear-gradient(90deg, var(--ineco-rojo-incorrecto), var(--ineco-rojo-acento))`;
+            }
+
+            if (timeRemaining <= 0) {
+                timeUp();
+            }
+        }
+
+        function displayQuestion() {
+            if (questionTimer) clearInterval(questionTimer);
+            categoryIcon = document.getElementById('category-icon');
+            categoryNameSpan = document.getElementById('category-name');
+            feedbackMessageDiv.classList.remove('show');
+            if (feedbackTimer) clearTimeout(feedbackTimer);
+            optionButtons.forEach(button => { button.disabled = true; button.classList.remove('correct', 'incorrect'); });
+            
+            // Resetea el temporizador visual y lógico
+            timeRemaining = TIMER_DURATION;
+            timerBar.style.transition = 'none'; // Desactiva la transición para el reseteo instantáneo
+            timerBar.style.width = '100%';
+            timerBar.style.background = `linear-gradient(90deg, var(--ineco-rojo-acento), var(--ineco-azul-claro))`;
+            
+            setTimeout(() => {
+                // FIX: Check against the actual length of shuffledQuestions
+                if (currentQuestionIndex >= shuffledQuestions.length) {
+                    endGame();
+                    return;
+                }
+                const question = shuffledQuestions[currentQuestionIndex];
+                categoryNameSpan.textContent = question.category; 
+                
+                // Remove existing animation class before updating icon
+                categoryIcon.classList.remove('animate-category');
+                // Force reflow to restart animation
+                void categoryIcon.offsetWidth; 
+
+                switch (question.category) {
+                    case "Elementos Estructurales de la Vía": categoryIcon.className = 'fas fa-road'; break;
+                    case "Maquinaria y Herramientas": categoryIcon.className = 'fas fa-cogs'; break;
+                    case "Sistemas y Tecnologías": categoryIcon.className = 'fas fa-lightbulb'; break;
+                    default: categoryIcon.className = 'fas fa-question-circle';
+                }
+                // Add animation class after updating icon
+                categoryIcon.classList.add('animate-category');
+                
+                currentPlayerTurnDisplay.classList.remove('animate-in');
+                // Incluye el avatar y el color del jugador actual
+                currentPlayerTurnDisplay.innerHTML = `<div class="player-score-avatar"><i class="${players[currentPlayerIndex].avatar}"></i></div> Turno de: ${players[currentPlayerIndex].name}`;
+                currentPlayerTurnDisplay.style.backgroundColor = players[currentPlayerIndex].color; // Aplicar color del jugador
+                void currentPlayerTurnDisplay.offsetWidth; // Trigger reflow for animation
+                currentPlayerTurnDisplay.classList.add('animate-in');
+                questionTextP.textContent = question.pregunta;
+                optionButtons.forEach((button, index) => { button.textContent = question.opciones[index]; button.disabled = false; });
+                
+                // Vuelve a activar la transición y comienza el temporizador
+                timerBar.style.transition = 'width 1s linear, background 1s ease';
+                questionTimer = setInterval(updateTimer, 1000);
+            }, 500);
+        }
+
+        function checkAnswer(selectedOption) {
+            clearInterval(questionTimer); // Detiene el temporizador
+            const q = shuffledQuestions[currentQuestionIndex];
+            const correct = q.respuestaCorrecta; // 'correct' ahora es 'A', 'B', 'C' o 'D'
+            const btn = optionsGridDiv.querySelector(`[data-option="${selectedOption}"]`);
+            optionButtons.forEach(b => b.disabled = true);
+            if (selectedOption === correct) {
+                players[currentPlayerIndex].score++;
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('incorrect');
+                // Ahora, 'correct' es la letra de la opción, lo que coincide con data-option
+                const correctButton = optionsGridDiv.querySelector(`[data-option="${correct}"]`);
+                if (correctButton) { // Añadir una comprobación de seguridad por si acaso
+                    correctButton.classList.add('correct');
+                }
+            }
+            feedbackTextP.textContent = q.explicacion;
+            feedbackMessageDiv.classList.add('show');
+            feedbackTimer = setTimeout(nextTurn, 5000);
+        }
+        
+        // Función para cuando se acaba el tiempo
+        function timeUp() {
+            clearInterval(questionTimer);
+            const q = shuffledQuestions[currentQuestionIndex];
+            const correct = q.respuestaCorrecta;
+            optionButtons.forEach(b => b.disabled = true);
+            const correctButton = optionsGridDiv.querySelector(`[data-option="${correct}"]`);
+            if (correctButton) { // Añadir una comprobación de seguridad por si acaso
+                correctButton.classList.add('correct');
+            }
+            
+            feedbackTextP.textContent = "¡Se acabó el tiempo! " + q.explicacion;
+            feedbackMessageDiv.classList.add('show');
+            feedbackTimer = setTimeout(nextTurn, 5000);
+        }
+
+        function nextTurn() {
+            if (feedbackTimer) clearTimeout(feedbackTimer);
+            if(questionTimer) clearInterval(questionTimer);
+            feedbackMessageDiv.classList.remove('show');
+            currentQuestionIndex++;
+            // FIX: Check against the actual length of shuffledQuestions
+            if (currentQuestionIndex >= shuffledQuestions.length) {
+                endGame();
+                return;
+            }
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            displayQuestion();
+        }
+        
+        function startGame() { players.forEach(p => p.score = 0); currentPlayerIndex = 0; currentQuestionIndex = 0; usedRandomNames.clear(); usedRandomAvatars.clear(); usedRandomColors.clear(); const allQuestions = []; for (const category in gameData.preguntas) { gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category })); } shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame); showScreen(gameScreen); displayQuestion(); }
+        
+        function endGame() {
+            if (questionTimer) clearInterval(questionTimer); // Asegurarse de limpiar el timer
+            showScreen(endScreen);
+            players.sort((a, b) => b.score - a.score);
+
+            const podiumContainer = document.getElementById('podium-container');
+            const otherScoresContainer = document.getElementById('other-scores-container');
+            podiumContainer.innerHTML = '';
+            otherScoresContainer.innerHTML = '';
+            winnerCardContainer.innerHTML = '';
+
+            if (players.length > 0) {
+                const isTie = players.length > 1 && players[0].score === players[1].score;
+                
+                if (isTie) {
+                    const tiedWinners = players.filter(p => p.score === players[0].score);
+                    const winnerNamesHTML = tiedWinners.map(p => `<div class="winner-name">${p.name}</div>`).join('');
+                    winnerCardContainer.innerHTML = `
+                        <div class="winner-card" style="border-color: ${players[0].color};">
+                            <h3>¡EMPATE!</h3>
+                            <div class="trophy-icon"><i class="fas fa-handshake"></i></div>
+                            <div class="winner-names-tie">${winnerNamesHTML}</div>
+                            <div class="winner-score">Con ${players[0].score} puntos</div>
+                        </div>`;
+                } else {
+                    const winner = players[0];
+                    winnerCardContainer.innerHTML = `
+                        <div class="winner-card" style="border-color: ${winner.color};">
+                            <h3>¡GANADOR!</h3>
+                            <div class="trophy-icon"><i class="fas fa-trophy"></i></div>
+                            <div class="winner-avatar" style="background-color: ${winner.color};"><i class="${winner.avatar}"></i></div>
+                            <div class="winner-name">${winner.name}</div>
+                            <div class="winner-score">Con ${winner.score} puntos</div>
+                        </div>`;
+                }
+                document.querySelector('.winner-card').classList.add('animate');
+            }
+
+            const podiumPlayers = players.slice(0, 3);
+            const podiumElementsWithRank = []; // Store objects with element and its rankClass
+
+            podiumPlayers.forEach((player, index) => {
+                const place = document.createElement('div');
+                let rankClass = '';
+                let rankIconHtml = '<i class="fas fa-medal"></i>'; // Default icon
+                if (index === 0) {
+                    rankClass = 'gold';
+                    rankIconHtml = '<i class="fas fa-trophy"></i>'; // Trophy icon for 1st place
+                } else if (index === 1) {
+                    rankClass = 'silver';
+                } else if (index === 2) {
+                    rankClass = 'bronze';
+                }
+                
+                // Apply base class and styles that define the *initial* state for animation
+                place.className = `podium-place`; // This class already has opacity: 0; transform: translateY(50px);
+                place.style.backgroundColor = player.color; // Apply player color
+                place.innerHTML = `
+                    <div class="podium-rank">${rankIconHtml}</div>
+                    <div class="podium-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div>
+                    <div class="podium-name">${player.name}</div>
+                    <div class="podium-score">${player.score} pts</div>
+                `;
+                podiumElementsWithRank.push({ element: place, rankClass: rankClass });
+            });
+            
+            // Append elements to the DOM in the desired order (2nd, 1st, 3rd)
+            // Then apply animation classes after a slight delay or reflow
+            const sortedPodiumElementsToAppend = [];
+            if (podiumElementsWithRank[1]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[1]); // Silver
+            if (podiumElementsWithRank[0]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[0]); // Gold
+            if (podiumElementsWithRank[2]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[2]); // Bronze
+
+            sortedPodiumElementsToAppend.forEach(item => {
+                podiumContainer.appendChild(item.element);
+                // Force reflow - this is crucial for the animation to restart on newly added elements
+                void item.element.offsetWidth;
+                // Add the class that triggers the animation with its specific delay
+                item.element.classList.add(item.rankClass);
+            });
+
+            // FIX: Ensure otherPlayers is only processed if there are players to avoid ReferenceError
+            if (players.length > 0) {
+                const otherPlayers = players.slice(3);
+                otherPlayers.forEach((player, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'player-card';
+                    card.style.animationDelay = `${1.8 + index * 0.2}s`;
+                    card.innerHTML = `
+                        <span class="rank">#${index + 4}</span>
+                        <div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div>
+                        <span class="name">${player.name}</span>
+                        <span class="score">${player.score} puntos</span>
+                    `;
+                    otherScoresContainer.appendChild(card);
+                });
+            }
+            generateConfetti();
+        }
+
+        function generateConfetti() {
+            const confettiContainer = document.getElementById('confetti-container');
+            confettiContainer.innerHTML = ''; // Limpiar confeti anterior
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confettiContainer.appendChild(confetti);
+            }
+        }
+        
+        function showScoreModal() {
+            modalScoreList.innerHTML = '';
+            const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+            const leaderScore = sortedPlayers.length > 0 ? sortedPlayers[0].score : 0;
+            sortedPlayers.forEach((player, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'score-card-modal';
+                listItem.style.animationDelay = `${index * 0.1}s`;
+                // Aplicar color del jugador al borde izquierdo
+                listItem.style.borderLeftColor = player.color;
+
+                let rankDisplay = `#${index + 1}`;
+                if (index === 0 && leaderScore > 0) { listItem.classList.add('is-leader'); rankDisplay = '<i class="fas fa-crown"></i>'; }
+                if (players[currentPlayerIndex] && players[currentPlayerIndex].name === player.name) { listItem.classList.add('is-current-player'); }
+                const progress = leaderScore > 0 ? (player.score / leaderScore) * 100 : 0;
+                listItem.innerHTML = `
+                    <div class="score-card-rank">${rankDisplay}</div>
+                    <div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div>
+                    <div class="score-card-details">
+                        <span class="score-card-name">${player.name}</span>
+                        <div class="score-progress-bar-bg">
+                            <div class="score-progress-bar-fg" style="width: ${progress}%; background: linear-gradient(90deg, ${player.color}, ${lightenColor(player.color, 30)}); "></div>
+                        </div>
+                    </div>
+                    <div class="score-card-score">${player.score}</div>
+                `;
+                modalScoreList.appendChild(listItem);
+            });
+            scoreModal.classList.add('active');
+        }
+
+        // Función auxiliar para aclarar un color (para el gradiente de la barra de progreso)
+        function lightenColor(hex, percent) {
+            var f=parseInt(hex.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=(f>>8)&0x00FF,B=(f)&0x0000FF;
+            return "#"+(0x1000000+(Math.round((t-R)*p/100)+R)*0x10000+(Math.round((t-G)*p/100)+G)*0x100+(Math.round((t-B)*p/100)+B)).toString(16).slice(1);
+        }
+
         function hideScoreModal() { scoreModal.classList.remove('active'); }
         function showConfirmExitModal() { confirmExitModal.classList.add('active'); }
         function hideConfirmExitModal() { confirmExitModal.classList.remove('active'); }
-        function displayUIMessage(message, type) { /* ... (código sin cambios) ... */ }
+        
+        // Funciones para el modal de selección de avatares
+        function openAvatarSelectionModal(playerIndex) {
+            currentPlayerAvatarSelectionIndex = playerIndex;
+            avatarGrid.innerHTML = ''; // Limpia el grid de avatares anterior
+            avatarIcons.forEach(iconClass => {
+                const avatarOption = document.createElement('div');
+                avatarOption.className = 'avatar-option';
+                avatarOption.innerHTML = `<i class="${iconClass}"></i>`;
+                avatarOption.dataset.iconClass = iconClass;
+                // Marca el avatar actualmente seleccionado
+                if (players[playerIndex].avatar === iconClass) {
+                    avatarOption.classList.add('selected');
+                }
+                avatarOption.onclick = () => {
+                    selectAvatar(playerIndex, iconClass);
+                };
+                avatarGrid.appendChild(avatarOption);
+            });
+            avatarSelectionModal.classList.add('active');
+        }
+
+        function selectAvatar(playerIndex, iconClass) {
+            players[playerIndex].avatar = iconClass;
+            // Actualiza el avatar visible en la pantalla de configuración de jugadores
+            document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"] .player-avatar`).className = `player-avatar ${iconClass}`;
+            hideAvatarSelectionModal();
+        }
+
+        function hideAvatarSelectionModal() {
+            avatarSelectionModal.classList.remove('active');
+            currentPlayerAvatarSelectionIndex = -1;
+        }
 
         // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('preguntas.json').then(r => r.ok ? r.json() : Promise.reject('Error')).then(d => { gameData = d; initializeEventListeners(); }).catch(e => { console.error(e); splashScreen.innerHTML = `<h1>Error de Carga</h1><p>No se pudo cargar 'preguntas.json'.</p>`; });
+            // Asignar los datos de preguntas incrustados directamente
+            gameData = initialGameData;
+            initializeEventListeners();
+            
             function initializeEventListeners() {
+                // Calcular el número máximo de preguntas disponibles a partir de los datos incrustados
                 const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
+                
                 startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); updatePlayerInputs(); });
                 decreasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) > 1) { playerCountSpan.textContent--; updatePlayerInputs(); } });
                 increasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) < 5) { playerCountSpan.textContent++; updatePlayerInputs(); } });
-                startMatchBtn.addEventListener('click', () => { showScreen(roundConfigScreen); });
+                
+                startMatchBtn.addEventListener('click', () => { 
+                    let valid = true; 
+                    for (let i = 0; i < parseInt(playerCountSpan.textContent); i++) { 
+                        const input = document.getElementById(`player-name-${i + 1}`); 
+                        const name = input.value.trim(); 
+                        if (!name) { 
+                            valid = false; 
+                            input.style.borderColor = 'red'; 
+                        } else { 
+                            input.style.borderColor = ''; 
+                            // Actualiza el nombre del jugador en el array 'players'
+                            players[i].name = name;
+                        } 
+                    } 
+                    if (valid) {
+                        // Calcular maxQuestionsAvailable aquí ya que depende de gameData
+                        // y players.length puede haber cambiado
+                        const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
+                        const maxRoundsPerPlayer = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 0;
+
+                        // Asegurarse de que roundCount no exceda el nuevo maxRoundsPerPlayer
+                        let currentRoundCount = parseInt(roundCountSpan.textContent);
+                        if (currentRoundCount > maxRoundsPerPlayer) {
+                            roundCountSpan.textContent = maxRoundsPerPlayer;
+                        } else if (currentRoundCount === 0 && maxRoundsPerPlayer > 0) {
+                             // Si el contador es 0 y hay preguntas disponibles, establecerlo a 1
+                            roundCountSpan.textContent = 1;
+                        }
+                        showScreen(roundConfigScreen); 
+                    }
+                });
+
                 decreaseRoundsBtn.addEventListener('click', () => { let count = parseInt(roundCountSpan.textContent); if (count > 1) roundCountSpan.textContent = --count; });
-                increaseRoundsBtn.addEventListener('click', () => { let count = parseInt(roundCountSpan.textContent); const max = Math.floor(maxQuestionsAvailable / players.length); if (count < max) roundCountSpan.textContent = ++count; });
+                increaseRoundsBtn.addEventListener('click', () => { 
+                    let count = parseInt(roundCountSpan.textContent); 
+                    // Recalcular max aquí también para asegurar que esté actualizado
+                    const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
+                    const max = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 0;
+                    if (count < max) roundCountSpan.textContent = ++count; 
+                });
                 startGameFromRoundsBtn.addEventListener('click', () => { questionsPerPlayer = parseInt(roundCountSpan.textContent); questionsPerGame = questionsPerPlayer * players.length; startGame(); });
                 optionButtons.forEach(b => b.addEventListener('click', e => checkAnswer(e.target.dataset.option)));
                 showScoreBtn.addEventListener('click', showScoreModal);
                 playAgainBtn.addEventListener('click', () => { winnerCardContainer.innerHTML = ''; showScreen(splashScreen); });
-                document.querySelectorAll('.close-btn').forEach(b => b.addEventListener('click', e => { const target = e.target.dataset.targetScreen; if (target === 'confirm-exit') showConfirmExitModal(); else if (target === 'hide-modal') hideScoreModal(); else showScreen(document.getElementById(target)); }));
-                confirmExitYesBtn.addEventListener('click', () => { hideConfirmExitModal(); showScreen(splashScreen); });
+                
+                // Manejador de eventos para los botones de cerrar
+                document.querySelectorAll('.close-btn').forEach(b => b.addEventListener('click', e => { 
+                    const target = e.target.dataset.targetScreen; 
+                    if (target === 'confirm-exit') showConfirmExitModal(); 
+                    else if (target === 'hide-modal') hideScoreModal(); 
+                    else if (target === 'hide-avatar-modal') hideAvatarSelectionModal(); // Nuevo manejador para el modal de avatar
+                    else showScreen(document.getElementById(target)); 
+                }));
+                
+                confirmExitYesBtn.addEventListener('click', () => { 
+                    if (questionTimer) clearInterval(questionTimer); // Asegurarse de limpiar el timer
+                    hideConfirmExitModal(); 
+                    showScreen(splashScreen); 
+                });
+                
                 confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
                 closeFeedbackBtn.addEventListener('click', nextTurn);
-                availableAvatars.forEach(avatar => { const option = document.createElement('div'); option.className = 'avatar-option'; option.innerHTML = avatar; option.onclick = () => { document.querySelector(`.avatar-selector[data-player-index="${playerIndexToEdit}"]`).innerHTML = avatar; avatarModal.classList.remove('active'); }; avatarGallery.appendChild(option); });
-                closeAvatarModalBtn.addEventListener('click', () => avatarModal.classList.remove('active'));
             }
         });
     </script>
