@@ -35,6 +35,7 @@
             align-items: center; 
             min-height: 100vh; 
             padding: 1rem 0;
+            overflow: hidden;
         }
         .game-container { 
             background-color: var(--blanco-puro); 
@@ -62,10 +63,12 @@
             left: 0; 
             opacity: 0; 
             pointer-events: none; 
-            transition: opacity 0.5s ease-in-out; 
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease; 
             overflow-y: auto; 
         }
-        .screen.active { opacity: 1; pointer-events: all; position: relative; }
+        .screen.active { opacity: 1; pointer-events: all; position: relative; transform: scale(1); }
+        .screen:not(.active) { transform: scale(0.95); }
+        
         .btn { 
             background-color: var(--azul-principal); 
             color: var(--blanco-puro); 
@@ -97,12 +100,28 @@
         #splash-screen { 
             background: linear-gradient(180deg, var(--azul-principal) 0%, var(--azul-claro) 100%); 
             color: var(--blanco-puro); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         #splash-screen h1 { 
             font-size: 3.5rem; 
             font-weight: 700; 
             margin-bottom: 30px; 
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+        }
+        /* Nueva animación de logo para la pantalla de inicio */
+        .splash-logo {
+            font-size: 6rem;
+            color: var(--blanco-puro);
+            margin-bottom: 20px;
+            animation: train-pulse 2s infinite ease-in-out;
+        }
+        @keyframes train-pulse {
+            0% { transform: scale(1); text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+            50% { transform: scale(1.05); text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
+            100% { transform: scale(1); text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
         }
         #player-config-screen, #round-config-screen { padding: 60px 40px; justify-content: flex-start; }
         #player-config-screen h2, #round-config-screen h2 { 
@@ -175,49 +194,91 @@
         .player-input-group .player-color-input::-webkit-color-swatch { border: none; border-radius: 6px; }
         .player-input-group .player-color-input::-moz-color-swatch { border: none; border-radius: 6px; }
 
+        /* Mejora visual: Header fijo para la pantalla de juego */
+        .game-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: var(--blanco-puro);
+            border-bottom: 2px solid var(--gris-claro);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .game-header .header-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .game-header .header-group .btn-icon {
+            background: none; 
+            border: none; 
+            font-size: 1.8rem; 
+            color: var(--azul-principal); 
+            cursor: pointer; 
+            transition: transform 0.2s ease, color 0.3s ease;
+        }
+        .game-header .header-group .btn-icon:hover { transform: scale(1.1); color: var(--rojo-acento); }
 
-        #game-screen { padding: 30px; justify-content: flex-start; padding-top: 100px; }
+        #game-screen { padding: 30px; padding-top: 100px; }
         
-        /* AJUSTE: Alineado a la izquierda */
-        #current-player-turn-display { 
-            font-size: 1.5rem; 
+        /* Ajustes para el display del turno en el nuevo header */
+        #current-player-turn-display {
+            font-size: 1.2rem; 
             font-weight: 600; 
             color: var(--blanco-puro); 
             background-color: var(--azul-principal); 
-            position: absolute; 
-            left: 30px; /* Alineado a la izquierda */
-            top: 25px; 
-            z-index: 15; 
-            padding: 10px 25px; 
+            padding: 8px 20px; 
             border-radius: 15px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.25); 
             display: flex; 
             align-items: center; 
             gap: 10px; 
             opacity: 0; 
-            width: auto; /* Ancho automático */
-            max-width: 60%; /* Evitar que ocupe demasiado espacio en la línea */
+            width: auto;
+            max-width: 60%;
+            transition: all 0.3s ease-in-out;
         }
-        /* AJUSTE: Animación corregida para la nueva posición */
-        #current-player-turn-display.animate-in { animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        #current-player-turn-display.animate-in { 
+            animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+        }
         @keyframes bounce-in { 
-            0% { opacity: 0; transform: scale(0.3) translateY(-30px); } 
-            50% { opacity: 1; transform: scale(1.1) translateY(0); } 
-            70% { transform: scale(0.9) translateY(0); } 
-            100% { opacity: 1; transform: scale(1) translateY(0); } 
+            0% { opacity: 0; transform: scale(0.3); } 
+            50% { opacity: 1; transform: scale(1.1); } 
+            70% { transform: scale(0.9); } 
+            100% { opacity: 1; transform: scale(1); } 
         }
         
-        #show-score-btn { 
-            position: absolute; 
-            top: 20px; 
-            right: 70px; 
-            background: none; 
-            border: none; 
-            font-size: 2rem; 
-            color: var(--azul-principal); 
-            cursor: pointer; 
-            z-index: 20; 
+        /* Botones de joker mejorados */
+        .joker-btn {
+            background-color: var(--rojo-acento);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+        .joker-btn:hover:not(:disabled) {
+            background-color: rgb(230, 30, 45);
+            transform: translateY(-2px);
+        }
+        .joker-btn:disabled {
+            background-color: var(--gris-oscuro);
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+        }
+        
         #question-area { 
             background-color: var(--gris-claro); 
             border-radius: 15px; 
@@ -314,7 +375,10 @@
             max-width: 450px; 
             position: relative; 
             box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        .modal-overlay.active .modal-content { transform: scale(1); }
         .modal-content h3 { 
             color: var(--rojo-acento); 
             margin-bottom: 20px; 
@@ -359,7 +423,23 @@
             font-size: 1.6rem; 
             font-weight: 700; 
             color: var(--azul-principal); 
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
+        .score-card-score .score-plus {
+            font-size: 1.2rem;
+            color: var(--verde-correcto);
+            opacity: 0;
+            transform: translateY(10px);
+            animation: score-fly-up 0.8s forwards;
+        }
+        @keyframes score-fly-up {
+            0% { opacity: 0; transform: translateY(10px); }
+            50% { opacity: 1; transform: translateY(-10px); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
         #end-screen { justify-content: space-around; }
         #end-screen h2 { 
             font-size: 2.5rem; 
@@ -430,11 +510,16 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
             opacity: 0; 
             transform: translateY(50px); 
+            position: relative;
         }
-        .podium-place.gold { background-color: var(--gold); height: 100%; animation-delay: 1.2s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .podium-place.silver { background-color: var(--silver); height: 80%; animation-delay: 1.4s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .podium-place.bronze { background-color: var(--bronze); height: 60%; animation-delay: 1.6s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .podium-place.gold { background-image: linear-gradient(180deg, var(--gold) 0%, #FFEA8D 100%); height: 100%; animation-delay: 1.2s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .podium-place.silver { background-image: linear-gradient(180deg, var(--silver) 0%, #E3E3E3 100%); height: 80%; animation-delay: 1.4s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .podium-place.bronze { background-image: linear-gradient(180deg, var(--bronze) 0%, #B96620 100%); height: 60%; animation-delay: 1.6s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes podium-rise { to { opacity: 1; transform: translateY(0); } }
+
+        .podium-place .podium-name, .podium-place .podium-score {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
         .podium-place .podium-name { 
             font-size: 1.2rem; 
             font-weight: 700; 
@@ -492,6 +577,25 @@
 
         .player-score-avatar, .winner-avatar, .podium-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0; }
         .player-score-avatar i, .winner-avatar i, .podium-avatar i { font-size: 1.5rem; color: white; }
+        
+        .score-update-plus {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--verde-correcto);
+            opacity: 0;
+            animation: score-update-pop 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+        @keyframes score-update-pop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -100%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -150%) scale(1); opacity: 0; }
+        }
 
         /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
         @media (max-width: 768px) {
@@ -518,7 +622,10 @@
             }
             
             .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
-            #show-score-btn { font-size: 1.5rem; top: 15px; right: 50px; }
+            .game-header { padding: 10px 15px; }
+            .game-header .header-group .btn-icon { font-size: 1.5rem; }
+            #current-player-turn-display { font-size: 1rem; padding: 6px 12px; }
+            .joker-btn { padding: 8px 15px; font-size: 0.9rem; }
             
             #splash-screen h1 { font-size: 2.5rem; }
             .btn { padding: 12px 25px; font-size: 1rem; margin: 8px; }
@@ -539,18 +646,7 @@
             .player-input-group .random-name-btn { padding: 8px 12px; font-size: 0.9rem; margin-left: auto; }
             .player-input-group .player-color-input { width: 35px; height: 35px; }
             
-            /* AJUSTE: Mover el área de juego más arriba para compensar la nueva posición del turno */
-            #game-screen {
-                padding-top: 80px;
-            }
-            /* AJUSTE: Posición del turno en móvil */
-            #current-player-turn-display { 
-                font-size: 1.2rem; 
-                padding: 8px 15px; 
-                top: 15px; 
-                left: 20px;
-                max-width: 60%;
-            }
+            #game-screen { padding-top: 80px; }
             #question-area { padding: 20px; margin-bottom: 15px; }
             .category-display { font-size: 1rem; margin-bottom: 10px; }
             .category-display i { font-size: 1.8rem; }
@@ -600,12 +696,6 @@
             .player-input-group input[type="text"] { flex-grow: 1; }
             .player-input-group .random-name-btn { padding: 6px 10px; font-size: 0.8rem; }
             
-            /* AJUSTE: Posición del turno en móvil muy pequeño */
-            #current-player-turn-display { 
-                font-size: 1rem; 
-                padding: 6px 12px; 
-                left: 15px;
-            }
             #question-text { font-size: 1.15rem; min-height: 50px; }
             .option-btn { padding: 10px 12px; font-size: 0.9rem; }
             #end-screen h2 { font-size: 1.8rem; }
@@ -621,10 +711,13 @@
 </head>
 <body>
     <div class="game-container">
+        <!-- Pantalla de inicio mejorada con un icono animado -->
         <div id="splash-screen" class="screen active">
+            <i class="fas fa-train splash-logo"></i>
             <h1>Trivial Ferroviario de Alta Velocidad</h1>
             <button id="start-game-btn" class="btn">Iniciar Juego</button>
         </div>
+        
         <div id="player-config-screen" class="screen">
             <button class="close-btn" data-target-screen="splash-screen">×</button>
             <h2>Configuración de Partida</h2>
@@ -634,6 +727,7 @@
             <div id="player-inputs"></div>
             <button id="start-match-btn" class="btn">Empezar Partida</button>
         </div>
+        
         <div id="round-config-screen" class="screen">
             <button class="close-btn" data-target-screen="player-config-screen">×</button>
             <h2>¿Cuántas preguntas por jugador?</h2>
@@ -642,10 +736,19 @@
             </div>
             <button id="start-game-from-rounds-btn" class="btn">¡A Jugar!</button>
         </div>
+        
         <div id="game-screen" class="screen">
-            <button class="close-btn" data-target-screen="confirm-exit">×</button>
-            <button id="show-score-btn" class="fas fa-medal"></button>
-            <span id="current-player-turn-display"></span>
+            <!-- Nuevo header fijo para la pantalla de juego -->
+            <div class="game-header">
+                <div id="current-player-turn-display"></div>
+                <div class="header-group">
+                    <!-- Botón para el comodín 50/50 -->
+                    <button id="fifty-fifty-btn" class="joker-btn" title="Elimina 2 respuestas incorrectas"><i class="fas fa-divide"></i> 50/50</button>
+                    <button id="show-score-btn" class="fas fa-medal btn-icon"></button>
+                    <button class="close-btn" data-target-screen="confirm-exit">×</button>
+                </div>
+            </div>
+            
             <div id="question-area">
                 <div id="timer-container">
                     <div id="timer-bar"></div>
@@ -659,11 +762,13 @@
                     <button class="option-btn" data-option="D">D) Opción 4</button>
                 </div>
             </div>
+            
             <div id="feedback-message">
                 <p id="feedback-text"></p>
                 <button id="close-feedback-btn" class="close-feedback-btn">×</button>
             </div>
         </div>
+        
         <div id="end-screen" class="screen">
             <button class="close-btn" data-target-screen="splash-screen">×</button>
             <div id="confetti-container"></div>
@@ -673,6 +778,7 @@
             <div id="other-scores-container" class="other-scores-list"></div>
             <button id="play-again-btn" class="btn">Volver a Jugar</button>
         </div>
+        
         <div id="score-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-btn" data-target-screen="hide-modal">×</button>
@@ -680,6 +786,7 @@
                 <ul id="modal-score-list"></ul>
             </div>
         </div>
+        
         <div id="confirm-exit-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3>¿Estás seguro que quieres salir?</h3>
@@ -688,18 +795,18 @@
                 <button id="confirm-exit-no" class="btn">No, continuar</button>
             </div>
         </div>
+        
         <div id="avatar-selection-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-btn" data-target-screen="hide-avatar-modal">×</button>
                 <h3>Elige tu Avatar</h3>
-                <div id="avatar-grid">
-                </div>
+                <div id="avatar-grid"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // El código JavaScript no ha cambiado y se mantiene igual.
+        // Declaración de variables globales y datos del juego.
         let gameData = {};
         let players = [];
         let currentPlayerIndex = 0;
@@ -766,15 +873,42 @@
             }
         };
 
-        const randomRailwayNames = ["Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss", "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan", "Amolador As", "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil", "Biela Veloz", "Trenelito", "Vía Láctea", "Pantógrafo Power", "Señor Señal", "Cat-enaria", "Ingeniero Rieles", "Desvío Divertido", "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante", "Soldador Sergio", "Frenada Fantástica", "Inspector Javier"];
-        let usedRandomNames = new Set();
+// Nombres divertidos y temáticos para los jugadores
+const randomRailwayNames = [
+    "Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss",
+    "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan",
+    "Amolador As", "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil",
+    "Biela Veloz", "Trenelito", "Vía Láctea", "Pantógrafo Power",
+    "Señor Señal", "Cat-enaria", "Ingeniero Rieles", "Desvío Divertido",
+    "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante",
+    "Soldador Sergio", "Frenada Fantástica", "Inspector Javier",
+    "Silbato Sonriente", "Vagón Valiente", "El Fantasma de la Estación",
+    "El Conductor Loco", "La Locomotora Lenta", "El Vía-jero",
+    "El Tren Expreso", "Maquinista Malabarista", "Controlador Caótico",
+    "Portero Pato", "Despachador Demente", "El Ferrocarril Fugaz",
+    "Estación Estelar", "Señor Vía", "Tren de la Suerte"
+];
+let usedRandomNames = new Set();
 
-        const avatarIcons = ['fas fa-train', 'fas fa-locomotive', 'fas fa-subway', 'fas fa-tram', 'fas fa-bus', 'fas fa-car-side', 'fas fa-plane', 'fas fa-ship', 'fas fa-bicycle', 'fas fa-truck-ramp-box'];
-        let usedRandomAvatars = new Set(); 
+// Íconos de avatar basados en transporte, usando Font Awesome
+const avatarIcons = [
+    'fas fa-train', 'fas fa-locomotive', 'fas fa-subway', 'fas fa-tram',
+    'fas fa-bus', 'fas fa-car-side', 'fas fa-plane', 'fas fa-ship',
+    'fas fa-bicycle', 'fas fa-truck-ramp-box', 'fas fa-rocket', 'fas fa-motorcycle',
+    'fas fa-shuttle-space', 'fas fa-helicopter', 'fas fa-bus-simple', 'fas fa-caravan'
+];
+let usedRandomAvatars = new Set();
 
-        const defaultPlayerColors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2', '#00CED1', '#FF8C00', '#DA70D6', '#ADFF2F', '#DC143C'];
-        let usedRandomColors = new Set();
+// Paleta de colores más amplia y vibrante para los jugadores
+const defaultPlayerColors = [
+    '#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2', '#00CED1',
+    '#FF8C00', '#DA70D6', '#ADFF2F', '#DC143C', '#FF4500', '#9932CC',
+    '#20B2AA', '#FF1493', '#00BFFF', '#7FFF00', '#BA55D3', '#F4A460',
+    '#FF69B4', '#00FFFF'
+];
+let usedRandomColors = new Set();
 
+        // Se obtienen las referencias a los elementos del DOM.
         const splashScreen = document.getElementById('splash-screen');
         const playerConfigScreen = document.getElementById('player-config-screen');
         const roundConfigScreen = document.getElementById('round-config-screen');
@@ -805,6 +939,7 @@
         const confirmExitModal = document.getElementById('confirm-exit-modal');
         const confirmExitYesBtn = document.getElementById('confirm-exit-yes');
         const confirmExitNoBtn = document.getElementById('confirm-exit-no');
+        const fiftyFiftyBtn = document.getElementById('fifty-fifty-btn');
         let categoryIcon, categoryNameSpan;
         
         const timerBar = document.getElementById('timer-bar');
@@ -813,10 +948,13 @@
         const avatarGrid = document.getElementById('avatar-grid');
         let currentPlayerAvatarSelectionIndex = -1; 
 
+        // Función para mostrar una pantalla y ocultar las demás
         function showScreen(screenToShow) { 
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
             screenToShow.classList.add('active'); 
         }
+        
+        // Funciones de utilidad para manejar datos
         function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
         
         function getRandomRailwayName() {
@@ -843,10 +981,11 @@
             return color;
         }
 
+        // Crea los inputs de los jugadores de forma dinámica
         function updatePlayerInputs() {
             const playerCount = parseInt(playerCountSpan.textContent);
             playerInputsDiv.innerHTML = '';
-            while (players.length < playerCount) { players.push({ name: `Jugador ${players.length + 1}`, score: 0, avatar: getRandomAvatar(), color: getRandomColor() }); }
+            while (players.length < playerCount) { players.push({ name: `Jugador ${players.length + 1}`, score: 0, hasFiftyFiftyJoker: true, avatar: getRandomAvatar(), color: getRandomColor() }); }
             while (players.length > playerCount) { players.pop(); }
             for (let i = 0; i < playerCount; i++) {
                 const player = players[i];
@@ -854,12 +993,12 @@
                 group.className = 'player-input-group';
                 group.innerHTML = `
                     <label for="player-name-${i + 1}">Jugador ${i + 1}:</label>
-                    <div class="player-avatar-container" data-player-index="${i}">
+                    <div class="player-avatar-container" data-player-index="${i}" style="background-color: ${player.color};">
                         <i class="player-avatar ${player.avatar}"></i>
                     </div>
                     <input type="text" id="player-name-${i + 1}" value="${player.name}">
                     <input type="color" id="player-color-${i + 1}" value="${player.color}" class="player-color-input">
-                    <button type="button" class="random-name-btn" data-player-index="${i}">Nombre Aleatorio</button>
+                    <button type="button" class="random-name-btn" data-player-index="${i}"><i class="fas fa-dice"></i></button>
                 `;
                 playerInputsDiv.appendChild(group);
             }
@@ -874,20 +1013,26 @@
                     players[playerIndex].name = newName;
                     players[playerIndex].avatar = newAvatar;
                     players[playerIndex].color = newColor;
-                    document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"] .player-avatar`).className = `player-avatar ${newAvatar}`;
+                    const avatarContainer = document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"]`);
+                    avatarContainer.style.backgroundColor = newColor;
+                    avatarContainer.querySelector('.player-avatar').className = `player-avatar ${newAvatar}`;
                 };
             });
             playerInputsDiv.querySelectorAll('.player-avatar-container').forEach(avatarContainer => {
+                // CORRECCIÓN: Se cambió `event.currentTarget.dataset.player-index` a `event.currentTarget.dataset.playerIndex` para acceder al atributo de datos correctamente.
                 avatarContainer.onclick = (event) => { openAvatarSelectionModal(parseInt(event.currentTarget.dataset.playerIndex)); };
             });
             playerInputsDiv.querySelectorAll('.player-color-input').forEach(input => {
                 input.onchange = (event) => {
                     const playerIndex = parseInt(event.target.id.replace('player-color-', '')) - 1;
                     players[playerIndex].color = event.target.value;
+                    const avatarContainer = document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"]`);
+                    avatarContainer.style.backgroundColor = event.target.value;
                 };
             });
         }
         
+        // Lógica del temporizador
         function updateTimer() {
             timeRemaining--;
             const percentage = (timeRemaining / TIMER_DURATION) * 100;
@@ -896,14 +1041,18 @@
             if (timeRemaining <= 0) { timeUp(); }
         }
 
+        // Muestra la pregunta actual y el turno del jugador
         function displayQuestion() {
             if (questionTimer) clearInterval(questionTimer);
             categoryIcon = document.getElementById('category-icon');
             categoryNameSpan = document.getElementById('category-name');
             feedbackMessageDiv.classList.remove('show');
             if (feedbackTimer) clearTimeout(feedbackTimer);
-            optionButtons.forEach(button => { button.disabled = true; button.classList.remove('correct', 'incorrect'); });
+            optionButtons.forEach(button => { button.disabled = true; button.classList.remove('correct', 'incorrect'); button.style.visibility = 'visible'; });
             
+            const currentPlayer = players[currentPlayerIndex];
+            fiftyFiftyBtn.disabled = !currentPlayer.hasFiftyFiftyJoker;
+
             timeRemaining = TIMER_DURATION;
             timerBar.style.transition = 'none';
             timerBar.style.width = '100%';
@@ -923,8 +1072,8 @@
                 }
                 
                 currentPlayerTurnDisplay.classList.remove('animate-in');
-                currentPlayerTurnDisplay.innerHTML = `<div class="player-score-avatar"><i class="${players[currentPlayerIndex].avatar}"></i></div> Turno de: ${players[currentPlayerIndex].name}`;
-                currentPlayerTurnDisplay.style.backgroundColor = players[currentPlayerIndex].color;
+                currentPlayerTurnDisplay.innerHTML = `<div class="player-score-avatar" style="background-color: ${currentPlayer.color};"><i class="${currentPlayer.avatar}"></i></div> Turno de: ${currentPlayer.name}`;
+                currentPlayerTurnDisplay.style.backgroundColor = currentPlayer.color;
                 void currentPlayerTurnDisplay.offsetWidth;
                 currentPlayerTurnDisplay.classList.add('animate-in');
                 questionTextP.textContent = question.pregunta;
@@ -935,6 +1084,7 @@
             }, 500);
         }
 
+        // Verifica la respuesta seleccionada
         function checkAnswer(selectedOption) {
             clearInterval(questionTimer);
             const q = shuffledQuestions[currentQuestionIndex];
@@ -944,6 +1094,12 @@
             if (selectedOption === correct) {
                 players[currentPlayerIndex].score++;
                 btn.classList.add('correct');
+                // Animación visual de puntuación
+                const scoreUpdate = document.createElement('div');
+                scoreUpdate.className = 'score-update-plus';
+                scoreUpdate.textContent = '+1';
+                gameScreen.appendChild(scoreUpdate);
+                setTimeout(() => scoreUpdate.remove(), 1000);
             } else {
                 btn.classList.add('incorrect');
                 const correctButton = optionsGridDiv.querySelector(`[data-option="${correct}"]`);
@@ -954,6 +1110,7 @@
             feedbackTimer = setTimeout(nextTurn, 5000);
         }
         
+        // Maneja el fin del tiempo
         function timeUp() {
             clearInterval(questionTimer);
             const q = shuffledQuestions[currentQuestionIndex];
@@ -966,6 +1123,7 @@
             feedbackTimer = setTimeout(nextTurn, 5000);
         }
 
+        // Pasa al siguiente turno o finaliza el juego
         function nextTurn() {
             if (feedbackTimer) clearTimeout(feedbackTimer);
             if(questionTimer) clearInterval(questionTimer);
@@ -976,8 +1134,27 @@
             displayQuestion();
         }
         
-        function startGame() { players.forEach(p => p.score = 0); currentPlayerIndex = 0; currentQuestionIndex = 0; usedRandomNames.clear(); usedRandomAvatars.clear(); usedRandomColors.clear(); const allQuestions = []; for (const category in gameData.preguntas) { gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category })); } shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame); showScreen(gameScreen); displayQuestion(); }
+        // Inicia el juego
+        function startGame() { 
+            players.forEach(p => { 
+                p.score = 0; 
+                p.hasFiftyFiftyJoker = true;
+            }); 
+            currentPlayerIndex = 0; 
+            currentQuestionIndex = 0; 
+            usedRandomNames.clear(); 
+            usedRandomAvatars.clear(); 
+            usedRandomColors.clear(); 
+            const allQuestions = []; 
+            for (const category in gameData.preguntas) { 
+                gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category })); 
+            } 
+            shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame); 
+            showScreen(gameScreen); 
+            displayQuestion(); 
+        }
         
+        // Lógica para el final del juego y el podio
         function endGame() {
             if (questionTimer) clearInterval(questionTimer);
             showScreen(endScreen);
@@ -1010,7 +1187,6 @@
                 else if (index === 1) { rankClass = 'silver'; }
                 else if (index === 2) { rankClass = 'bronze'; }
                 place.className = `podium-place`;
-                place.style.backgroundColor = player.color;
                 place.innerHTML = `<div class="podium-rank">${rankIconHtml}</div><div class="podium-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><div class="podium-name">${player.name}</div><div class="podium-score">${player.score} pts</div>`;
                 podiumElementsWithRank.push({ element: place, rankClass: rankClass });
             });
@@ -1033,6 +1209,7 @@
             generateConfetti();
         }
 
+        // Genera la animación de confeti
         function generateConfetti() {
             const container = document.getElementById('confetti-container');
             container.innerHTML = '';
@@ -1048,6 +1225,7 @@
             }
         }
         
+        // Muestra la clasificación actual en un modal
         function showScoreModal() {
             modalScoreList.innerHTML = '';
             const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
@@ -1076,12 +1254,12 @@
             });
             scoreModal.classList.add('active');
         }
-
+        
+        // Funciones para manejar los modales
         function lightenColor(hex, percent) {
             var f=parseInt(hex.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=(f>>8)&0x00FF,B=(f)&0x0000FF;
             return "#"+(0x1000000+(Math.round((t-R)*p/100)+R)*0x10000+(Math.round((t-G)*p/100)+G)*0x100+(Math.round((t-B)*p/100)+B)).toString(16).slice(1);
         }
-
         function hideScoreModal() { scoreModal.classList.remove('active'); }
         function showConfirmExitModal() { confirmExitModal.classList.add('active'); }
         function hideConfirmExitModal() { confirmExitModal.classList.remove('active'); }
@@ -1112,6 +1290,31 @@
             currentPlayerAvatarSelectionIndex = -1;
         }
 
+        // Lógica del comodín 50/50
+        function useFiftyFiftyJoker() {
+            const currentPlayer = players[currentPlayerIndex];
+            if (!currentPlayer.hasFiftyFiftyJoker) return;
+
+            currentPlayer.hasFiftyFiftyJoker = false;
+            fiftyFiftyBtn.disabled = true;
+
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            const correctAnswer = currentQuestion.respuestaCorrecta;
+            
+            const incorrectOptions = ['A', 'B', 'C', 'D'].filter(opt => opt !== correctAnswer);
+            
+            const optionsToHide = shuffleArray(incorrectOptions).slice(0, 2);
+
+            optionsToHide.forEach(opt => {
+                const button = optionsGridDiv.querySelector(`[data-option="${opt}"]`);
+                if (button) {
+                    button.style.visibility = 'hidden';
+                    button.disabled = true;
+                }
+            });
+        }
+        
+        // Event listeners para la interacción del usuario
         document.addEventListener('DOMContentLoaded', () => {
             gameData = initialGameData;
             
@@ -1165,7 +1368,8 @@
             
             confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
             closeFeedbackBtn.addEventListener('click', nextTurn);
+            fiftyFiftyBtn.addEventListener('click', useFiftyFiftyJoker);
         });
     </script>
 </body>
-</html>```
+</html>
