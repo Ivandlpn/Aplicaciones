@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -15,7 +15,8 @@
             --color-secundario: #3a6073;
             --color-texto: #f0f8ff;
             --font-principal: 'Poppins', sans-serif;
-            --font-cita: 'Cormorant Garamond', serif;
+            /* Nuevo código */
+--font-cita: 'Nunito Sans', sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -88,7 +89,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 40px;
             max-width: 90%;
-            width: 500px;
+            width: 600px;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
             opacity: 0;
             visibility: hidden;
@@ -102,13 +103,18 @@
         }
         .quote-text {
             font-family: var(--font-cita);
-            font-size: 2.2rem; /* Un poco más grande para el impacto */
-            font-style: italic;
-            font-weight: 700; /* Más grueso para más fuerza */
-            line-height: 1.5;
-            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
-        /* --- ESTILO DEL NUEVO BOTÓN ÉPICO --- */
+        .quote-author {
+            font-family: var(--font-principal);
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
         .epic-button {
             font-family: var(--font-principal);
             font-weight: 600;
@@ -121,7 +127,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             outline: none;
-            margin-top: 15px;
+            margin-top: 30px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .epic-button:hover {
@@ -141,7 +147,7 @@
 
         <div id="quote-card" class="quote-card">
             <p id="quote-text" class="quote-text"></p>
-            <!-- BOTÓN AÑADIDO PARA COMENZAR EL DÍA -->
+            <p id="quote-author" class="quote-author"></p> 
             <button id="reset-button" class="epic-button">Comenzar mi Día</button>
         </div>
     </div>
@@ -149,30 +155,25 @@
     <audio id="mid-sound" preload="auto" src="mid.mp3"></audio>
     <audio id="end-sound" preload="auto" src="end.mp3"></audio>
 
+    <!-- ===== CAMBIO: Se carga el archivo de frases PRIMERO ===== -->
+    <script src="quotes.js"></script>
+
+    <!-- ===== CAMBIO: El script principal ahora no contiene la lista de frases ===== -->
     <script>
-        // --- Lógica de la Aplicación (JavaScript) ---
         const timerDisplay = document.getElementById('timer-display');
         const startButton = document.getElementById('start-button');
         const quoteCard = document.getElementById('quote-card');
         const quoteText = document.getElementById('quote-text');
+        const quoteAuthor = document.getElementById('quote-author');
         const breathingCircle = document.querySelector('.breathing-circle');
         const midSound = document.getElementById('mid-sound');
         const endSound = document.getElementById('end-sound');
-        const resetButton = document.getElementById('reset-button'); // <-- Seleccionamos el nuevo botón
+        const resetButton = document.getElementById('reset-button');
 
         let timerInterval;
         const meditationTime = 30; // Para pruebas. Cambia a 20 * 60 para la versión final.
-
-        // --- NUEVA LISTA DE FRASES ÉPICAS ---
-        const epicQuotes = [
-            "El mundo es un lienzo para tu imaginación. Sal ahí fuera y pinta tu obra maestra.",
-            "Hoy no es un día más, es una oportunidad menos. No la desperdicies.",
-            "Tu potencial es una tormenta esperando desatarse. Hoy es el día perfecto para que llueva.",
-            "Crea una vida de la que no necesites vacaciones. El primer ladrillo se pone ahora.",
-            "La disciplina de hoy es la libertad de mañana. Ve a por ella.",
-            "No esperes el momento perfecto. Toma este momento y hazlo perfecto.",
-            "Eres el autor de tu propia historia. Escribe un capítulo legendario hoy."
-        ];
+        
+        // La constante 'finalQuotes' ahora existe gracias al archivo quotes.js
         
         function initializeDisplay() {
             updateTimerDisplay(meditationTime);
@@ -181,24 +182,16 @@
         function startMeditation() {
             startButton.classList.add('hidden');
             breathingCircle.style.opacity = '0'; 
-
-            midSound.play();
-            midSound.pause();
-            endSound.play();
-            endSound.pause();
-
+            midSound.play(); midSound.pause(); endSound.play(); endSound.pause();
             let timeLeft = meditationTime;
             updateTimerDisplay(timeLeft);
-
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay(timeLeft);
-
                 if (timeLeft % 5 === 0 && timeLeft > 0) {
                     midSound.currentTime = 0; 
                     midSound.play();
                 }
-                
                 if (timeLeft <= 0) {
                     endMeditation();
                 }
@@ -216,13 +209,12 @@
             clearInterval(timerInterval);
             endSound.currentTime = 0;
             endSound.play();
-
             timerDisplay.style.opacity = '0';
             timerDisplay.style.transform = 'translateY(-20px)';
             
-            // --- CAMBIO: USAMOS LAS FRASES ÉPICAS ---
-            const randomQuote = epicQuotes[Math.floor(Math.random() * epicQuotes.length)];
-            quoteText.textContent = randomQuote; // Ya no añadimos comillas
+            const randomQuote = finalQuotes[Math.floor(Math.random() * finalQuotes.length)];
+            quoteText.textContent = `"${randomQuote.text}"`;
+            quoteAuthor.textContent = `— ${randomQuote.author}`;
 
             setTimeout(() => {
                 timerDisplay.classList.add('hidden');
@@ -230,31 +222,21 @@
             }, 500);
         }
 
-        // --- NUEVA FUNCIÓN PARA REINICIAR LA APP ---
         function resetApp() {
             quoteCard.classList.remove('visible');
-
-            // Pequeña espera para que la tarjeta se oculte antes de que aparezca lo demás
             setTimeout(() => {
-                // Mostrar elementos iniciales
                 timerDisplay.classList.remove('hidden');
                 startButton.classList.remove('hidden');
                 breathingCircle.style.opacity = '1';
-                
-                // Reiniciar estado visual del temporizador
                 timerDisplay.style.opacity = '1';
                 timerDisplay.style.transform = 'translateY(0)';
-                
-                // Poner el tiempo de nuevo al inicio
                 initializeDisplay();
-            }, 500); // Este tiempo debe ser un poco menos que la transición de la tarjeta
+            }, 500);
         }
 
         startButton.addEventListener('click', startMeditation);
-        resetButton.addEventListener('click', resetApp); // <-- Añadimos el evento al nuevo botón
-        
+        resetButton.addEventListener('click', resetApp);
         initializeDisplay();
-
     </script>
 </body>
 </html>
