@@ -1,1 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporizador de Meditación</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
+    <style>
+        :root {
+            --color-primario: #3a7bd5;
+            --color-secundario: #3a6073;
+            --color-texto: #f0f8ff;
+            --font-principal: 'Poppins', sans-serif;
+            --font-cita: 'Cormorant Garamond', serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-principal);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(160deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            color: var(--color-texto);
+            text-align: center;
+            overflow: hidden;
+        }
+        .app-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .breathing-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            animation: breathe 10s ease-in-out infinite;
+            transition: opacity 0.5s ease;
+        }
+        @keyframes breathe {
+            0%   { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+            50%  { transform: translate(-50%, -50%) scale(1.1); opacity: 1;   }
+            100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+        }
+        .timer-display {
+            font-size: 7rem;
+            font-weight: 300;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .start-button {
+            font-family: var(--font-principal);
+            font-size: 1.2rem;
+            padding: 15px 35px;
+            border: 2px solid var(--color-texto);
+            border-radius: 50px;
+            background-color: transparent;
+            color: var(--color-texto);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .start-button:hover {
+            background-color: var(--color-texto);
+            color: var(--color-secundario);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        .quote-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            max-width: 90%;
+            width: 500px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, visibility 0.8s;
+        }
+        .quote-card.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .quote-text {
+            font-family: var(--font-cita);
+            font-size: 2.2rem; /* Un poco más grande para el impacto */
+            font-style: italic;
+            font-weight: 700; /* Más grueso para más fuerza */
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        /* --- ESTILO DEL NUEVO BOTÓN ÉPICO --- */
+        .epic-button {
+            font-family: var(--font-principal);
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--color-secundario);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .epic-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            background-color: white;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="breathing-circle"></div>
+        <div id="timer-display" class="timer-display">00:30</div>
+        <button id="start-button" class="start-button">Comenzar Meditación</button>
+
+        <div id="quote-card" class="quote-card">
+            <p id="quote-text" class="quote-text"></p>
+            <!-- BOTÓN AÑADIDO PARA COMENZAR EL DÍA -->
+            <button id="reset-button" class="epic-button">Comenzar mi Día</button>
+        </div>
+    </div>
+
+    <audio id="mid-sound" preload="auto" src="mid.mp3"></audio>
+    <audio id="end-sound" preload="auto" src="end.mp3"></audio>
+
+    <script>
+        // --- Lógica de la Aplicación (JavaScript) ---
+        const timerDisplay = document.getElementById('timer-display');
+        const startButton = document.getElementById('start-button');
+        const quoteCard = document.getElementById('quote-card');
+        const quoteText = document.getElementById('quote-text');
+        const breathingCircle = document.querySelector('.breathing-circle');
+        const midSound = document.getElementById('mid-sound');
+        const endSound = document.getElementById('end-sound');
+        const resetButton = document.getElementById('reset-button'); // <-- Seleccionamos el nuevo botón
+
+        let timerInterval;
+        const meditationTime = 30; // Para pruebas. Cambia a 20 * 60 para la versión final.
+
+        // --- NUEVA LISTA DE FRASES ÉPICAS ---
+        const epicQuotes = [
+            "El mundo es un lienzo para tu imaginación. Sal ahí fuera y pinta tu obra maestra.",
+            "Hoy no es un día más, es una oportunidad menos. No la desperdicies.",
+            "Tu potencial es una tormenta esperando desatarse. Hoy es el día perfecto para que llueva.",
+            "Crea una vida de la que no necesites vacaciones. El primer ladrillo se pone ahora.",
+            "La disciplina de hoy es la libertad de mañana. Ve a por ella.",
+            "No esperes el momento perfecto. Toma este momento y hazlo perfecto.",
+            "Eres el autor de tu propia historia. Escribe un capítulo legendario hoy."
+        ];
+        
+        function initializeDisplay() {
+            updateTimerDisplay(meditationTime);
+        }
+        
+        function startMeditation() {
+            startButton.classList.add('hidden');
+            breathingCircle.style.opacity = '0'; 
+
+            midSound.play();
+            midSound.pause();
+            endSound.play();
+            endSound.pause();
+
+            let timeLeft = meditationTime;
+            updateTimerDisplay(timeLeft);
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+
+                if (timeLeft % 5 === 0 && timeLeft > 0) {
+                    midSound.currentTime = 0; 
+                    midSound.play();
+                }
+                
+                if (timeLeft <= 0) {
+                    endMeditation();
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            timerDisplay.textContent = formattedTime;
+        }
+
+        function endMeditation() {
+            clearInterval(timerInterval);
+            endSound.currentTime = 0;
+            endSound.play();
+
+            timerDisplay.style.opacity = '0';
+            timerDisplay.style.transform = 'translateY(-20px)';
+            
+            // --- CAMBIO: USAMOS LAS FRASES ÉPICAS ---
+            const randomQuote = epicQuotes[Math.floor(Math.random() * epicQuotes.length)];
+            quoteText.textContent = randomQuote; // Ya no añadimos comillas
+
+            setTimeout(() => {
+                timerDisplay.classList.add('hidden');
+                quoteCard.classList.add('visible');
+            }, 500);
+        }
+
+        // --- NUEVA FUNCIÓN PARA REINICIAR LA APP ---
+        function resetApp() {
+            quoteCard.classList.remove('visible');
+
+            // Pequeña espera para que la tarjeta se oculte antes de que aparezca lo demás
+            setTimeout(() => {
+                // Mostrar elementos iniciales
+                timerDisplay.classList.remove('hidden');
+                startButton.classList.remove('hidden');
+                breathingCircle.style.opacity = '1';
+                
+                // Reiniciar estado visual del temporizador
+                timerDisplay.style.opacity = '1';
+                timerDisplay.style.transform = 'translateY(0)';
+                
+                // Poner el tiempo de nuevo al inicio
+                initializeDisplay();
+            }, 500); // Este tiempo debe ser un poco menos que la transición de la tarjeta
+        }
+
+        startButton.addEventListener('click', startMeditation);
+        resetButton.addEventListener('click', resetApp); // <-- Añadimos el evento al nuevo botón
+        
+        initializeDisplay();
+
+    </script>
+</body>
+</html>
