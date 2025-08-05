@@ -15,8 +15,7 @@
             --color-secundario: #3a6073;
             --color-texto: #f0f8ff;
             --font-principal: 'Poppins', sans-serif;
-            /* Nuevo código */
---font-cita: 'Nunito Sans', sans-serif;
+            --font-cita: 'Nunito Sans', sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -155,10 +154,7 @@
     <audio id="mid-sound" preload="auto" src="mid.mp3"></audio>
     <audio id="end-sound" preload="auto" src="end.mp3"></audio>
 
-    <!-- ===== CAMBIO: Se carga el archivo de frases PRIMERO ===== -->
     <script src="quotes.js"></script>
-
-    <!-- ===== CAMBIO: El script principal ahora no contiene la lista de frases ===== -->
     <script>
         const timerDisplay = document.getElementById('timer-display');
         const startButton = document.getElementById('start-button');
@@ -171,15 +167,49 @@
         const resetButton = document.getElementById('reset-button');
 
         let timerInterval;
-        const meditationTime = 20 * 60; // Para pruebas. Cambia a 20 * 60 para la versión final.
+        const meditationTime = 20 * 60;
         
-        // La constante 'finalQuotes' ahora existe gracias al archivo quotes.js
-        
+        // ===== NUEVO CÓDIGO: Wake Lock API =====
+        let wakeLock = null;
+
+        // Función asíncrona para solicitar el bloqueo de pantalla
+        const requestWakeLock = async () => {
+          // Comprueba si la API es compatible
+          if ('wakeLock' in navigator) {
+            try {
+              wakeLock = await navigator.wakeLock.request('screen');
+              console.log('Wake Lock activado');
+
+              // Escucha si el bloqueo se libera por razones externas (ej. cambio de pestaña)
+              wakeLock.addEventListener('release', () => {
+                console.log('Wake Lock liberado');
+              });
+
+            } catch (err) {
+              console.error(`${err.name}, ${err.message}`);
+            }
+          } else {
+            console.warn('La API Wake Lock no es compatible en este navegador.');
+          }
+        };
+
+        // Función para liberar el bloqueo de pantalla
+        const releaseWakeLock = async () => {
+          if (wakeLock !== null) {
+            await wakeLock.release();
+            wakeLock = null;
+          }
+        };
+        // ===== FIN DEL NUEVO CÓDIGO =====
+
         function initializeDisplay() {
             updateTimerDisplay(meditationTime);
         }
         
-        function startMeditation() {
+        async function startMeditation() { // Se convierte la función en asíncrona
+            // ===== NUEVO CÓDIGO: Solicitar bloqueo al iniciar =====
+            await requestWakeLock();
+
             startButton.classList.add('hidden');
             breathingCircle.style.opacity = '0'; 
             midSound.play(); midSound.pause(); endSound.play(); endSound.pause();
@@ -188,12 +218,12 @@
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay(timeLeft);
-                // Nuevo código
-// Comprueba si el tiempo restante es exactamente 15, 10 o 5 minutos.
-if (timeLeft === 900 || timeLeft === 600 || timeLeft === 300) {
-    midSound.currentTime = 0; 
-    midSound.play();
-}
+
+                if (timeLeft === 900 || timeLeft === 600 || timeLeft === 300) {
+                    midSound.currentTime = 0; 
+                    midSound.play();
+                }
+
                 if (timeLeft <= 0) {
                     endMeditation();
                 }
@@ -209,6 +239,9 @@ if (timeLeft === 900 || timeLeft === 600 || timeLeft === 300) {
 
         function endMeditation() {
             clearInterval(timerInterval);
+            // ===== NUEVO CÓDIGO: Liberar bloqueo al finalizar =====
+            releaseWakeLock();
+
             endSound.currentTime = 0;
             endSound.play();
             timerDisplay.style.opacity = '0';
@@ -225,6 +258,10 @@ if (timeLeft === 900 || timeLeft === 600 || timeLeft === 300) {
         }
 
         function resetApp() {
+            // ===== NUEVO CÓDIGO: Asegurarse de liberar el bloqueo si se reinicia a mitad =====
+            releaseWakeLock();
+            clearInterval(timerInterval); // También limpia el intervalo por si se reinicia a mitad
+
             quoteCard.classList.remove('visible');
             setTimeout(() => {
                 timerDisplay.classList.remove('hidden');
