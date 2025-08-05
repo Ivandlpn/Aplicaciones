@@ -36,7 +36,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            width: 100%; /* Asegura que el contenedor use el ancho completo */
+            width: 100%;
         }
         .breathing-circle {
             position: absolute;
@@ -150,60 +150,30 @@
             background-color: white;
         }
         .hidden { display: none; }
-
-        /* ===== NUEVOS ESTILOS PARA ADAPTACIÓN MÓVIL (RESPONSIVE) ===== */
         @media (max-width: 600px) {
-            .timer-display {
-                font-size: 5.5rem; /* Reduce el tamaño del temporizador */
-                margin-bottom: 15px;
-            }
-
-            .intention-word {
-                font-size: 1.2rem;
-                margin-bottom: 30px;
-            }
-
-            /* El círculo de respiración puede ser muy grande en móviles */
-            .breathing-circle {
-                width: 250px;
-                height: 250px;
-            }
-
-            .quote-card {
-                width: 90%; /* Hace la tarjeta fluida */
-                padding: 30px 25px; /* Reduce el espaciado interno */
-            }
-
-            .quote-text {
-                font-size: 1.7rem; /* Reduce el tamaño de la fuente de la frase */
-                line-height: 1.5; /* Mejora la legibilidad */
-            }
-
-            .quote-author {
-                font-size: 1rem; /* Reduce ligeramente el autor */
-            }
+            .timer-display { font-size: 5.5rem; margin-bottom: 15px; }
+            .intention-word { font-size: 1.2rem; margin-bottom: 30px; }
+            .breathing-circle { width: 250px; height: 250px; }
+            .quote-card { width: 90%; padding: 30px 25px; }
+            .quote-text { font-size: 1.7rem; line-height: 1.5; }
+            .quote-author { font-size: 1rem; }
         }
-
     </style>
 </head>
 <body>
-
     <div class="app-container">
         <div class="breathing-circle"></div>
         <div id="timer-display" class="timer-display">20:00</div>
         <p id="intention-word" class="intention-word"></p>
         <button id="start-button" class="start-button">Comenzar Meditación</button>
-
         <div id="quote-card" class="quote-card">
             <p id="quote-text" class="quote-text"></p>
             <p id="quote-author" class="quote-author"></p> 
             <button id="reset-button" class="epic-button">Comenzar mi Día</button>
         </div>
     </div>
-
     <audio id="mid-sound" preload="auto" src="mid.mp3"></audio>
     <audio id="end-sound" preload="auto" src="end.mp3"></audio>
-
     <script src="quotes.js"></script>
     <script>
         const timerDisplay = document.getElementById('timer-display');
@@ -218,50 +188,23 @@
         const intentionWord = document.getElementById('intention-word');
         const elem = document.documentElement;
 
-        let timerInterval;
         const meditationTime = 20 * 60;
-        
         let wakeLock = null;
+        
+        // ===== Declaramos la variable del worker =====
+        let timerWorker = null;
 
-        async function entrarEnPantallaCompleta() {
-            if (elem.requestFullscreen) {
-                await elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                await elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                await elem.msRequestFullscreen();
-            }
+        async function entrarEnPantallaCompleta() { if (elem.requestFullscreen) { await elem.requestFullscreen(); } else if (elem.webkitRequestFullscreen) { await elem.webkitRequestFullscreen(); } else if (elem.msRequestFullscreen) { await elem.msRequestFullscreen(); } }
+        async function salirDePantallaCompleta() { if (document.fullscreenElement) { if (document.exitFullscreen) { await document.exitFullscreen(); } else if (document.webkitExitFullscreen) { await document.webkitExitFullscreen(); } else if (document.msExitFullscreen) { await document.msExitFullscreen(); } } }
+        const requestWakeLock = async () => { if ('wakeLock' in navigator) { try { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => {}); } catch (err) { console.error(`${err.name}, ${err.message}`); } } };
+        const releaseWakeLock = async () => { if (wakeLock !== null) { await wakeLock.release(); wakeLock = null; } };
+
+        function updateTimerDisplay(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            timerDisplay.textContent = formattedTime;
         }
-
-        async function salirDePantallaCompleta() {
-            if (document.fullscreenElement) {
-                if (document.exitFullscreen) {
-                    await document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { /* Safari */
-                    await document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { /* IE11 */
-                    await document.msExitFullscreen();
-                }
-            }
-        }
-
-        const requestWakeLock = async () => {
-          if ('wakeLock' in navigator) {
-            try {
-              wakeLock = await navigator.wakeLock.request('screen');
-              wakeLock.addEventListener('release', () => {});
-            } catch (err) {
-              console.error(`${err.name}, ${err.message}`);
-            }
-          }
-        };
-
-        const releaseWakeLock = async () => {
-          if (wakeLock !== null) {
-            await wakeLock.release();
-            wakeLock = null;
-          }
-        };
 
         function initializeDisplay() {
             updateTimerDisplay(meditationTime);
@@ -278,42 +221,46 @@
             intentionWord.textContent = 'Calma';
             intentionWord.classList.add('visible');
             
-            let timeLeft = meditationTime;
-            updateTimerDisplay(timeLeft);
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay(timeLeft);
-                
-                if (timeLeft === 900) {
-                    midSound.currentTime = 0; 
-                    midSound.play();
-                    intentionWord.textContent = 'Respira';
-                } else if (timeLeft === 600) {
-                    midSound.currentTime = 0; 
-                    midSound.play();
-                    intentionWord.textContent = 'Suelta';
-                } else if (timeLeft === 300) {
-                    midSound.currentTime = 0;
-                    midSound.play();
-                    intentionWord.textContent = 'Ahora';
-                }
+            // ===== Iniciar el Worker y enviarle un mensaje para que comience a contar =====
+            if (window.Worker) {
+                timerWorker = new Worker('timer-worker.js');
+                timerWorker.postMessage({ command: 'start', duration: meditationTime });
 
-                if (timeLeft <= 0) {
-                    endMeditation();
-                }
-            }, 1000);
+                // ===== Escuchar los mensajes que vienen DESDE el worker =====
+                timerWorker.onmessage = function(e) {
+                    const data = e.data;
+
+                    if (data.type === 'tick') {
+                        // El worker nos envía un tick cada segundo. Actualizamos la UI.
+                        updateTimerDisplay(data.timeLeft);
+                        
+                        // La lógica de sonidos y palabras de intención ahora depende de los mensajes del worker.
+                        if (data.timeLeft === 900) {
+                            midSound.currentTime = 0; midSound.play();
+                            intentionWord.textContent = 'Respira';
+                        } else if (data.timeLeft === 600) {
+                            midSound.currentTime = 0; midSound.play();
+                            intentionWord.textContent = 'Suelta';
+                        } else if (data.timeLeft === 300) {
+                            midSound.currentTime = 0; midSound.play();
+                            intentionWord.textContent = 'Ahora';
+                        }
+                    } else if (data.type === 'done') {
+                        // El worker nos avisa que el tiempo ha terminado.
+                        endMeditation();
+                    }
+                };
+            }
         }
         
-        function updateTimerDisplay(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-            timerDisplay.textContent = formattedTime;
-        }
-
         async function endMeditation() {
-            clearInterval(timerInterval);
+            // ===== Detener y limpiar el worker =====
+            if (timerWorker) {
+                timerWorker.postMessage({ command: 'stop' });
+                timerWorker.terminate();
+                timerWorker = null;
+            }
+
             await releaseWakeLock();
             await salirDePantallaCompleta();
 
@@ -335,9 +282,15 @@
         }
 
         async function resetApp() {
+            // ===== Detener y limpiar el worker también al reiniciar =====
+            if (timerWorker) {
+                timerWorker.postMessage({ command: 'stop' });
+                timerWorker.terminate();
+                timerWorker = null;
+            }
+
             await releaseWakeLock();
             await salirDePantallaCompleta();
-            clearInterval(timerInterval);
 
             intentionWord.classList.remove('visible');
             intentionWord.textContent = '';
