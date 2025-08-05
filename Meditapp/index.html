@@ -59,8 +59,23 @@
             font-size: 7rem;
             font-weight: 300;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 40px;
+            margin-bottom: 20px; /* Reducido para dar espacio a la palabra */
             transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        /* ===== NUEVO ESTILO PARA LA PALABRA DE INTENCIÓN ===== */
+        .intention-word {
+            font-family: var(--font-principal);
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            height: 30px; 
+            margin-bottom: 40px;
+        }
+        .intention-word.visible {
+            opacity: 0.7;
         }
         .start-button {
             font-family: var(--font-principal);
@@ -142,6 +157,8 @@
     <div class="app-container">
         <div class="breathing-circle"></div>
         <div id="timer-display" class="timer-display">20:00</div>
+        <!-- ===== NUEVO ELEMENTO HTML PARA LA PALABRA DE INTENCIÓN ===== -->
+        <p id="intention-word" class="intention-word"></p>
         <button id="start-button" class="start-button">Comenzar Meditación</button>
 
         <div id="quote-card" class="quote-card">
@@ -165,8 +182,8 @@
         const midSound = document.getElementById('mid-sound');
         const endSound = document.getElementById('end-sound');
         const resetButton = document.getElementById('reset-button');
-        
-        // Se selecciona el elemento raíz de la página para la pantalla completa
+        // ===== NUEVA CONSTANTE =====
+        const intentionWord = document.getElementById('intention-word');
         const elem = document.documentElement;
 
         let timerInterval;
@@ -174,9 +191,6 @@
         
         let wakeLock = null;
 
-        // ===== NUEVO CÓDIGO: Funciones para la Pantalla Completa =====
-        
-        // Función para entrar en pantalla completa (compatible con varios navegadores)
         async function entrarEnPantallaCompleta() {
             if (elem.requestFullscreen) {
                 await elem.requestFullscreen();
@@ -187,32 +201,26 @@
             }
         }
 
-        // Función para salir de la pantalla completa
         async function salirDePantallaCompleta() {
-            if (document.exitFullscreen) {
-                await document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) { /* Safari */
-                await document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) { /* IE11 */
-                await document.msExitFullscreen();
+            if (document.fullscreenElement) { // Comprueba si está en pantalla completa
+                if (document.exitFullscreen) {
+                    await document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    await document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    await document.msExitFullscreen();
+                }
             }
         }
-
-        // ===== FIN DEL NUEVO CÓDIGO =====
 
         const requestWakeLock = async () => {
           if ('wakeLock' in navigator) {
             try {
               wakeLock = await navigator.wakeLock.request('screen');
-              console.log('Wake Lock activado');
-              wakeLock.addEventListener('release', () => {
-                console.log('Wake Lock liberado');
-              });
+              wakeLock.addEventListener('release', () => {});
             } catch (err) {
               console.error(`${err.name}, ${err.message}`);
             }
-          } else {
-            console.warn('La API Wake Lock no es compatible en este navegador.');
           }
         };
 
@@ -228,22 +236,39 @@
         }
         
         async function startMeditation() { 
-            // ===== NUEVO CÓDIGO: Solicitar Wake Lock y Pantalla Completa =====
             await requestWakeLock();
             await entrarEnPantallaCompleta();
 
             startButton.classList.add('hidden');
             breathingCircle.style.opacity = '0'; 
             midSound.play(); midSound.pause(); endSound.play(); endSound.pause();
+
+            // ===== CÓDIGO AÑADIDO: GESTIONAR PALABRA DE INTENCIÓN =====
+            intentionWord.textContent = 'Calma';
+            intentionWord.classList.add('visible');
+            
             let timeLeft = meditationTime;
             updateTimerDisplay(timeLeft);
+            
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay(timeLeft);
-                if (timeLeft === 900 || timeLeft === 600 || timeLeft === 300) {
+                
+                // ===== CÓDIGO MODIFICADO: Cambiar palabra con los sonidos =====
+                if (timeLeft === 900) { // 15 min
                     midSound.currentTime = 0; 
                     midSound.play();
+                    intentionWord.textContent = 'Respira';
+                } else if (timeLeft === 600) { // 10 min
+                    midSound.currentTime = 0; 
+                    midSound.play();
+                    intentionWord.textContent = 'Suelta';
+                } else if (timeLeft === 300) { // 5 min
+                    midSound.currentTime = 0;
+                    midSound.play();
+                    intentionWord.textContent = 'Ahora';
                 }
+
                 if (timeLeft <= 0) {
                     endMeditation();
                 }
@@ -257,12 +282,13 @@
             timerDisplay.textContent = formattedTime;
         }
 
-        function endMeditation() {
+        async function endMeditation() {
             clearInterval(timerInterval);
-            
-            // ===== NUEVO CÓDIGO: Liberar Wake Lock y salir de Pantalla Completa =====
-            releaseWakeLock();
-            salirDePantallaCompleta();
+            await releaseWakeLock();
+            await salirDePantallaCompleta();
+
+            // ===== CÓDIGO AÑADIDO: Ocultar palabra de intención =====
+            intentionWord.classList.remove('visible');
 
             endSound.currentTime = 0;
             endSound.play();
@@ -279,11 +305,14 @@
             }, 500);
         }
 
-        function resetApp() {
-            // ===== NUEVO CÓDIGO: Liberar todo al reiniciar =====
-            releaseWakeLock();
-            salirDePantallaCompleta();
+        async function resetApp() {
+            await releaseWakeLock();
+            await salirDePantallaCompleta();
             clearInterval(timerInterval);
+
+            // ===== CÓDIGO AÑADIDO: Reiniciar palabra de intención =====
+            intentionWord.classList.remove('visible');
+            intentionWord.textContent = '';
 
             quoteCard.classList.remove('visible');
             setTimeout(() => {
