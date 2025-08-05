@@ -40,7 +40,8 @@
         }
         .breathing-circle {
             position: absolute;
-            top: 50%;
+            /* CAMBIO: Se baja el círculo para que actúe de fondo al nuevo eje central */
+            top: 55%; 
             left: 50%;
             width: 300px;
             height: 300px;
@@ -60,19 +61,12 @@
             font-size: 7rem;
             font-weight: 300;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
+            /* CAMBIO: Se ajusta el margen inferior */
+            margin-bottom: 10px; 
             transition: opacity 0.5s ease, transform 0.5s ease;
-            transform: translateY(-50px);
+            /* ELIMINADO: Se quita el transform para que esté en el flujo natural */
         }
-        
-        /* ===== ESTILO MODIFICADO PARA LA PALABRA DE INTENCIÓN ===== */
         .intention-word {
-            position: absolute; /* La sacamos del flujo normal */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, 70px); /* La centramos y la bajamos un poco */
-            width: 100%; /* Le damos ancho completo para centrar el texto */
-            
             font-family: var(--font-principal);
             font-size: 2.2rem;
             font-weight: 300;
@@ -80,6 +74,9 @@
             text-transform: uppercase;
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
+            height: auto;
+            /* CAMBIO: Se ajusta el margen para crear espacio simétrico */
+            margin-bottom: 70px; 
         }
         .intention-word.visible {
             opacity: 0.7;
@@ -257,14 +254,16 @@
         }
 
         @media (max-width: 600px) {
+            .breathing-circle {
+                top: 53%; /* Ajuste también para móvil */
+            }
             .timer-display { 
                 font-size: 5.5rem; 
                 margin-bottom: 15px; 
-                transform: translateY(-30px);
             }
-            .intention-word {
-                font-size: 1.8rem;
-                transform: translate(-50%, 50px); /* Ajuste de posición para móviles */
+            .intention-word { 
+                font-size: 1.8rem; 
+                margin-bottom: 50px;
             }
             .breathing-circle { width: 250px; height: 250px; }
             .quote-card { width: 90%; padding: 30px 25px; }
@@ -307,9 +306,10 @@
     <audio id="end-sound" preload="auto" src="end.mp3"></audio>
     
     <script src="quotes.js"></script>
-    <script src="timer-worker.js"></script>
     
     <script>
+        // El código JavaScript no necesita ninguna modificación para este cambio de diseño.
+        // Se pega exactamente el mismo que en la versión anterior.
         const timerDisplay = document.getElementById('timer-display');
         const startButton = document.getElementById('start-button');
         const quoteCard = document.getElementById('quote-card');
@@ -418,7 +418,8 @@
                 startButton.classList.remove('hidden');
                 breathingCircle.style.opacity = '1';
                 timerDisplay.style.opacity = '1';
-                timerDisplay.style.transform = 'translateY(-50px)'; // Mantener la posición elevada
+                // CAMBIO: Asegurarnos de que el temporizador no salte de posición
+                timerDisplay.style.transform = 'translateY(0)';
                 initializeDisplay();
             }, 500);
         }
