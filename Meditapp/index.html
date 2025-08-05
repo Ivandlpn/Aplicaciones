@@ -65,13 +65,13 @@
         }
         .intention-word {
             font-family: var(--font-principal);
-            font-size: 2.2rem; /* Tamaño aumentado para mayor visibilidad */
+            font-size: 2.2rem;
             font-weight: 300;
             letter-spacing: 3px;
             text-transform: uppercase;
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
-            height: auto; /* Altura automática para el nuevo tamaño */
+            height: auto;
             margin-bottom: 40px;
         }
         .intention-word.visible {
@@ -152,29 +152,12 @@
         .hidden { display: none; }
 
         @media (max-width: 600px) {
-            .timer-display { 
-                font-size: 5.5rem; 
-                margin-bottom: 15px; 
-            }
-            .intention-word { 
-                font-size: 1.8rem; /* Tamaño aumentado también para móviles */
-                margin-bottom: 30px; 
-            }
-            .breathing-circle { 
-                width: 250px; 
-                height: 250px; 
-            }
-            .quote-card { 
-                width: 90%; 
-                padding: 30px 25px; 
-            }
-            .quote-text { 
-                font-size: 1.7rem; 
-                line-height: 1.5; 
-            }
-            .quote-author { 
-                font-size: 1rem; 
-            }
+            .timer-display { font-size: 5.5rem; margin-bottom: 15px; }
+            .intention-word { font-size: 1.8rem; margin-bottom: 30px; }
+            .breathing-circle { width: 250px; height: 250px; }
+            .quote-card { width: 90%; padding: 30px 25px; }
+            .quote-text { font-size: 1.7rem; line-height: 1.5; }
+            .quote-author { font-size: 1rem; }
         }
     </style>
 </head>
@@ -192,7 +175,9 @@
     </div>
     <audio id="mid-sound" preload="auto" src="mid.mp3"></audio>
     <audio id="end-sound" preload="auto" src="end.mp3"></audio>
+    
     <script src="quotes.js"></script>
+    
     <script>
         const timerDisplay = document.getElementById('timer-display');
         const startButton = document.getElementById('start-button');
@@ -246,16 +231,10 @@
                     if (data.type === 'tick') {
                         updateTimerDisplay(data.timeLeft);
                         
-                        if (data.timeLeft === 900) {
-                            midSound.currentTime = 0; midSound.play();
-                            intentionWord.textContent = 'Respira';
-                        } else if (data.timeLeft === 600) {
-                            midSound.currentTime = 0; midSound.play();
-                            intentionWord.textContent = 'Suelta';
-                        } else if (data.timeLeft === 300) {
-                            midSound.currentTime = 0; midSound.play();
-                            intentionWord.textContent = 'Ahora';
-                        }
+                        if (data.timeLeft === 900) { midSound.currentTime = 0; midSound.play(); intentionWord.textContent = 'Respira'; } 
+                        else if (data.timeLeft === 600) { midSound.currentTime = 0; midSound.play(); intentionWord.textContent = 'Suelta'; } 
+                        else if (data.timeLeft === 300) { midSound.currentTime = 0; midSound.play(); intentionWord.textContent = 'Ahora'; }
+
                     } else if (data.type === 'done') {
                         endMeditation();
                     }
@@ -280,9 +259,12 @@
             timerDisplay.style.opacity = '0';
             timerDisplay.style.transform = 'translateY(-20px)';
             
+            // ===== LÓGICA REVERTIDA: DE DIARIO A ALEATORIO =====
             const randomQuote = finalQuotes[Math.floor(Math.random() * finalQuotes.length)];
+            
             quoteText.textContent = `"${randomQuote.text}"`;
             quoteAuthor.textContent = `— ${randomQuote.author}`;
+            // ===============================================
 
             setTimeout(() => {
                 timerDisplay.classList.add('hidden');
