@@ -36,6 +36,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            width: 100%; /* Asegura que el contenedor use el ancho completo */
         }
         .breathing-circle {
             position: absolute;
@@ -59,10 +60,9 @@
             font-size: 7rem;
             font-weight: 300;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px; /* Reducido para dar espacio a la palabra */
+            margin-bottom: 20px;
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
-        /* ===== NUEVO ESTILO PARA LA PALABRA DE INTENCIÓN ===== */
         .intention-word {
             font-family: var(--font-principal);
             font-size: 1.5rem;
@@ -150,6 +150,40 @@
             background-color: white;
         }
         .hidden { display: none; }
+
+        /* ===== NUEVOS ESTILOS PARA ADAPTACIÓN MÓVIL (RESPONSIVE) ===== */
+        @media (max-width: 600px) {
+            .timer-display {
+                font-size: 5.5rem; /* Reduce el tamaño del temporizador */
+                margin-bottom: 15px;
+            }
+
+            .intention-word {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            /* El círculo de respiración puede ser muy grande en móviles */
+            .breathing-circle {
+                width: 250px;
+                height: 250px;
+            }
+
+            .quote-card {
+                width: 90%; /* Hace la tarjeta fluida */
+                padding: 30px 25px; /* Reduce el espaciado interno */
+            }
+
+            .quote-text {
+                font-size: 1.7rem; /* Reduce el tamaño de la fuente de la frase */
+                line-height: 1.5; /* Mejora la legibilidad */
+            }
+
+            .quote-author {
+                font-size: 1rem; /* Reduce ligeramente el autor */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -157,7 +191,6 @@
     <div class="app-container">
         <div class="breathing-circle"></div>
         <div id="timer-display" class="timer-display">20:00</div>
-        <!-- ===== NUEVO ELEMENTO HTML PARA LA PALABRA DE INTENCIÓN ===== -->
         <p id="intention-word" class="intention-word"></p>
         <button id="start-button" class="start-button">Comenzar Meditación</button>
 
@@ -182,7 +215,6 @@
         const midSound = document.getElementById('mid-sound');
         const endSound = document.getElementById('end-sound');
         const resetButton = document.getElementById('reset-button');
-        // ===== NUEVA CONSTANTE =====
         const intentionWord = document.getElementById('intention-word');
         const elem = document.documentElement;
 
@@ -202,7 +234,7 @@
         }
 
         async function salirDePantallaCompleta() {
-            if (document.fullscreenElement) { // Comprueba si está en pantalla completa
+            if (document.fullscreenElement) {
                 if (document.exitFullscreen) {
                     await document.exitFullscreen();
                 } else if (document.webkitExitFullscreen) { /* Safari */
@@ -243,7 +275,6 @@
             breathingCircle.style.opacity = '0'; 
             midSound.play(); midSound.pause(); endSound.play(); endSound.pause();
 
-            // ===== CÓDIGO AÑADIDO: GESTIONAR PALABRA DE INTENCIÓN =====
             intentionWord.textContent = 'Calma';
             intentionWord.classList.add('visible');
             
@@ -254,16 +285,15 @@
                 timeLeft--;
                 updateTimerDisplay(timeLeft);
                 
-                // ===== CÓDIGO MODIFICADO: Cambiar palabra con los sonidos =====
-                if (timeLeft === 900) { // 15 min
+                if (timeLeft === 900) {
                     midSound.currentTime = 0; 
                     midSound.play();
                     intentionWord.textContent = 'Respira';
-                } else if (timeLeft === 600) { // 10 min
+                } else if (timeLeft === 600) {
                     midSound.currentTime = 0; 
                     midSound.play();
                     intentionWord.textContent = 'Suelta';
-                } else if (timeLeft === 300) { // 5 min
+                } else if (timeLeft === 300) {
                     midSound.currentTime = 0;
                     midSound.play();
                     intentionWord.textContent = 'Ahora';
@@ -287,7 +317,6 @@
             await releaseWakeLock();
             await salirDePantallaCompleta();
 
-            // ===== CÓDIGO AÑADIDO: Ocultar palabra de intención =====
             intentionWord.classList.remove('visible');
 
             endSound.currentTime = 0;
@@ -310,7 +339,6 @@
             await salirDePantallaCompleta();
             clearInterval(timerInterval);
 
-            // ===== CÓDIGO AÑADIDO: Reiniciar palabra de intención =====
             intentionWord.classList.remove('visible');
             intentionWord.textContent = '';
 
