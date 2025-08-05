@@ -151,6 +151,105 @@
         }
         .hidden { display: none; }
 
+        /* ===== NUEVOS ESTILOS PARA EL CALENDARIO Y EL ICONO ===== */
+        #calendar-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 25px;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #calendar-icon:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        #calendar-icon svg path {
+            fill: var(--color-texto);
+        }
+
+        #calendar-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s;
+            z-index: 1000;
+        }
+        #calendar-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .calendar-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .calendar-header button {
+            background: none;
+            border: none;
+            color: var(--color-texto);
+            font-size: 1.8rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+        .calendar-header button:hover {
+            opacity: 1;
+        }
+        .calendar-header h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .calendar-day, .calendar-weekday {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+        .calendar-weekday {
+            font-weight: 600;
+            opacity: 0.7;
+        }
+        .calendar-day.completed {
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            font-weight: 600;
+        }
+        .calendar-day.empty {
+            visibility: hidden;
+        }
+
         @media (max-width: 600px) {
             .timer-display { font-size: 5.5rem; margin-bottom: 15px; }
             .intention-word { font-size: 1.8rem; margin-bottom: 30px; }
@@ -162,6 +261,7 @@
     </style>
 </head>
 <body>
+
     <div class="app-container">
         <div class="breathing-circle"></div>
         <div id="timer-display" class="timer-display">20:00</div>
@@ -173,12 +273,33 @@
             <button id="reset-button" class="epic-button">Comenzar mi Día</button>
         </div>
     </div>
+    
+    <!-- ===== NUEVO ELEMENTO: ICONO DEL CALENDARIO (SVG INTEGRADO) ===== -->
+    <div id="calendar-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
+    </div>
+
+    <!-- ===== NUEVO ELEMENTO: MODAL DEL CALENDARIO (INICIALMENTE OCULTO) ===== -->
+    <div id="calendar-modal">
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button id="prev-month"><</button>
+                <h2 id="month-year"></h2>
+                <button id="next-month">></button>
+            </div>
+            <div class="calendar-grid" id="calendar-weekdays"></div>
+            <div class="calendar-grid" id="calendar-days"></div>
+        </div>
+    </div>
+
+
     <audio id="mid-sound" preload="auto" src="mid.mp3"></audio>
     <audio id="end-sound" preload="auto" src="end.mp3"></audio>
     
     <script src="quotes.js"></script>
     
     <script>
+        // ... (constantes de elementos existentes)
         const timerDisplay = document.getElementById('timer-display');
         const startButton = document.getElementById('start-button');
         const quoteCard = document.getElementById('quote-card');
@@ -191,50 +312,111 @@
         const intentionWord = document.getElementById('intention-word');
         const elem = document.documentElement;
 
+        // ===== NUEVAS CONSTANTES PARA EL CALENDARIO =====
+        const calendarIcon = document.getElementById('calendar-icon');
+        const calendarModal = document.getElementById('calendar-modal');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+        const monthYearEl = document.getElementById('month-year');
+        const calendarDaysEl = document.getElementById('calendar-days');
+        const calendarWeekdaysEl = document.getElementById('calendar-weekdays');
+
         const meditationTime = 20 * 60;
         let wakeLock = null;
         let timerWorker = null;
+        let currentDate = new Date(); // Para la navegación del calendario
 
+        // ===== LÓGICA DE GESTIÓN DE DATOS CON localStorage =====
+
+        // Obtiene los días completados desde localStorage
+        function getCompletedDays() {
+            const daysJSON = localStorage.getItem('meditationDays');
+            return daysJSON ? JSON.parse(daysJSON) : [];
+        }
+
+        // Guarda un nuevo día completado
+        function saveCompletedDay(date) {
+            const completedDays = getCompletedDays();
+            const dateString = date.toISOString().split('T')[0]; // Formato "YYYY-MM-DD"
+
+            // Evita añadir duplicados si el usuario medita varias veces el mismo día
+            if (!completedDays.includes(dateString)) {
+                completedDays.push(dateString);
+                localStorage.setItem('meditationDays', JSON.stringify(completedDays));
+            }
+        }
+
+        // ===== LÓGICA PARA GENERAR Y MOSTRAR EL CALENDARIO =====
+
+        function generateCalendar(year, month) {
+            const completedDays = getCompletedDays();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Lunes = 0
+
+            monthYearEl.textContent = firstDay.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+            calendarDaysEl.innerHTML = ''; // Limpiar calendario anterior
+
+            // Añadir celdas vacías para los días antes del 1º del mes
+            for (let i = 0; i < startDayOfWeek; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.classList.add('calendar-day', 'empty');
+                calendarDaysEl.appendChild(emptyCell);
+            }
+
+            // Añadir los días del mes
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.classList.add('calendar-day');
+                dayCell.textContent = day;
+
+                const
+                 currentDateString = new Date(year, month, day).toISOString().split('T')[0];
+                if (completedDays.includes(currentDateString)) {
+                    dayCell.classList.add('completed');
+                }
+                calendarDaysEl.appendChild(dayCell);
+            }
+        }
+
+        function setupWeekdays() {
+            const weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+            calendarWeekdaysEl.innerHTML = '';
+            weekdays.forEach(day => {
+                const dayEl = document.createElement('div');
+                dayEl.classList.add('calendar-weekday');
+                dayEl.textContent = day;
+                calendarWeekdaysEl.appendChild(dayEl);
+            });
+        }
+
+        // ... (funciones existentes: entrar/salir pantalla completa, wake lock, etc.)
         async function entrarEnPantallaCompleta() { if (elem.requestFullscreen) { await elem.requestFullscreen(); } else if (elem.webkitRequestFullscreen) { await elem.webkitRequestFullscreen(); } else if (elem.msRequestFullscreen) { await elem.msRequestFullscreen(); } }
         async function salirDePantallaCompleta() { if (document.fullscreenElement) { if (document.exitFullscreen) { await document.exitFullscreen(); } else if (document.webkitExitFullscreen) { await document.webkitExitFullscreen(); } else if (document.msExitFullscreen) { await document.msExitFullscreen(); } } }
         const requestWakeLock = async () => { if ('wakeLock' in navigator) { try { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => {}); } catch (err) { console.error(`${err.name}, ${err.message}`); } } };
         const releaseWakeLock = async () => { if (wakeLock !== null) { await wakeLock.release(); wakeLock = null; } };
+        function updateTimerDisplay(seconds) { const minutes = Math.floor(seconds / 60); const remainingSeconds = seconds % 60; const formattedTime = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`; timerDisplay.textContent = formattedTime; }
+        function initializeDisplay() { updateTimerDisplay(meditationTime); }
 
-        function updateTimerDisplay(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-            timerDisplay.textContent = formattedTime;
-        }
-
-        function initializeDisplay() {
-            updateTimerDisplay(meditationTime);
-        }
-        
         async function startMeditation() { 
             await requestWakeLock();
             await entrarEnPantallaCompleta();
-
             startButton.classList.add('hidden');
             breathingCircle.style.opacity = '0'; 
             midSound.play(); midSound.pause(); endSound.play(); endSound.pause();
-
             intentionWord.textContent = 'Calma';
             intentionWord.classList.add('visible');
-            
             if (window.Worker) {
                 timerWorker = new Worker('timer-worker.js');
                 timerWorker.postMessage({ command: 'start', duration: meditationTime });
-
                 timerWorker.onmessage = function(e) {
                     const data = e.data;
                     if (data.type === 'tick') {
                         updateTimerDisplay(data.timeLeft);
-                        
                         if (data.timeLeft === 900) { midSound.currentTime = 0; midSound.play(); intentionWord.textContent = 'Respira'; } 
                         else if (data.timeLeft === 600) { midSound.currentTime = 0; midSound.play(); intentionWord.textContent = 'Suelta'; } 
                         else if (data.timeLeft === 300) { midSound.currentTime = 0; midSound.play(); intentionWord.textContent = 'Ahora'; }
-
                     } else if (data.type === 'done') {
                         endMeditation();
                     }
@@ -249,22 +431,20 @@
                 timerWorker = null;
             }
 
+            // ===== PUNTO CLAVE: Guardar el día completado AHORA =====
+            saveCompletedDay(new Date());
+
             await releaseWakeLock();
             await salirDePantallaCompleta();
-
             intentionWord.classList.remove('visible');
-
             endSound.currentTime = 0;
             endSound.play();
             timerDisplay.style.opacity = '0';
             timerDisplay.style.transform = 'translateY(-20px)';
             
-            // ===== LÓGICA REVERTIDA: DE DIARIO A ALEATORIO =====
             const randomQuote = finalQuotes[Math.floor(Math.random() * finalQuotes.length)];
-            
             quoteText.textContent = `"${randomQuote.text}"`;
             quoteAuthor.textContent = `— ${randomQuote.author}`;
-            // ===============================================
 
             setTimeout(() => {
                 timerDisplay.classList.add('hidden');
@@ -278,13 +458,10 @@
                 timerWorker.terminate();
                 timerWorker = null;
             }
-
             await releaseWakeLock();
             await salirDePantallaCompleta();
-
             intentionWord.classList.remove('visible');
             intentionWord.textContent = '';
-
             quoteCard.classList.remove('visible');
             setTimeout(() => {
                 timerDisplay.classList.remove('hidden');
@@ -296,9 +473,36 @@
             }, 500);
         }
 
+        // ===== EVENTOS PARA EL CALENDARIO =====
+        calendarIcon.addEventListener('click', () => {
+            currentDate = new Date(); // Siempre abrir en el mes actual
+            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+            calendarModal.classList.add('visible');
+        });
+
+        calendarModal.addEventListener('click', (e) => {
+            // Cierra el modal si se hace clic en el fondo (fuera del contenedor del calendario)
+            if (e.target === calendarModal) {
+                calendarModal.classList.remove('visible');
+            }
+        });
+
+        prevMonthBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        });
+
+        // ===== INICIALIZACIÓN =====
         startButton.addEventListener('click', startMeditation);
         resetButton.addEventListener('click', resetApp);
-        initializeDisplay();
+        
+        setupWeekdays(); // Configurar los días de la semana una vez
+        initializeDisplay(); // Inicializar el temporizador
     </script>
 </body>
 </html>
