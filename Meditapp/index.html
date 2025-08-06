@@ -5,26 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meditapp</title>
     
-    <!-- ===== NUEVOS ICONOS Y METADATOS DE LA APP ===== -->
-    
-    <!-- Favicons básicos para navegadores -->
+    <!-- Iconos y Metadatos de la App -->
     <link rel="icon" type="image/png" sizes="32x32" href="iconomeditapp.png">
     <link rel="icon" type="image/png" sizes="16x16" href="iconomeditapp.png">
-
-    <!-- Icono para dispositivos Apple (iPhone, iPad) al añadir a la pantalla de inicio -->
     <link rel="apple-touch-icon" href="iconomeditapp.png">
-
-    <!-- Enlace al Manifest para la Progressive Web App (PWA) -->
     <link rel="manifest" href="manifest.json">
-
-    <!-- Color de la barra de herramientas en navegadores móviles (Chrome, Firefox, etc.) -->
     <meta name="theme-color" content="#3a7bd5">
     
-    <!-- Metadatos para compartir en redes sociales (Open Graph) -->
+    <!-- Metadatos para compartir en redes sociales -->
     <meta property="og:title" content="Meditapp">
     <meta property="og:description" content="Una aplicación minimalista para meditar y encontrar la calma.">
     <meta property="og:image" content="iconomeditapp.png">
-    <meta property="og:url" content="URL_DE_TU_APP_AQUI"> <!-- Reemplaza esto con tu URL cuando la publiques -->
+    <meta property="og:url" content="URL_DE_TU_APP_AQUI">
     <meta property="og:type" content="website">
 
     <!-- Metadatos para compartir en Twitter -->
@@ -33,14 +25,11 @@
     <meta name="twitter:description" content="Una aplicación minimalista para meditar y encontrar la calma.">
     <meta name="twitter:image" content="iconomeditapp.png">
     
-    <!-- ===== FIN DE LA SECCIÓN DE ICONOS Y METADATOS ===== -->
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
     <style>
-        /* ... (Tu CSS completo y corregido va aquí, sin cambios) ... */
         :root {
             --color-primario: #3a7bd5;
             --color-secundario: #3a6073;
@@ -301,7 +290,6 @@
 </head>
 <body>
 
-    <!-- ... (El body y los elementos de la app van aquí, sin cambios) ... -->
     <div class="app-container">
         <div class="breathing-circle"></div>
         <div id="timer-display" class="timer-display">20:00</div>
@@ -336,7 +324,6 @@
     <script src="quotes.js"></script>
     
     <script>
-        // ... (Tu código JavaScript completo y correcto va aquí, sin cambios) ...
         const timerDisplay = document.getElementById('timer-display');
         const startButton = document.getElementById('start-button');
         const quoteCard = document.getElementById('quote-card');
@@ -443,7 +430,8 @@
             setTimeout(() => {
                 timerDisplay.classList.remove('hidden');
                 startButton.classList.remove('hidden');
-                breathing-circle.style.opacity = '1';
+                // ===== CORRECCIÓN DE LA LÍNEA DEL ERROR =====
+                breathingCircle.style.opacity = '1';
                 timerDisplay.style.opacity = '1';
                 timerDisplay.style.transform = 'translateY(0)';
                 initializeDisplay();
