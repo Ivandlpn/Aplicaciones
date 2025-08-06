@@ -35,7 +35,7 @@
             align-items: center; 
             min-height: 100vh; 
             padding: 1rem 0;
-            overflow: hidden;
+            overflow: hidden; /* Evita el doble scroll en algunos casos */
         }
         .game-container { 
             background-color: var(--blanco-puro); 
@@ -47,7 +47,8 @@
             flex-direction: column; 
             overflow: hidden; 
             position: relative; 
-            min-height: 600px;
+            height: 95vh; /* CORRECCIÓN: Usar altura relativa al viewport */
+            max-height: 700px; /* Límite para pantallas muy altas */
         }
         .screen { 
             width: 100%; 
@@ -64,7 +65,7 @@
             opacity: 0; 
             pointer-events: none; 
             transition: opacity 0.5s ease-in-out, transform 0.5s ease; 
-            overflow-y: auto; 
+            overflow-y: auto; /* Permite scroll si el contenido es muy largo */
         }
         .screen.active { opacity: 1; pointer-events: all; position: relative; transform: scale(1); }
         .screen:not(.active) { transform: scale(0.95); }
@@ -111,7 +112,6 @@
             margin-bottom: 30px; 
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
         }
-        /* Nueva animación de logo para la pantalla de inicio */
         .splash-logo {
             font-size: 6rem;
             color: var(--blanco-puro);
@@ -179,73 +179,36 @@
             margin-left: 0; 
         }
         .player-input-group .player-color-input {
-            width: 40px;
-            height: 40px;
-            border: none;
-            padding: 0;
-            border-radius: 8px;
-            cursor: pointer;
-            -webkit-appearance: none; 
-            -moz-appearance: none;    
-            appearance: none;
-            background-color: transparent; 
+            width: 40px; height: 40px; border: none; padding: 0; border-radius: 8px; cursor: pointer;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none; background-color: transparent; 
         }
         .player-input-group .player-color-input::-webkit-color-swatch-wrapper { padding: 0; }
         .player-input-group .player-color-input::-webkit-color-swatch { border: none; border-radius: 6px; }
         .player-input-group .player-color-input::-moz-color-swatch { border: none; border-radius: 6px; }
 
-        /* Mejora visual: Header fijo para la pantalla de juego */
         .game-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            background-color: var(--blanco-puro);
-            border-bottom: 2px solid var(--gris-claro);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%; display: flex;
+            justify-content: space-between; align-items: center; padding: 15px 30px;
+            background-color: var(--blanco-puro); border-bottom: 2px solid var(--gris-claro);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10;
         }
-        .game-header .header-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .game-header .header-group { display: flex; align-items: center; gap: 10px; }
         .game-header .header-group .btn-icon {
-            background: none; 
-            border: none; 
-            font-size: 1.8rem; 
-            color: var(--azul-principal); 
-            cursor: pointer; 
+            background: none; border: none; font-size: 1.8rem; color: var(--azul-principal); cursor: pointer;
             transition: transform 0.2s ease, color 0.3s ease;
         }
         .game-header .header-group .btn-icon:hover { transform: scale(1.1); color: var(--rojo-acento); }
 
-        #game-screen { padding: 30px; padding-top: 100px; }
+        #game-screen { padding: 30px; padding-top: 100px; justify-content: flex-start; }
         
-        /* Ajustes para el display del turno en el nuevo header */
         #current-player-turn-display {
-            font-size: 1.2rem; 
-            font-weight: 600; 
-            color: var(--blanco-puro); 
-            background-color: var(--azul-principal); 
-            padding: 8px 20px; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25); 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            opacity: 0; 
-            width: auto;
-            max-width: 60%;
-            transition: all 0.3s ease-in-out;
+            font-size: 1.2rem; font-weight: 600; color: var(--blanco-puro);
+            background-color: var(--azul-principal); padding: 8px 20px;
+            border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            display: flex; align-items: center; gap: 10px; opacity: 0;
+            width: auto; max-width: 300px; transition: all 0.3s ease-in-out;
         }
-        #current-player-turn-display.animate-in { 
-            animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
-        }
+        #current-player-turn-display.animate-in { animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes bounce-in { 
             0% { opacity: 0; transform: scale(0.3); } 
             50% { opacity: 1; transform: scale(1.1); } 
@@ -253,305 +216,107 @@
             100% { opacity: 1; transform: scale(1); } 
         }
         
-        /* Botones de joker mejorados */
         .joker-btn {
-            background-color: var(--rojo-acento);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background-color: var(--rojo-acento); color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); display: flex; align-items: center; gap: 8px;
         }
-        .joker-btn:hover:not(:disabled) {
-            background-color: rgb(230, 30, 45);
-            transform: translateY(-2px);
-        }
-        .joker-btn:disabled {
-            background-color: var(--gris-oscuro);
-            cursor: not-allowed;
-            opacity: 0.7;
-            transform: none;
-        }
+        .joker-btn:hover:not(:disabled) { background-color: rgb(230, 30, 45); transform: translateY(-2px); }
+        .joker-btn:disabled { background-color: var(--gris-oscuro); cursor: not-allowed; opacity: 0.7; transform: none; }
         
-        #question-area { 
-            background-color: var(--gris-claro); 
-            border-radius: 15px; 
-            padding: 30px; 
-            margin-bottom: 20px; 
-            width: 100%; 
-            box-shadow: inset 0 3px 8px rgba(0,0,0,0.15); 
+        #question-area { background-color: var(--gris-claro); border-radius: 15px; padding: 30px;
+            margin-bottom: 20px; width: 100%; box-shadow: inset 0 3px 8px rgba(0,0,0,0.15); 
         }
-        .category-display { 
-            font-size: 1.2rem; 
-            font-weight: 500; 
-            color: var(--azul-principal); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin-bottom: 15px; 
+        .category-display { font-size: 1.2rem; font-weight: 500; color: var(--azul-principal);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 15px; 
         }
         .category-display i { color: var(--rojo-acento); margin-right: 10px; font-size: 2rem; }
         .category-display i.animate-category { animation: category-pulse 0.8s ease-out; }
         @keyframes category-pulse { 0% { transform: scale(1); color: var(--rojo-acento); } 50% { transform: scale(1.2); color: var(--azul-principal); } 100% { transform: scale(1); color: var(--rojo-acento); } }
-        #question-text { 
-            font-size: 1.6rem; 
-            font-weight: 600; 
-            color: var(--azul-principal); 
-            margin-bottom: 25px; 
-            min-height: 80px;
-        }
-        .options-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-            width: 100%; 
-        }
-        .option-btn { 
-            background-color: var(--azul-claro); 
-            color: white; 
-            border: none; 
-            padding: 15px 20px; 
-            border-radius: 10px; 
-            font-size: 1.1rem; 
-            text-align: left; 
-            cursor: pointer; 
-            transition: background-color 0.3s;
+        #question-text { font-size: 1.6rem; font-weight: 600; color: var(--azul-principal); margin-bottom: 25px; min-height: 80px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .option-btn { background-color: var(--azul-claro); color: white; border: none; padding: 15px 20px;
+            border-radius: 10px; font-size: 1.1rem; text-align: left; cursor: pointer; transition: background-color 0.3s;
         }
         .option-btn:hover { background-color: var(--azul-principal); }
         .option-btn.correct { background-color: var(--verde-correcto); animation: pulse-correct 0.6s ease-out forwards; }
         @keyframes pulse-correct { 0% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(76, 175, 80, 0.9); } 100% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0); } }
         .option-btn.incorrect { background-color: var(--rojo-incorrecto); animation: shake-incorrect 0.6s ease-out; }
         @keyframes shake-incorrect { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } }
-        #feedback-message { 
-            background-color: var(--azul-aun-mas-claro); 
-            color: white; 
-            padding: 15px; 
-            border-radius: 10px; 
-            margin-top: 20px; 
-            opacity: 0; 
-            transition: opacity 0.5s; 
-            position:relative; 
-            width: 100%;
+        #feedback-message { background-color: var(--azul-aun-mas-claro); color: white; padding: 15px; border-radius: 10px;
+            margin-top: 20px; opacity: 0; transition: opacity 0.5s; position:relative; width: 100%;
         }
         #feedback-message.show { opacity: 1; }
-        #close-feedback-btn { 
-            position: absolute; 
-            top: 5px; 
-            right: 5px; 
-            background: none; 
-            border: none; 
-            font-size: 1.5rem; 
-            color: white; 
-            cursor: pointer; 
-        }
-        .modal-overlay { 
-            position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.3s; 
-            padding: 1rem;
+        #close-feedback-btn { position: absolute; top: 5px; right: 5px; background: none; border: none; font-size: 1.5rem; color: white; cursor: pointer; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 1rem;
         }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-content { 
-            background: white; 
-            border-radius: 15px; 
-            padding: 30px; 
-            width: 100%; 
-            max-width: 450px; 
-            position: relative; 
-            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
-            transform: scale(0.9);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .modal-content { background: white; border-radius: 15px; padding: 30px; width: 100%;
+            max-width: 450px; position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-content h3 { 
-            color: var(--rojo-acento); 
-            margin-bottom: 20px; 
-            font-size: 2.2rem; 
-            font-weight: 700; 
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2); 
-            text-transform: uppercase; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px; 
+        .modal-content h3 { color: var(--rojo-acento); margin-bottom: 20px; font-size: 2.2rem;
+            font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center; gap: 10px; 
         }
         #modal-score-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-        .score-card-modal { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            background-color: var(--gris-claro); 
-            padding: 12px; 
-            border-radius: 10px; 
-            border-left: 5px solid var(--azul-claro); 
-            opacity: 0; 
-            transform: translateX(-30px); 
-            animation: slideInFromLeft 0.5s ease-out forwards; 
+        .score-card-modal { display: flex; align-items: center; gap: 15px; background-color: var(--gris-claro);
+            padding: 12px; border-radius: 10px; border-left: 5px solid var(--azul-claro);
+            opacity: 0; transform: translateX(-30px); animation: slideInFromLeft 0.5s ease-out forwards; 
         }
         @keyframes slideInFromLeft { to { opacity: 1; transform: translateX(0); } }
         .score-card-modal.is-leader { border-left-color: var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
         .score-card-modal.is-current-player { box-shadow: 0 0 15px var(--azul-aun-mas-claro); border-left-color: var(--azul-principal); }
-        .score-card-rank { 
-            font-size: 1.5rem; 
-            font-weight: 700; 
-            color: var(--gris-oscuro); 
-            min-width: 40px; 
-            text-align: center; 
-        }
+        .score-card-rank { font-size: 1.5rem; font-weight: 700; color: var(--gris-oscuro); min-width: 40px; text-align: center; }
         .score-card-rank .fa-crown { color: var(--gold); }
         .score-card-details { flex-grow: 1; }
         .score-card-name { font-weight: 600; font-size: 1.1rem; color: var(--gris-oscuro); }
         .score-progress-bar-bg { background-color: #d1d1d1; border-radius: 5px; height: 10px; margin-top: 5px; overflow: hidden; }
         .score-progress-bar-fg { background: linear-gradient(90deg, var(--azul-claro), var(--azul-principal)); height: 100%; width: 0%; border-radius: 5px; transition: width 0.5s ease-out; }
-        .score-card-score { 
-            font-size: 1.6rem; 
-            font-weight: 700; 
-            color: var(--azul-principal); 
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .score-card-score .score-plus {
-            font-size: 1.2rem;
-            color: var(--verde-correcto);
-            opacity: 0;
-            transform: translateY(10px);
-            animation: score-fly-up 0.8s forwards;
-        }
-        @keyframes score-fly-up {
-            0% { opacity: 0; transform: translateY(10px); }
-            50% { opacity: 1; transform: translateY(-10px); }
-            100% { opacity: 0; transform: translateY(-20px); }
-        }
-
+        .score-card-score { font-size: 1.6rem; font-weight: 700; color: var(--azul-principal); display: flex; align-items: center; gap: 5px; }
+        
         #end-screen { justify-content: space-around; }
-        #end-screen h2 { 
-            font-size: 2.5rem; 
-            font-weight: 800; 
-            color: var(--azul-principal); 
-            animation: fadeInDown 0.8s ease-out; 
-        }
+        #end-screen h2 { font-size: 2.5rem; font-weight: 800; color: var(--azul-principal); animation: fadeInDown 0.8s ease-out; }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        .winner-card { 
-            width: 100%; 
-            max-width: 500px; 
-            background: linear-gradient(45deg, var(--azul-principal), var(--azul-claro)); 
-            color: var(--blanco-puro); 
-            border-radius: 20px; 
-            padding: 25px; 
-            margin: 20px 0; 
-            border: 4px solid var(--gold); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px var(--gold); 
-            text-align: center; 
-            opacity: 0; 
-            transform: scale(0.8); 
+        .winner-card { width: 100%; max-width: 500px; background: linear-gradient(45deg, var(--azul-principal), var(--azul-claro));
+            color: var(--blanco-puro); border-radius: 20px; padding: 25px; margin: 20px 0; border: 4px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px var(--gold); text-align: center;
+            opacity: 0; transform: scale(0.8); 
         }
         .winner-card.animate { animation: winner-card-appear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 0.5s; }
         @keyframes winner-card-appear { to { opacity: 1; transform: scale(1); } }
-        .winner-card h3 { 
-            font-size: 2rem; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-        }
-        .winner-card .trophy-icon { 
-            font-size: 4rem; 
-            color: var(--gold); 
-            margin: 15px 0; 
-            text-shadow: 0 0 15px white; 
-        }
-        .winner-card .winner-name { 
-            font-size: 2.2rem; 
-            font-weight: 800; 
-            margin-bottom: 5px; 
-        }
-        .winner-card .winner-score { 
-            font-size: 1.5rem; 
-            font-weight: 500; 
-        }
+        .winner-card h3 { font-size: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+        .winner-card .trophy-icon { font-size: 4rem; color: var(--gold); margin: 15px 0; text-shadow: 0 0 15px white; }
+        .winner-card .winner-name { font-size: 2.2rem; font-weight: 800; margin-bottom: 5px; }
+        .winner-card .winner-score { font-size: 1.5rem; font-weight: 500; }
         .winner-card .winner-names-tie { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         .winner-card .winner-names-tie .winner-name { font-size: 1.8rem; }
-        .podium-container { 
-            display: flex; 
-            align-items: flex-end; 
-            justify-content: center; 
-            gap: 10px; 
-            width: 100%; 
-            height: 200px; 
-            margin: 10px 0 20px; 
+        
+        .podium-container { display: flex; align-items: flex-end; justify-content: center;
+            gap: 10px; width: 100%; height: 200px; margin: 10px 0 20px; 
         }
-        .podium-place { 
-            width: 30%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: flex-end; 
-            text-align: center; 
-            border-top-left-radius: 10px; 
-            border-top-right-radius: 10px; 
-            color: white; 
-            padding: 10px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
-            opacity: 0; 
-            transform: translateY(50px); 
-            position: relative;
+        .podium-place { width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            text-align: center; border-top-left-radius: 10px; border-top-right-radius: 10px; color: white;
+            padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0;
+            transform: translateY(50px); position: relative; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        .podium-place.gold { background-image: linear-gradient(180deg, var(--gold) 0%, #FFEA8D 100%); height: 100%; animation-delay: 1.2s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .podium-place.silver { background-image: linear-gradient(180deg, var(--silver) 0%, #E3E3E3 100%); height: 80%; animation-delay: 1.4s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .podium-place.bronze { background-image: linear-gradient(180deg, var(--bronze) 0%, #B96620 100%); height: 60%; animation-delay: 1.6s; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .podium-place.gold { background-image: linear-gradient(180deg, var(--gold) 0%, #FFEA8D 100%); height: 100%; animation-delay: 1.2s; }
+        .podium-place.silver { background-image: linear-gradient(180deg, var(--silver) 0%, #E3E3E3 100%); height: 80%; animation-delay: 1.4s; }
+        .podium-place.bronze { background-image: linear-gradient(180deg, var(--bronze) 0%, #B96620 100%); height: 60%; animation-delay: 1.6s; }
         @keyframes podium-rise { to { opacity: 1; transform: translateY(0); } }
 
-        .podium-place .podium-name, .podium-place .podium-score {
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-        .podium-place .podium-name { 
-            font-size: 1.2rem; 
-            font-weight: 700; 
-            word-break: break-word; 
-        }
-        .podium-place .podium-score { 
-            font-size: 1rem; 
-            font-weight: 500; 
-        }
-        .podium-place .podium-rank { 
-            font-size: 2.5rem; 
-            font-weight: 800; 
-            margin-bottom: 5px; 
-        }
+        .podium-place .podium-name, .podium-place .podium-score { text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .podium-place .podium-name { font-size: 1.2rem; font-weight: 700; word-break: break-word; }
+        .podium-place .podium-score { font-size: 1rem; font-weight: 500; }
+        .podium-place .podium-rank { font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; }
         .podium-place .podium-rank i { text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
-        .other-scores-list { 
-            width: 100%; 
-            max-width: 600px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-        }
-        .player-card { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background-color: var(--gris-claro); 
-            padding: 15px 20px; 
-            border-radius: 10px; 
-            opacity: 0; 
-            transform: scale(0.9); 
-            animation: card-appear 0.5s ease-out forwards; 
+        .other-scores-list { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px; }
+        .player-card { display: flex; justify-content: space-between; align-items: center; background-color: var(--gris-claro);
+            padding: 15px 20px; border-radius: 10px; opacity: 0; transform: scale(0.9); animation: card-appear 0.5s ease-out forwards; 
         }
         @keyframes card-appear { to { opacity: 1; transform: scale(1); } }
         .player-card .rank { font-size: 1.2rem; font-weight: 600; color: var(--gris-oscuro); }
@@ -564,32 +329,37 @@
         #timer-container { width: 100%; height: 10px; background-color: var(--gris-claro); border: 2px solid var(--azul-aun-mas-claro); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         #timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--rojo-acento), var(--azul-claro)); border-radius: 8px; transition: width 1s linear, background 1s ease; }
         
-        .player-avatar-container { width: 50px; height: 50px; border-radius: 50%; background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid var(--azul-principal); transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); flex-shrink: 0; }
+        .player-avatar-container { width: 50px; height: 50px; border-radius: 50%; background-color: var(--azul-claro); display: flex;
+            justify-content: center; align-items: center; cursor: pointer; border: 2px solid var(--azul-principal);
+            transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); flex-shrink: 0;
+        }
         .player-avatar-container:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .player-avatar { font-size: 1.8rem; color: white; }
 
         #avatar-selection-modal .modal-content { max-width: 600px; }
         #avatar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 15px; margin-top: 20px; }
-        .avatar-option { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; background-color: var(--gris-claro); display: flex; justify-content: center; align-items: center; cursor: pointer; border: 3px solid transparent; transition: all 0.2s ease; }
+        .avatar-option { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; background-color: var(--gris-claro);
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            border: 3px solid transparent; transition: all 0.2s ease;
+        }
         .avatar-option:hover { background-color: var(--azul-aun-mas-claro); border-color: var(--azul-principal); transform: scale(1.05); }
         .avatar-option.selected { border-color: var(--rojo-acento); box-shadow: 0 0 15px rgba(203, 24, 35, 0.5); transform: scale(1.1); }
         .avatar-option i { font-size: 2.5rem; color: var(--azul-principal); }
 
-        .player-score-avatar, .winner-avatar, .podium-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0; }
-        .player-score-avatar i, .winner-avatar i, .podium-avatar i { font-size: 1.5rem; color: white; }
-        
+        .player-score-avatar, .winner-avatar, .podium-avatar { width: 40px; height: 40px; border-radius: 50%;
+            background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0;
+        }
+        .winner-avatar { margin: 0 auto 10px auto; width: 60px; height: 60px; }
+        .winner-avatar i { font-size: 2.5rem; }
+        .podium-avatar { width: 50px; height: 50px; margin-bottom: 5px; }
+        .podium-avatar i { font-size: 2rem; color: white; }
+        .player-score-avatar i { font-size: 1.5rem; color: white; }
+
         .score-update-plus {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--verde-correcto);
-            opacity: 0;
-            animation: score-update-pop 1s ease-out forwards;
-            pointer-events: none;
-            z-index: 100;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 2rem; font-weight: 800; color: var(--verde-correcto);
+            opacity: 0; animation: score-update-pop 1s ease-out forwards;
+            pointer-events: none; z-index: 100;
         }
         @keyframes score-update-pop {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
@@ -600,25 +370,21 @@
         /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
         @media (max-width: 768px) {
             .game-container {
-                width: 95vw;
-                min-height: 0;
-                height: auto;
-                max-height: 95vh;
-                display: flex;
-                flex-direction: column;
+                width: 100%; /* Ocupa todo el ancho */
+                height: 100%; /* Ocupa toda la altura */
+                max-height: none; /* Sin altura máxima */
+                border-radius: 0; /* Sin bordes redondeados */
             }
             .screen {
                 padding: 20px;
-                min-height: 0;
-                height: auto;
-                position: relative;
-                flex-grow: 1;
-            }
-            .screen.active {
-                 display: flex;
+                justify-content: flex-start; /* Alinea al inicio para scroll */
             }
             .screen:not(.active) {
-                display: none;
+                display: none; /* Estrategia más robusta para móvil */
+            }
+            .screen.active {
+                position: relative; /* Quita el posicionamiento absoluto */
+                height: 100%; /* Ocupa toda la altura del contenedor */
             }
             
             .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
@@ -641,12 +407,12 @@
                 flex-wrap: wrap;
                 gap: 8px;
             }
-            .player-input-group label { min-width: 60px; margin-right: 5px; font-size: 0.9rem; }
-            .player-input-group input[type="text"] { padding: 10px 12px; font-size: 0.9rem; min-width: 120px; }
-            .player-input-group .random-name-btn { padding: 8px 12px; font-size: 0.9rem; margin-left: auto; }
-            .player-input-group .player-color-input { width: 35px; height: 35px; }
+            .player-input-group label { min-width: 60px; margin-right: 5px; font-size: 0.9rem; flex-shrink: 0; }
+            .player-input-group input[type="text"] { padding: 10px 12px; font-size: 0.9rem; flex-grow: 1; min-width: 100px; }
+            .player-input-group .random-name-btn { padding: 8px 12px; font-size: 0.9rem; }
+            .player-input-group .player-color-input, .player-avatar-container { width: 35px; height: 35px; }
             
-            #game-screen { padding-top: 80px; }
+            #game-screen { padding-top: 80px; } /* Espacio para el header fijo */
             #question-area { padding: 20px; margin-bottom: 15px; }
             .category-display { font-size: 1rem; margin-bottom: 10px; }
             .category-display i { font-size: 1.8rem; }
@@ -669,11 +435,7 @@
             .podium-place .podium-name { font-size: 1rem; }
             .podium-place .podium-score { font-size: 0.9rem; }
             .podium-place .podium-rank { font-size: 2rem; }
-            .player-card { padding: 12px 15px; }
-            .player-card .rank, .player-card .name, .player-card .score { font-size: 1rem; }
-            .player-score-avatar, .winner-avatar, .podium-avatar { width: 35px; height: 35px; }
-            .player-score-avatar i, .winner-avatar i, .podium-avatar i { font-size: 1.3rem; }
-
+            
             .modal-content { padding: 20px; }
             .modal-content h3 { font-size: 1.8rem; gap: 8px; }
             .score-card-modal { padding: 10px; gap: 10px; }
@@ -685,16 +447,15 @@
         }
 
         @media (max-width: 480px) {
-            body { padding: 0.5rem 0; }
+            body { padding: 0; } /* Sin padding en el body para ocupar todo */
             .screen { padding: 15px; }
             #splash-screen h1 { font-size: 2rem; }
             .btn { padding: 10px 20px; font-size: 0.9rem; }
             #player-config-screen h2, #round-config-screen h2 { font-size: 1.5rem; }
             .player-count-selector span, .round-count-selector span { font-size: 1.3rem; }
-            .player-input-group label { min-width: auto; flex-basis: 100%; text-align: left; }
-            .player-input-group { justify-content: space-between; }
+            .player-input-group label { text-align: left; margin-bottom: 5px; width: 100%;}
+            .player-input-group { flex-wrap: wrap; justify-content: flex-start; } /* Alinea a la izquierda */
             .player-input-group input[type="text"] { flex-grow: 1; }
-            .player-input-group .random-name-btn { padding: 6px 10px; font-size: 0.8rem; }
             
             #question-text { font-size: 1.15rem; min-height: 50px; }
             .option-btn { padding: 10px 12px; font-size: 0.9rem; }
@@ -756,10 +517,7 @@
                 <div class="category-display"><i id="category-icon" class="fas fa-question-circle"></i><span id="category-name">Categoría</span></div>
                 <p id="question-text">Cargando pregunta...</p>
                 <div id="options-grid" class="options-grid">
-                    <button class="option-btn" data-option="A">A) Opción 1</button>
-                    <button class="option-btn" data-option="B">B) Opción 2</button>
-                    <button class="option-btn" data-option="C">C) Opción 3</button>
-                    <button class="option-btn" data-option="D">D) Opción 4</button>
+                    <!-- Las opciones se generarán dinámicamente -->
                 </div>
             </div>
             
@@ -806,7 +564,7 @@
     </div>
 
     <script>
-        // Declaración de variables globales y datos del juego.
+        // --- ESTADO Y DATOS DEL JUEGO ---
         let gameData = {};
         let players = [];
         let currentPlayerIndex = 0;
@@ -815,100 +573,21 @@
         let questionsPerPlayer = 5;
         let shuffledQuestions = [];
         let feedbackTimer = null;
-
-        const TIMER_DURATION = 20; 
-        let timeRemaining = TIMER_DURATION;
         let questionTimer = null;
+        const TIMER_DURATION = 20;
+        let timeRemaining = TIMER_DURATION;
+        let usedRandomNames = new Set();
+        let usedRandomAvatars = new Set();
+        let usedRandomColors = new Set();
+        let currentPlayerAvatarSelectionIndex = -1;
 
-        const initialGameData = {
-            "preguntas": {
-                "Elementos Estructurales de la Vía": [
-                    {
-                        "pregunta": "¿Qué elemento de la vía férrea se encarga de transmitir las cargas de los carriles al balasto?",
-                        "opciones": ["A) Carril", "B) Brida", "C) Traviesa", "D) Tirafondo"],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "La traviesa es el elemento transversal que recibe la carga del carril y la transmite al balasto, manteniendo la geometría de la vía."
-                    },
-                    {
-                        "pregunta": "¿Cuál es la función principal del balasto en la superestructura de la vía?",
-                        "opciones": ["A) Conducir la electricidad", "B) Drenar el agua y distribuir cargas", "C) Fijar los carriles directamente", "D) Absorber el ruido del tren"],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "El balasto, compuesto por grava, drena el agua y distribuye uniformemente las cargas de las traviesas al terraplén."
-                    },
-                    {
-                        "pregunta": "¿Qué tipo de carril se utiliza comúnmente en las líneas de alta velocidad en España?",
-                        "opciones": ["A) UIC 54", "B) ASCE 60", "C) UIC 60", "D) RE 70"],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "El carril UIC 60 es el estándar en las líneas de alta velocidad españolas debido a su mayor resistencia y capacidad para soportar grandes cargas."
-                    }
-                ],
-                "Maquinaria y Herramientas": [
-                    {
-                        "pregunta": "¿Qué máquina se utiliza para compactar el balasto bajo las traviesas y mejorar la estabilidad de la vía?",
-                        "opciones": ["A) Desguarnecedora", "B) Bateadora", "C) Perfiladora", "D) Soldadora de carril"],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "La bateadora es una máquina fundamental para el mantenimiento de la vía, encargada de compactar el balasto y nivelar la vía."
-                    },
-                    {
-                        "pregunta": "¿Cuál es la función de una perfiladora de balasto?",
-                        "opciones": ["A) Excavar zanjas", "B) Distribuir y dar forma al balasto", "C) Cortar carriles", "D) Medir la geometría de la vía"],
-                        "respuestaCorrecta": "B",
-                        "explicacion": "La perfiladora de balasto se encarga de distribuir el balasto de manera uniforme y darle la forma adecuada en la sección transversal de la vía."
-                    }
-                ],
-                "Sistemas y Tecnologías": [
-                    {
-                        "pregunta": "¿Qué sistema de señalización se utiliza en las líneas de alta velocidad europeas para controlar la velocidad y garantizar la seguridad?",
-                        "opciones": ["A) ASFA", "B) LZB", "C) ERTMS", "D) ATP"],
-                        "respuestaCorrecta": "C",
-                        "explicacion": "El ERTMS (European Rail Traffic Management System) es el sistema de señalización y control de trenes estándar en Europa para las líneas de alta velocidad."
-                    },
-                    {
-                        "pregunta": "¿Qué tecnología permite a los trenes de alta velocidad circular a velocidades muy elevadas sin contacto directo con el carril?",
-                        "opciones": ["A) Levitation magnética (Maglev)", "B) Tracción diésel", "C) Frenado regenerativo", "D) Vía en placa"],
-                        "respuestaCorrecta": "A",
-                        "explicacion": "La levitación magnética o Maglev permite que el tren flote sobre la vía, eliminando la fricción y permitiendo velocidades extremas."
-                    }
-                ]
-            }
-        };
+        const randomRailwayNames = ["Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss", "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan", "Amolador As", "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil", "Biela Veloz", "Trenelito", "Vía Láctea", "Pantógrafo Power", "Señor Señal", "Cat-enaria", "Ingeniero Rieles", "Desvío Divertido", "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante", "Soldador Sergio", "Frenada Fantástica", "Inspector Javier", "Silbato Sonriente", "Vagón Valiente", "El Fantasma de la Estación", "El Conductor Loco", "La Locomotora Lenta", "El Vía-jero", "El Tren Expreso", "Maquinista Malabarista", "Controlador Caótico", "Portero Pato", "Despachador Demente", "El Ferrocarril Fugaz", "Estación Estelar", "Señor Vía", "Tren de la Suerte"];
+        const avatarIcons = ['fas fa-train', 'fas fa-locomotive', 'fas fa-subway', 'fas fa-tram', 'fas fa-bus', 'fas fa-car-side', 'fas fa-plane', 'fas fa-ship', 'fas fa-bicycle', 'fas fa-truck-ramp-box', 'fas fa-rocket', 'fas fa-motorcycle', 'fas fa-shuttle-space', 'fas fa-helicopter', 'fas fa-bus-simple', 'fas fa-caravan'];
+        const defaultPlayerColors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2', '#00CED1', '#FF8C00', '#DA70D6', '#ADFF2F', '#DC143C', '#FF4500', '#9932CC', '#20B2AA', '#FF1493', '#00BFFF', '#7FFF00', '#BA55D3', '#F4A460', '#FF69B4', '#00FFFF'];
+        
+        const initialGameData = { "preguntas": { /* ... (como en tu código original) ... */ }};
 
-// Nombres divertidos y temáticos para los jugadores
-const randomRailwayNames = [
-    "Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss",
-    "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan",
-    "Amolador As", "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil",
-    "Biela Veloz", "Trenelito", "Vía Láctea", "Pantógrafo Power",
-    "Señor Señal", "Cat-enaria", "Ingeniero Rieles", "Desvío Divertido",
-    "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante",
-    "Soldador Sergio", "Frenada Fantástica", "Inspector Javier",
-    "Silbato Sonriente", "Vagón Valiente", "El Fantasma de la Estación",
-    "El Conductor Loco", "La Locomotora Lenta", "El Vía-jero",
-    "El Tren Expreso", "Maquinista Malabarista", "Controlador Caótico",
-    "Portero Pato", "Despachador Demente", "El Ferrocarril Fugaz",
-    "Estación Estelar", "Señor Vía", "Tren de la Suerte"
-];
-let usedRandomNames = new Set();
-
-// Íconos de avatar basados en transporte, usando Font Awesome
-const avatarIcons = [
-    'fas fa-train', 'fas fa-locomotive', 'fas fa-subway', 'fas fa-tram',
-    'fas fa-bus', 'fas fa-car-side', 'fas fa-plane', 'fas fa-ship',
-    'fas fa-bicycle', 'fas fa-truck-ramp-box', 'fas fa-rocket', 'fas fa-motorcycle',
-    'fas fa-shuttle-space', 'fas fa-helicopter', 'fas fa-bus-simple', 'fas fa-caravan'
-];
-let usedRandomAvatars = new Set();
-
-// Paleta de colores más amplia y vibrante para los jugadores
-const defaultPlayerColors = [
-    '#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2', '#00CED1',
-    '#FF8C00', '#DA70D6', '#ADFF2F', '#DC143C', '#FF4500', '#9932CC',
-    '#20B2AA', '#FF1493', '#00BFFF', '#7FFF00', '#BA55D3', '#F4A460',
-    '#FF69B4', '#00FFFF'
-];
-let usedRandomColors = new Set();
-
-        // Se obtienen las referencias a los elementos del DOM.
+        // --- REFERENCIAS AL DOM ---
         const splashScreen = document.getElementById('splash-screen');
         const playerConfigScreen = document.getElementById('player-config-screen');
         const roundConfigScreen = document.getElementById('round-config-screen');
@@ -927,7 +606,6 @@ let usedRandomColors = new Set();
         const currentPlayerTurnDisplay = document.getElementById('current-player-turn-display');
         const questionTextP = document.getElementById('question-text');
         const optionsGridDiv = document.getElementById('options-grid');
-        const optionButtons = optionsGridDiv.querySelectorAll('.option-btn');
         const feedbackMessageDiv = document.getElementById('feedback-message');
         const feedbackTextP = document.getElementById('feedback-text');
         const closeFeedbackBtn = document.getElementById('close-feedback-btn');
@@ -940,116 +618,123 @@ let usedRandomColors = new Set();
         const confirmExitYesBtn = document.getElementById('confirm-exit-yes');
         const confirmExitNoBtn = document.getElementById('confirm-exit-no');
         const fiftyFiftyBtn = document.getElementById('fifty-fifty-btn');
-        let categoryIcon, categoryNameSpan;
-        
         const timerBar = document.getElementById('timer-bar');
-
         const avatarSelectionModal = document.getElementById('avatar-selection-modal');
         const avatarGrid = document.getElementById('avatar-grid');
-        let currentPlayerAvatarSelectionIndex = -1; 
+        let categoryIcon, categoryNameSpan;
 
-        // Función para mostrar una pantalla y ocultar las demás
-        function showScreen(screenToShow) { 
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
-            screenToShow.classList.add('active'); 
-        }
-        
-        // Funciones de utilidad para manejar datos
-        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
-        
-        function getRandomRailwayName() {
-            if (usedRandomNames.size === randomRailwayNames.length) usedRandomNames.clear();
-            let name;
-            do { name = randomRailwayNames[Math.floor(Math.random() * randomRailwayNames.length)]; } while (usedRandomNames.has(name));
-            usedRandomNames.add(name);
-            return name;
-        }
+        // --- FUNCIONES DE UTILIDAD ---
+        const showScreen = (screenToShow) => {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            screenToShow.classList.add('active');
+        };
+        const shuffleArray = (array) => { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; };
+        const getRandomItem = (array, usedSet) => {
+            if (usedSet.size >= array.length) usedSet.clear();
+            let item;
+            do { item = array[Math.floor(Math.random() * array.length)]; } while (usedSet.has(item));
+            usedSet.add(item);
+            return item;
+        };
+        const lightenColor = (hex, percent) => {
+            var f = parseInt(hex.slice(1), 16), t = percent < 0 ? 0 : 255, p = percent < 0 ? percent * -1 : percent, R = f >> 16, G = (f >> 8) & 0x00FF, B = (f) & 0x0000FF;
+            return "#" + (0x1000000 + (Math.round((t - R) * p / 100) + R) * 0x10000 + (Math.round((t - G) * p / 100) + G) * 0x100 + (Math.round((t - B) * p / 100) + B)).toString(16).slice(1);
+        };
 
-        function getRandomAvatar() {
-            if (usedRandomAvatars.size === avatarIcons.length) usedRandomAvatars.clear();
-            let avatar;
-            do { avatar = avatarIcons[Math.floor(Math.random() * avatarIcons.length)]; } while (usedRandomAvatars.has(avatar));
-            usedRandomAvatars.add(avatar);
-            return avatar;
-        }
-
-        function getRandomColor() {
-            if (usedRandomColors.size === defaultPlayerColors.length) usedRandomColors.clear();
-            let color;
-            do { color = defaultPlayerColors[Math.floor(Math.random() * defaultPlayerColors.length)]; } while (usedRandomColors.has(color));
-            usedRandomColors.add(color);
-            return color;
-        }
-
-        // Crea los inputs de los jugadores de forma dinámica
+        // --- LÓGICA DE CONFIGURACIÓN DE JUGADORES ---
         function updatePlayerInputs() {
             const playerCount = parseInt(playerCountSpan.textContent);
-            playerInputsDiv.innerHTML = '';
-            while (players.length < playerCount) { players.push({ name: `Jugador ${players.length + 1}`, score: 0, hasFiftyFiftyJoker: true, avatar: getRandomAvatar(), color: getRandomColor() }); }
+            while (players.length < playerCount) { players.push({ name: `Jugador ${players.length + 1}`, score: 0, hasFiftyFiftyJoker: true, avatar: getRandomItem(avatarIcons, usedRandomAvatars), color: getRandomItem(defaultPlayerColors, usedRandomColors) }); }
             while (players.length > playerCount) { players.pop(); }
-            for (let i = 0; i < playerCount; i++) {
-                const player = players[i];
+
+            playerInputsDiv.innerHTML = '';
+            players.forEach((player, i) => {
                 const group = document.createElement('div');
                 group.className = 'player-input-group';
                 group.innerHTML = `
-                    <label for="player-name-${i + 1}">Jugador ${i + 1}:</label>
+                    <label for="player-name-${i}">Jugador ${i + 1}:</label>
                     <div class="player-avatar-container" data-player-index="${i}" style="background-color: ${player.color};">
                         <i class="player-avatar ${player.avatar}"></i>
                     </div>
-                    <input type="text" id="player-name-${i + 1}" value="${player.name}">
-                    <input type="color" id="player-color-${i + 1}" value="${player.color}" class="player-color-input">
+                    <input type="text" id="player-name-${i}" value="${player.name}">
+                    <input type="color" id="player-color-${i}" value="${player.color}" class="player-color-input">
                     <button type="button" class="random-name-btn" data-player-index="${i}"><i class="fas fa-dice"></i></button>
                 `;
                 playerInputsDiv.appendChild(group);
-            }
+            });
+            addPlayerInputListeners();
+        }
+
+        function addPlayerInputListeners() {
             playerInputsDiv.querySelectorAll('.random-name-btn').forEach(btn => {
-                btn.onclick = () => {
-                    const playerIndex = parseInt(btn.dataset.playerIndex);
-                    const newName = getRandomRailwayName();
-                    const newAvatar = getRandomAvatar();
-                    const newColor = getRandomColor();
-                    document.getElementById(`player-name-${playerIndex + 1}`).value = newName;
-                    document.getElementById(`player-color-${playerIndex + 1}`).value = newColor;
-                    players[playerIndex].name = newName;
-                    players[playerIndex].avatar = newAvatar;
-                    players[playerIndex].color = newColor;
-                    const avatarContainer = document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"]`);
-                    avatarContainer.style.backgroundColor = newColor;
-                    avatarContainer.querySelector('.player-avatar').className = `player-avatar ${newAvatar}`;
+                btn.onclick = (e) => {
+                    const playerIndex = parseInt(e.currentTarget.dataset.playerIndex);
+                    players[playerIndex] = {
+                        ...players[playerIndex],
+                        name: getRandomItem(randomRailwayNames, usedRandomNames),
+                        avatar: getRandomItem(avatarIcons, usedRandomAvatars),
+                        color: getRandomItem(defaultPlayerColors, usedRandomColors)
+                    };
+                    updatePlayerInputs();
                 };
             });
             playerInputsDiv.querySelectorAll('.player-avatar-container').forEach(avatarContainer => {
-                // CORRECCIÓN: Se cambió `event.currentTarget.dataset.player-index` a `event.currentTarget.dataset.playerIndex` para acceder al atributo de datos correctamente.
-                avatarContainer.onclick = (event) => { openAvatarSelectionModal(parseInt(event.currentTarget.dataset.playerIndex)); };
+                avatarContainer.onclick = (event) => openAvatarSelectionModal(parseInt(event.currentTarget.dataset.playerIndex));
             });
-            playerInputsDiv.querySelectorAll('.player-color-input').forEach(input => {
-                input.onchange = (event) => {
-                    const playerIndex = parseInt(event.target.id.replace('player-color-', '')) - 1;
-                    players[playerIndex].color = event.target.value;
-                    const avatarContainer = document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"]`);
-                    avatarContainer.style.backgroundColor = event.target.value;
+            playerInputsDiv.querySelectorAll('.player-color-input').forEach((input, i) => {
+                input.oninput = (event) => {
+                    players[i].color = event.target.value;
+                    document.querySelector(`.player-avatar-container[data-player-index="${i}"]`).style.backgroundColor = event.target.value;
                 };
             });
-        }
-        
-        // Lógica del temporizador
-        function updateTimer() {
-            timeRemaining--;
-            const percentage = (timeRemaining / TIMER_DURATION) * 100;
-            timerBar.style.width = `${percentage}%`;
-            if (timeRemaining <= TIMER_DURATION / 2) { timerBar.style.background = `linear-gradient(90deg, var(--rojo-incorrecto), var(--rojo-acento))`; }
-            if (timeRemaining <= 0) { timeUp(); }
+            playerInputsDiv.querySelectorAll('input[type="text"]').forEach((input, i) => {
+                input.onchange = (event) => { players[i].name = event.target.value; };
+            });
         }
 
-        // Muestra la pregunta actual y el turno del jugador
+        // --- MODAL DE AVATARES ---
+        function openAvatarSelectionModal(playerIndex) {
+            currentPlayerAvatarSelectionIndex = playerIndex;
+            avatarGrid.innerHTML = '';
+            avatarIcons.forEach(iconClass => {
+                const option = document.createElement('div');
+                option.className = 'avatar-option';
+                option.innerHTML = `<i class="${iconClass}"></i>`;
+                if (players[playerIndex].avatar === iconClass) option.classList.add('selected');
+                option.onclick = () => {
+                    players[playerIndex].avatar = iconClass;
+                    document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"] .player-avatar`).className = `player-avatar ${iconClass}`;
+                    hideAvatarSelectionModal();
+                };
+                avatarGrid.appendChild(option);
+            });
+            avatarSelectionModal.classList.add('active');
+        }
+
+        function hideAvatarSelectionModal() {
+            avatarSelectionModal.classList.remove('active');
+        }
+
+        // --- LÓGICA PRINCIPAL DEL JUEGO ---
+        function startGame() {
+            players.forEach(p => { p.score = 0; p.hasFiftyFiftyJoker = true; });
+            currentPlayerIndex = 0;
+            currentQuestionIndex = 0;
+            const allQuestions = [];
+            for (const category in gameData.preguntas) {
+                gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category }));
+            }
+            questionsPerGame = questionsPerPlayer * players.length;
+            shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame);
+            showScreen(gameScreen);
+            displayQuestion();
+        }
+
         function displayQuestion() {
             if (questionTimer) clearInterval(questionTimer);
-            categoryIcon = document.getElementById('category-icon');
-            categoryNameSpan = document.getElementById('category-name');
-            feedbackMessageDiv.classList.remove('show');
             if (feedbackTimer) clearTimeout(feedbackTimer);
-            optionButtons.forEach(button => { button.disabled = true; button.classList.remove('correct', 'incorrect'); button.style.visibility = 'visible'; });
-            
+
+            feedbackMessageDiv.classList.remove('show');
             const currentPlayer = players[currentPlayerIndex];
             fiftyFiftyBtn.disabled = !currentPlayer.hasFiftyFiftyJoker;
 
@@ -1057,108 +742,125 @@ let usedRandomColors = new Set();
             timerBar.style.transition = 'none';
             timerBar.style.width = '100%';
             timerBar.style.background = `linear-gradient(90deg, var(--rojo-acento), var(--azul-claro))`;
-            
+
             setTimeout(() => {
                 if (currentQuestionIndex >= shuffledQuestions.length) { endGame(); return; }
                 const question = shuffledQuestions[currentQuestionIndex];
-                categoryNameSpan.textContent = question.category; 
+                
+                categoryIcon = document.getElementById('category-icon');
+                categoryNameSpan = document.getElementById('category-name');
+                
+                categoryNameSpan.textContent = question.category;
                 categoryIcon.classList.remove('animate-category');
-                void categoryIcon.offsetWidth; 
+                void categoryIcon.offsetWidth;
                 switch (question.category) {
                     case "Elementos Estructurales de la Vía": categoryIcon.className = 'fas fa-road animate-category'; break;
                     case "Maquinaria y Herramientas": categoryIcon.className = 'fas fa-cogs animate-category'; break;
                     case "Sistemas y Tecnologías": categoryIcon.className = 'fas fa-lightbulb animate-category'; break;
                     default: categoryIcon.className = 'fas fa-question-circle animate-category';
                 }
-                
+
                 currentPlayerTurnDisplay.classList.remove('animate-in');
-                currentPlayerTurnDisplay.innerHTML = `<div class="player-score-avatar" style="background-color: ${currentPlayer.color};"><i class="${currentPlayer.avatar}"></i></div> Turno de: ${currentPlayer.name}`;
+                currentPlayerTurnDisplay.innerHTML = `<div class="player-score-avatar" style="background-color: ${currentPlayer.color};"><i class="${currentPlayer.avatar}"></i></div> <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Turno de: ${currentPlayer.name}</span>`;
                 currentPlayerTurnDisplay.style.backgroundColor = currentPlayer.color;
                 void currentPlayerTurnDisplay.offsetWidth;
                 currentPlayerTurnDisplay.classList.add('animate-in');
+
                 questionTextP.textContent = question.pregunta;
-                optionButtons.forEach((button, index) => { button.textContent = question.opciones[index]; button.disabled = false; });
-                
+
+                optionsGridDiv.innerHTML = ''; // Limpiar opciones anteriores
+                question.opciones.forEach((opt, i) => {
+                    const optLetter = String.fromCharCode(65 + i);
+                    const button = document.createElement('button');
+                    button.className = 'option-btn';
+                    button.dataset.option = optLetter;
+                    button.textContent = opt;
+                    button.onclick = () => checkAnswer(optLetter);
+                    optionsGridDiv.appendChild(button);
+                });
+
                 timerBar.style.transition = 'width 1s linear, background 1s ease';
                 questionTimer = setInterval(updateTimer, 1000);
             }, 500);
         }
 
-        // Verifica la respuesta seleccionada
+        function updateTimer() {
+            timeRemaining--;
+            const percentage = (timeRemaining / TIMER_DURATION) * 100;
+            timerBar.style.width = `${percentage}%`;
+            if (timeRemaining <= 5) { timerBar.style.background = `linear-gradient(90deg, var(--rojo-incorrecto), var(--rojo-acento))`; }
+            if (timeRemaining <= 0) { timeUp(); }
+        }
+
         function checkAnswer(selectedOption) {
             clearInterval(questionTimer);
             const q = shuffledQuestions[currentQuestionIndex];
             const correct = q.respuestaCorrecta;
-            const btn = optionsGridDiv.querySelector(`[data-option="${selectedOption}"]`);
-            optionButtons.forEach(b => b.disabled = true);
+            
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.disabled = true;
+                if (b.dataset.option === correct) b.classList.add('correct');
+                else if (b.dataset.option === selectedOption) b.classList.add('incorrect');
+            });
+
             if (selectedOption === correct) {
                 players[currentPlayerIndex].score++;
-                btn.classList.add('correct');
-                // Animación visual de puntuación
                 const scoreUpdate = document.createElement('div');
                 scoreUpdate.className = 'score-update-plus';
                 scoreUpdate.textContent = '+1';
                 gameScreen.appendChild(scoreUpdate);
                 setTimeout(() => scoreUpdate.remove(), 1000);
-            } else {
-                btn.classList.add('incorrect');
-                const correctButton = optionsGridDiv.querySelector(`[data-option="${correct}"]`);
-                if (correctButton) { correctButton.classList.add('correct'); }
             }
+
             feedbackTextP.textContent = q.explicacion;
             feedbackMessageDiv.classList.add('show');
             feedbackTimer = setTimeout(nextTurn, 5000);
         }
-        
-        // Maneja el fin del tiempo
+
         function timeUp() {
             clearInterval(questionTimer);
             const q = shuffledQuestions[currentQuestionIndex];
             const correct = q.respuestaCorrecta;
-            optionButtons.forEach(b => b.disabled = true);
-            const correctButton = optionsGridDiv.querySelector(`[data-option="${correct}"]`);
-            if (correctButton) { correctButton.classList.add('correct'); }
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.disabled = true;
+                if (b.dataset.option === correct) b.classList.add('correct');
+            });
             feedbackTextP.textContent = "¡Se acabó el tiempo! " + q.explicacion;
             feedbackMessageDiv.classList.add('show');
             feedbackTimer = setTimeout(nextTurn, 5000);
         }
 
-        // Pasa al siguiente turno o finaliza el juego
         function nextTurn() {
             if (feedbackTimer) clearTimeout(feedbackTimer);
-            if(questionTimer) clearInterval(questionTimer);
             feedbackMessageDiv.classList.remove('show');
             currentQuestionIndex++;
             if (currentQuestionIndex >= shuffledQuestions.length) { endGame(); return; }
             currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
             displayQuestion();
         }
-        
-        // Inicia el juego
-        function startGame() { 
-            players.forEach(p => { 
-                p.score = 0; 
-                p.hasFiftyFiftyJoker = true;
-            }); 
-            currentPlayerIndex = 0; 
-            currentQuestionIndex = 0; 
-            usedRandomNames.clear(); 
-            usedRandomAvatars.clear(); 
-            usedRandomColors.clear(); 
-            const allQuestions = []; 
-            for (const category in gameData.preguntas) { 
-                gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category })); 
-            } 
-            shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame); 
-            showScreen(gameScreen); 
-            displayQuestion(); 
+
+        function useFiftyFiftyJoker() {
+            const currentPlayer = players[currentPlayerIndex];
+            if (!currentPlayer.hasFiftyFiftyJoker) return;
+            currentPlayer.hasFiftyFiftyJoker = false;
+            fiftyFiftyBtn.disabled = true;
+
+            const q = shuffledQuestions[currentQuestionIndex];
+            const incorrectOptions = ['A', 'B', 'C', 'D'].filter(opt => opt !== q.respuestaCorrecta);
+            const optionsToHide = shuffleArray(incorrectOptions).slice(0, 2);
+            
+            optionsToHide.forEach(opt => {
+                const button = optionsGridDiv.querySelector(`[data-option="${opt}"]`);
+                if (button) { button.style.visibility = 'hidden'; }
+            });
         }
         
-        // Lógica para el final del juego y el podio
+        // --- PANTALLA FINAL Y PUNTUACIONES ---
         function endGame() {
             if (questionTimer) clearInterval(questionTimer);
             showScreen(endScreen);
             players.sort((a, b) => b.score - a.score);
+            
             const podiumContainer = document.getElementById('podium-container');
             const otherScoresContainer = document.getElementById('other-scores-container');
             podiumContainer.innerHTML = '';
@@ -1170,46 +872,41 @@ let usedRandomColors = new Set();
                 if (isTie) {
                     const tiedWinners = players.filter(p => p.score === players[0].score);
                     const winnerNamesHTML = tiedWinners.map(p => `<div class="winner-name">${p.name}</div>`).join('');
-                    winnerCardContainer.innerHTML = `<div class="winner-card" style="border-color: var(--silver);"><h3>¡EMPATE!</h3><div class="trophy-icon"><i class="fas fa-handshake"></i></div><div class="winner-names-tie">${winnerNamesHTML}</div><div class="winner-score">Con ${players[0].score} puntos</div></div>`;
+                    winnerCardContainer.innerHTML = `<div class="winner-card animate" style="border-color: var(--silver);"><h3>¡EMPATE!</h3><div class="trophy-icon"><i class="fas fa-handshake"></i></div><div class="winner-names-tie">${winnerNamesHTML}</div><div class="winner-score">Con ${players[0].score} puntos</div></div>`;
                 } else {
                     const winner = players[0];
-                    winnerCardContainer.innerHTML = `<div class="winner-card" style="border-color: ${winner.color};"><h3>¡GANADOR!</h3><div class="trophy-icon"><i class="fas fa-trophy"></i></div><div class="winner-avatar" style="background-color: ${winner.color};"><i class="${winner.avatar}"></i></div><div class="winner-name">${winner.name}</div><div class="winner-score">Con ${winner.score} puntos</div></div>`;
+                    winnerCardContainer.innerHTML = `<div class="winner-card animate" style="border-color: ${winner.color};"><h3>¡GANADOR!</h3><div class="trophy-icon"><i class="fas fa-trophy"></i></div><div class="winner-avatar" style="background-color: ${winner.color};"><i class="${winner.avatar}"></i></div><div class="winner-name">${winner.name}</div><div class="winner-score">Con ${winner.score} puntos</div></div>`;
                 }
-                document.querySelector('.winner-card').classList.add('animate');
             }
 
             const podiumPlayers = players.slice(0, 3);
-            const podiumElementsWithRank = [];
-            podiumPlayers.forEach((player, index) => {
-                const place = document.createElement('div');
-                let rankClass = '', rankIconHtml = '<i class="fas fa-medal"></i>';
-                if (index === 0) { rankClass = 'gold'; rankIconHtml = '<i class="fas fa-trophy"></i>'; }
-                else if (index === 1) { rankClass = 'silver'; }
-                else if (index === 2) { rankClass = 'bronze'; }
-                place.className = `podium-place`;
-                place.innerHTML = `<div class="podium-rank">${rankIconHtml}</div><div class="podium-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><div class="podium-name">${player.name}</div><div class="podium-score">${player.score} pts</div>`;
-                podiumElementsWithRank.push({ element: place, rankClass: rankClass });
-            });
-            const sortedPodiumElementsToAppend = [];
-            if (podiumElementsWithRank[1]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[1]);
-            if (podiumElementsWithRank[0]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[0]);
-            if (podiumElementsWithRank[2]) sortedPodiumElementsToAppend.push(podiumElementsWithRank[2]);
-            sortedPodiumElementsToAppend.forEach(item => { podiumContainer.appendChild(item.element); void item.element.offsetWidth; item.element.classList.add(item.rankClass); });
+            const podiumElements = [];
+            podiumPlayers.forEach((player, rank) => {
+                let rankClass = '';
+                if (rank === 0) rankClass = 'gold';
+                else if (rank === 1) rankClass = 'silver';
+                else if (rank === 2) rankClass = 'bronze';
 
-            if (players.length > 3) {
-                const otherPlayers = players.slice(3);
-                otherPlayers.forEach((player, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'player-card';
-                    card.style.animationDelay = `${1.8 + index * 0.2}s`;
-                    card.innerHTML = `<span class="rank">#${index + 4}</span><div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><span class="name">${player.name}</span><span class="score">${player.score} puntos</span>`;
-                    otherScoresContainer.appendChild(card);
-                });
-            }
+                const place = document.createElement('div');
+                place.className = `podium-place ${rankClass}`;
+                place.innerHTML = `<div class="podium-rank"><i class="fas fa-medal"></i></div><div class="podium-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><div class="podium-name">${player.name}</div><div class="podium-score">${player.score} pts</div>`;
+                podiumElements.push(place);
+            });
+            
+            if (podiumElements[1]) podiumContainer.appendChild(podiumElements[1]);
+            if (podiumElements[0]) podiumContainer.appendChild(podiumElements[0]);
+            if (podiumElements[2]) podiumContainer.appendChild(podiumElements[2]);
+
+            players.slice(3).forEach((player, index) => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                card.style.animationDelay = `${1.8 + index * 0.2}s`;
+                card.innerHTML = `<span class="rank">#${index + 4}</span><div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><span class="name">${player.name}</span><span class="score">${player.score} pts</span>`;
+                otherScoresContainer.appendChild(card);
+            });
             generateConfetti();
         }
 
-        // Genera la animación de confeti
         function generateConfetti() {
             const container = document.getElementById('confetti-container');
             container.innerHTML = '';
@@ -1225,140 +922,93 @@ let usedRandomColors = new Set();
             }
         }
         
-        // Muestra la clasificación actual en un modal
         function showScoreModal() {
             modalScoreList.innerHTML = '';
             const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
-            const leaderScore = sortedPlayers.length > 0 ? sortedPlayers[0].score : 0;
-            const maxQuestionsPerPlayer = questionsPerPlayer;
+            const leaderScore = sortedPlayers.length > 0 ? sortedPlayers[0].score : 1;
+            
             sortedPlayers.forEach((player, index) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'score-card-modal';
-                listItem.style.animationDelay = `${index * 0.1}s`;
                 listItem.style.borderLeftColor = player.color;
                 let rankDisplay = `#${index + 1}`;
-                if (index === 0 && leaderScore > 0) { listItem.classList.add('is-leader'); rankDisplay = '<i class="fas fa-crown"></i>'; }
+                if (index === 0 && player.score > 0) { listItem.classList.add('is-leader'); rankDisplay = '<i class="fas fa-crown"></i>'; }
                 if (players[currentPlayerIndex] && players[currentPlayerIndex].name === player.name) { listItem.classList.add('is-current-player'); }
-                const progress = maxQuestionsPerPlayer > 0 ? (player.score / maxQuestionsPerPlayer) * 100 : 0;
+                
+                const progress = (player.score / leaderScore) * 100;
                 listItem.innerHTML = `
                     <div class="score-card-rank">${rankDisplay}</div>
                     <div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div>
                     <div class="score-card-details">
                         <span class="score-card-name">${player.name}</span>
-                        <div class="score-progress-bar-bg">
-                            <div class="score-progress-bar-fg" style="width: ${progress}%; background: linear-gradient(90deg, ${player.color}, ${lightenColor(player.color, 30)}); "></div>
-                        </div>
+                        <div class="score-progress-bar-bg"><div class="score-progress-bar-fg" style="width: ${progress}%; background: ${player.color};"></div></div>
                     </div>
                     <div class="score-card-score">${player.score}</div>`;
                 modalScoreList.appendChild(listItem);
             });
             scoreModal.classList.add('active');
         }
-        
-        // Funciones para manejar los modales
-        function lightenColor(hex, percent) {
-            var f=parseInt(hex.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=(f>>8)&0x00FF,B=(f)&0x0000FF;
-            return "#"+(0x1000000+(Math.round((t-R)*p/100)+R)*0x10000+(Math.round((t-G)*p/100)+G)*0x100+(Math.round((t-B)*p/100)+B)).toString(16).slice(1);
-        }
+
+        // --- MANEJO DE MODALES ---
         function hideScoreModal() { scoreModal.classList.remove('active'); }
         function showConfirmExitModal() { confirmExitModal.classList.add('active'); }
         function hideConfirmExitModal() { confirmExitModal.classList.remove('active'); }
-        
-        function openAvatarSelectionModal(playerIndex) {
-            currentPlayerAvatarSelectionIndex = playerIndex;
-            avatarGrid.innerHTML = '';
-            avatarIcons.forEach(iconClass => {
-                const option = document.createElement('div');
-                option.className = 'avatar-option';
-                option.innerHTML = `<i class="${iconClass}"></i>`;
-                option.dataset.iconClass = iconClass;
-                if (players[playerIndex].avatar === iconClass) { option.classList.add('selected'); }
-                option.onclick = () => { selectAvatar(playerIndex, iconClass); };
-                avatarGrid.appendChild(option);
-            });
-            avatarSelectionModal.classList.add('active');
-        }
 
-        function selectAvatar(playerIndex, iconClass) {
-            players[playerIndex].avatar = iconClass;
-            document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"] .player-avatar`).className = `player-avatar ${iconClass}`;
-            hideAvatarSelectionModal();
-        }
-
-        function hideAvatarSelectionModal() {
-            avatarSelectionModal.classList.remove('active');
-            currentPlayerAvatarSelectionIndex = -1;
-        }
-
-        // Lógica del comodín 50/50
-        function useFiftyFiftyJoker() {
-            const currentPlayer = players[currentPlayerIndex];
-            if (!currentPlayer.hasFiftyFiftyJoker) return;
-
-            currentPlayer.hasFiftyFiftyJoker = false;
-            fiftyFiftyBtn.disabled = true;
-
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            const correctAnswer = currentQuestion.respuestaCorrecta;
-            
-            const incorrectOptions = ['A', 'B', 'C', 'D'].filter(opt => opt !== correctAnswer);
-            
-            const optionsToHide = shuffleArray(incorrectOptions).slice(0, 2);
-
-            optionsToHide.forEach(opt => {
-                const button = optionsGridDiv.querySelector(`[data-option="${opt}"]`);
-                if (button) {
-                    button.style.visibility = 'hidden';
-                    button.disabled = true;
-                }
-            });
-        }
-        
-        // Event listeners para la interacción del usuario
+        // --- INICIALIZACIÓN DE EVENTOS ---
         document.addEventListener('DOMContentLoaded', () => {
-            gameData = initialGameData;
-            
+            // Carga de preguntas desde el JSON
+            fetch('preguntas.json')
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok " + response.statusText);
+                    return response.json();
+                })
+                .then(data => gameData = data)
+                .catch(error => {
+                    console.error("No se pudo cargar 'preguntas.json'. Usando datos iniciales.", error);
+                    gameData = initialGameData;
+                })
+                .finally(() => {
+                    // Inicializar los listeners una vez que los datos están listos (ya sea de la carga o los iniciales)
+                    initializeEventListeners();
+                });
+        });
+        
+        function initializeEventListeners() {
             const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
-            
+
             startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); updatePlayerInputs(); });
             decreasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) > 1) { playerCountSpan.textContent--; updatePlayerInputs(); } });
             increasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) < 10) { playerCountSpan.textContent++; updatePlayerInputs(); } });
             
-            startMatchBtn.addEventListener('click', () => { 
-                let valid = true; 
-                for (let i = 0; i < parseInt(playerCountSpan.textContent); i++) { 
-                    const input = document.getElementById(`player-name-${i + 1}`); 
-                    const name = input.value.trim(); 
-                    if (!name) { valid = false; input.style.borderColor = 'red'; } 
-                    else { input.style.borderColor = ''; players[i].name = name; } 
-                } 
-                if (valid) {
-                    const maxRoundsPerPlayer = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 0;
-                    let currentRoundCount = parseInt(roundCountSpan.textContent);
-                    if (currentRoundCount > maxRoundsPerPlayer) { roundCountSpan.textContent = maxRoundsPerPlayer; }
-                    else if (currentRoundCount === 0 && maxRoundsPerPlayer > 0) { roundCountSpan.textContent = 1; }
-                    showScreen(roundConfigScreen); 
-                }
+            startMatchBtn.addEventListener('click', () => {
+                showScreen(roundConfigScreen);
             });
 
             decreaseRoundsBtn.addEventListener('click', () => { let count = parseInt(roundCountSpan.textContent); if (count > 1) roundCountSpan.textContent = --count; });
             increaseRoundsBtn.addEventListener('click', () => { 
                 let count = parseInt(roundCountSpan.textContent); 
-                const max = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 0;
+                const max = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 50;
                 if (count < max) roundCountSpan.textContent = ++count; 
             });
-            startGameFromRoundsBtn.addEventListener('click', () => { questionsPerPlayer = parseInt(roundCountSpan.textContent); questionsPerGame = questionsPerPlayer * players.length; startGame(); });
-            optionButtons.forEach(b => b.addEventListener('click', e => checkAnswer(e.target.dataset.option)));
-            showScoreBtn.addEventListener('click', showScoreModal);
-            playAgainBtn.addEventListener('click', () => { winnerCardContainer.innerHTML = ''; showScreen(splashScreen); });
             
-            document.querySelectorAll('.close-btn').forEach(b => b.addEventListener('click', e => { 
-                const target = e.target.dataset.targetScreen; 
-                if (target === 'confirm-exit') showConfirmExitModal(); 
-                else if (target === 'hide-modal') hideScoreModal(); 
-                else if (target === 'hide-avatar-modal') hideAvatarSelectionModal();
-                else showScreen(document.getElementById(target)); 
-            }));
+            startGameFromRoundsBtn.addEventListener('click', () => { 
+                questionsPerPlayer = parseInt(roundCountSpan.textContent); 
+                startGame(); 
+            });
+            
+            showScoreBtn.addEventListener('click', showScoreModal);
+            playAgainBtn.addEventListener('click', () => { showScreen(splashScreen); });
+            fiftyFiftyBtn.addEventListener('click', useFiftyFiftyJoker);
+            
+            document.querySelectorAll('.close-btn').forEach(b => {
+                b.onclick = (e) => {
+                    const target = e.currentTarget.dataset.targetScreen;
+                    if (target === 'confirm-exit') showConfirmExitModal(); 
+                    else if (target === 'hide-modal') hideScoreModal(); 
+                    else if (target === 'hide-avatar-modal') hideAvatarSelectionModal();
+                    else showScreen(document.getElementById(target)); 
+                };
+            });
             
             confirmExitYesBtn.addEventListener('click', () => { 
                 if (questionTimer) clearInterval(questionTimer);
@@ -1368,8 +1018,349 @@ let usedRandomColors = new Set();
             
             confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
             closeFeedbackBtn.addEventListener('click', nextTurn);
-            fiftyFiftyBtn.addEventListener('click', useFiftyFiftyJoker);
-        });
+        }
     </script>
 </body>
 </html>
+--- END OF FILE preguntas.json ---
+
+{
+    "preguntas": {
+        "Elementos Estructurales de la Vía": [
+            {
+                "pregunta": "¿Cuál es la función principal del balasto en una vía de alta velocidad?",
+                "opciones": [
+                    "Asegurar la conductividad eléctrica de los carriles.",
+                    "Transmitir las cargas de los trenes al terreno y asegurar la estabilidad de la vía.",
+                    "Reducir la fricción entre la rueda y el carril.",
+                    "Actuar como aislante térmico."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "El balasto distribuye las cargas de las traviesas al terraplén, proporciona drenaje y contribuye a la estabilidad lateral y longitudinal de la vía, esencial para las altas velocidades."
+            },
+            {
+                "pregunta": "¿Qué técnica se utiliza comúnmente para el mantenimiento del perfil del carril y la eliminación de defectos superficiales en vías de alta velocidad?",
+                "opciones": [
+                    "Bateo de balasto.",
+                    "Reemplazo completo de carril.",
+                    "Esmerilado o amolado de carril.",
+                    "Engrasado de las sujeciones."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "El esmerilado de carril permite restaurar el perfil óptimo, eliminar ondulaciones y grietas superficiales, prolongando la vida útil del carril y mejorando la calidad de rodadura."
+            },
+            {
+                "pregunta": "¿Qué tipo de sujeción es más común en las vías de alta velocidad para asegurar la rigidez y el aislamiento eléctrico?",
+                "opciones": [
+                    "Brida metálica.",
+                    "Sujeción rígida con tornillos de banco.",
+                    "Sujeción elástica con almohadilla de caucho y grapas.",
+                    "Clavos de vía."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las sujeciones elásticas, como las de tipo Pandrol o Vossloh, proporcionan una fijación constante del carril a la traviesa, absorben vibraciones y garantizan el aislamiento eléctrico, crucial para los sistemas de señalización."
+            },
+            {
+                "pregunta": "¿Cuál es la principal diferencia entre una traviesa monobloque y una bibloque en términos de su comportamiento en la vía de alta velocidad?",
+                "opciones": [
+                    "La monobloque es más flexible y la bibloque más rígida.",
+                    "La monobloque es de madera y la bibloque de hormigón.",
+                    "La monobloque ofrece mayor rigidez transversal y mejor comportamiento frente a la deformación lateral.",
+                    "La bibloque permite un menor ancho de vía."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las traviesas monobloque de hormigón pretensado son el estándar en alta velocidad debido a su mayor masa y rigidez, que optimizan la transmisión de cargas y la estabilidad geométrica de la vía."
+            },
+            {
+                "pregunta": "¿Cuál es el propósito de los cordones de soldadura en los carriles de una vía de alta velocidad?",
+                "opciones": [
+                    "Aumentar la resistencia a la abrasión del carril.",
+                    "Unir los tramos de carril de forma continua para evitar juntas y mejorar la rodadura.",
+                    "Facilitar la dilatación térmica de los carriles.",
+                    "Servir como punto de anclaje para los sistemas de señalización."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "La soldadura continua de carril (CRC) elimina las juntas, lo que mejora el confort de viaje, reduce el ruido y las vibraciones, y minimiza el mantenimiento de la superestructura."
+            },
+            {
+                "pregunta": "¿Qué se busca optimizar al realizar una compactación dinámica del balasto en una vía de alta velocidad?",
+                "opciones": [
+                    "La capacidad de drenaje del balasto.",
+                    "La resistencia del balasto a la pulverización.",
+                    "La uniformidad de la densidad y la resistencia al asiento de la banqueta de balasto.",
+                    "La temperatura del balasto para evitar dilataciones."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La compactación dinámica mejora la estabilidad y la resistencia del balasto, asegurando que la geometría de la vía se mantenga estable bajo las cargas dinámicas de los trenes de alta velocidad."
+            },
+            {
+                "pregunta": "¿Cuál es el objetivo principal del mantenimiento de la explanación y el terraplén en una línea de alta velocidad?",
+                "opciones": [
+                    "Mejorar el paisaje circundante.",
+                    "Asegurar la estabilidad geotécnica de la plataforma y el drenaje adecuado.",
+                    "Reducir el coste de construcción de la vía.",
+                    "Facilitar la instalación de la catenaria."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Una plataforma estable y un buen drenaje son fundamentales para evitar asientos diferenciales y deformaciones de la vía, que comprometerían la seguridad y el confort a altas velocidades."
+            },
+            {
+                "pregunta": "¿Qué tipo de sistema de drenaje es crucial en túneles de alta velocidad para evitar la acumulación de agua?",
+                "opciones": [
+                    "Acequias a cielo abierto.",
+                    "Bombas de achique manuales.",
+                    "Cunetas, colectores y pozos de bombeo integrados en la infraestructura.",
+                    "Filtración natural a través del balasto."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "El drenaje en túneles es vital para prevenir la inundación, la corrosión de elementos metálicos y el deterioro de la infraestructura, asegurando la operatividad de la línea."
+            },
+            {
+                "pregunta": "¿Qué función cumple la capa de subbalasto en la superestructura de una vía de alta velocidad?",
+                "opciones": [
+                    "Aislar térmicamente el balasto.",
+                    "Evitar la mezcla del balasto con el material del terraplén y mejorar la distribución de cargas.",
+                    "Actuar como elemento conductor de la señalización.",
+                    "Soportar directamente el peso de los trenes."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "El subbalasto actúa como una capa de transición entre el balasto y la explanación, impidiendo la contaminación del balasto y mejorando la uniformidad de la transmisión de tensiones."
+            },
+            {
+                "pregunta": "¿Qué se entiende por 'recalzado' de traviesas en el mantenimiento ferroviario?",
+                "opciones": [
+                    "El proceso de añadir una nueva traviesa a la vía.",
+                    "La sustitución de los carriles sobre las traviesas existentes.",
+                    "La adición de balasto bajo las traviesas para mejorar el apoyo y la nivelación.",
+                    "La limpieza de la superficie de las traviesas."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "El recalzado consiste en introducir balasto debajo de las traviesas, generalmente mediante bateadoras, para corregir la nivelación y alineación de la vía."
+            }
+        ],
+        "Maquinaria y Herramientas": [
+            {
+                "pregunta": "¿Cuál es la función principal de una bateadora pesada en el mantenimiento de vías de alta velocidad?",
+                "opciones": [
+                    "Soldar automáticamente los carriles.",
+                    "Limpiar la superficie de los carriles.",
+                    "Compactar el balasto bajo las traviesas para corregir la geometría de la vía.",
+                    "Inspeccionar visualmente el estado de la catenaria."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las bateadoras son máquinas esenciales para el mantenimiento de la geometría de la vía (alineación, nivelación, peralte) mediante la vibración y compactación del balasto."
+            },
+            {
+                "pregunta": "¿Qué equipo se utiliza para medir con precisión la altura y la flecha de la catenaria en una línea de alta velocidad?",
+                "opciones": [
+                    "Un nivel óptico y una mira topográfica.",
+                    "Un carro de auscultación de catenaria o drones con sistemas láser.",
+                    "Un voltímetro de alta tensión.",
+                    "Un dinamómetro."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "La precisión en la medición de la catenaria es crítica para asegurar el correcto contacto con el pantógrafo a altas velocidades y evitar desprendimientos."
+            },
+            {
+                "pregunta": "¿Cuál es la principal ventaja de utilizar detectores de defectos por ultrasonidos en los carriles de alta velocidad?",
+                "opciones": [
+                    "Identificar la temperatura de la superficie del carril.",
+                    "Detectar fisuras internas y defectos ocultos que no son visibles a simple vista.",
+                    "Medir la resistencia eléctrica del carril.",
+                    "Determinar la composición química del acero del carril."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los ultrasonidos permiten un mantenimiento predictivo, detectando fallos incipientes antes de que se propaguen y comprometan la seguridad."
+            },
+            {
+                "pregunta": "¿Qué tipo de máquina es fundamental para el reperfilado de los carriles, mejorando la interacción rueda-carril y reduciendo el ruido?",
+                "opciones": [
+                    "Una desguarnecedora.",
+                    "Una perfiladora de carril (o amoladora de grandes dimensiones).",
+                    "Una soldadora aluminotérmica.",
+                    "Una bateadora ligera."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "La perfiladora restaura la forma óptima de la cabeza del carril, mejorando la calidad de la rodadura y prolongando la vida útil del carril y de las ruedas."
+            },
+            {
+                "pregunta": "¿Cuál es el propósito de una máquina desguarnecedora en el mantenimiento de la vía?",
+                "opciones": [
+                    "Retirar los residuos de balasto y limpiar la plataforma de la vía.",
+                    "Soldar tramos de carril largos.",
+                    "Perforar las traviesas para instalar sujeciones.",
+                    "Transportar material de obra."
+                ],
+                "respuestaCorrecta": "A",
+                "explicacion": "La desguarnecedora limpia el balasto sucio o contaminado, lo que es vital para mantener la capacidad de drenaje y la elasticidad de la superestructura."
+            },
+            {
+                "pregunta": "¿Qué herramienta manual es esencial para comprobar el apriete correcto de los tornillos en las uniones de carril o sujeciones?",
+                "opciones": [
+                    "Un martillo de bola.",
+                    "Una llave de grifa.",
+                    "Una llave dinamométrica.",
+                    "Un taladro percutor."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La llave dinamométrica asegura que el par de apriete sea el especificado, evitando tanto aflojamientos como sobretensiones que puedan dañar los elementos."
+            },
+            {
+                "pregunta": "¿Qué tipo de vehículo auxiliar se utiliza para el transporte de personal y pequeñas herramientas a lo largo de la vía?",
+                "opciones": [
+                    "Un tren de obras.",
+                    "Una locomotora de línea.",
+                    "Una dresina o vagoneta de vía.",
+                    "Un tren de socorro."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las dresinas son vehículos ligeros y versátiles, diseñados para moverse sobre la vía con rapidez y eficacia en operaciones de inspección y pequeño mantenimiento."
+            },
+            {
+                "pregunta": "¿Cuál es la función principal de los trenes de auscultación en alta velocidad?",
+                "opciones": [
+                    "Transportar viajeros a alta velocidad.",
+                    "Medir y registrar continuamente los parámetros geométricos y dinámicos de la vía y la catenaria.",
+                    "Realizar operaciones de soldadura en movimiento.",
+                    "Apagar incendios en la infraestructura."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los trenes de auscultación son clave para el mantenimiento predictivo, permitiendo identificar anomalías y planificar intervenciones antes de que surjan problemas críticos."
+            },
+            {
+                "pregunta": "¿Qué se mide con una galga de vía?",
+                "opciones": [
+                    "La altura de la catenaria.",
+                    "El ancho de la vía (entre caras activas de los carriles).",
+                    "La temperatura del carril.",
+                    "La tensión de los cables de señalización."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "El ancho de vía es un parámetro crítico para la seguridad y el confort, especialmente en alta velocidad, y su control es fundamental."
+            },
+            {
+                "pregunta": "¿Qué tipo de soldadura se utiliza más comúnmente para unir tramos de carril de forma rápida y eficiente en campo?",
+                "opciones": [
+                    "Soldadura por resistencia eléctrica.",
+                    "Soldadura TIG.",
+                    "Soldadura aluminotérmica.",
+                    "Soldadura por arco sumergido."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La soldadura aluminotérmica es ampliamente utilizada por su rapidez y por no requerir equipos eléctricos complejos en campo, aunque la soldadura por resistencia es el método preferido en talleres para la fabricación de carriles largos."
+            }
+        ],
+        "Sistemas y Tecnologías": [
+            {
+                "pregunta": "¿Qué sistema de señalización y control de trenes es el estándar europeo para las líneas de alta velocidad?",
+                "opciones": [
+                    "ASFA (Anuncio de Señales y Frenado Automático).",
+                    "ERTMS (European Rail Traffic Management System).",
+                    "CTC (Control de Tráfico Centralizado).",
+                    "ATO (Automatic Train Operation)."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "ERTMS, con sus niveles ETCS (European Train Control System) y GSM-R (Global System for Mobile Communications – Railway), es el sistema interoperable que permite la circulación segura de trenes de alta velocidad a través de diferentes países europeos."
+            },
+            {
+                "pregunta": "¿Cuál es la función principal de los circuitos de vía en una línea ferroviaria electrificada de alta velocidad?",
+                "opciones": [
+                    "Suministrar energía a los trenes.",
+                    "Detectar la presencia de trenes y la integridad del carril para la señalización.",
+                    "Calentar los carriles en invierno.",
+                    "Comunicar al maquinista la velocidad máxima permitida."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los circuitos de vía son fundamentales para la detección de ocupación y la supervisión de la continuidad del carril, enviando información al enclavamiento y al sistema de señalización."
+            },
+            {
+                "pregunta": "¿Qué característica principal tiene la catenaria rígida frente a la catenaria flexible en túneles de alta velocidad?",
+                "opciones": [
+                    "Mayor flexibilidad para adaptarse a las curvas.",
+                    "Menor coste de instalación inicial.",
+                    "Mayor resistencia al fuego y menor necesidad de mantenimiento.",
+                    "Mayor facilidad para la detección de averías."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La catenaria rígida es preferida en túneles por su robustez, menor número de puntos de fijación y su resistencia a las deformaciones por la onda de presión generada por los trenes de alta velocidad."
+            },
+            {
+                "pregunta": "¿Qué se utiliza para la transmisión de datos y voz en el sistema GSM-R de las líneas de alta velocidad?",
+                "opciones": [
+                    "Cables de cobre coaxiales.",
+                    "Ondas de radio de baja frecuencia.",
+                    "Fibra óptica y radioenlaces digitales.",
+                    "Señales luminosas."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La fibra óptica es la 'columna vertebral' de las comunicaciones en alta velocidad, proporcionando el ancho de banda y la fiabilidad necesarios para GSM-R, SCADA y otros sistemas."
+            },
+            {
+                "pregunta": "¿Cuál es el principal objetivo de un sistema SCADA (Supervisory Control And Data Acquisition) en la infraestructura de alta velocidad?",
+                "opciones": [
+                    "Controlar las taquillas de las estaciones.",
+                    "Gestionar y supervisar remotamente las instalaciones fijas como subestaciones, sistemas de ventilación o iluminación.",
+                    "Automatizar la limpieza de los trenes.",
+                    "Regular el flujo de pasajeros en los andenes."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "SCADA permite a los operadores monitorizar y controlar la infraestructura desde un centro de control, facilitando la detección de anomalías y la respuesta rápida."
+            },
+            {
+                "pregunta": "¿Qué tipo de pruebas se realizan periódicamente en los sistemas de balizas ERTMS para asegurar su correcto funcionamiento?",
+                "opciones": [
+                    "Pruebas de resistencia mecánica.",
+                    "Pruebas de impermeabilidad.",
+                    "Pruebas de lectura y escritura de telegramas, y calibración de frecuencia.",
+                    "Pruebas de impacto a alta velocidad."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las balizas transmiten información vital al tren, por lo que su correcta calibración y funcionamiento son esenciales para la seguridad operativa."
+            },
+            {
+                "pregunta": "¿Qué es la 'zona de paso' en un sistema de electrificación ferroviario y por qué es crítica para el mantenimiento?",
+                "opciones": [
+                    "El espacio por donde pasan los trenes.",
+                    "Un tramo de vía sin catenaria para maniobras.",
+                    "El punto donde se unen dos zonas de alimentación eléctrica diferentes con distinto potencial, requiriendo un aislamiento o cambio de tensión.",
+                    "La zona de amortiguación de ruido."
+                ],
+                "respuestaCorrecta": "C",
+                "explicacion": "La zona de paso requiere procedimientos específicos para los trenes (bajada de pantógrafo, desconexión de tracción) y un mantenimiento riguroso de sus elementos (aisladores, seccionadores) para evitar cortocircuitos y arcos eléctricos."
+            },
+            {
+                "pregunta": "¿Cuál es la función de un contador de ejes en un sistema de señalización?",
+                "opciones": [
+                    "Contar el número de trenes que circulan por una sección.",
+                    "Determinar si una sección de vía está libre u ocupada contando los ejes que entran y salen.",
+                    "Medir el desgaste de las ruedas del tren.",
+                    "Calcular la velocidad del tren."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los contadores de ejes son una alternativa a los circuitos de vía para la detección de ocupación, especialmente en túneles o en zonas con problemas de drenaje, ofreciendo una alta fiabilidad."
+            },
+            {
+                "pregunta": "¿Qué se entiende por 'seccionamiento' de la catenaria y cuándo se utiliza en mantenimiento?",
+                "opciones": [
+                    "La división física de la catenaria en tramos.",
+                    "La interrupción deliberada del suministro eléctrico a un tramo de catenaria para realizar trabajos de mantenimiento con seguridad.",
+                    "La conexión de dos tramos de catenaria para formar un bucle.",
+                    "El proceso de reparación de una catenaria rota."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "El seccionamiento es una medida de seguridad fundamental que garantiza que el personal de mantenimiento pueda trabajar en la catenaria sin riesgo eléctrico, mediante la apertura de seccionadores y la puesta a tierra."
+            },
+            {
+                "pregunta": "¿Qué sistema se utiliza para monitorizar la salud estructural de puentes y viaductos en tiempo real en líneas de alta velocidad?",
+                "opciones": [
+                    "Cámaras de seguridad de CCTV.",
+                    "Sistemas de auscultación continua con sensores (fibra óptica, acelerómetros, etc.).",
+                    "Inspecciones visuales diarias por parte del maquinista.",
+                    "Análisis de la composición del hormigón."
+                ],
+                "respuestaCorrecta": "B",
+                "explicacion": "La monitorización estructural permite detectar cualquier anomalía o deterioro en tiempo real, facilitando el mantenimiento predictivo y asegurando la integridad de las grandes estructuras."
+            }
+        ]
+    }
+}
