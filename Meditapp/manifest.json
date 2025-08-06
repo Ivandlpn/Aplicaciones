@@ -1,0 +1,21 @@
+{
+    "name": "Meditapp",
+    "short_name": "Meditapp",
+    "description": "Una aplicación minimalista para meditar y encontrar la calma.",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#3a6073",
+    "theme_color": "#3a7bd5",
+    "icons": [
+        {
+            "src": "iconomeditapp.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "iconomeditapp.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
