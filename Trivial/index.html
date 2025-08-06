@@ -24,98 +24,56 @@
             --bronze: #CD7F32;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html {
-            font-size: 16px;
-        }
+        html { font-size: 16px; }
         body { 
             font-family: 'Poppins', sans-serif; 
             background-image: linear-gradient(135deg, var(--azul-principal) 0%, var(--azul-claro) 50%, var(--azul-aun-mas-claro) 100%); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding: 1rem 0;
-            overflow: hidden; /* Evita el doble scroll en algunos casos */
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; padding: 1rem 0;
+            overflow: hidden; /* Evita doble scroll */
         }
         .game-container { 
-            background-color: var(--blanco-puro); 
-            border-radius: 20px; 
+            background-color: var(--blanco-puro); border-radius: 20px; 
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); 
-            width: 90%; 
-            max-width: 900px; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            position: relative; 
-            height: 95vh; /* CORRECCIÓN: Usar altura relativa al viewport */
-            max-height: 700px; /* Límite para pantallas muy altas */
+            width: 90%; max-width: 900px; 
+            display: flex; flex-direction: column; overflow: hidden; position: relative; 
+            height: 95vh; max-height: 700px; /* CORRECCIÓN CLAVE: Altura flexible */
         }
         .screen { 
-            width: 100%; 
-            height: 100%;
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            padding: 40px; 
-            text-align: center; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease; 
-            overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+            width: 100%; height: 100%; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; padding: 40px; 
+            text-align: center; position: absolute; top: 0; left: 0; opacity: 0; 
+            pointer-events: none; transition: opacity 0.5s ease-in-out, transform 0.5s ease; 
+            overflow-y: auto; /* CORRECCIÓN CLAVE: Permite scroll interno */
         }
         .screen.active { opacity: 1; pointer-events: all; position: relative; transform: scale(1); }
         .screen:not(.active) { transform: scale(0.95); }
         
         .btn { 
-            background-color: var(--azul-principal); 
-            color: var(--blanco-puro); 
-            border: none; 
-            padding: 15px 30px; 
-            border-radius: 10px; 
-            font-family: 'Poppins', sans-serif; 
-            font-weight: 600; 
-            font-size: 1.2rem; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
-            margin: 10px; 
+            background-color: var(--azul-principal); color: var(--blanco-puro); border: none; 
+            padding: 15px 30px; border-radius: 10px; font-family: 'Poppins', sans-serif; 
+            font-weight: 600; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); margin: 10px; 
         }
         .btn:hover { background-color: var(--azul-claro); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
         .close-btn { 
-            position: absolute; 
-            top: 20px; 
-            right: 20px; 
-            background: none; 
-            border: none; 
-            font-size: 1.8rem; 
-            color: var(--gris-oscuro); 
-            cursor: pointer; 
-            transition: color 0.3s ease, transform 0.2s ease; 
-            z-index: 20; 
+            position: absolute; top: 20px; right: 20px; background: none; border: none; 
+            font-size: 1.8rem; color: var(--gris-oscuro); cursor: pointer; 
+            transition: color 0.3s ease, transform 0.2s ease; z-index: 20; 
         }
         .close-btn:hover { color: var(--rojo-acento); transform: scale(1.1); }
+        
         #splash-screen { 
             background: linear-gradient(180deg, var(--azul-principal) 0%, var(--azul-claro) 100%); 
-            color: var(--blanco-puro); 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            color: var(--blanco-puro); display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
         }
         #splash-screen h1 { 
-            font-size: 3.5rem; 
-            font-weight: 700; 
-            margin-bottom: 30px; 
+            font-size: 3.5rem; font-weight: 700; margin-bottom: 30px; 
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
         }
         .splash-logo {
-            font-size: 6rem;
-            color: var(--blanco-puro);
-            margin-bottom: 20px;
+            font-size: 6rem; color: var(--blanco-puro); margin-bottom: 20px;
             animation: train-pulse 2s infinite ease-in-out;
         }
         @keyframes train-pulse {
@@ -123,151 +81,68 @@
             50% { transform: scale(1.05); text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
             100% { transform: scale(1); text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
         }
+        
         #player-config-screen, #round-config-screen { padding: 60px 40px; justify-content: flex-start; }
-        #player-config-screen h2, #round-config-screen h2 { 
-            font-size: 2.2rem; 
-            color: var(--azul-principal); 
-            margin-bottom: 30px; 
-        }
+        #player-config-screen h2, #round-config-screen h2 { font-size: 2.2rem; color: var(--azul-principal); margin-bottom: 30px; }
         .player-count-selector, .round-count-selector { 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 30px; 
-            background-color: var(--gris-claro); 
-            border-radius: 15px; 
-            padding: 10px 20px; 
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); 
+            display: flex; align-items: center; margin-bottom: 30px; 
+            background-color: var(--gris-claro); border-radius: 15px; 
+            padding: 10px 20px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); 
         }
         .player-count-selector button, .round-count-selector button { 
-            background-color: var(--azul-claro); 
-            color: white; 
-            border: none; 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            font-size: 1.5rem; 
-            cursor: pointer; 
+            background-color: var(--azul-claro); color: white; border: none; width: 40px; 
+            height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; 
         }
-        .player-count-selector span, .round-count-selector span { 
-            font-size: 1.8rem; 
-            font-weight: 600; 
-            color: var(--azul-principal); 
-            margin: 0 20px; 
-        }
+        .player-count-selector span, .round-count-selector span { font-size: 1.8rem; font-weight: 600; color: var(--azul-principal); margin: 0 20px; }
+        
         #player-inputs { width: 100%; max-width: 600px; margin-bottom: 30px; }
         .player-input-group { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .player-input-group label { 
-            font-weight: 500; 
-            margin-right: 5px; 
-            min-width: 80px; 
-            text-align: right; 
-        }
-        .player-input-group input[type="text"] { 
-            flex-grow: 1; 
-            padding: 12px 15px; 
-            border: 2px solid var(--gris-claro); 
-            border-radius: 8px; 
-            font-size: 1rem;
-        }
-        .player-input-group .random-name-btn { 
-            background-color: var(--rojo-acento); 
-            color: white; 
-            border: none; 
-            padding: 10px 15px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            margin-left: 0; 
-        }
-        .player-input-group .player-color-input {
-            width: 40px; height: 40px; border: none; padding: 0; border-radius: 8px; cursor: pointer;
-            -webkit-appearance: none; -moz-appearance: none; appearance: none; background-color: transparent; 
-        }
+        .player-input-group label { font-weight: 500; margin-right: 5px; min-width: 80px; text-align: right; }
+        .player-input-group input[type="text"] { flex-grow: 1; padding: 12px 15px; border: 2px solid var(--gris-claro); border-radius: 8px; font-size: 1rem; }
+        .player-input-group .random-name-btn { background-color: var(--rojo-acento); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-left: 0; }
+        .player-input-group .player-color-input { width: 40px; height: 40px; border: none; padding: 0; border-radius: 8px; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-color: transparent; }
         .player-input-group .player-color-input::-webkit-color-swatch-wrapper { padding: 0; }
         .player-input-group .player-color-input::-webkit-color-swatch { border: none; border-radius: 6px; }
         .player-input-group .player-color-input::-moz-color-swatch { border: none; border-radius: 6px; }
 
-        .game-header {
-            position: absolute; top: 0; left: 0; width: 100%; display: flex;
-            justify-content: space-between; align-items: center; padding: 15px 30px;
-            background-color: var(--blanco-puro); border-bottom: 2px solid var(--gris-claro);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10;
-        }
+        .game-header { position: absolute; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: var(--blanco-puro); border-bottom: 2px solid var(--gris-claro); box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10; }
         .game-header .header-group { display: flex; align-items: center; gap: 10px; }
-        .game-header .header-group .btn-icon {
-            background: none; border: none; font-size: 1.8rem; color: var(--azul-principal); cursor: pointer;
-            transition: transform 0.2s ease, color 0.3s ease;
-        }
+        .game-header .header-group .btn-icon { background: none; border: none; font-size: 1.8rem; color: var(--azul-principal); cursor: pointer; transition: transform 0.2s ease, color 0.3s ease; }
         .game-header .header-group .btn-icon:hover { transform: scale(1.1); color: var(--rojo-acento); }
 
         #game-screen { padding: 30px; padding-top: 100px; justify-content: flex-start; }
         
-        #current-player-turn-display {
-            font-size: 1.2rem; font-weight: 600; color: var(--blanco-puro);
-            background-color: var(--azul-principal); padding: 8px 20px;
-            border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-            display: flex; align-items: center; gap: 10px; opacity: 0;
-            width: auto; max-width: 300px; transition: all 0.3s ease-in-out;
-        }
+        #current-player-turn-display { font-size: 1.2rem; font-weight: 600; color: var(--blanco-puro); background-color: var(--azul-principal); padding: 8px 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; opacity: 0; width: auto; max-width: 60%; transition: all 0.3s ease-in-out; }
         #current-player-turn-display.animate-in { animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes bounce-in { 
-            0% { opacity: 0; transform: scale(0.3); } 
-            50% { opacity: 1; transform: scale(1.1); } 
-            70% { transform: scale(0.9); } 
-            100% { opacity: 1; transform: scale(1); } 
-        }
+        @keyframes bounce-in { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.1); } 70% { transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
         
-        .joker-btn {
-            background-color: var(--rojo-acento); color: white; border: none; padding: 10px 20px;
-            border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); display: flex; align-items: center; gap: 8px;
-        }
+        .joker-btn { background-color: var(--rojo-acento); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); display: flex; align-items: center; gap: 8px; }
         .joker-btn:hover:not(:disabled) { background-color: rgb(230, 30, 45); transform: translateY(-2px); }
         .joker-btn:disabled { background-color: var(--gris-oscuro); cursor: not-allowed; opacity: 0.7; transform: none; }
         
-        #question-area { background-color: var(--gris-claro); border-radius: 15px; padding: 30px;
-            margin-bottom: 20px; width: 100%; box-shadow: inset 0 3px 8px rgba(0,0,0,0.15); 
-        }
-        .category-display { font-size: 1.2rem; font-weight: 500; color: var(--azul-principal);
-            display: flex; align-items: center; justify-content: center; margin-bottom: 15px; 
-        }
+        #question-area { background-color: var(--gris-claro); border-radius: 15px; padding: 30px; margin-bottom: 20px; width: 100%; box-shadow: inset 0 3px 8px rgba(0,0,0,0.15); }
+        .category-display { font-size: 1.2rem; font-weight: 500; color: var(--azul-principal); display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
         .category-display i { color: var(--rojo-acento); margin-right: 10px; font-size: 2rem; }
         .category-display i.animate-category { animation: category-pulse 0.8s ease-out; }
         @keyframes category-pulse { 0% { transform: scale(1); color: var(--rojo-acento); } 50% { transform: scale(1.2); color: var(--azul-principal); } 100% { transform: scale(1); color: var(--rojo-acento); } }
         #question-text { font-size: 1.6rem; font-weight: 600; color: var(--azul-principal); margin-bottom: 25px; min-height: 80px; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-        .option-btn { background-color: var(--azul-claro); color: white; border: none; padding: 15px 20px;
-            border-radius: 10px; font-size: 1.1rem; text-align: left; cursor: pointer; transition: background-color 0.3s;
-        }
+        .option-btn { background-color: var(--azul-claro); color: white; border: none; padding: 15px 20px; border-radius: 10px; font-size: 1.1rem; text-align: left; cursor: pointer; transition: background-color 0.3s; }
         .option-btn:hover { background-color: var(--azul-principal); }
         .option-btn.correct { background-color: var(--verde-correcto); animation: pulse-correct 0.6s ease-out forwards; }
         @keyframes pulse-correct { 0% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(76, 175, 80, 0.9); } 100% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0); } }
         .option-btn.incorrect { background-color: var(--rojo-incorrecto); animation: shake-incorrect 0.6s ease-out; }
         @keyframes shake-incorrect { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } }
-        #feedback-message { background-color: var(--azul-aun-mas-claro); color: white; padding: 15px; border-radius: 10px;
-            margin-top: 20px; opacity: 0; transition: opacity 0.5s; position:relative; width: 100%;
-        }
+        #feedback-message { background-color: var(--azul-aun-mas-claro); color: white; padding: 15px; border-radius: 10px; margin-top: 20px; opacity: 0; transition: opacity 0.5s; position:relative; width: 100%; }
         #feedback-message.show { opacity: 1; }
         #close-feedback-btn { position: absolute; top: 5px; right: 5px; background: none; border: none; font-size: 1.5rem; color: white; cursor: pointer; }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 1rem;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 1rem; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-content { background: white; border-radius: 15px; padding: 30px; width: 100%;
-            max-width: 450px; position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.4);
-            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .modal-content { background: white; border-radius: 15px; padding: 30px; width: 100%; max-width: 450px; position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.4); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-content h3 { color: var(--rojo-acento); margin-bottom: 20px; font-size: 2.2rem;
-            font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-transform: uppercase;
-            display: flex; align-items: center; justify-content: center; gap: 10px; 
-        }
+        .modal-content h3 { color: var(--rojo-acento); margin-bottom: 20px; font-size: 2.2rem; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
         #modal-score-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-        .score-card-modal { display: flex; align-items: center; gap: 15px; background-color: var(--gris-claro);
-            padding: 12px; border-radius: 10px; border-left: 5px solid var(--azul-claro);
-            opacity: 0; transform: translateX(-30px); animation: slideInFromLeft 0.5s ease-out forwards; 
-        }
+        .score-card-modal { display: flex; align-items: center; gap: 15px; background-color: var(--gris-claro); padding: 12px; border-radius: 10px; border-left: 5px solid var(--azul-claro); opacity: 0; transform: translateX(-30px); animation: slideInFromLeft 0.5s ease-out forwards; }
         @keyframes slideInFromLeft { to { opacity: 1; transform: translateX(0); } }
         .score-card-modal.is-leader { border-left-color: var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
         .score-card-modal.is-current-player { box-shadow: 0 0 15px var(--azul-aun-mas-claro); border-left-color: var(--azul-principal); }
@@ -282,11 +157,7 @@
         #end-screen { justify-content: space-around; }
         #end-screen h2 { font-size: 2.5rem; font-weight: 800; color: var(--azul-principal); animation: fadeInDown 0.8s ease-out; }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        .winner-card { width: 100%; max-width: 500px; background: linear-gradient(45deg, var(--azul-principal), var(--azul-claro));
-            color: var(--blanco-puro); border-radius: 20px; padding: 25px; margin: 20px 0; border: 4px solid var(--gold);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px var(--gold); text-align: center;
-            opacity: 0; transform: scale(0.8); 
-        }
+        .winner-card { width: 100%; max-width: 500px; background: linear-gradient(45deg, var(--azul-principal), var(--azul-claro)); color: var(--blanco-puro); border-radius: 20px; padding: 25px; margin: 20px 0; border: 4px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px var(--gold); text-align: center; opacity: 0; transform: scale(0.8); }
         .winner-card.animate { animation: winner-card-appear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 0.5s; }
         @keyframes winner-card-appear { to { opacity: 1; transform: scale(1); } }
         .winner-card h3 { font-size: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
@@ -296,14 +167,8 @@
         .winner-card .winner-names-tie { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         .winner-card .winner-names-tie .winner-name { font-size: 1.8rem; }
         
-        .podium-container { display: flex; align-items: flex-end; justify-content: center;
-            gap: 10px; width: 100%; height: 200px; margin: 10px 0 20px; 
-        }
-        .podium-place { width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            text-align: center; border-top-left-radius: 10px; border-top-right-radius: 10px; color: white;
-            padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0;
-            transform: translateY(50px); position: relative; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+        .podium-container { display: flex; align-items: flex-end; justify-content: center; gap: 10px; width: 100%; height: 200px; margin: 10px 0 20px; }
+        .podium-place { width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; border-top-left-radius: 10px; border-top-right-radius: 10px; color: white; padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0; transform: translateY(50px); position: relative; animation: podium-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .podium-place.gold { background-image: linear-gradient(180deg, var(--gold) 0%, #FFEA8D 100%); height: 100%; animation-delay: 1.2s; }
         .podium-place.silver { background-image: linear-gradient(180deg, var(--silver) 0%, #E3E3E3 100%); height: 80%; animation-delay: 1.4s; }
         .podium-place.bronze { background-image: linear-gradient(180deg, var(--bronze) 0%, #B96620 100%); height: 60%; animation-delay: 1.6s; }
@@ -315,9 +180,7 @@
         .podium-place .podium-rank { font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; }
         .podium-place .podium-rank i { text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
         .other-scores-list { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px; }
-        .player-card { display: flex; justify-content: space-between; align-items: center; background-color: var(--gris-claro);
-            padding: 15px 20px; border-radius: 10px; opacity: 0; transform: scale(0.9); animation: card-appear 0.5s ease-out forwards; 
-        }
+        .player-card { display: flex; justify-content: space-between; align-items: center; background-color: var(--gris-claro); padding: 15px 20px; border-radius: 10px; opacity: 0; transform: scale(0.9); animation: card-appear 0.5s ease-out forwards; }
         @keyframes card-appear { to { opacity: 1; transform: scale(1); } }
         .player-card .rank { font-size: 1.2rem; font-weight: 600; color: var(--gris-oscuro); }
         .player-card .name { font-size: 1.2rem; font-weight: 500; }
@@ -329,68 +192,47 @@
         #timer-container { width: 100%; height: 10px; background-color: var(--gris-claro); border: 2px solid var(--azul-aun-mas-claro); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         #timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--rojo-acento), var(--azul-claro)); border-radius: 8px; transition: width 1s linear, background 1s ease; }
         
-        .player-avatar-container { width: 50px; height: 50px; border-radius: 50%; background-color: var(--azul-claro); display: flex;
-            justify-content: center; align-items: center; cursor: pointer; border: 2px solid var(--azul-principal);
-            transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); flex-shrink: 0;
-        }
+        .player-avatar-container { width: 50px; height: 50px; border-radius: 50%; background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid var(--azul-principal); transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); flex-shrink: 0; }
         .player-avatar-container:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .player-avatar { font-size: 1.8rem; color: white; }
 
         #avatar-selection-modal .modal-content { max-width: 600px; }
         #avatar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 15px; margin-top: 20px; }
-        .avatar-option { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; background-color: var(--gris-claro);
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
-            border: 3px solid transparent; transition: all 0.2s ease;
-        }
+        .avatar-option { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; background-color: var(--gris-claro); display: flex; justify-content: center; align-items: center; cursor: pointer; border: 3px solid transparent; transition: all 0.2s ease; }
         .avatar-option:hover { background-color: var(--azul-aun-mas-claro); border-color: var(--azul-principal); transform: scale(1.05); }
         .avatar-option.selected { border-color: var(--rojo-acento); box-shadow: 0 0 15px rgba(203, 24, 35, 0.5); transform: scale(1.1); }
         .avatar-option i { font-size: 2.5rem; color: var(--azul-principal); }
 
-        .player-score-avatar, .winner-avatar, .podium-avatar { width: 40px; height: 40px; border-radius: 50%;
-            background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0;
-        }
+        .player-score-avatar, .winner-avatar, .podium-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0; }
         .winner-avatar { margin: 0 auto 10px auto; width: 60px; height: 60px; }
         .winner-avatar i { font-size: 2.5rem; }
         .podium-avatar { width: 50px; height: 50px; margin-bottom: 5px; }
         .podium-avatar i { font-size: 2rem; color: white; }
         .player-score-avatar i { font-size: 1.5rem; color: white; }
 
-        .score-update-plus {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 2rem; font-weight: 800; color: var(--verde-correcto);
-            opacity: 0; animation: score-update-pop 1s ease-out forwards;
-            pointer-events: none; z-index: 100;
-        }
-        @keyframes score-update-pop {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            50% { transform: translate(-50%, -100%) scale(1.2); opacity: 1; }
-            100% { transform: translate(-50%, -150%) scale(1); opacity: 0; }
-        }
+        .score-update-plus { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; font-weight: 800; color: var(--verde-correcto); opacity: 0; animation: score-update-pop 1s ease-out forwards; pointer-events: none; z-index: 100; }
+        @keyframes score-update-pop { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 50% { transform: translate(-50%, -100%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%, -150%) scale(1); opacity: 0; } }
 
         /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
         @media (max-width: 768px) {
             .game-container {
-                width: 100%; /* Ocupa todo el ancho */
-                height: 100%; /* Ocupa toda la altura */
-                max-height: none; /* Sin altura máxima */
-                border-radius: 0; /* Sin bordes redondeados */
+                width: 100%; height: 100%; max-height: none; border-radius: 0;
             }
             .screen {
-                padding: 20px;
-                justify-content: flex-start; /* Alinea al inicio para scroll */
+                padding: 20px; justify-content: flex-start;
             }
             .screen:not(.active) {
-                display: none; /* Estrategia más robusta para móvil */
+                display: none; /* CORRECCIÓN CLAVE: Estrategia más robusta para móvil */
             }
             .screen.active {
-                position: relative; /* Quita el posicionamiento absoluto */
-                height: 100%; /* Ocupa toda la altura del contenedor */
+                position: relative; height: 100%;
+                display: flex; /* Asegura que el flexbox se aplique */
             }
             
             .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
             .game-header { padding: 10px 15px; }
             .game-header .header-group .btn-icon { font-size: 1.5rem; }
-            #current-player-turn-display { font-size: 1rem; padding: 6px 12px; }
+            #current-player-turn-display { font-size: 1rem; padding: 6px 12px; max-width: 50%; }
             .joker-btn { padding: 8px 15px; font-size: 0.9rem; }
             
             #splash-screen h1 { font-size: 2.5rem; }
@@ -403,16 +245,13 @@
             .player-count-selector span, .round-count-selector span { font-size: 1.5rem; margin: 0 15px; }
             
             #player-inputs { width: 100%; }
-            .player-input-group {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
+            .player-input-group { flex-wrap: wrap; gap: 8px; }
             .player-input-group label { min-width: 60px; margin-right: 5px; font-size: 0.9rem; flex-shrink: 0; }
             .player-input-group input[type="text"] { padding: 10px 12px; font-size: 0.9rem; flex-grow: 1; min-width: 100px; }
             .player-input-group .random-name-btn { padding: 8px 12px; font-size: 0.9rem; }
             .player-input-group .player-color-input, .player-avatar-container { width: 35px; height: 35px; }
             
-            #game-screen { padding-top: 80px; } /* Espacio para el header fijo */
+            #game-screen { padding-top: 80px; }
             #question-area { padding: 20px; margin-bottom: 15px; }
             .category-display { font-size: 1rem; margin-bottom: 10px; }
             .category-display i { font-size: 1.8rem; }
@@ -447,14 +286,14 @@
         }
 
         @media (max-width: 480px) {
-            body { padding: 0; } /* Sin padding en el body para ocupar todo */
+            body { padding: 0; }
             .screen { padding: 15px; }
             #splash-screen h1 { font-size: 2rem; }
             .btn { padding: 10px 20px; font-size: 0.9rem; }
             #player-config-screen h2, #round-config-screen h2 { font-size: 1.5rem; }
             .player-count-selector span, .round-count-selector span { font-size: 1.3rem; }
-            .player-input-group label { text-align: left; margin-bottom: 5px; width: 100%;}
-            .player-input-group { flex-wrap: wrap; justify-content: flex-start; } /* Alinea a la izquierda */
+            .player-input-group label { text-align: left; margin-bottom: 5px; width: 100%; }
+            .player-input-group { flex-wrap: wrap; justify-content: flex-start; }
             .player-input-group input[type="text"] { flex-grow: 1; }
             
             #question-text { font-size: 1.15rem; min-height: 50px; }
@@ -499,11 +338,9 @@
         </div>
         
         <div id="game-screen" class="screen">
-            <!-- Nuevo header fijo para la pantalla de juego -->
             <div class="game-header">
                 <div id="current-player-turn-display"></div>
                 <div class="header-group">
-                    <!-- Botón para el comodín 50/50 -->
                     <button id="fifty-fifty-btn" class="joker-btn" title="Elimina 2 respuestas incorrectas"><i class="fas fa-divide"></i> 50/50</button>
                     <button id="show-score-btn" class="fas fa-medal btn-icon"></button>
                     <button class="close-btn" data-target-screen="confirm-exit">×</button>
@@ -511,14 +348,10 @@
             </div>
             
             <div id="question-area">
-                <div id="timer-container">
-                    <div id="timer-bar"></div>
-                </div>
+                <div id="timer-container"><div id="timer-bar"></div></div>
                 <div class="category-display"><i id="category-icon" class="fas fa-question-circle"></i><span id="category-name">Categoría</span></div>
                 <p id="question-text">Cargando pregunta...</p>
-                <div id="options-grid" class="options-grid">
-                    <!-- Las opciones se generarán dinámicamente -->
-                </div>
+                <div id="options-grid" class="options-grid"></div>
             </div>
             
             <div id="feedback-message">
@@ -585,7 +418,14 @@
         const avatarIcons = ['fas fa-train', 'fas fa-locomotive', 'fas fa-subway', 'fas fa-tram', 'fas fa-bus', 'fas fa-car-side', 'fas fa-plane', 'fas fa-ship', 'fas fa-bicycle', 'fas fa-truck-ramp-box', 'fas fa-rocket', 'fas fa-motorcycle', 'fas fa-shuttle-space', 'fas fa-helicopter', 'fas fa-bus-simple', 'fas fa-caravan'];
         const defaultPlayerColors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2', '#00CED1', '#FF8C00', '#DA70D6', '#ADFF2F', '#DC143C', '#FF4500', '#9932CC', '#20B2AA', '#FF1493', '#00BFFF', '#7FFF00', '#BA55D3', '#F4A460', '#FF69B4', '#00FFFF'];
         
-        const initialGameData = { "preguntas": { /* ... (como en tu código original) ... */ }};
+        // CORRECCIÓN: Datos de respaldo en caso de que falle la carga del JSON.
+        const fallbackGameData = {
+            "preguntas": {
+                "Elementos Estructurales de la Vía": [{"pregunta": "¿Qué elemento de la vía férrea se encarga de transmitir las cargas de los carriles al balasto?","opciones": ["A) Carril", "B) Brida", "C) Traviesa", "D) Tirafondo"],"respuestaCorrecta": "C","explicacion": "La traviesa es el elemento transversal que recibe la carga del carril y la transmite al balasto, manteniendo la geometría de la vía."}],
+                "Maquinaria y Herramientas": [{"pregunta": "¿Qué máquina se utiliza para compactar el balasto bajo las traviesas y mejorar la estabilidad de la vía?","opciones": ["A) Desguarnecedora", "B) Bateadora", "C) Perfiladora", "D) Soldadora de carril"],"respuestaCorrecta": "B","explicacion": "La bateadora es una máquina fundamental para el mantenimiento de la vía, encargada de compactar el balasto y nivelar la vía."}],
+                "Sistemas y Tecnologías": [{"pregunta": "¿Qué sistema de señalización se utiliza en las líneas de alta velocidad europeas para controlar la velocidad y garantizar la seguridad?","opciones": ["A) ASFA", "B) LZB", "C) ERTMS", "D) ATP"],"respuestaCorrecta": "C","explicacion": "El ERTMS (European Rail Traffic Management System) es el sistema de señalización y control de trenes estándar en Europa para las líneas de alta velocidad."}]
+            }
+        };
 
         // --- REFERENCIAS AL DOM ---
         const splashScreen = document.getElementById('splash-screen');
@@ -711,9 +551,7 @@
             avatarSelectionModal.classList.add('active');
         }
 
-        function hideAvatarSelectionModal() {
-            avatarSelectionModal.classList.remove('active');
-        }
+        function hideAvatarSelectionModal() { avatarSelectionModal.classList.remove('active'); }
 
         // --- LÓGICA PRINCIPAL DEL JUEGO ---
         function startGame() {
@@ -883,9 +721,7 @@
             const podiumElements = [];
             podiumPlayers.forEach((player, rank) => {
                 let rankClass = '';
-                if (rank === 0) rankClass = 'gold';
-                else if (rank === 1) rankClass = 'silver';
-                else if (rank === 2) rankClass = 'bronze';
+                if (rank === 0) rankClass = 'gold'; else if (rank === 1) rankClass = 'silver'; else rankClass = 'bronze';
 
                 const place = document.createElement('div');
                 place.className = `podium-place ${rankClass}`;
@@ -901,7 +737,7 @@
                 const card = document.createElement('div');
                 card.className = 'player-card';
                 card.style.animationDelay = `${1.8 + index * 0.2}s`;
-                card.innerHTML = `<span class="rank">#${index + 4}</span><div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><span class="name">${player.name}</span><span class="score">${player.score} pts</span>`;
+                card.innerHTML = `<span class="rank">#${index + 4}</span><div class="player-score-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><span class="name">${player.name}</span><span class="score">${player.score} puntos</span>`;
                 otherScoresContainer.appendChild(card);
             });
             generateConfetti();
@@ -909,6 +745,7 @@
 
         function generateConfetti() {
             const container = document.getElementById('confetti-container');
+            if (!container) return;
             container.innerHTML = '';
             const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
             for (let i = 0; i < 100; i++) {
@@ -925,7 +762,7 @@
         function showScoreModal() {
             modalScoreList.innerHTML = '';
             const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
-            const leaderScore = sortedPlayers.length > 0 ? sortedPlayers[0].score : 1;
+            const leaderScore = sortedPlayers.length > 0 ? (sortedPlayers[0].score || 1) : 1;
             
             sortedPlayers.forEach((player, index) => {
                 const listItem = document.createElement('li');
@@ -955,24 +792,6 @@
         function hideConfirmExitModal() { confirmExitModal.classList.remove('active'); }
 
         // --- INICIALIZACIÓN DE EVENTOS ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Carga de preguntas desde el JSON
-            fetch('preguntas.json')
-                .then(response => {
-                    if (!response.ok) throw new Error("Network response was not ok " + response.statusText);
-                    return response.json();
-                })
-                .then(data => gameData = data)
-                .catch(error => {
-                    console.error("No se pudo cargar 'preguntas.json'. Usando datos iniciales.", error);
-                    gameData = initialGameData;
-                })
-                .finally(() => {
-                    // Inicializar los listeners una vez que los datos están listos (ya sea de la carga o los iniciales)
-                    initializeEventListeners();
-                });
-        });
-        
         function initializeEventListeners() {
             const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
 
@@ -1019,348 +838,20 @@
             confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
             closeFeedbackBtn.addEventListener('click', nextTurn);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('preguntas.json')
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response not ok");
+                    return response.json();
+                })
+                .then(data => gameData = data)
+                .catch(error => {
+                    console.error("No se pudo cargar 'preguntas.json'. Usando datos de respaldo.", error);
+                    gameData = fallbackGameData;
+                })
+                .finally(() => initializeEventListeners());
+        });
     </script>
 </body>
 </html>
---- END OF FILE preguntas.json ---
-
-{
-    "preguntas": {
-        "Elementos Estructurales de la Vía": [
-            {
-                "pregunta": "¿Cuál es la función principal del balasto en una vía de alta velocidad?",
-                "opciones": [
-                    "Asegurar la conductividad eléctrica de los carriles.",
-                    "Transmitir las cargas de los trenes al terreno y asegurar la estabilidad de la vía.",
-                    "Reducir la fricción entre la rueda y el carril.",
-                    "Actuar como aislante térmico."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "El balasto distribuye las cargas de las traviesas al terraplén, proporciona drenaje y contribuye a la estabilidad lateral y longitudinal de la vía, esencial para las altas velocidades."
-            },
-            {
-                "pregunta": "¿Qué técnica se utiliza comúnmente para el mantenimiento del perfil del carril y la eliminación de defectos superficiales en vías de alta velocidad?",
-                "opciones": [
-                    "Bateo de balasto.",
-                    "Reemplazo completo de carril.",
-                    "Esmerilado o amolado de carril.",
-                    "Engrasado de las sujeciones."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "El esmerilado de carril permite restaurar el perfil óptimo, eliminar ondulaciones y grietas superficiales, prolongando la vida útil del carril y mejorando la calidad de rodadura."
-            },
-            {
-                "pregunta": "¿Qué tipo de sujeción es más común en las vías de alta velocidad para asegurar la rigidez y el aislamiento eléctrico?",
-                "opciones": [
-                    "Brida metálica.",
-                    "Sujeción rígida con tornillos de banco.",
-                    "Sujeción elástica con almohadilla de caucho y grapas.",
-                    "Clavos de vía."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "Las sujeciones elásticas, como las de tipo Pandrol o Vossloh, proporcionan una fijación constante del carril a la traviesa, absorben vibraciones y garantizan el aislamiento eléctrico, crucial para los sistemas de señalización."
-            },
-            {
-                "pregunta": "¿Cuál es la principal diferencia entre una traviesa monobloque y una bibloque en términos de su comportamiento en la vía de alta velocidad?",
-                "opciones": [
-                    "La monobloque es más flexible y la bibloque más rígida.",
-                    "La monobloque es de madera y la bibloque de hormigón.",
-                    "La monobloque ofrece mayor rigidez transversal y mejor comportamiento frente a la deformación lateral.",
-                    "La bibloque permite un menor ancho de vía."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "Las traviesas monobloque de hormigón pretensado son el estándar en alta velocidad debido a su mayor masa y rigidez, que optimizan la transmisión de cargas y la estabilidad geométrica de la vía."
-            },
-            {
-                "pregunta": "¿Cuál es el propósito de los cordones de soldadura en los carriles de una vía de alta velocidad?",
-                "opciones": [
-                    "Aumentar la resistencia a la abrasión del carril.",
-                    "Unir los tramos de carril de forma continua para evitar juntas y mejorar la rodadura.",
-                    "Facilitar la dilatación térmica de los carriles.",
-                    "Servir como punto de anclaje para los sistemas de señalización."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "La soldadura continua de carril (CRC) elimina las juntas, lo que mejora el confort de viaje, reduce el ruido y las vibraciones, y minimiza el mantenimiento de la superestructura."
-            },
-            {
-                "pregunta": "¿Qué se busca optimizar al realizar una compactación dinámica del balasto en una vía de alta velocidad?",
-                "opciones": [
-                    "La capacidad de drenaje del balasto.",
-                    "La resistencia del balasto a la pulverización.",
-                    "La uniformidad de la densidad y la resistencia al asiento de la banqueta de balasto.",
-                    "La temperatura del balasto para evitar dilataciones."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "La compactación dinámica mejora la estabilidad y la resistencia del balasto, asegurando que la geometría de la vía se mantenga estable bajo las cargas dinámicas de los trenes de alta velocidad."
-            },
-            {
-                "pregunta": "¿Cuál es el objetivo principal del mantenimiento de la explanación y el terraplén en una línea de alta velocidad?",
-                "opciones": [
-                    "Mejorar el paisaje circundante.",
-                    "Asegurar la estabilidad geotécnica de la plataforma y el drenaje adecuado.",
-                    "Reducir el coste de construcción de la vía.",
-                    "Facilitar la instalación de la catenaria."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "Una plataforma estable y un buen drenaje son fundamentales para evitar asientos diferenciales y deformaciones de la vía, que comprometerían la seguridad y el confort a altas velocidades."
-            },
-            {
-                "pregunta": "¿Qué tipo de sistema de drenaje es crucial en túneles de alta velocidad para evitar la acumulación de agua?",
-                "opciones": [
-                    "Acequias a cielo abierto.",
-                    "Bombas de achique manuales.",
-                    "Cunetas, colectores y pozos de bombeo integrados en la infraestructura.",
-                    "Filtración natural a través del balasto."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "El drenaje en túneles es vital para prevenir la inundación, la corrosión de elementos metálicos y el deterioro de la infraestructura, asegurando la operatividad de la línea."
-            },
-            {
-                "pregunta": "¿Qué función cumple la capa de subbalasto en la superestructura de una vía de alta velocidad?",
-                "opciones": [
-                    "Aislar térmicamente el balasto.",
-                    "Evitar la mezcla del balasto con el material del terraplén y mejorar la distribución de cargas.",
-                    "Actuar como elemento conductor de la señalización.",
-                    "Soportar directamente el peso de los trenes."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "El subbalasto actúa como una capa de transición entre el balasto y la explanación, impidiendo la contaminación del balasto y mejorando la uniformidad de la transmisión de tensiones."
-            },
-            {
-                "pregunta": "¿Qué se entiende por 'recalzado' de traviesas en el mantenimiento ferroviario?",
-                "opciones": [
-                    "El proceso de añadir una nueva traviesa a la vía.",
-                    "La sustitución de los carriles sobre las traviesas existentes.",
-                    "La adición de balasto bajo las traviesas para mejorar el apoyo y la nivelación.",
-                    "La limpieza de la superficie de las traviesas."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "El recalzado consiste en introducir balasto debajo de las traviesas, generalmente mediante bateadoras, para corregir la nivelación y alineación de la vía."
-            }
-        ],
-        "Maquinaria y Herramientas": [
-            {
-                "pregunta": "¿Cuál es la función principal de una bateadora pesada en el mantenimiento de vías de alta velocidad?",
-                "opciones": [
-                    "Soldar automáticamente los carriles.",
-                    "Limpiar la superficie de los carriles.",
-                    "Compactar el balasto bajo las traviesas para corregir la geometría de la vía.",
-                    "Inspeccionar visualmente el estado de la catenaria."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "Las bateadoras son máquinas esenciales para el mantenimiento de la geometría de la vía (alineación, nivelación, peralte) mediante la vibración y compactación del balasto."
-            },
-            {
-                "pregunta": "¿Qué equipo se utiliza para medir con precisión la altura y la flecha de la catenaria en una línea de alta velocidad?",
-                "opciones": [
-                    "Un nivel óptico y una mira topográfica.",
-                    "Un carro de auscultación de catenaria o drones con sistemas láser.",
-                    "Un voltímetro de alta tensión.",
-                    "Un dinamómetro."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "La precisión en la medición de la catenaria es crítica para asegurar el correcto contacto con el pantógrafo a altas velocidades y evitar desprendimientos."
-            },
-            {
-                "pregunta": "¿Cuál es la principal ventaja de utilizar detectores de defectos por ultrasonidos en los carriles de alta velocidad?",
-                "opciones": [
-                    "Identificar la temperatura de la superficie del carril.",
-                    "Detectar fisuras internas y defectos ocultos que no son visibles a simple vista.",
-                    "Medir la resistencia eléctrica del carril.",
-                    "Determinar la composición química del acero del carril."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "Los ultrasonidos permiten un mantenimiento predictivo, detectando fallos incipientes antes de que se propaguen y comprometan la seguridad."
-            },
-            {
-                "pregunta": "¿Qué tipo de máquina es fundamental para el reperfilado de los carriles, mejorando la interacción rueda-carril y reduciendo el ruido?",
-                "opciones": [
-                    "Una desguarnecedora.",
-                    "Una perfiladora de carril (o amoladora de grandes dimensiones).",
-                    "Una soldadora aluminotérmica.",
-                    "Una bateadora ligera."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "La perfiladora restaura la forma óptima de la cabeza del carril, mejorando la calidad de la rodadura y prolongando la vida útil del carril y de las ruedas."
-            },
-            {
-                "pregunta": "¿Cuál es el propósito de una máquina desguarnecedora en el mantenimiento de la vía?",
-                "opciones": [
-                    "Retirar los residuos de balasto y limpiar la plataforma de la vía.",
-                    "Soldar tramos de carril largos.",
-                    "Perforar las traviesas para instalar sujeciones.",
-                    "Transportar material de obra."
-                ],
-                "respuestaCorrecta": "A",
-                "explicacion": "La desguarnecedora limpia el balasto sucio o contaminado, lo que es vital para mantener la capacidad de drenaje y la elasticidad de la superestructura."
-            },
-            {
-                "pregunta": "¿Qué herramienta manual es esencial para comprobar el apriete correcto de los tornillos en las uniones de carril o sujeciones?",
-                "opciones": [
-                    "Un martillo de bola.",
-                    "Una llave de grifa.",
-                    "Una llave dinamométrica.",
-                    "Un taladro percutor."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "La llave dinamométrica asegura que el par de apriete sea el especificado, evitando tanto aflojamientos como sobretensiones que puedan dañar los elementos."
-            },
-            {
-                "pregunta": "¿Qué tipo de vehículo auxiliar se utiliza para el transporte de personal y pequeñas herramientas a lo largo de la vía?",
-                "opciones": [
-                    "Un tren de obras.",
-                    "Una locomotora de línea.",
-                    "Una dresina o vagoneta de vía.",
-                    "Un tren de socorro."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "Las dresinas son vehículos ligeros y versátiles, diseñados para moverse sobre la vía con rapidez y eficacia en operaciones de inspección y pequeño mantenimiento."
-            },
-            {
-                "pregunta": "¿Cuál es la función principal de los trenes de auscultación en alta velocidad?",
-                "opciones": [
-                    "Transportar viajeros a alta velocidad.",
-                    "Medir y registrar continuamente los parámetros geométricos y dinámicos de la vía y la catenaria.",
-                    "Realizar operaciones de soldadura en movimiento.",
-                    "Apagar incendios en la infraestructura."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "Los trenes de auscultación son clave para el mantenimiento predictivo, permitiendo identificar anomalías y planificar intervenciones antes de que surjan problemas críticos."
-            },
-            {
-                "pregunta": "¿Qué se mide con una galga de vía?",
-                "opciones": [
-                    "La altura de la catenaria.",
-                    "El ancho de la vía (entre caras activas de los carriles).",
-                    "La temperatura del carril.",
-                    "La tensión de los cables de señalización."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "El ancho de vía es un parámetro crítico para la seguridad y el confort, especialmente en alta velocidad, y su control es fundamental."
-            },
-            {
-                "pregunta": "¿Qué tipo de soldadura se utiliza más comúnmente para unir tramos de carril de forma rápida y eficiente en campo?",
-                "opciones": [
-                    "Soldadura por resistencia eléctrica.",
-                    "Soldadura TIG.",
-                    "Soldadura aluminotérmica.",
-                    "Soldadura por arco sumergido."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "La soldadura aluminotérmica es ampliamente utilizada por su rapidez y por no requerir equipos eléctricos complejos en campo, aunque la soldadura por resistencia es el método preferido en talleres para la fabricación de carriles largos."
-            }
-        ],
-        "Sistemas y Tecnologías": [
-            {
-                "pregunta": "¿Qué sistema de señalización y control de trenes es el estándar europeo para las líneas de alta velocidad?",
-                "opciones": [
-                    "ASFA (Anuncio de Señales y Frenado Automático).",
-                    "ERTMS (European Rail Traffic Management System).",
-                    "CTC (Control de Tráfico Centralizado).",
-                    "ATO (Automatic Train Operation)."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "ERTMS, con sus niveles ETCS (European Train Control System) y GSM-R (Global System for Mobile Communications – Railway), es el sistema interoperable que permite la circulación segura de trenes de alta velocidad a través de diferentes países europeos."
-            },
-            {
-                "pregunta": "¿Cuál es la función principal de los circuitos de vía en una línea ferroviaria electrificada de alta velocidad?",
-                "opciones": [
-                    "Suministrar energía a los trenes.",
-                    "Detectar la presencia de trenes y la integridad del carril para la señalización.",
-                    "Calentar los carriles en invierno.",
-                    "Comunicar al maquinista la velocidad máxima permitida."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "Los circuitos de vía son fundamentales para la detección de ocupación y la supervisión de la continuidad del carril, enviando información al enclavamiento y al sistema de señalización."
-            },
-            {
-                "pregunta": "¿Qué característica principal tiene la catenaria rígida frente a la catenaria flexible en túneles de alta velocidad?",
-                "opciones": [
-                    "Mayor flexibilidad para adaptarse a las curvas.",
-                    "Menor coste de instalación inicial.",
-                    "Mayor resistencia al fuego y menor necesidad de mantenimiento.",
-                    "Mayor facilidad para la detección de averías."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "La catenaria rígida es preferida en túneles por su robustez, menor número de puntos de fijación y su resistencia a las deformaciones por la onda de presión generada por los trenes de alta velocidad."
-            },
-            {
-                "pregunta": "¿Qué se utiliza para la transmisión de datos y voz en el sistema GSM-R de las líneas de alta velocidad?",
-                "opciones": [
-                    "Cables de cobre coaxiales.",
-                    "Ondas de radio de baja frecuencia.",
-                    "Fibra óptica y radioenlaces digitales.",
-                    "Señales luminosas."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "La fibra óptica es la 'columna vertebral' de las comunicaciones en alta velocidad, proporcionando el ancho de banda y la fiabilidad necesarios para GSM-R, SCADA y otros sistemas."
-            },
-            {
-                "pregunta": "¿Cuál es el principal objetivo de un sistema SCADA (Supervisory Control And Data Acquisition) en la infraestructura de alta velocidad?",
-                "opciones": [
-                    "Controlar las taquillas de las estaciones.",
-                    "Gestionar y supervisar remotamente las instalaciones fijas como subestaciones, sistemas de ventilación o iluminación.",
-                    "Automatizar la limpieza de los trenes.",
-                    "Regular el flujo de pasajeros en los andenes."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "SCADA permite a los operadores monitorizar y controlar la infraestructura desde un centro de control, facilitando la detección de anomalías y la respuesta rápida."
-            },
-            {
-                "pregunta": "¿Qué tipo de pruebas se realizan periódicamente en los sistemas de balizas ERTMS para asegurar su correcto funcionamiento?",
-                "opciones": [
-                    "Pruebas de resistencia mecánica.",
-                    "Pruebas de impermeabilidad.",
-                    "Pruebas de lectura y escritura de telegramas, y calibración de frecuencia.",
-                    "Pruebas de impacto a alta velocidad."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "Las balizas transmiten información vital al tren, por lo que su correcta calibración y funcionamiento son esenciales para la seguridad operativa."
-            },
-            {
-                "pregunta": "¿Qué es la 'zona de paso' en un sistema de electrificación ferroviario y por qué es crítica para el mantenimiento?",
-                "opciones": [
-                    "El espacio por donde pasan los trenes.",
-                    "Un tramo de vía sin catenaria para maniobras.",
-                    "El punto donde se unen dos zonas de alimentación eléctrica diferentes con distinto potencial, requiriendo un aislamiento o cambio de tensión.",
-                    "La zona de amortiguación de ruido."
-                ],
-                "respuestaCorrecta": "C",
-                "explicacion": "La zona de paso requiere procedimientos específicos para los trenes (bajada de pantógrafo, desconexión de tracción) y un mantenimiento riguroso de sus elementos (aisladores, seccionadores) para evitar cortocircuitos y arcos eléctricos."
-            },
-            {
-                "pregunta": "¿Cuál es la función de un contador de ejes en un sistema de señalización?",
-                "opciones": [
-                    "Contar el número de trenes que circulan por una sección.",
-                    "Determinar si una sección de vía está libre u ocupada contando los ejes que entran y salen.",
-                    "Medir el desgaste de las ruedas del tren.",
-                    "Calcular la velocidad del tren."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "Los contadores de ejes son una alternativa a los circuitos de vía para la detección de ocupación, especialmente en túneles o en zonas con problemas de drenaje, ofreciendo una alta fiabilidad."
-            },
-            {
-                "pregunta": "¿Qué se entiende por 'seccionamiento' de la catenaria y cuándo se utiliza en mantenimiento?",
-                "opciones": [
-                    "La división física de la catenaria en tramos.",
-                    "La interrupción deliberada del suministro eléctrico a un tramo de catenaria para realizar trabajos de mantenimiento con seguridad.",
-                    "La conexión de dos tramos de catenaria para formar un bucle.",
-                    "El proceso de reparación de una catenaria rota."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "El seccionamiento es una medida de seguridad fundamental que garantiza que el personal de mantenimiento pueda trabajar en la catenaria sin riesgo eléctrico, mediante la apertura de seccionadores y la puesta a tierra."
-            },
-            {
-                "pregunta": "¿Qué sistema se utiliza para monitorizar la salud estructural de puentes y viaductos en tiempo real en líneas de alta velocidad?",
-                "opciones": [
-                    "Cámaras de seguridad de CCTV.",
-                    "Sistemas de auscultación continua con sensores (fibra óptica, acelerómetros, etc.).",
-                    "Inspecciones visuales diarias por parte del maquinista.",
-                    "Análisis de la composición del hormigón."
-                ],
-                "respuestaCorrecta": "B",
-                "explicacion": "La monitorización estructural permite detectar cualquier anomalía o deterioro en tiempo real, facilitando el mantenimiento predictivo y asegurando la integridad de las grandes estructuras."
-            }
-        ]
-    }
-}
