@@ -117,7 +117,7 @@
         .joker-btn:hover:not(:disabled) { background-color: rgb(230, 30, 45); transform: translateY(-2px); }
         .joker-btn:disabled { background-color: var(--gris-oscuro); cursor: not-allowed; opacity: 0.7; transform: none; }
         
-        #question-area { background-color: var(--gris-claro); border-radius: 15px; padding: 30px; margin-bottom: 20px; width: 100%; box-shadow: inset 0 3px 8px rgba(0,0,0,0.15); }
+        #question-area { position: relative; background-color: var(--gris-claro); border-radius: 15px; padding: 30px; width: 100%; box-shadow: inset 0 3px 8px rgba(0,0,0,0.15); }
         .category-display { font-size: 1.2rem; font-weight: 500; color: var(--azul-principal); display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
         .category-display i { color: var(--rojo-acento); margin-right: 10px; font-size: 2rem; }
         .category-display i.animate-category { animation: category-pulse 0.8s ease-out; }
@@ -130,9 +130,45 @@
         @keyframes pulse-correct { 0% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(76, 175, 80, 0.9); } 100% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0); } }
         .option-btn.incorrect { background-color: var(--rojo-incorrecto); animation: shake-incorrect 0.6s ease-out; }
         @keyframes shake-incorrect { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } }
-        #feedback-message { background-color: var(--azul-aun-mas-claro); color: white; padding: 15px; border-radius: 10px; margin-top: 20px; opacity: 0; transition: opacity 0.5s; position:relative; width: 100%; }
-        #feedback-message.show { opacity: 1; }
-        #close-feedback-btn { position: absolute; top: 5px; right: 5px; background: none; border: none; font-size: 1.5rem; color: white; cursor: pointer; }
+        
+        /* MEJORA: Estilos para el feedback superpuesto */
+        #feedback-overlay {
+            position: absolute;
+            inset: 0; /* Cubre todo el #question-area */
+            background-color: rgba(26, 68, 136, 0.85);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 5;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #feedback-overlay.show { opacity: 1; pointer-events: all; }
+        #feedback-card {
+            background-color: var(--blanco-puro);
+            color: var(--gris-oscuro);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            max-width: 80%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #feedback-overlay.show #feedback-card { transform: scale(1); }
+        #feedback-text-content { font-size: 1.1rem; font-weight: 500; }
+        #close-feedback-btn {
+            position: absolute; top: -10px; right: -10px;
+            background-color: var(--rojo-acento); color: white;
+            border: none; width: 30px; height: 30px; border-radius: 50%;
+            font-size: 1rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center;
+        }
+        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 1rem; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         .modal-content { background: white; border-radius: 15px; padding: 30px; width: 100%; max-width: 450px; position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.4); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -216,7 +252,6 @@
         .score-update-plus { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; font-weight: 800; color: var(--verde-correcto); opacity: 0; animation: score-update-pop 1s ease-out forwards; pointer-events: none; z-index: 100; }
         @keyframes score-update-pop { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 50% { transform: translate(-50%, -100%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%, -150%) scale(1); opacity: 0; } }
 
-        /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
         @media (max-width: 768px) {
             .game-container { width: 100%; height: 100%; max-height: none; border-radius: 0; }
             .screen { padding: 20px; justify-content: flex-start; }
@@ -248,9 +283,9 @@
             #question-text { font-size: 1.3rem; margin-bottom: 20px; min-height: 60px; }
             .options-grid { grid-template-columns: 1fr; gap: 10px; }
             .option-btn { padding: 12px 15px; font-size: 1rem; }
-            #feedback-message { padding: 12px; margin-top: 15px; }
-            #feedback-text { font-size: 0.95rem; }
-            #close-feedback-btn { font-size: 1.2rem; }
+            #feedback-overlay { padding: 15px; }
+            #feedback-card { padding: 20px; max-width: 90%; }
+            #feedback-text-content { font-size: 1rem; }
             #end-screen h2 { font-size: 2rem; }
             .winner-card { padding: 20px; margin: 15px 0; width: 100%; }
             .winner-card h3 { font-size: 1.6rem; }
@@ -341,11 +376,14 @@
                 <div class="category-display"><i id="category-icon" class="fas fa-question-circle"></i><span id="category-name">Categoría</span></div>
                 <p id="question-text">Cargando pregunta...</p>
                 <div id="options-grid" class="options-grid"></div>
-            </div>
-            
-            <div id="feedback-message">
-                <p id="feedback-text"></p>
-                <button id="close-feedback-btn" class="close-feedback-btn">×</button>
+                
+                <!-- MEJORA: Feedback movido aquí para superponerse -->
+                <div id="feedback-overlay">
+                    <div id="feedback-card">
+                        <button id="close-feedback-btn" class="close-feedback-btn">×</button>
+                        <p id="feedback-text-content"></p>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -431,8 +469,8 @@
         const currentPlayerTurnDisplay = document.getElementById('current-player-turn-display');
         const questionTextP = document.getElementById('question-text');
         const optionsGridDiv = document.getElementById('options-grid');
-        const feedbackMessageDiv = document.getElementById('feedback-message');
-        const feedbackTextP = document.getElementById('feedback-text');
+        const feedbackOverlay = document.getElementById('feedback-overlay');
+        const feedbackTextContent = document.getElementById('feedback-text-content');
         const closeFeedbackBtn = document.getElementById('close-feedback-btn');
         const winnerCardContainer = document.getElementById('winner-announcement-card');
         const playAgainBtn = document.getElementById('play-again-btn');
@@ -579,7 +617,7 @@
         function displayQuestion() {
             if (questionTimer) clearInterval(questionTimer);
             if (feedbackTimer) clearTimeout(feedbackTimer);
-            feedbackMessageDiv.classList.remove('show');
+            feedbackOverlay.classList.remove('show');
             
             const currentPlayer = players[currentPlayerIndex];
             fiftyFiftyBtn.disabled = !currentPlayer.hasFiftyFiftyJoker;
@@ -606,7 +644,6 @@
                 }
 
                 currentPlayerTurnDisplay.classList.remove('animate-in');
-                // MEJORA: Mostrar solo el nombre del jugador
                 currentPlayerTurnDisplay.innerHTML = `<div class="player-score-avatar" style="background-color: ${currentPlayer.color};"><i class="${currentPlayer.avatar}"></i></div> <span class="player-name-text">${currentPlayer.name}</span>`;
                 currentPlayerTurnDisplay.style.backgroundColor = currentPlayer.color;
                 void currentPlayerTurnDisplay.offsetWidth;
@@ -658,9 +695,9 @@
                 setTimeout(() => scoreUpdate.remove(), 1000);
             }
 
-            feedbackTextP.textContent = q.explicacion;
-            feedbackMessageDiv.classList.add('show');
-            feedbackTimer = setTimeout(nextTurn, 5000);
+            feedbackTextContent.textContent = q.explicacion;
+            feedbackOverlay.classList.add('show');
+            feedbackTimer = setTimeout(nextTurn, 3000); // Reducido a 3 segundos
         }
 
         function timeUp() {
@@ -671,14 +708,14 @@
                 b.disabled = true;
                 if (b.dataset.option === correct) b.classList.add('correct');
             });
-            feedbackTextP.textContent = "¡Se acabó el tiempo! " + q.explicacion;
-            feedbackMessageDiv.classList.add('show');
-            feedbackTimer = setTimeout(nextTurn, 5000);
+            feedbackTextContent.textContent = "¡Se acabó el tiempo! " + q.explicacion;
+            feedbackOverlay.classList.add('show');
+            feedbackTimer = setTimeout(nextTurn, 3000);
         }
 
         function nextTurn() {
             if (feedbackTimer) clearTimeout(feedbackTimer);
-            feedbackMessageDiv.classList.remove('show');
+            feedbackOverlay.classList.remove('show');
             currentQuestionIndex++;
             if (currentQuestionIndex >= shuffledQuestions.length) { endGame(); return; }
             currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
