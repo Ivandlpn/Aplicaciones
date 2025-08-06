@@ -100,32 +100,16 @@
         .player-input-group label { font-weight: 500; margin-right: 5px; min-width: 80px; text-align: right; }
         .player-input-group input[type="text"] { flex-grow: 1; padding: 12px 15px; border: 2px solid var(--gris-claro); border-radius: 8px; font-size: 1rem; }
         .player-input-group .random-name-btn { background-color: var(--rojo-acento); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-left: 0; }
-        .player-input-group .player-color-input { width: 40px; height: 40px; border: none; padding: 0; border-radius: 8px; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-color: transparent; }
-        .player-input-group .player-color-input::-webkit-color-swatch-wrapper { padding: 0; }
-        .player-input-group .player-color-input::-webkit-color-swatch { border: none; border-radius: 6px; }
-        .player-input-group .player-color-input::-moz-color-swatch { border: none; border-radius: 6px; }
-
-        /* CORRECCIONES PARA EL HEADER RESPONSIVE */
-        .game-header { position: absolute; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: var(--blanco-puro); border-bottom: 2px solid var(--gris-claro); box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10; gap: 15px; /* Añadido gap para seguridad */ }
-        .game-header .header-group { display: flex; align-items: center; gap: 10px; flex-shrink: 0; /* No permite que el grupo de botones se encoja */ }
+        
+        .game-header { position: absolute; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: var(--blanco-puro); border-bottom: 2px solid var(--gris-claro); box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10; gap: 15px; }
+        .game-header .header-group { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .game-header .header-group .btn-icon { background: none; border: none; font-size: 1.8rem; color: var(--azul-principal); cursor: pointer; transition: transform 0.2s ease, color 0.3s ease; }
         .game-header .header-group .btn-icon:hover { transform: scale(1.1); color: var(--rojo-acento); }
 
         #game-screen { padding: 30px; padding-top: 100px; justify-content: flex-start; }
         
-        #current-player-turn-display { 
-            font-size: 1.2rem; font-weight: 600; color: var(--blanco-puro); background-color: var(--azul-principal); 
-            padding: 8px 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.25); 
-            display: flex; align-items: center; gap: 10px; opacity: 0; 
-            transition: all 0.3s ease-in-out; 
-            flex-shrink: 1; /* Permite que este elemento se encoja */
-            min-width: 0; /* CORRECCIÓN CRÍTICA: Permite que el ellipsis funcione correctamente */
-        }
-        #current-player-turn-display .player-name-text {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        #current-player-turn-display { font-size: 1.2rem; font-weight: 600; color: var(--blanco-puro); background-color: var(--azul-principal); padding: 8px 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; opacity: 0; transition: all 0.3s ease-in-out; flex-shrink: 1; min-width: 0; }
+        #current-player-turn-display .player-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         #current-player-turn-display.animate-in { animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes bounce-in { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.1); } 70% { transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
         
@@ -205,23 +189,30 @@
         #timer-container { width: 100%; height: 10px; background-color: var(--gris-claro); border: 2px solid var(--azul-aun-mas-claro); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         #timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--rojo-acento), var(--azul-claro)); border-radius: 8px; transition: width 1s linear, background 1s ease; }
         
+        /* MEJORA: Avatar perfectamente centrado */
         .player-avatar-container { width: 50px; height: 50px; border-radius: 50%; background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid var(--azul-principal); transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); flex-shrink: 0; }
         .player-avatar-container:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .player-avatar { font-size: 1.8rem; color: white; }
+        .player-avatar { font-size: 1.6rem; /* Ajustado para caber mejor */ color: white; text-align: center; line-height: 1; }
 
         #avatar-selection-modal .modal-content { max-width: 600px; }
-        #avatar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 15px; margin-top: 20px; }
+        #avatar-selection-modal h4 { color: var(--gris-oscuro); margin-top: 20px; margin-bottom: 10px; text-align: left; font-weight: 500;}
+        #avatar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 15px; }
         .avatar-option { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; background-color: var(--gris-claro); display: flex; justify-content: center; align-items: center; cursor: pointer; border: 3px solid transparent; transition: all 0.2s ease; }
         .avatar-option:hover { background-color: var(--azul-aun-mas-claro); border-color: var(--azul-principal); transform: scale(1.05); }
         .avatar-option.selected { border-color: var(--rojo-acento); box-shadow: 0 0 15px rgba(203, 24, 35, 0.5); transform: scale(1.1); }
         .avatar-option i { font-size: 2.5rem; color: var(--azul-principal); }
 
-        .player-score-avatar, .winner-avatar, .podium-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0; }
+        #color-palette { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .color-option { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid var(--gris-claro); transition: all 0.2s ease; }
+        .color-option:hover { transform: scale(1.1); }
+        .color-option.selected { border-color: var(--rojo-acento); box-shadow: 0 0 10px var(--rojo-acento); }
+
+        .player-score-avatar, .winner-avatar, .podium-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--azul-claro); display: flex; justify-content: center; align-items: center; margin-right: 10px; flex-shrink: 0; text-align: center; }
         .winner-avatar { margin: 0 auto 10px auto; width: 60px; height: 60px; }
-        .winner-avatar i { font-size: 2.5rem; }
+        .winner-avatar i { font-size: 2.2rem; }
         .podium-avatar { width: 50px; height: 50px; margin-bottom: 5px; }
-        .podium-avatar i { font-size: 2rem; color: white; }
-        .player-score-avatar i { font-size: 1.5rem; color: white; }
+        .podium-avatar i { font-size: 1.8rem; color: white; }
+        .player-score-avatar i { font-size: 1.4rem; color: white; }
 
         .score-update-plus { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; font-weight: 800; color: var(--verde-correcto); opacity: 0; animation: score-update-pop 1s ease-out forwards; pointer-events: none; z-index: 100; }
         @keyframes score-update-pop { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 50% { transform: translate(-50%, -100%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%, -150%) scale(1); opacity: 0; } }
@@ -249,7 +240,8 @@
             .player-input-group label { min-width: 60px; margin-right: 5px; font-size: 0.9rem; flex-shrink: 0; }
             .player-input-group input[type="text"] { padding: 10px 12px; font-size: 0.9rem; flex-grow: 1; min-width: 100px; }
             .player-input-group .random-name-btn { padding: 8px 12px; font-size: 0.9rem; }
-            .player-input-group .player-color-input, .player-avatar-container { width: 35px; height: 35px; }
+            .player-avatar-container { width: 40px; height: 40px; }
+            .player-avatar { font-size: 1.4rem; }
             #game-screen { padding-top: 80px; }
             #question-area { padding: 20px; margin-bottom: 15px; }
             .category-display { font-size: 1rem; margin-bottom: 10px; }
@@ -279,6 +271,8 @@
             .score-card-score { font-size: 1.3rem; }
             #avatar-grid { grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); gap: 10px; }
             .avatar-option i { font-size: 2rem; }
+            #color-palette { gap: 8px; }
+            .color-option { width: 30px; height: 30px; }
         }
 
         @media (max-width: 480px) {
@@ -301,16 +295,13 @@
             .podium-place .podium-name { font-size: 0.8rem; }
             .podium-place .podium-score { font-size: 0.7rem; }
             .modal-content h3 { font-size: 1.5rem; }
-            
-            /* CORRECCIÓN ADAPTATIVA: Ocultar texto del comodín en pantallas muy estrechas */
             .joker-btn .joker-text { display: none; }
-            .joker-btn { padding: 8px; width: 40px; height: 40px; justify-content: center; } /* Convertir en botón de icono */
+            .joker-btn { padding: 8px; width: 40px; height: 40px; justify-content: center; }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <!-- Pantalla de inicio mejorada con un icono animado -->
         <div id="splash-screen" class="screen active">
             <i class="fas fa-train splash-logo"></i>
             <h1>Trivial Ferroviario de Alta Velocidad</h1>
@@ -340,13 +331,9 @@
             <div class="game-header">
                 <div id="current-player-turn-display"></div>
                 <div class="header-group">
-                    <button id="fifty-fifty-btn" class="joker-btn" title="Elimina 2 respuestas incorrectas">
-                        <i class="fas fa-divide"></i>
-                        <span class="joker-text">50/50</span> <!-- CORRECCIÓN: Texto en un span para ocultarlo en móvil -->
-                    </button>
+                    <button id="fifty-fifty-btn" class="joker-btn" title="Elimina 2 respuestas incorrectas"><i class="fas fa-divide"></i><span class="joker-text">50/50</span></button>
                     <button id="show-score-btn" class="fas fa-medal btn-icon"></button>
-                    <!-- CORRECCIÓN: close-btn ahora forma parte del header-group para mejor alineación -->
-                    <button id="exit-game-btn" class="fas fa-times btn-icon" data-target-screen="confirm-exit"></button>
+                    <button id="exit-game-btn" class="fas fa-times btn-icon"></button>
                 </div>
             </div>
             
@@ -393,8 +380,11 @@
         <div id="avatar-selection-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-btn" data-target-screen="hide-avatar-modal">×</button>
-                <h3>Elige tu Avatar</h3>
+                <h3>Personaliza tu Jugador</h3>
+                <h4>Elige tu Avatar</h4>
                 <div id="avatar-grid"></div>
+                <h4>Elige tu Color</h4>
+                <div id="color-palette"></div>
             </div>
         </div>
     </div>
@@ -457,7 +447,8 @@
         const timerBar = document.getElementById('timer-bar');
         const avatarSelectionModal = document.getElementById('avatar-selection-modal');
         const avatarGrid = document.getElementById('avatar-grid');
-        const exitGameBtn = document.getElementById('exit-game-btn'); // Nueva referencia para el botón de salir del header
+        const colorPalette = document.getElementById('color-palette');
+        const exitGameBtn = document.getElementById('exit-game-btn');
         let categoryIcon, categoryNameSpan;
 
         // --- FUNCIONES DE UTILIDAD ---
@@ -494,7 +485,6 @@
                         <i class="player-avatar ${player.avatar}"></i>
                     </div>
                     <input type="text" id="player-name-${i}" value="${player.name}">
-                    <input type="color" id="player-color-${i}" value="${player.color}" class="player-color-input">
                     <button type="button" class="random-name-btn" data-player-index="${i}"><i class="fas fa-dice"></i></button>
                 `;
                 playerInputsDiv.appendChild(group);
@@ -513,34 +503,62 @@
             playerInputsDiv.querySelectorAll('.player-avatar-container').forEach(avatarContainer => {
                 avatarContainer.onclick = (event) => openAvatarSelectionModal(parseInt(event.currentTarget.dataset.playerIndex));
             });
-            playerInputsDiv.querySelectorAll('.player-color-input').forEach((input, i) => {
-                input.oninput = (event) => {
-                    players[i].color = event.target.value;
-                    document.querySelector(`.player-avatar-container[data-player-index="${i}"]`).style.backgroundColor = event.target.value;
-                };
-            });
             playerInputsDiv.querySelectorAll('input[type="text"]').forEach((input, i) => {
                 input.onchange = (event) => { players[i].name = event.target.value.trim(); };
             });
         }
 
-        // --- MODAL DE AVATARES ---
+        // --- MODAL DE AVATARES Y COLOR ---
         function openAvatarSelectionModal(playerIndex) {
             currentPlayerAvatarSelectionIndex = playerIndex;
+            const player = players[playerIndex];
+            
             avatarGrid.innerHTML = '';
             avatarIcons.forEach(iconClass => {
                 const option = document.createElement('div');
                 option.className = 'avatar-option';
                 option.innerHTML = `<i class="${iconClass}"></i>`;
-                if (players[playerIndex].avatar === iconClass) option.classList.add('selected');
+                if (player.avatar === iconClass) option.classList.add('selected');
                 option.onclick = () => {
-                    players[playerIndex].avatar = iconClass;
-                    document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"] .player-avatar`).className = `player-avatar ${iconClass}`;
-                    hideAvatarSelectionModal();
+                    player.avatar = iconClass;
+                    updateAvatarSelectionModal();
+                    updatePlayerDisplay(playerIndex);
                 };
                 avatarGrid.appendChild(option);
             });
+
+            colorPalette.innerHTML = '';
+            defaultPlayerColors.forEach(color => {
+                const option = document.createElement('div');
+                option.className = 'color-option';
+                option.style.backgroundColor = color;
+                if (player.color === color) option.classList.add('selected');
+                option.onclick = () => {
+                    player.color = color;
+                    updateAvatarSelectionModal();
+                    updatePlayerDisplay(playerIndex);
+                };
+                colorPalette.appendChild(option);
+            });
+            
             avatarSelectionModal.classList.add('active');
+        }
+
+        function updateAvatarSelectionModal() {
+            const player = players[currentPlayerAvatarSelectionIndex];
+            avatarGrid.querySelectorAll('.avatar-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.querySelector('i').className === player.avatar);
+            });
+            colorPalette.querySelectorAll('.color-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.style.backgroundColor === player.color);
+            });
+        }
+
+        function updatePlayerDisplay(playerIndex) {
+            const player = players[playerIndex];
+            const avatarContainer = document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"]`);
+            avatarContainer.style.backgroundColor = player.color;
+            avatarContainer.querySelector('.player-avatar').className = `player-avatar ${player.avatar}`;
         }
 
         function hideAvatarSelectionModal() { avatarSelectionModal.classList.remove('active'); }
@@ -784,11 +802,9 @@
         // --- INICIALIZACIÓN DE EVENTOS ---
         function initializeEventListeners() {
             const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
-
             startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); updatePlayerInputs(); });
             decreasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) > 1) { playerCountSpan.textContent--; updatePlayerInputs(); } });
             increasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) < 10) { playerCountSpan.textContent++; updatePlayerInputs(); } });
-            
             startMatchBtn.addEventListener('click', () => { showScreen(roundConfigScreen); });
             decreaseRoundsBtn.addEventListener('click', () => { let count = parseInt(roundCountSpan.textContent); if (count > 1) roundCountSpan.textContent = --count; });
             increaseRoundsBtn.addEventListener('click', () => { 
@@ -796,16 +812,11 @@
                 const max = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 50;
                 if (count < max) roundCountSpan.textContent = ++count; 
             });
-            
-            startGameFromRoundsBtn.addEventListener('click', () => { 
-                questionsPerPlayer = parseInt(roundCountSpan.textContent); 
-                startGame(); 
-            });
-            
+            startGameFromRoundsBtn.addEventListener('click', () => { questionsPerPlayer = parseInt(roundCountSpan.textContent); startGame(); });
             showScoreBtn.addEventListener('click', showScoreModal);
             playAgainBtn.addEventListener('click', () => { showScreen(splashScreen); });
             fiftyFiftyBtn.addEventListener('click', useFiftyFiftyJoker);
-            exitGameBtn.addEventListener('click', showConfirmExitModal); // Nuevo listener para el botón de salir del header
+            exitGameBtn.addEventListener('click', showConfirmExitModal);
 
             document.querySelectorAll('.close-btn').forEach(b => {
                 b.onclick = (e) => {
@@ -815,13 +826,7 @@
                     else showScreen(document.getElementById(target)); 
                 };
             });
-            
-            confirmExitYesBtn.addEventListener('click', () => { 
-                if (questionTimer) clearInterval(questionTimer);
-                hideConfirmExitModal(); 
-                showScreen(splashScreen); 
-            });
-            
+            confirmExitYesBtn.addEventListener('click', () => { if (questionTimer) clearInterval(questionTimer); hideConfirmExitModal(); showScreen(splashScreen); });
             confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
             closeFeedbackBtn.addEventListener('click', nextTurn);
         }
