@@ -348,19 +348,58 @@
         let timerWorker = null;
         let currentDate = new Date();
 
+        // --- INICIO DE LA SECCIÓN CORREGIDA PARA WAKE LOCK ---
+
+        // Función robusta para solicitar el Wake Lock
+        const requestWakeLock = async () => {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    wakeLock.addEventListener('release', () => {
+                        // El sistema liberó el bloqueo, lo registramos.
+                        console.log('Screen Wake Lock fue liberado por el sistema.');
+                        wakeLock = null;
+                    });
+                    console.log('Screen Wake Lock activado.');
+                } catch (err) {
+                    console.error(`No se pudo activar el Wake Lock: ${err.name}, ${err.message}`);
+                }
+            } else {
+                console.log('La API de Wake Lock no es compatible con este navegador.');
+            }
+        };
+
+        // Función para liberar el Wake Lock manualmente
+        const releaseWakeLock = async () => {
+            if (wakeLock !== null && !wakeLock.released) {
+                await wakeLock.release();
+                wakeLock = null;
+                console.log('Screen Wake Lock liberado manualmente.');
+            }
+        };
+
+        // Escuchar cambios de visibilidad para reactivar el bloqueo si es necesario
+        document.addEventListener('visibilitychange', async () => {
+            // Si la página vuelve a estar visible, la meditación está activa y el bloqueo no está adquirido
+            if (document.visibilityState === 'visible' && startButton.classList.contains('hidden') && wakeLock === null) {
+                await requestWakeLock();
+            }
+        });
+
+        // --- FIN DE LA SECCIÓN CORREGIDA ---
+
         function getCompletedDays() { const daysJSON = localStorage.getItem('meditationDays'); return daysJSON ? JSON.parse(daysJSON) : []; }
         function saveCompletedDay(date) { const completedDays = getCompletedDays(); const dateString = date.toISOString().split('T')[0]; if (!completedDays.includes(dateString)) { completedDays.push(dateString); localStorage.setItem('meditationDays', JSON.stringify(completedDays)); } }
         function generateCalendar(year, month) { const completedDays = getCompletedDays(); const firstDay = new Date(year, month, 1); const lastDay = new Date(year, month + 1, 0); const daysInMonth = lastDay.getDate(); const startDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; monthYearEl.textContent = firstDay.toLocaleString('es-ES', { month: 'long', year: 'numeric' }); calendarDaysEl.innerHTML = ''; for (let i = 0; i < startDayOfWeek; i++) { const emptyCell = document.createElement('div'); emptyCell.classList.add('calendar-day', 'empty'); calendarDaysEl.appendChild(emptyCell); } for (let day = 1; day <= daysInMonth; day++) { const dayCell = document.createElement('div'); dayCell.classList.add('calendar-day'); dayCell.textContent = day; const currentDateString = new Date(year, month, day).toISOString().split('T')[0]; if (completedDays.includes(currentDateString)) { dayCell.classList.add('completed'); } calendarDaysEl.appendChild(dayCell); } }
         function setupWeekdays() { const weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D']; calendarWeekdaysEl.innerHTML = ''; weekdays.forEach(day => { const dayEl = document.createElement('div'); dayEl.classList.add('calendar-weekday'); dayEl.textContent = day; calendarWeekdaysEl.appendChild(dayEl); }); }
         async function entrarEnPantallaCompleta() { if (elem.requestFullscreen) { await elem.requestFullscreen(); } else if (elem.webkitRequestFullscreen) { await elem.webkitRequestFullscreen(); } else if (elem.msRequestFullscreen) { await elem.msRequestFullscreen(); } }
         async function salirDePantallaCompleta() { if (document.fullscreenElement) { if (document.exitFullscreen) { await document.exitFullscreen(); } else if (document.webkitExitFullscreen) { await document.webkitExitFullscreen(); } else if (document.msExitFullscreen) { await document.msExitFullscreen(); } } }
-        const requestWakeLock = async () => { if ('wakeLock' in navigator) { try { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => {}); } catch (err) { console.error(`${err.name}, ${err.message}`); } } };
-        const releaseWakeLock = async () => { if (wakeLock !== null) { await wakeLock.release(); wakeLock = null; } };
+        
         function updateTimerDisplay(seconds) { const minutes = Math.floor(seconds / 60); const remainingSeconds = seconds % 60; const formattedTime = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`; timerDisplay.textContent = formattedTime; }
         function initializeDisplay() { updateTimerDisplay(meditationTime); }
 
         async function startMeditation() { 
-            await requestWakeLock();
+            await requestWakeLock(); // Llama a la función robusta
             await entrarEnPantallaCompleta();
             
             calendarIcon.classList.add('hidden');
@@ -395,7 +434,7 @@
             }
 
             saveCompletedDay(new Date());
-            await releaseWakeLock();
+            await releaseWakeLock(); // Llama a la función robusta
             await salirDePantallaCompleta();
             intentionWord.classList.remove('visible');
             endSound.currentTime = 0;
@@ -419,7 +458,7 @@
                 timerWorker.terminate();
                 timerWorker = null;
             }
-            await releaseWakeLock();
+            await releaseWakeLock(); // Llama a la función robusta
             await salirDePantallaCompleta();
 
             calendarIcon.classList.remove('hidden');
@@ -430,7 +469,6 @@
             setTimeout(() => {
                 timerDisplay.classList.remove('hidden');
                 startButton.classList.remove('hidden');
-                // ===== CORRECCIÓN DE LA LÍNEA DEL ERROR =====
                 breathingCircle.style.opacity = '1';
                 timerDisplay.style.opacity = '1';
                 timerDisplay.style.transform = 'translateY(0)';
