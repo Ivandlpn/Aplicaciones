@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -226,27 +227,28 @@
             .game-container { width: 100%; height: 100%; max-height: none; border-radius: 0; }
             .screen { 
                 padding: 15px; 
-                padding-top: 0; 
-                justify-content: flex-start; 
+                padding-top: 0; /* CORRECCIÓN DEFINITIVA: Sin padding superior general */
+                justify-content: flex-start; /* CORRECCIÓN DEFINITIVA: Alinear todo arriba */
             }
             #splash-screen, #end-screen {
-                justify-content: center; 
-                padding-top: 15px; /* Devolvemos el padding a estas pantallas */
+                justify-content: center; /* Excepción para pantallas que sí se ven bien centradas */
+                padding-top: 15px; 
             }
             .screen:not(.active) { display: none; }
             .screen.active { position: relative; height: 100%; display: flex; }
             
             #player-config-screen, #round-config-screen { 
-                padding-top: 30px; 
+                padding-top: 20px; /* CORRECCIÓN DEFINITIVA: Padding superior específico y mínimo */
             }
             #game-screen { 
-                padding-top: 90px; /* CORRECCIÓN DEFINITIVA: Espacio preciso para el header */
+                padding-top: 90px;  /* CORRECCIÓN DEFINITIVA: Espacio preciso para el header */
                 padding-left: 15px; 
                 padding-right: 15px;
+                padding-bottom: 15px;
             }
 
             .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
-            .game-header { padding: 10px 15px; }
+            .game-header { padding: 10px 15px; height: 70px; } /* Altura fija para referencia */
             .game-header .header-group .btn-icon { font-size: 1.5rem; }
             #current-player-turn-display { font-size: 1rem; padding: 6px 12px; }
             .joker-btn { padding: 8px 15px; font-size: 0.9rem; }
@@ -297,7 +299,7 @@
 
         @media (max-width: 480px) {
             body { padding: 0; }
-            .screen { padding: 15px; padding-top: 0; }
+            .screen { padding-left: 15px; padding-right: 15px; padding-bottom: 15px; }
             #player-config-screen, #round-config-screen { padding-top: 20px; }
             #game-screen { padding-top: 75px; }
             #splash-screen h1 { font-size: 2rem; }
@@ -415,8 +417,7 @@
     </div>
 
     <script>
-        // --- El JavaScript no requiere cambios para esta corrección visual ---
-        // --- Pegar aquí exactamente el mismo bloque <script> del código anterior ---
+        // --- El JavaScript no ha sido modificado y es el mismo que en la versión anterior ---
         let gameData = {};
         let players = [];
         let currentPlayerIndex = 0;
