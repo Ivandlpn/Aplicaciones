@@ -106,7 +106,7 @@
         .game-header .header-group .btn-icon { background: none; border: none; font-size: 1.8rem; color: var(--azul-principal); cursor: pointer; transition: transform 0.2s ease, color 0.3s ease; }
         .game-header .header-group .btn-icon:hover { transform: scale(1.1); color: var(--rojo-acento); }
 
-        #game-screen { padding: 30px; padding-top: 100px; justify-content: flex-start; }
+        #game-screen { padding: 20px; padding-top: 100px; justify-content: flex-start; }
         
         #current-player-turn-display { font-size: 1.2rem; font-weight: 600; color: var(--blanco-puro); background-color: var(--azul-principal); padding: 8px 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; opacity: 0; transition: all 0.3s ease-in-out; flex-shrink: 1; min-width: 0; }
         #current-player-turn-display .player-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -226,30 +226,30 @@
             .game-container { width: 100%; height: 100%; max-height: none; border-radius: 0; }
             .screen { 
                 padding: 20px; 
-                padding-top: 20px; /* CORRECCIÓN: Padding superior reducido */
+                padding-top: 0; /* CORRECCIÓN: Eliminar padding superior general */
                 justify-content: flex-start; 
             }
             #splash-screen, #end-screen {
-                justify-content: center; /* Excepciones para pantallas que se ven bien centradas */
+                justify-content: center; 
             }
             .screen:not(.active) { display: none; }
             .screen.active { position: relative; height: 100%; display: flex; }
-            
             .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
             .game-header { padding: 10px 15px; }
             .game-header .header-group .btn-icon { font-size: 1.5rem; }
             #current-player-turn-display { font-size: 1rem; padding: 6px 12px; }
             .joker-btn { padding: 8px 15px; font-size: 0.9rem; }
-            
             #splash-screen h1 { font-size: 2.5rem; }
             .btn { padding: 12px 25px; font-size: 1rem; margin: 8px; }
             
-            #player-config-screen, #round-config-screen { padding: 20px; }
-            #player-config-screen h2, #round-config-screen h2 { font-size: 1.8rem; margin-bottom: 20px; margin-top: 20px; /* CORRECCIÓN: Margen superior para el título */ }
+            #player-config-screen, #round-config-screen { 
+                padding: 20px; 
+                padding-top: 30px; /* CORRECCIÓN: Añadir padding superior específico aquí */
+            }
+            #player-config-screen h2, #round-config-screen h2 { font-size: 1.8rem; margin-bottom: 20px; }
             .player-count-selector, .round-count-selector { padding: 8px 15px; margin-bottom: 20px; }
             .player-count-selector button, .round-count-selector button { width: 35px; height: 35px; font-size: 1.2rem; }
             .player-count-selector span, .round-count-selector span { font-size: 1.5rem; margin: 0 15px; }
-            
             #player-inputs { width: 100%; }
             .player-input-group { flex-wrap: wrap; gap: 8px; }
             .player-input-group label { min-width: 60px; margin-right: 5px; font-size: 0.9rem; flex-shrink: 0; }
@@ -258,7 +258,11 @@
             .player-avatar-container { width: 40px; height: 40px; }
             .player-avatar { font-size: 1.4rem; }
             
-            #game-screen { padding-top: 80px; } /* CORRECCIÓN: Espacio justo para el header */
+            #game-screen { 
+                padding-top: 80px;  /* CORRECCIÓN: Espacio justo para el header */
+                padding-left: 15px; 
+                padding-right: 15px;
+            }
             #question-area { padding: 20px; }
             .category-display { font-size: 1rem; margin-bottom: 10px; }
             .category-display i { font-size: 1.8rem; }
@@ -294,8 +298,9 @@
 
         @media (max-width: 480px) {
             body { padding: 0; }
-            .screen { padding: 15px; padding-top: 15px; }
-            #game-screen { padding-top: 75px; } /* Ajuste fino para el header más pequeño */
+            .screen { padding: 15px; padding-top: 0; }
+            #player-config-screen, #round-config-screen { padding-top: 20px; }
+            #game-screen { padding-top: 75px; }
             #splash-screen h1 { font-size: 2rem; }
             .btn { padding: 10px 20px; font-size: 0.9rem; }
             #player-config-screen h2, #round-config-screen h2 { font-size: 1.5rem; }
