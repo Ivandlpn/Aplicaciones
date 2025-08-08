@@ -106,7 +106,7 @@
         .game-header .header-group .btn-icon { background: none; border: none; font-size: 1.8rem; color: var(--azul-principal); cursor: pointer; transition: transform 0.2s ease, color 0.3s ease; }
         .game-header .header-group .btn-icon:hover { transform: scale(1.1); color: var(--rojo-acento); }
 
-        #game-screen { padding: 20px; padding-top: 100px; justify-content: flex-start; }
+        #game-screen { padding: 20px; padding-top: 100px; }
         
         #current-player-turn-display { font-size: 1.2rem; font-weight: 600; color: var(--blanco-puro); background-color: var(--azul-principal); padding: 8px 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px; opacity: 0; transition: all 0.3s ease-in-out; flex-shrink: 1; min-width: 0; }
         #current-player-turn-display .player-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -226,7 +226,7 @@
             .game-container { width: 100%; height: 100%; max-height: none; border-radius: 0; }
             .screen { 
                 padding: 20px; 
-                padding-top: 0; /* CORRECCIÓN: Eliminar padding superior general */
+                padding-top: 0; /* CORRECCIÓN DEFINITIVA: Sin padding superior general */
                 justify-content: flex-start; 
             }
             #splash-screen, #end-screen {
@@ -234,6 +234,14 @@
             }
             .screen:not(.active) { display: none; }
             .screen.active { position: relative; height: 100%; display: flex; }
+            
+            #player-config-screen, #round-config-screen { 
+                padding-top: 30px; /* CORRECCIÓN DEFINITIVA: Padding superior específico */
+            }
+            #game-screen { 
+                padding-top: 80px;  /* CORRECCIÓN DEFINITIVA: Espacio exacto para el header */
+            }
+
             .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
             .game-header { padding: 10px 15px; }
             .game-header .header-group .btn-icon { font-size: 1.5rem; }
@@ -241,11 +249,6 @@
             .joker-btn { padding: 8px 15px; font-size: 0.9rem; }
             #splash-screen h1 { font-size: 2.5rem; }
             .btn { padding: 12px 25px; font-size: 1rem; margin: 8px; }
-            
-            #player-config-screen, #round-config-screen { 
-                padding: 20px; 
-                padding-top: 30px; /* CORRECCIÓN: Añadir padding superior específico aquí */
-            }
             #player-config-screen h2, #round-config-screen h2 { font-size: 1.8rem; margin-bottom: 20px; }
             .player-count-selector, .round-count-selector { padding: 8px 15px; margin-bottom: 20px; }
             .player-count-selector button, .round-count-selector button { width: 35px; height: 35px; font-size: 1.2rem; }
@@ -257,17 +260,10 @@
             .player-input-group .random-name-btn { padding: 8px 12px; font-size: 0.9rem; }
             .player-avatar-container { width: 40px; height: 40px; }
             .player-avatar { font-size: 1.4rem; }
-            
-            #game-screen { 
-                padding-top: 80px;  /* CORRECCIÓN: Espacio justo para el header */
-                padding-left: 15px; 
-                padding-right: 15px;
-            }
             #question-area { padding: 20px; }
             .category-display { font-size: 1rem; margin-bottom: 10px; }
             .category-display i { font-size: 1.8rem; }
             #question-text { font-size: 1.3rem; margin-bottom: 20px; min-height: 60px; }
-            
             .options-grid { grid-template-columns: 1fr; gap: 10px; }
             .option-btn { padding: 12px 15px; font-size: 1rem; }
             #feedback-overlay { padding: 15px; }
@@ -325,6 +321,7 @@
 </head>
 <body>
     <div class="game-container">
+        <!-- ... (El resto del HTML no necesita cambios) ... -->
         <div id="splash-screen" class="screen active">
             <i class="fas fa-train splash-logo"></i>
             <h1>Trivial Ferroviario de Alta Velocidad</h1>
@@ -415,7 +412,8 @@
     </div>
 
     <script>
-        // --- ESTADO Y DATOS DEL JUEGO ---
+        // --- El JavaScript no requiere cambios para esta corrección visual ---
+        // --- Pegar aquí exactamente el mismo bloque <script> del código anterior ---
         let gameData = {};
         let players = [];
         let currentPlayerIndex = 0;
@@ -438,7 +436,6 @@
         
         const fallbackGameData = { "preguntas": { "Elementos Estructurales de la Vía": [{"pregunta": "¿Qué elemento de la vía férrea se encarga de transmitir las cargas de los carriles al balasto?","opciones": ["A) Carril", "B) Brida", "C) Traviesa", "D) Tirafondo"],"respuestaCorrecta": "C","explicacion": "La traviesa es el elemento transversal que recibe la carga del carril y la transmite al balasto, manteniendo la geometría de la vía."}], "Maquinaria y Herramientas": [{"pregunta": "¿Qué máquina se utiliza para compactar el balasto bajo las traviesas y mejorar la estabilidad de la vía?","opciones": ["A) Desguarnecedora", "B) Bateadora", "C) Perfiladora", "D) Soldadora de carril"],"respuestaCorrecta": "B","explicacion": "La bateadora es una máquina fundamental para el mantenimiento de la vía, encargada de compactar el balasto y nivelar la vía."}], "Sistemas y Tecnologías": [{"pregunta": "¿Qué sistema de señalización se utiliza en las líneas de alta velocidad europeas para controlar la velocidad y garantizar la seguridad?","opciones": ["A) ASFA", "B) LZB", "C) ERTMS", "D) ATP"],"respuestaCorrecta": "C","explicacion": "El ERTMS (European Rail Traffic Management System) es el sistema de señalización y control de trenes estándar en Europa para las líneas de alta velocidad."}]}};
 
-        // --- REFERENCIAS AL DOM ---
         const splashScreen = document.getElementById('splash-screen');
         const playerConfigScreen = document.getElementById('player-config-screen');
         const roundConfigScreen = document.getElementById('round-config-screen');
@@ -476,7 +473,6 @@
         const exitGameBtn = document.getElementById('exit-game-btn');
         let categoryIcon, categoryNameSpan;
 
-        // --- FUNCIONES DE UTILIDAD ---
         const showScreen = (screenToShow) => {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             screenToShow.classList.add('active');
@@ -494,7 +490,6 @@
             return "#" + (0x1000000 + (Math.round((t - R) * p / 100) + R) * 0x10000 + (Math.round((t - G) * p / 100) + G) * 0x100 + (Math.round((t - B) * p / 100) + B)).toString(16).slice(1);
         };
 
-        // --- LÓGICA DE CONFIGURACIÓN DE JUGADORES ---
         function updatePlayerInputs() {
             const playerCount = parseInt(playerCountSpan.textContent);
             while (players.length < playerCount) { players.push({ name: `Jugador ${players.length + 1}`, score: 0, hasFiftyFiftyJoker: true, avatar: getRandomItem(avatarIcons, usedRandomAvatars), color: getRandomItem(defaultPlayerColors, usedRandomColors) }); }
@@ -533,7 +528,6 @@
             });
         }
 
-        // --- MODAL DE AVATARES Y COLOR ---
         function openAvatarSelectionModal(playerIndex) {
             currentPlayerAvatarSelectionIndex = playerIndex;
             const player = players[playerIndex];
@@ -588,7 +582,6 @@
 
         function hideAvatarSelectionModal() { avatarSelectionModal.classList.remove('active'); }
 
-        // --- LÓGICA PRINCIPAL DEL JUEGO ---
         function startGame() {
             players.forEach(p => { p.score = 0; p.hasFiftyFiftyJoker = true; });
             currentPlayerIndex = 0; currentQuestionIndex = 0;
@@ -726,7 +719,6 @@
             });
         }
         
-        // --- PANTALLA FINAL Y PUNTUACIONES ---
         function endGame() {
             if (questionTimer) clearInterval(questionTimer);
             showScreen(endScreen);
@@ -819,12 +811,10 @@
             scoreModal.classList.add('active');
         }
 
-        // --- MANEJO DE MODALES ---
         function hideScoreModal() { scoreModal.classList.remove('active'); }
         function showConfirmExitModal() { confirmExitModal.classList.add('active'); }
         function hideConfirmExitModal() { confirmExitModal.classList.remove('active'); }
 
-        // --- INICIALIZACIÓN DE EVENTOS ---
         function initializeEventListeners() {
             const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
             startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); updatePlayerInputs(); });
