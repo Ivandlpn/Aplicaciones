@@ -225,21 +225,24 @@
         @media (max-width: 768px) {
             .game-container { width: 100%; height: 100%; max-height: none; border-radius: 0; }
             .screen { 
-                padding: 20px; 
-                padding-top: 0; /* CORRECCIÓN DEFINITIVA: Sin padding superior general */
+                padding: 15px; 
+                padding-top: 0; 
                 justify-content: flex-start; 
             }
             #splash-screen, #end-screen {
                 justify-content: center; 
+                padding-top: 15px; /* Devolvemos el padding a estas pantallas */
             }
             .screen:not(.active) { display: none; }
             .screen.active { position: relative; height: 100%; display: flex; }
             
             #player-config-screen, #round-config-screen { 
-                padding-top: 30px; /* CORRECCIÓN DEFINITIVA: Padding superior específico */
+                padding-top: 30px; 
             }
             #game-screen { 
-                padding-top: 80px;  /* CORRECCIÓN DEFINITIVA: Espacio exacto para el header */
+                padding-top: 90px; /* CORRECCIÓN DEFINITIVA: Espacio preciso para el header */
+                padding-left: 15px; 
+                padding-right: 15px;
             }
 
             .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
