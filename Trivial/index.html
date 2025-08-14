@@ -17,28 +17,37 @@
         <div id="splash-screen" class="screen active">
             <i class="fas fa-train splash-logo"></i>
             <h1>Trivial Ferroviario de Alta Velocidad</h1>
-            <button id="start-game-btn" class="btn">Iniciar Juego</button>
+            <div class="splash-buttons">
+                <button id="start-game-btn" class="btn">Iniciar Juego</button>
+                <button id="high-scores-btn" class="btn secondary-btn"><i class="fas fa-star"></i> Récords</button>
+            </div>
         </div>
         
         <!-- Pantalla de Configuración de Jugadores -->
         <div id="player-config-screen" class="screen">
             <button class="close-btn" data-target-screen="splash-screen">×</button>
-            <h2>Número Jugadores</h2>
-            <div class="player-count-selector">
-                <button id="decrease-players-btn">-</button><span id="player-count">1</span><button id="increase-players-btn">+</button>
+            <h2>Elige a los Jugadores</h2>
+            <div id="player-cards-grid"></div>
+            <div class="centered-button-container">
+                <button id="start-match-btn" class="btn">Siguiente</button>
             </div>
-            <div id="player-inputs"></div>
-            <button id="start-match-btn" class="btn">Empezar Partida</button>
+            <div class="legend-info">
+                Al pulsar los <i class="fas fa-dice"></i> se elige nombre y avatar al azar
+            </div>
         </div>
         
         <!-- Pantalla de Configuración de Rondas -->
         <div id="round-config-screen" class="screen">
             <button class="close-btn" data-target-screen="player-config-screen">×</button>
-            <h2>¿Cuántas preguntas por jugador?</h2>
-            <div class="round-count-selector">
-                <button id="decrease-rounds-btn">-</button><span id="round-count">5</span><button id="increase-rounds-btn">+</button>
+            <div class="config-card">
+                <h2>¿Cuántas preguntas por jugador?</h2>
+                <div class="round-count-selector">
+                    <button id="decrease-rounds-btn">-</button>
+                    <span id="round-count">5</span>
+                    <button id="increase-rounds-btn">+</button>
+                </div>
+                <button id="start-game-from-rounds-btn" class="btn">¡A Jugar!</button>
             </div>
-            <button id="start-game-from-rounds-btn" class="btn">¡A Jugar!</button>
         </div>
         
         <!-- Pantalla de Juego -->
@@ -46,23 +55,57 @@
             <div class="game-header">
                 <div id="current-player-turn-display"></div>
                 <div class="header-group">
-                    <button id="fifty-fifty-btn" class="joker-btn" title="Elimina 2 respuestas incorrectas"><i class="fas fa-divide"></i><span class="joker-text">50/50</span></button>
-                    <button id="show-score-btn" class="fas fa-medal btn-icon"></button>
+                    <div class="jokers-container">
+                        <span class="jokers-label">Comodines:</span>
+                        <button id="pass-question-btn" class="joker-btn" title="Saltar la pregunta actual"><i class="fas fa-forward-step"></i><span class="joker-text">Pasar</span></button>
+                        <button id="add-time-btn" class="joker-btn" title="Añade 5 segundos al temporizador"><i class="fas fa-hourglass-half"></i><span class="joker-text">+5s</span></button>
+                        <button id="fifty-fifty-btn" class="joker-btn" title="Elimina 2 respuestas incorrectas"><i class="fas fa-divide"></i><span class="joker-text">50/50</span></button>
+                    </div>
+                    <div class="classification-container">
+                        <button id="show-score-btn" class="btn-icon-with-text"><i class="fas fa-medal"></i><span class="btn-text">Clasificación</span></button>
+                    </div>
                     <button id="exit-game-btn" class="fas fa-times btn-icon"></button>
                 </div>
             </div>
             
             <div id="question-area">
-                <div id="timer-container"><div id="timer-bar"></div></div>
+                <div id="timer-wrapper">
+                    <div id="timer-clock">
+                        <span id="timer-text">10</span>
+                    </div>
+                    <div id="timer-container">
+                        <div id="timer-bar"></div>
+                    </div>
+                </div>
                 <div class="category-display"><i id="category-icon" class="fas fa-question-circle"></i><span id="category-name">Categoría</span></div>
+                
+                <div id="question-image-container" class="hidden">
+                    <img id="question-image" src="" alt="Imagen de la pregunta">
+                </div>
+
                 <p id="question-text">Cargando pregunta...</p>
                 <div id="options-grid" class="options-grid"></div>
                 
                 <div id="feedback-overlay">
                     <div id="feedback-card">
                         <button id="close-feedback-btn" class="close-btn">×</button>
+                        <h4 id="feedback-title"></h4>
                         <p id="feedback-text-content"></p>
                     </div>
+                </div>
+            </div>
+
+            <div class="game-progress-container">
+                <span id="progress-text">Pregunta 1 de 10</span>
+                <div class="progress-track-wrapper">
+                    <!-- *** INICIO DE LA MODIFICACIÓN: Icono de estación de salida cambiado para mayor visibilidad *** -->
+                    <i class="fas fa-house progress-icon"></i>
+                    <!-- *** FIN DE LA MODIFICACIÓN *** -->
+                    <div class="game-progress-bar-bg">
+                        <div id="progress-stations-container"></div>
+                        <i id="progress-train-icon" class="fas fa-train"></i>
+                    </div>
+                    <i class="fas fa-flag-checkered progress-icon"></i>
                 </div>
             </div>
         </div>
@@ -71,7 +114,7 @@
         <div id="end-screen" class="screen">
             <button class="close-btn" data-target-screen="splash-screen">×</button>
             <div id="confetti-container"></div>
-            <h2>¡Partida Terminada!</h2>
+            <h2>¡HABÉIS LLEGADO A DESTINO!</h2>
             <div id="winner-announcement-card"></div>
             <div id="podium-container" class="podium-container"></div>
             <div id="other-scores-container" class="other-scores-list"></div>
@@ -86,14 +129,25 @@
                 <ul id="modal-score-list"></ul>
             </div>
         </div>
+
+        <!-- Modal de Récords -->
+        <div id="high-scores-modal" class="modal-overlay">
+            <div class="modal-content">
+                <button class="close-btn" data-target-screen="hide-high-scores-modal">×</button>
+                <h3><i class="fas fa-star"></i> Récords Históricos</h3>
+                <ol id="high-scores-list"></ol>
+            </div>
+        </div>
         
         <!-- Modal de Confirmación de Salida -->
         <div id="confirm-exit-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3>¿Estás seguro que quieres salir?</h3>
                 <p>Se perderá el progreso actual de la partida.</p>
-                <button id="confirm-exit-yes" class="btn">Sí, salir</button>
-                <button id="confirm-exit-no" class="btn">No, continuar</button>
+                <div class="confirm-exit-buttons">
+                    <button id="confirm-exit-yes" class="btn">Sí, salir</button>
+                    <button id="confirm-exit-no" class="btn">No, continuar</button>
+                </div>
             </div>
         </div>
         
@@ -106,11 +160,22 @@
                 <div id="avatar-grid"></div>
                 <h4>Elige tu Color</h4>
                 <div id="color-palette"></div>
+                <button id="save-avatar-btn" class="btn">Guardar</button>
+            </div>
+        </div>
+
+        <!-- Modal de Transición de Turno -->
+        <div id="turn-transition-modal" class="modal-overlay">
+            <div class="modal-content turn-transition-card">
+                <h3>Turno de</h3>
+                <div id="turn-player-display">
+                    <div id="turn-player-avatar"></div>
+                    <span id="turn-player-name"></span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Enlace a tu script externo. 'defer' asegura que el script se ejecute después de que el HTML sea analizado. -->
     <script src="script.js" defer></script>
 </body>
 </html>

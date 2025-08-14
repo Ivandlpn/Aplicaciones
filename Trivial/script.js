@@ -8,17 +8,36 @@ let questionsPerPlayer = 5;
 let shuffledQuestions = [];
 let feedbackTimer = null;
 let questionTimer = null;
-const TIMER_DURATION = 20;
+// --- INICIO DE LA MODIFICACIÓN: Duración del temporizador reducida ---
+const TIMER_DURATION = 10;
+// --- FIN DE LA MODIFICACIÓN ---
 let timeRemaining = TIMER_DURATION;
 let usedRandomNames = new Set();
 let usedRandomAvatars = new Set();
 let usedRandomColors = new Set();
 let currentPlayerAvatarSelectionIndex = -1;
+let maxQuestionsAvailable = 0;
 
 // --- DATOS CONSTANTES ---
-const randomRailwayNames = ["Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss", "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan", "Amolador As", "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil", "Biela Veloz", "Trenelito", "Vía Láctea", "Pantógrafo Power", "Señor Señal", "Cat-enaria", "Ingeniero Rieles", "Desvío Divertido", "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante", "Soldador Sergio", "Frenada Fantástica", "Inspector Javier", "Silbato Sonriente", "Vagón Valiente", "El Fantasma de la Estación", "El Conductor Loco", "La Locomotora Lenta", "El Vía-jero", "El Tren Expreso", "Maquinista Malabarista", "Controlador Caótico", "Portero Pato", "Despachador Demente", "El Ferrocarril Fugaz", "Estación Estelar", "Señor Vía", "Tren de la Suerte"];
-const avatarIcons = ['fas fa-train', 'fas fa-locomotive', 'fas fa-subway', 'fas fa-tram', 'fas fa-bus', 'fas fa-car-side', 'fas fa-plane', 'fas fa-ship', 'fas fa-bicycle', 'fas fa-truck-ramp-box', 'fas fa-rocket', 'fas fa-motorcycle', 'fas fa-shuttle-space', 'fas fa-helicopter', 'fas fa-bus-simple', 'fas fa-caravan'];
-const defaultPlayerColors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2', '#00CED1', '#FF8C00', '#DA70D6', '#ADFF2F', '#DC143C', '#FF4500', '#9932CC', '#20B2AA', '#FF1493', '#00BFFF', '#7FFF00', '#BA55D3', '#F4A460', '#FF69B4', '#00FFFF'];
+const MAX_PLAYERS = 8;
+const randomRailwayNames = ["Traviesín", "Tunelillo", "Rielín", "Vibración Veloz", "Balasto Boss", "Catenaria Kid", "Señalino", "Durmiente Dinámico", "Fibra Óptica Fan", "Amolador As", "Bateadora Berta", "Inspector Hilario", "Durmiente Ágil", "Biela Veloz", "Trenelito", "Vía Láctea", "Pantógrafo Power", "Señor Señal", "Cat-enaria", "Ingeniero Rieles", "Desvío Divertido", "Terraplén Teo", "Túnelín el Astuto", "Puente Patán", "Balasto Brillante", "Soldador Sergio", "Frenada Fantástica", "Inspector Javier", "Silbato Sonriente", "Vagón Valiente", "El Fantasma de la Estación", "El Conductor Loco", "La Locomotora Lenta", "El Vía-jero", "El Tren Expreso", "Maquinista Malabarista", "Controlador Caótico", "Portero Pato", "Despachador Demente", "El Ferrocarril Fugaz", "Estación Estelar", "Señor Vía", "Tren de la Suerte", "Conde de la Convergencia", "Profesor Peralte", "El Mago del Gálibo", "Barón Von Balasto", "Sir Tirafondo", "Voltio Veloz", "El Cometa de la Catenaria", "Pantógrafo Supersónico", "Centella de Cercanías", "El Relámpago de la Recta", "El Maquinista Místico", "La Guardagujas Galáctica", "El Fantasma del Furgón de Cola", "Capitán Cambiador de Ancho", "El Susurrador de Traviesas", "La Croqueta de la Cuneta", "Yeti del Intercity", "Pepinillo en Bi-bloque", "El Ninja de la Nivelación", "Zombie de Zona Neutra"];
+const avatarIcons = ['fas fa-train', 'fas fa-tram', 'fas fa-bus', 'fas fa-car-side', 'fas fa-plane', 'fas fa-ship', 'fas fa-bicycle', 'fas fa-truck-ramp-box', 'fas fa-rocket', 'fas fa-motorcycle', 'fas fa-shuttle-space', 'fas fa-helicopter', 'fas fa-bus-simple', 'fas fa-caravan'];
+const defaultPlayerColors = [
+    '#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2', '#00CED1', 
+    '#FF8C00', '#DA70D6', '#ADFF2F', '#DC143C', '#FF4500', '#9932CC', 
+    '#20B2AA', '#FF1493', '#00BFFF', '#7FFF00', '#BA55D3', '#F4A460', 
+    '#FF69B4', '#00FFFF', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'
+  ];
+// --- INICIO DE LA MODIFICACIÓN: Icono añadido para la categoría faltante ---
+const CATEGORY_ICONS = {
+    "Elementos Estructurales de la Vía": "fas fa-trowel-bricks", "Sistemas y Tecnologías": "fas fa-microchip",
+    "Historia Ferroviaria": "fas fa-landmark", "Infraestructura y Vía de Alta Velocidad": "fas fa-bridge-water",
+    "Seguridad y Normativa": "fas fa-shield-halved", "Maquinaria Pesada de Vía": "fas fa-tractor",
+    "Energía y Catenaria": "fas fa-bolt", "Comunicaciones": "fas fa-tower-broadcast",
+    "Material Rodante": "fas fa-train-subway", "Operación y Circulación": "fas fa-route", 
+    "Instalaciones de Seguridad": "fas fa-traffic-light", "default": "fas fa-question-circle"
+};
+// --- FIN DE LA MODIFICACIÓN ---
 
 // --- REFERENCIAS A ELEMENTOS DEL DOM ---
 const splashScreen = document.getElementById('splash-screen');
@@ -27,10 +46,7 @@ const roundConfigScreen = document.getElementById('round-config-screen');
 const gameScreen = document.getElementById('game-screen');
 const endScreen = document.getElementById('end-screen');
 const startGameBtn = document.getElementById('start-game-btn');
-const decreasePlayersBtn = document.getElementById('decrease-players-btn');
-const increasePlayersBtn = document.getElementById('increase-players-btn');
-const playerCountSpan = document.getElementById('player-count');
-const playerInputsDiv = document.getElementById('player-inputs');
+const playerCardsGrid = document.getElementById('player-cards-grid');
 const startMatchBtn = document.getElementById('start-match-btn');
 const decreaseRoundsBtn = document.getElementById('decrease-rounds-btn');
 const increaseRoundsBtn = document.getElementById('increase-rounds-btn');
@@ -40,27 +56,53 @@ const currentPlayerTurnDisplay = document.getElementById('current-player-turn-di
 const questionTextP = document.getElementById('question-text');
 const optionsGridDiv = document.getElementById('options-grid');
 const feedbackOverlay = document.getElementById('feedback-overlay');
+const feedbackCard = document.getElementById('feedback-card');
+const feedbackTitle = document.getElementById('feedback-title');
 const feedbackTextContent = document.getElementById('feedback-text-content');
 const closeFeedbackBtn = document.getElementById('close-feedback-btn');
 const winnerCardContainer = document.getElementById('winner-announcement-card');
 const playAgainBtn = document.getElementById('play-again-btn');
 const scoreModal = document.getElementById('score-modal');
 const modalScoreList = document.getElementById('modal-score-list');
+const highScoresBtn = document.getElementById('high-scores-btn');
+const highScoresModal = document.getElementById('high-scores-modal');
+const highScoresList = document.getElementById('high-scores-list');
 const showScoreBtn = document.getElementById('show-score-btn');
 const confirmExitModal = document.getElementById('confirm-exit-modal');
 const confirmExitYesBtn = document.getElementById('confirm-exit-yes');
 const confirmExitNoBtn = document.getElementById('confirm-exit-no');
 const fiftyFiftyBtn = document.getElementById('fifty-fifty-btn');
+const addTimeBtn = document.getElementById('add-time-btn');
+const passQuestionBtn = document.getElementById('pass-question-btn');
 const timerBar = document.getElementById('timer-bar');
+const timerText = document.getElementById('timer-text');
+const timerClock = document.getElementById('timer-clock');
 const avatarSelectionModal = document.getElementById('avatar-selection-modal');
 const avatarGrid = document.getElementById('avatar-grid');
 const colorPalette = document.getElementById('color-palette');
 const exitGameBtn = document.getElementById('exit-game-btn');
+const turnTransitionModal = document.getElementById('turn-transition-modal');
+const turnPlayerName = document.getElementById('turn-player-name');
+const turnPlayerAvatar = document.getElementById('turn-player-avatar');
+const progressText = document.getElementById('progress-text');
+const progressTrainIcon = document.getElementById('progress-train-icon');
+const progressStationsContainer = document.getElementById('progress-stations-container');
 let categoryIcon, categoryNameSpan;
+const questionImageContainer = document.getElementById('question-image-container');
+const questionImage = document.getElementById('question-image');
+const saveAvatarBtn = document.getElementById('save-avatar-btn');
+
 
 // --- FUNCIONES DE UTILIDAD ---
 const showScreen = (screenToShow) => {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    if (!screenToShow) return;
+    const currentScreen = document.querySelector('.screen.active');
+    if (currentScreen) {
+        currentScreen.classList.add('is-exiting');
+        currentScreen.addEventListener('transitionend', () => {
+            currentScreen.classList.remove('active', 'is-exiting');
+        }, { once: true });
+    }
     screenToShow.classList.add('active');
 };
 const shuffleArray = (array) => { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]]; } return array; };
@@ -71,47 +113,85 @@ const getRandomItem = (array, usedSet) => {
     usedSet.add(item);
     return item;
 };
-const lightenColor = (hex, percent) => {
-    var f = parseInt(hex.slice(1), 16), t = percent < 0 ? 0 : 255, p = percent < 0 ? percent * -1 : percent, R = f >> 16, G = (f >> 8) & 0x00FF, B = (f) & 0x0000FF;
-    return "#" + (0x1000000 + (Math.round((t - R) * p / 100) + R) * 0x10000 + (Math.round((t - G) * p / 100) + G) * 0x100 + (Math.round((t - B) * p / 100) + B)).toString(16).slice(1);
-};
 
 // --- LÓGICA DE CONFIGURACIÓN DE JUGADORES ---
-function updatePlayerInputs() {
-    const playerCount = parseInt(playerCountSpan.textContent);
-    while (players.length < playerCount) { players.push({ name: `Jugador ${players.length + 1}`, score: 0, hasFiftyFiftyJoker: true, avatar: getRandomItem(avatarIcons, usedRandomAvatars), color: getRandomItem(defaultPlayerColors, usedRandomColors) }); }
-    while (players.length > playerCount) { players.pop(); }
-
-    playerInputsDiv.innerHTML = '';
-    players.forEach((player, i) => {
-        const group = document.createElement('div');
-        group.className = 'player-input-group';
-        group.innerHTML = `
-            <label for="player-name-${i}">Jugador ${i + 1}:</label>
-            <div class="player-avatar-container" data-player-index="${i}" style="background-color: ${player.color};">
-                <i class="player-avatar ${player.avatar}"></i>
-            </div>
-            <input type="text" id="player-name-${i}" value="${player.name}">
-            <button type="button" class="random-name-btn" data-player-index="${i}"><i class="fas fa-dice"></i></button>
-        `;
-        playerInputsDiv.appendChild(group);
-    });
-    addPlayerInputListeners();
+function initPlayerConfigScreen() {
+    if (players.length === 0) {
+        players.push({ 
+            name: `Jugador 1`, score: 0, hasFiftyFiftyJoker: true, hasAddTimeJoker: true, hasPassJoker: true,
+            avatar: getRandomItem(avatarIcons, usedRandomAvatars), color: getRandomItem(defaultPlayerColors, usedRandomColors) 
+        });
+    }
+    renderPlayerCards();
 }
 
-function addPlayerInputListeners() {
-    playerInputsDiv.querySelectorAll('.random-name-btn').forEach(btn => {
-        btn.onclick = (e) => {
-            const playerIndex = parseInt(e.currentTarget.dataset.playerIndex);
-            players[playerIndex] = { ...players[playerIndex], name: getRandomItem(randomRailwayNames, usedRandomNames), avatar: getRandomItem(avatarIcons, usedRandomAvatars), color: getRandomItem(defaultPlayerColors, usedRandomColors) };
-            updatePlayerInputs();
+function renderPlayerCards() {
+    playerCardsGrid.innerHTML = '';
+    
+    players.forEach((player, index) => {
+        const card = document.createElement('div');
+        card.className = 'player-card-config';
+        card.style.animationDelay = `${index * 50}ms`;
+        card.innerHTML = `
+            <button class="remove-player-btn" data-player-index="${index}">×</button>
+            <div class="player-avatar-config" data-player-index="${index}" style="background-color: ${player.color};">
+                <i class="${player.avatar}"></i>
+            </div>
+            <input type="text" value="${player.name}" data-player-index="${index}">
+            <div class="card-actions">
+                <button class="random-name-btn" data-player-index="${index}"><i class="fas fa-dice"></i></button>
+            </div>
+        `;
+        playerCardsGrid.appendChild(card);
+    });
+
+    if (players.length < MAX_PLAYERS) {
+        const addCard = document.createElement('div');
+        addCard.className = 'add-player-card';
+        addCard.style.animationDelay = `${players.length * 50}ms`;
+        addCard.innerHTML = `<i class="fas fa-plus"></i>`;
+        addCard.onclick = () => {
+            if (players.length < MAX_PLAYERS) {
+                players.push({
+                    name: `Jugador ${players.length + 1}`, score: 0, hasFiftyFiftyJoker: true, hasAddTimeJoker: true, hasPassJoker: true,
+                    avatar: getRandomItem(avatarIcons, usedRandomAvatars), color: getRandomItem(defaultPlayerColors, usedRandomColors)
+                });
+                renderPlayerCards();
+            }
+        };
+        playerCardsGrid.appendChild(addCard);
+    }
+    
+    addCardListeners();
+}
+
+function addCardListeners() {
+    document.querySelectorAll('.player-avatar-config').forEach(avatar => {
+        avatar.onclick = (e) => openAvatarSelectionModal(parseInt(e.currentTarget.dataset.playerIndex));
+    });
+    document.querySelectorAll('.player-card-config input').forEach(input => {
+        input.onchange = (e) => {
+            const index = parseInt(e.currentTarget.dataset.playerIndex);
+            players[index].name = e.target.value.trim();
         };
     });
-    playerInputsDiv.querySelectorAll('.player-avatar-container').forEach(avatarContainer => {
-        avatarContainer.onclick = (event) => openAvatarSelectionModal(parseInt(event.currentTarget.dataset.playerIndex));
+    document.querySelectorAll('.random-name-btn').forEach(btn => {
+        btn.onclick = (e) => {
+            const index = parseInt(e.currentTarget.dataset.playerIndex);
+            players[index].name = getRandomItem(randomRailwayNames, usedRandomNames);
+            players[index].avatar = getRandomItem(avatarIcons, usedRandomAvatars);
+            players[index].color = getRandomItem(defaultPlayerColors, usedRandomColors);
+            renderPlayerCards();
+        };
     });
-    playerInputsDiv.querySelectorAll('input[type="text"]').forEach((input, i) => {
-        input.onchange = (event) => { players[i].name = event.target.value.trim(); };
+    document.querySelectorAll('.remove-player-btn').forEach(btn => {
+        btn.onclick = (e) => {
+            if (players.length > 1) {
+                const index = parseInt(e.currentTarget.dataset.playerIndex);
+                players.splice(index, 1);
+                renderPlayerCards();
+            }
+        };
     });
 }
 
@@ -128,7 +208,7 @@ function openAvatarSelectionModal(playerIndex) {
         option.onclick = () => {
             player.avatar = iconClass;
             updateAvatarSelectionModal();
-            updatePlayerDisplay(playerIndex);
+            renderPlayerCards();
         };
         avatarGrid.appendChild(option);
     });
@@ -142,15 +222,13 @@ function openAvatarSelectionModal(playerIndex) {
         option.onclick = () => {
             player.color = color;
             updateAvatarSelectionModal();
-            updatePlayerDisplay(playerIndex);
+            renderPlayerCards();
         };
         colorPalette.appendChild(option);
     });
     
     avatarSelectionModal.classList.add('active');
 }
-
-
 
 function updateAvatarSelectionModal() {
     const player = players[currentPlayerAvatarSelectionIndex];
@@ -162,26 +240,35 @@ function updateAvatarSelectionModal() {
     });
 }
 
-function updatePlayerDisplay(playerIndex) {
-    const player = players[playerIndex];
-    const avatarContainer = document.querySelector(`.player-avatar-container[data-player-index="${playerIndex}"]`);
-    avatarContainer.style.backgroundColor = player.color;
-    avatarContainer.querySelector('.player-avatar').className = `player-avatar ${player.avatar}`;
-}
-
 function hideAvatarSelectionModal() { avatarSelectionModal.classList.remove('active'); }
 
 // --- LÓGICA PRINCIPAL DEL JUEGO ---
 function startGame() {
-    players.forEach(p => { p.score = 0; p.hasFiftyFiftyJoker = true; });
+    players.forEach(p => { 
+        p.score = 0; 
+        p.hasFiftyFiftyJoker = true;
+        p.hasAddTimeJoker = true;
+        p.hasPassJoker = true;
+    });
     currentPlayerIndex = 0; currentQuestionIndex = 0;
     const allQuestions = [];
     for (const category in gameData.preguntas) {
-        gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category }));
+        if (Array.isArray(gameData.preguntas[category])) {
+            gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category }));
+        }
     }
     questionsPerGame = questionsPerPlayer * players.length;
     shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame);
+    
+    progressStationsContainer.innerHTML = '';
+    for (let i = 0; i < questionsPerGame; i++) {
+        const station = document.createElement('div');
+        station.className = 'progress-station';
+        progressStationsContainer.appendChild(station);
+    }
+
     showScreen(gameScreen);
+    updateGameProgress();
     displayQuestion();
 }
 
@@ -189,14 +276,21 @@ function displayQuestion() {
     if (questionTimer) clearInterval(questionTimer);
     if (feedbackTimer) clearTimeout(feedbackTimer);
     feedbackOverlay.classList.remove('show');
+    feedbackCard.classList.remove('correct-feedback', 'incorrect-feedback');
     
     const currentPlayer = players[currentPlayerIndex];
     fiftyFiftyBtn.disabled = !currentPlayer.hasFiftyFiftyJoker;
+    addTimeBtn.disabled = !currentPlayer.hasAddTimeJoker;
+    passQuestionBtn.disabled = !currentPlayer.hasPassJoker;
 
     timeRemaining = TIMER_DURATION;
     timerBar.style.transition = 'none';
     timerBar.style.width = '100%';
-    timerBar.style.background = `linear-gradient(90deg, var(--rojo-acento), var(--azul-claro))`;
+    timerBar.style.background = `linear-gradient(90deg, var(--rojo-acento), var(--azul-claro), var(--rojo-acento))`;
+    
+    timerClock.style.backgroundColor = 'var(--azul-principal)';
+    timerClock.classList.remove('pulsing');
+    timerText.textContent = TIMER_DURATION;
 
     setTimeout(() => {
         if (currentQuestionIndex >= shuffledQuestions.length) { endGame(); return; }
@@ -205,20 +299,25 @@ function displayQuestion() {
         categoryIcon = document.getElementById('category-icon');
         categoryNameSpan = document.getElementById('category-name');
         categoryNameSpan.textContent = question.category;
+        
         categoryIcon.classList.remove('animate-category');
         void categoryIcon.offsetWidth;
-        switch (question.category) {
-            case "Elementos Estructurales de la Vía": categoryIcon.className = 'fas fa-road animate-category'; break;
-            case "Maquinaria y Herramientas": categoryIcon.className = 'fas fa-cogs animate-category'; break;
-            case "Sistemas y Tecnologías": categoryIcon.className = 'fas fa-lightbulb animate-category'; break;
-            default: categoryIcon.className = 'fas fa-question-circle animate-category';
-        }
+        let iconClass = CATEGORY_ICONS[question.category] || CATEGORY_ICONS.default;
+        categoryIcon.className = `${iconClass} animate-category`;
 
         currentPlayerTurnDisplay.classList.remove('animate-in');
         currentPlayerTurnDisplay.innerHTML = `<div class="player-score-avatar" style="background-color: ${currentPlayer.color};"><i class="${currentPlayer.avatar}"></i></div> <span class="player-name-text">${currentPlayer.name}</span>`;
         currentPlayerTurnDisplay.style.backgroundColor = currentPlayer.color;
         void currentPlayerTurnDisplay.offsetWidth;
         currentPlayerTurnDisplay.classList.add('animate-in');
+
+        if (question.imagen && question.imagen.trim() !== '') {
+            questionImage.src = question.imagen;
+            questionImageContainer.classList.remove('hidden');
+        } else {
+            questionImageContainer.classList.add('hidden');
+            questionImage.src = '';
+        }
 
         questionTextP.textContent = question.pregunta;
 
@@ -228,8 +327,10 @@ function displayQuestion() {
             const button = document.createElement('button');
             button.className = 'option-btn';
             button.dataset.option = optLetter;
-            button.textContent = opt;
+            button.innerHTML = `<span class="option-text">${opt}</span>`;
             button.onclick = () => checkAnswer(optLetter);
+            button.classList.add('fade-in');
+            button.style.animationDelay = `${i * 100}ms`;
             optionsGridDiv.appendChild(button);
         });
 
@@ -237,61 +338,137 @@ function displayQuestion() {
         questionTimer = setInterval(updateTimer, 1000);
     }, 500);
 }
-
 function updateTimer() {
     timeRemaining--;
+    timerText.textContent = timeRemaining;
     const percentage = (timeRemaining / TIMER_DURATION) * 100;
     timerBar.style.width = `${percentage}%`;
-    if (timeRemaining <= 5) { timerBar.style.background = `linear-gradient(90deg, var(--rojo-incorrecto), var(--rojo-acento))`; }
+    if (timeRemaining <= 3) { // Adjusted for 10 second timer
+        timerBar.style.background = `linear-gradient(90deg, var(--rojo-incorrecto), var(--rojo-acento))`; 
+        timerClock.style.backgroundColor = 'var(--rojo-acento)';
+        timerClock.classList.add('pulsing');
+    }
     if (timeRemaining <= 0) { timeUp(); }
 }
-
 function checkAnswer(selectedOption) {
     clearInterval(questionTimer);
+    timerClock.classList.remove('pulsing');
     const q = shuffledQuestions[currentQuestionIndex];
     const correct = q.respuestaCorrecta;
     
     document.querySelectorAll('.option-btn').forEach(b => {
         b.disabled = true;
-        if (b.dataset.option === correct) b.classList.add('correct');
-        else if (b.dataset.option === selectedOption) b.classList.add('incorrect');
+        const isCorrect = b.dataset.option === correct;
+        const isSelected = b.dataset.option === selectedOption;
+
+        if (isCorrect || isSelected) {
+            const icon = document.createElement('i');
+            icon.className = 'answer-icon fas';
+            if (isCorrect) {
+                icon.classList.add('fa-check');
+            } else {
+                icon.classList.add('fa-times');
+            }
+            b.appendChild(icon);
+            void icon.offsetWidth;
+            icon.classList.add('visible');
+        }
+
+        if (isCorrect) b.classList.add('correct');
+        else if (isSelected) b.classList.add('incorrect');
     });
 
     if (selectedOption === correct) {
-        players[currentPlayerIndex].score++;
+        const points = 10 + Math.floor(timeRemaining * 0.5);
+        players[currentPlayerIndex].score += points;
         const scoreUpdate = document.createElement('div');
         scoreUpdate.className = 'score-update-plus';
-        scoreUpdate.textContent = '+1';
+        scoreUpdate.textContent = `+${points}`;
         gameScreen.appendChild(scoreUpdate);
         setTimeout(() => scoreUpdate.remove(), 1000);
+        
+        feedbackCard.classList.add('correct-feedback');
+        feedbackTitle.className = 'correct-feedback';
+        feedbackTitle.textContent = "CORRECTO";
+    } else {
+        feedbackCard.classList.add('incorrect-feedback');
+        feedbackTitle.className = 'incorrect-feedback';
+        feedbackTitle.textContent = "ERROR";
     }
 
     feedbackTextContent.textContent = q.explicacion;
     feedbackOverlay.classList.add('show');
-    feedbackTimer = setTimeout(nextTurn, 3000);
+    feedbackTimer = setTimeout(() => goToNextQuestion(true), 5000);
 }
 
 function timeUp() {
     clearInterval(questionTimer);
+    timerClock.classList.remove('pulsing');
     const q = shuffledQuestions[currentQuestionIndex];
     const correct = q.respuestaCorrecta;
     document.querySelectorAll('.option-btn').forEach(b => {
         b.disabled = true;
-        if (b.dataset.option === correct) b.classList.add('correct');
+        if (b.dataset.option === correct) {
+            b.classList.add('correct');
+            const icon = document.createElement('i');
+            icon.className = 'answer-icon fas fa-check';
+            b.appendChild(icon);
+            void icon.offsetWidth;
+            icon.classList.add('visible');
+        }
     });
-    feedbackTextContent.textContent = "¡Se acabó el tiempo! " + q.explicacion;
+
+    feedbackCard.classList.add('incorrect-feedback');
+    feedbackTitle.className = 'incorrect-feedback';
+    feedbackTitle.textContent = "SE ACABÓ EL TIEMPO";
+    feedbackTextContent.textContent = q.explicacion;
+
     feedbackOverlay.classList.add('show');
-    feedbackTimer = setTimeout(nextTurn, 3000);
+    feedbackTimer = setTimeout(() => goToNextQuestion(true), 5000);
 }
 
-function nextTurn() {
+function goToNextQuestion(advancePlayer) {
     if (feedbackTimer) clearTimeout(feedbackTimer);
     feedbackOverlay.classList.remove('show');
+    
     currentQuestionIndex++;
-    if (currentQuestionIndex >= shuffledQuestions.length) { endGame(); return; }
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    displayQuestion();
+    updateGameProgress();
+    
+    if (currentQuestionIndex >= shuffledQuestions.length) {
+        endGame();
+        return;
+    }
+    
+    if (advancePlayer) {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        showTurnTransition(displayQuestion);
+    } else {
+        displayQuestion();
+    }
 }
+
+function updateGameProgress() {
+    if (!progressTrainIcon || !progressText) return;
+
+    progressText.textContent = `Pregunta ${currentQuestionIndex + 1} de ${questionsPerGame}`;
+
+    const totalSteps = questionsPerGame > 1 ? questionsPerGame - 1 : 1;
+    let progressPercentage = (currentQuestionIndex / totalSteps) * 100;
+    if (currentQuestionIndex === questionsPerGame -1) progressPercentage = 100;
+
+    progressTrainIcon.style.left = `${progressPercentage}%`;
+    
+    const stations = progressStationsContainer.querySelectorAll('.progress-station');
+    stations.forEach((station, index) => {
+        station.classList.remove('current', 'visited');
+        if (index < currentQuestionIndex) {
+            station.classList.add('visited');
+        } else if (index === currentQuestionIndex) {
+            station.classList.add('current');
+        }
+    });
+}
+
 
 function useFiftyFiftyJoker() {
     const currentPlayer = players[currentPlayerIndex];
@@ -308,10 +485,45 @@ function useFiftyFiftyJoker() {
         if (button) { button.style.visibility = 'hidden'; }
     });
 }
+function useAddTimeJoker() {
+    const currentPlayer = players[currentPlayerIndex];
+    if (!currentPlayer.hasAddTimeJoker) return;
+    currentPlayer.hasAddTimeJoker = false;
+    addTimeBtn.disabled = true;
+
+    timeRemaining += 5; // Ajustado a +5 segundos
+    if (timeRemaining > TIMER_DURATION) {
+        timeRemaining = TIMER_DURATION;
+    }
+    timerText.textContent = timeRemaining;
+
+    timerBar.classList.add('time-added-flash');
+    setTimeout(() => {
+        timerBar.classList.remove('time-added-flash');
+    }, 500);
+    
+    const percentage = (timeRemaining / TIMER_DURATION) * 100;
+    timerBar.style.width = `${percentage}%`;
+    if (timeRemaining > 3) { // Ajustado para 10 segundo timer
+        timerBar.style.background = `linear-gradient(90deg, var(--rojo-acento), var(--azul-claro), var(--rojo-acento))`;
+        timerClock.style.backgroundColor = 'var(--azul-principal)';
+        timerClock.classList.remove('pulsing');
+    }
+}
+
+function usePassJoker() {
+    const currentPlayer = players[currentPlayerIndex];
+    if (!currentPlayer.hasPassJoker) return;
+    clearInterval(questionTimer);
+    currentPlayer.hasPassJoker = false;
+    passQuestionBtn.disabled = true;
+    goToNextQuestion(false);
+}
 
 // --- PANTALLA DE FIN DE JUEGO Y PUNTUACIONES ---
 function endGame() {
     if (questionTimer) clearInterval(questionTimer);
+    players.forEach(player => saveHighScore(player.name, player.score));
     showScreen(endScreen);
     players.sort((a, b) => b.score - a.score);
     
@@ -337,8 +549,7 @@ function endGame() {
     const podiumElements = [];
     podiumPlayers.forEach((player, rank) => {
         let rankClass = '';
-        if (rank === 0) rankClass = 'gold'; else if (rank === 1) rankClass = 'silver'; else rankClass = 'bronze';
-
+        if (rank === 0) rankClass = 'gold'; else if (rank === 1) rankClass = 'silver'; else if (rank === 2) rankClass = 'bronze';
         const place = document.createElement('div');
         place.className = `podium-place ${rankClass}`;
         place.innerHTML = `<div class="podium-rank"><i class="fas fa-medal"></i></div><div class="podium-avatar" style="background-color: ${player.color};"><i class="${player.avatar}"></i></div><div class="podium-name">${player.name}</div><div class="podium-score">${player.score} pts</div>`;
@@ -375,7 +586,7 @@ function generateConfetti() {
     }
 }
 
-// --- MODALES ---
+// --- MODALES Y RÉCORDS ---
 function showScoreModal() {
     modalScoreList.innerHTML = '';
     const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
@@ -403,55 +614,92 @@ function showScoreModal() {
     scoreModal.classList.add('active');
 }
 
+function showTurnTransition(callback) {
+    const player = players[currentPlayerIndex];
+    turnPlayerName.textContent = player.name;
+    turnPlayerAvatar.innerHTML = `<i class="${player.avatar}"></i>`;
+    turnPlayerAvatar.style.backgroundColor = player.color;
+
+    turnTransitionModal.classList.add('active');
+
+    setTimeout(() => {
+        turnTransitionModal.classList.remove('active');
+        setTimeout(callback, 300); 
+    }, 1500);
+}
+
 function hideScoreModal() { scoreModal.classList.remove('active'); }
 function showConfirmExitModal() { confirmExitModal.classList.add('active'); }
 function hideConfirmExitModal() { confirmExitModal.classList.remove('active'); }
 
-// --- INICIALIZACIÓN ---
+function saveHighScore(name, score) {
+    if (score === 0) return;
+    const highScores = JSON.parse(localStorage.getItem('ferroviarioHighScores')) || [];
+    highScores.push({ name, score });
+    highScores.sort((a, b) => b.score - a.score);
+    localStorage.setItem('ferroviarioHighScores', JSON.stringify(highScores.slice(0, 10)));
+}
+
+function showHighScoresModal() {
+    const highScores = JSON.parse(localStorage.getItem('ferroviarioHighScores')) || [];
+    highScoresList.innerHTML = '';
+    if (highScores.length === 0) {
+        highScoresList.innerHTML = '<li>Aún no hay récords. ¡Sé el primero!</li>';
+    } else {
+        highScores.forEach((score, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="rank">#${index + 1}</span><span class="name">${score.name}</span><span class="score">${score.score}</span>`;
+            highScoresList.appendChild(li);
+        });
+    }
+    highScoresModal.classList.add('active');
+}
+function hideHighScoresModal() { highScoresModal.classList.remove('active'); }
+
 function initializeEventListeners() {
-    const maxQuestionsAvailable = Object.values(gameData.preguntas).flat().length;
-    startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); updatePlayerInputs(); });
-    decreasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) > 1) { playerCountSpan.textContent--; updatePlayerInputs(); } });
-    increasePlayersBtn.addEventListener('click', () => { if (parseInt(playerCountSpan.textContent) < 10) { playerCountSpan.textContent++; updatePlayerInputs(); } });
+    startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); initPlayerConfigScreen(); });
     startMatchBtn.addEventListener('click', () => { showScreen(roundConfigScreen); });
     decreaseRoundsBtn.addEventListener('click', () => { let count = parseInt(roundCountSpan.textContent); if (count > 1) roundCountSpan.textContent = --count; });
+    
     increaseRoundsBtn.addEventListener('click', () => { 
         let count = parseInt(roundCountSpan.textContent); 
         const max = players.length > 0 ? Math.floor(maxQuestionsAvailable / players.length) : 50;
         if (count < max) roundCountSpan.textContent = ++count; 
     });
+
     startGameFromRoundsBtn.addEventListener('click', () => { questionsPerPlayer = parseInt(roundCountSpan.textContent); startGame(); });
     showScoreBtn.addEventListener('click', showScoreModal);
-    playAgainBtn.addEventListener('click', () => { showScreen(splashScreen); });
+    highScoresBtn.addEventListener('click', showHighScoresModal);
+    playAgainBtn.addEventListener('click', () => { players = []; showScreen(splashScreen); });
     fiftyFiftyBtn.addEventListener('click', useFiftyFiftyJoker);
+    addTimeBtn.addEventListener('click', useAddTimeJoker);
+    passQuestionBtn.addEventListener('click', usePassJoker);
     exitGameBtn.addEventListener('click', showConfirmExitModal);
+    saveAvatarBtn.addEventListener('click', hideAvatarSelectionModal);
 
-  // ESTE ES EL NUEVO CÓDIGO CORREGIDO
-document.querySelectorAll('.close-btn').forEach(b => {
-    b.onclick = (e) => {
-        const buttonId = e.currentTarget.id;
-        const targetScreen = e.currentTarget.dataset.targetScreen;
+    document.querySelectorAll('.close-btn').forEach(b => {
+        b.onclick = (e) => {
+            const buttonId = e.currentTarget.id;
+            const targetScreen = e.currentTarget.dataset.targetScreen;
 
-        // Caso especial para el botón de cierre del feedback
-        if (buttonId === 'close-feedback-btn') {
-            nextTurn(); // Llama a la función para avanzar y termina
-            return;
-        }
-
-        // Lógica original para los demás botones de cierre
-        if (targetScreen === 'hide-modal') {
-            hideScoreModal();
-        } else if (targetScreen === 'hide-avatar-modal') {
-            hideAvatarSelectionModal();
-        } else if (targetScreen) { // Nos aseguramos de que el target exista
-            showScreen(document.getElementById(targetScreen));
-        }
-    };
-});
-
-    confirmExitYesBtn.addEventListener('click', () => { if (questionTimer) clearInterval(questionTimer); hideConfirmExitModal(); showScreen(splashScreen); });
+            if (buttonId === 'close-feedback-btn') {
+                goToNextQuestion(true); return;
+            }
+            if (targetScreen === 'hide-modal') {
+                hideScoreModal();
+            } else if (targetScreen === 'hide-avatar-modal') {
+                hideAvatarSelectionModal();
+            } else if (targetScreen === 'hide-high-scores-modal') {
+                hideHighScoresModal();
+            } else if (targetScreen) {
+                const target = document.getElementById(targetScreen);
+                if (target) showScreen(target);
+            }
+        };
+    });
+    
+    confirmExitYesBtn.addEventListener('click', () => { if (questionTimer) clearInterval(questionTimer); players = []; hideConfirmExitModal(); showScreen(splashScreen); });
     confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
-    closeFeedbackBtn.addEventListener('click', nextTurn);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -464,20 +712,27 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             gameData = data;
-            // Habilitar el botón de inicio una vez que los datos están listos
+            maxQuestionsAvailable = 0;
+            for (const category in gameData.preguntas) {
+                if (Array.isArray(gameData.preguntas[category])) {
+                    maxQuestionsAvailable += gameData.preguntas[category].length;
+                }
+            }
             startGameBtn.disabled = false;
         })
         .catch(error => {
             console.error("No se pudo cargar 'preguntas.json'.", error);
-            // Mostrar un error al usuario en la pantalla
             const title = document.querySelector('#splash-screen h1');
-            title.textContent = 'Error al cargar preguntas';
-            startGameBtn.textContent = 'No se puede iniciar';
-            startGameBtn.disabled = true;
-            startGameBtn.style.backgroundColor = 'var(--gris-oscuro)';
+            if (title) {
+                title.textContent = 'Error al cargar preguntas';
+            }
+            if (startGameBtn) {
+                startGameBtn.textContent = 'No se puede iniciar';
+                startGameBtn.disabled = true;
+                startGameBtn.style.backgroundColor = 'var(--gris-oscuro)';
+            }
         })
         .finally(() => {
-            // Inicializar los listeners independientemente de si la carga fue exitosa o no
             initializeEventListeners();
         });
 });

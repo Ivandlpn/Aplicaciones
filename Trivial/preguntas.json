@@ -5,7 +5,8 @@
                 "pregunta": "¿Qué elemento de la vía férrea se encarga de transmitir las cargas de los carriles al balasto?",
                 "opciones": ["A) Carril", "B) Brida", "C) Traviesa", "D) Tirafondo"],
                 "respuestaCorrecta": "C",
-                "explicacion": "La traviesa (o durmiente) es el elemento transversal que recibe la carga del carril y la distribuye sobre el balasto, manteniendo el ancho de vía."
+                "explicacion": "La traviesa (o durmiente) es el elemento transversal que recibe la carga del carril y la distribuye sobre el balasto, manteniendo el ancho de vía.",
+                "imagen": "https://via.placeholder.com/400x200?text=Traviesa"
             },
             {
                 "pregunta": "¿Cuál es la función principal del balasto en una vía férrea?",
@@ -199,7 +200,8 @@
                 "pregunta": "¿Qué sistema de señalización se utiliza en las líneas de alta velocidad europeas?",
                 "opciones": ["A) ASFA", "B) LZB", "C) ERTMS", "D) ATP"],
                 "respuestaCorrecta": "C",
-                "explicacion": "El ERTMS (European Rail Traffic Management System) es el estándar europeo que permite la interoperabilidad entre redes ferroviarias de diferentes países."
+                "explicacion": "El ERTMS (European Rail Traffic Management System) es el estándar europeo que permite la interoperabilidad entre redes ferroviarias de diferentes países.",
+                "imagen": "https://via.placeholder.com/400x200?text=ERTMS"
             },
             {
                 "pregunta": "La 'catenaria' es el sistema que provee a los trenes de:",
@@ -587,7 +589,8 @@
                 "pregunta": "¿Qué tipo de carril (según su peso por metro) es común en las líneas de alta velocidad?",
                 "opciones": ["A) 45 kg/m", "B) 54 kg/m", "C) 60 kg/m (UIC 60)", "D) 30 kg/m"],
                 "respuestaCorrecta": "C",
-                "explicacion": "El perfil UIC 60 (60 kg/m) es el estándar en alta velocidad por su gran rigidez y resistencia, necesarias para soportar las altas cargas y velocidades."
+                "explicacion": "El perfil UIC 60 (60 kg/m) es el estándar en alta velocidad por su gran rigidez y resistencia, necesarias para soportar las altas cargas y velocidades.",
+                "imagen": "https://via.placeholder.com/400x200?text=Via+Alta+Velocidad"
             },
             {
                 "pregunta": "¿Por qué es crucial la 'liberación de tensiones' antes de soldar el carril en una Barra Larga Soldada?",
@@ -2038,5 +2041,6 @@
                 "explicacion": "Aunque varía ligeramente, el estándar comúnmente aceptado para considerar un tren puntual es que su retraso en destino no supere los 5 minutos sobre la hora programada."
             }
         ]
+       
     }
 }
