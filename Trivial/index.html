@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivial Ferroviario de Alta Velocidad</title>
+    
+    <!-- ================================================================== -->
+    <!-- =================== INICIO: CÓDIGO DE ICONOS =================== -->
+    <!-- ================================================================== -->
+
+    <!-- Favicon estándar para pestañas de navegador (versiones 32x32 y 16x16) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icontrivial.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icontrivial.png">
+
+    <!-- Icono para Apple (cuando se añade a la pantalla de inicio en iPhone/iPad) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icontrivial.png">
+
+    <!-- Icono de acceso directo (para máxima compatibilidad con navegadores antiguos) -->
+    <link rel="shortcut icon" href="icontrivial.png">
+
+    <!-- Enlace al Web App Manifest (mejora la experiencia de 'instalar' la web) -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Meta-etiqueta para el color de la barra de estado en móviles -->
+    <meta name="theme-color" content="#1a4488">
+
+    <!-- ================================================================== -->
+    <!-- ==================== FIN: CÓDIGO DE ICONOS ===================== -->
+    <!-- ================================================================== -->
+
     <!-- Importar fuente Poppins de Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Importar Font Awesome para iconos -->
@@ -15,8 +40,8 @@
     <div class="game-container">
         <!-- Pantalla de Inicio -->
         <div id="splash-screen" class="screen active">
-            <i class="fas fa-train splash-logo"></i>
             <h1>Trivial Ferroviario de Alta Velocidad</h1>
+            <i class="fas fa-train splash-logo"></i>
             <div class="splash-buttons">
                 <button id="start-game-btn" class="btn">Iniciar Juego</button>
                 <button id="high-scores-btn" class="btn secondary-btn"><i class="fas fa-star"></i> Récords</button>
@@ -28,17 +53,31 @@
             <button class="close-btn" data-target-screen="splash-screen">×</button>
             <h2>Elige a los Jugadores</h2>
             <div id="player-cards-grid"></div>
-            <div class="centered-button-container">
-                <button id="start-match-btn" class="btn">Siguiente</button>
+            <div class="nav-buttons-container">
+                <button id="start-match-btn" class="btn">Siguiente <i class="fas fa-arrow-right"></i></button>
             </div>
             <div class="legend-info">
                 Al pulsar los <i class="fas fa-dice"></i> se elige nombre y avatar al azar
             </div>
         </div>
-        
+
+        <!-- Pantalla de Configuración de Categorías -->
+        <div id="category-config-screen" class="screen">
+            <button class="close-btn" data-target-screen="player-config-screen">×</button>
+            <h2>Selecciona los Temas</h2>
+            <div id="category-actions">
+                 <button id="select-all-categories-btn" class="btn secondary-btn"><i class="fas fa-check-double"></i> Seleccionar/Deseleccionar Todos</button>
+            </div>
+            <div id="category-grid"></div>
+            <div class="nav-buttons-container">
+                <button id="back-to-players-btn" class="btn secondary-btn"><i class="fas fa-arrow-left"></i> Anterior</button>
+                <button id="start-game-from-categories-btn" class="btn">Siguiente <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
         <!-- Pantalla de Configuración de Rondas -->
         <div id="round-config-screen" class="screen">
-            <button class="close-btn" data-target-screen="player-config-screen">×</button>
+            <button class="close-btn" data-target-screen="category-config-screen">×</button>
             <div class="config-card">
                 <h2>¿Cuántas preguntas por jugador?</h2>
                 <div class="round-count-selector">
@@ -46,24 +85,38 @@
                     <span id="round-count">5</span>
                     <button id="increase-rounds-btn">+</button>
                 </div>
-                <button id="start-game-from-rounds-btn" class="btn">¡A Jugar!</button>
+                <div class="nav-buttons-container">
+                    <button id="back-to-categories-btn" class="btn secondary-btn"><i class="fas fa-arrow-left"></i> Anterior</button>
+                    <button id="start-game-from-rounds-btn" class="btn">¡A Jugar!</button>
+                </div>
             </div>
         </div>
         
         <!-- Pantalla de Juego -->
         <div id="game-screen" class="screen">
             <div class="game-header">
-                <div id="current-player-turn-display"></div>
-                <div class="header-group">
-                    <div class="jokers-container">
-                        <span class="jokers-label">Comodines:</span>
-                        <button id="pass-question-btn" class="joker-btn" title="Saltar la pregunta actual"><i class="fas fa-forward-step"></i><span class="joker-text">Pasar</span></button>
-                        <button id="add-time-btn" class="joker-btn" title="Añade 5 segundos al temporizador"><i class="fas fa-hourglass-half"></i><span class="joker-text">+5s</span></button>
-                        <button id="fifty-fifty-btn" class="joker-btn" title="Elimina 2 respuestas incorrectas"><i class="fas fa-divide"></i><span class="joker-text">50/50</span></button>
+                <div class="header-group player-info"> <!-- CAMBIO: Clase añadida para alinear -->
+                    <div id="current-player-turn-display"></div>
+                </div>
+                
+                <!-- CAMBIO INICIA: Estructura de comodines y clasificación simplificada -->
+                <div class="header-group central-controls">
+                    <div class="jokers-main-container">
+                        <button id="toggle-jokers-btn" class="btn-icon-with-text">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <span class="btn-text">Comodines</span>
+                        </button>
+                        <div id="jokers-dropdown" class="jokers-dropdown-content">
+                            <button id="pass-question-btn" class="joker-btn" title="Saltar la pregunta actual"><i class="fas fa-forward-step"></i><span class="joker-text">Pasar</span></button>
+                            <button id="add-time-btn" class="joker-btn" title="Añade 5 segundos al temporizador"><i class="fas fa-hourglass-half"></i><span class="joker-text">+5s</span></button>
+                            <button id="fifty-fifty-btn" class="joker-btn" title="Elimina 2 respuestas incorrectas"><i class="fas fa-divide"></i><span class="joker-text">50/50</span></button>
+                        </div>
                     </div>
-                    <div class="classification-container">
-                        <button id="show-score-btn" class="btn-icon-with-text"><i class="fas fa-medal"></i><span class="btn-text">Clasificación</span></button>
-                    </div>
+                    <button id="show-score-btn" class="btn-icon-with-text"><i class="fas fa-medal"></i><span class="btn-text">Clasificación</span></button>
+                </div>
+                <!-- CAMBIO TERMINA -->
+
+                <div class="header-group exit-info"> <!-- CAMBIO: Clase añadida para alinear -->
                     <button id="exit-game-btn" class="fas fa-times btn-icon"></button>
                 </div>
             </div>
@@ -98,9 +151,7 @@
             <div class="game-progress-container">
                 <span id="progress-text">Pregunta 1 de 10</span>
                 <div class="progress-track-wrapper">
-                    <!-- *** INICIO DE LA MODIFICACIÓN: Icono de estación de salida cambiado para mayor visibilidad *** -->
                     <i class="fas fa-house progress-icon"></i>
-                    <!-- *** FIN DE LA MODIFICACIÓN *** -->
                     <div class="game-progress-bar-bg">
                         <div id="progress-stations-container"></div>
                         <i id="progress-train-icon" class="fas fa-train"></i>
@@ -121,7 +172,7 @@
             <button id="play-again-btn" class="btn">Volver a Jugar</button>
         </div>
         
-        <!-- Modal de Puntuación -->
+        <!-- Modales -->
         <div id="score-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-btn" data-target-screen="hide-modal">×</button>
@@ -130,7 +181,6 @@
             </div>
         </div>
 
-        <!-- Modal de Récords -->
         <div id="high-scores-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-btn" data-target-screen="hide-high-scores-modal">×</button>
@@ -139,7 +189,6 @@
             </div>
         </div>
         
-        <!-- Modal de Confirmación de Salida -->
         <div id="confirm-exit-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3>¿Estás seguro que quieres salir?</h3>
@@ -151,7 +200,6 @@
             </div>
         </div>
         
-        <!-- Modal de Selección de Avatar -->
         <div id="avatar-selection-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="close-btn" data-target-screen="hide-avatar-modal">×</button>
@@ -164,7 +212,6 @@
             </div>
         </div>
 
-        <!-- Modal de Transición de Turno -->
         <div id="turn-transition-modal" class="modal-overlay">
             <div class="modal-content turn-transition-card">
                 <h3>Turno de</h3>

@@ -1327,6 +1327,372 @@
         ],
         "Comunicaciones": [
             {
+                "pregunta": "En un sistema de alimentación de -48V DC, ¿qué indica una alarma de 'Tensión Baja' en el rectificador?",
+                "opciones": ["A) Que la tensión es superior a -56V", "B) Que hay un cortocircuito en la red", "C) Que la tensión ha caído por debajo del umbral seguro (ej. -47.5V), posiblemente por un fallo de red", "D) Que el equipo está funcionando con normalidad"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Una alarma de tensión baja se activa cuando la salida del rectificador cae por debajo del nivel preestablecido, lo que pone en riesgo la alimentación de los equipos si las baterías se agotan."
+            },
+            {
+                "pregunta": "Durante el mantenimiento preventivo de un rack de equipos, ¿cuál es la primera medida de seguridad a tomar antes de manipular cualquier componente?",
+                "opciones": ["A) Medir la potencia óptica", "B) Reiniciar todos los equipos", "C) Utilizar una pulsera antiestática (ESD) para proteger los equipos y a uno mismo", "D) Verificar la velocidad de los ventiladores"],
+                "respuestaCorrecta": "C",
+                "explicacion": "El uso de protección contra descargas electrostáticas (ESD) es fundamental para evitar daños irreparables en los componentes electrónicos sensibles."
+            },
+            {
+                "pregunta": "¿Qué equipo se utiliza para medir la atenuación y localizar fallos (cortes, empalmes defectuosos) en un cable de fibra óptica?",
+                "opciones": ["A) Un multímetro", "B) Un OTDR (Reflectómetro Óptico en el Dominio del Tiempo)", "C) Un certificador de red Ethernet", "D) Un medidor de campo GSM-R"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El OTDR es la herramienta esencial para caracterizar un enlace de fibra, ya que envía pulsos de luz y analiza los reflejos para crear un mapa de eventos y pérdidas."
+            },
+            {
+                "pregunta": "En una red de transporte SDH, ¿qué significa el término 'conmutación a protección'?",
+                "opciones": ["A) Apagar el equipo para protegerlo", "B) El cambio automático de la señal a una ruta de respaldo (anillo) cuando la ruta principal falla", "C) Activar el firewall de la red", "D) Cambiar la contraseña de acceso"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Las redes SDH se diseñan con anillos redundantes. La conmutación a protección es el mecanismo que garantiza la continuidad del servicio en menos de 50 ms."
+            },
+            {
+                "pregunta": "El protocolo OSPF (Open Shortest Path First) se utiliza en la red IP/MPLS para:",
+                "opciones": ["A) Sincronizar la hora de los equipos", "B) Encriptar las comunicaciones", "C) Permitir que los routers intercambien información y calculen la ruta más eficiente de forma dinámica", "D) Asignar direcciones IP"],
+                "respuestaCorrecta": "C",
+                "explicacion": "OSPF es un protocolo de enrutamiento dinámico que permite a la red adaptarse automáticamente a cambios o caídas de enlaces, recalculando siempre el mejor camino."
+            },
+            {
+                "pregunta": "Según la documentación, la limpieza de los conectores de fibra óptica (pigtails, latiguillos) es crucial. ¿Qué herramienta se debe usar?",
+                "opciones": ["A) Un paño con alcohol isopropílico", "B) La manga de la camisa", "C) Limpiadores de un solo 'clic' o toallitas especiales sin pelusa", "D) Aire comprimido a alta presión"],
+                "respuestaCorrecta": "C",
+                "explicacion": "La suciedad es la principal causa de fallos en enlaces de fibra. Se deben usar herramientas específicas que no dejen residuos ni rayen la férula del conector."
+            },
+            {
+                "pregunta": "Un módem Westermo DDW-142 se utiliza comúnmente para extender redes Ethernet sobre:",
+                "opciones": ["A) Fibra óptica monomodo", "B) El par de cobre tradicional (tecnología SHDSL)", "C) Un enlace de radio", "D) Cable coaxial"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Estos módems industriales aprovechan el cableado de cobre existente para crear enlaces Ethernet de varios megabits, una solución común para conectar equipos en campo."
+            },
+            {
+                "pregunta": "¿Qué indica un LED de 'alarma' de color rojo fijo en un multiplexor óptico de Huawei?",
+                "opciones": ["A) Que el equipo está arrancando", "B) Que existe un fallo crítico que interrumpe el servicio (ej. 'Loss of Signal')", "C) Que hay una alarma menor o una advertencia", "D) Que el equipo está en modo de bajo consumo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los códigos de colores de los LEDs son estándar: el rojo indica una alarma crítica; el amarillo, una advertencia no crítica; y el verde, un funcionamiento normal."
+            },
+            {
+                "pregunta": "En un sistema de gestión de red (NMS), ¿qué es un 'trap SNMP'?",
+                "opciones": ["A) Una trampa para hackers", "B) Un mensaje de alarma no solicitado que un equipo envía al gestor cuando detecta un evento anómalo", "C) Una consulta que el gestor hace al equipo", "D) Un tipo de virus de red"],
+                "respuestaCorrecta": "B",
+                "explicacion": "En lugar de que el NMS esté preguntando constantemente ('polling'), los equipos envían 'traps' para notificar proactivamente sobre fallos, optimizando la comunicación."
+            },
+            {
+                "pregunta": "La 'última milla' en la red de acceso de telecomunicaciones se refiere a:",
+                "opciones": ["A) El cable más largo de la red", "B) El tramo final de la red que conecta directamente con el equipo del abonado o instalación final", "C) La conexión entre dos países", "D) El núcleo de la red de transporte"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es la parte capilar de la red, que puede estar basada en tecnologías como fibra (FTTH), cobre (xDSL) o radio."
+            },
+            {
+                "pregunta": "¿Cuál es el propósito de realizar una 'copia de seguridad' (backup) de la configuración de un router o switch?",
+                "opciones": ["A) Para que el equipo funcione más rápido", "B) Para poder restaurar rápidamente el servicio en caso de un fallo de hardware o un error de configuración", "C) Es un requisito legal sin utilidad técnica", "D) Para liberar memoria en el equipo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El backup de la configuración es una tarea de mantenimiento esencial que permite una recuperación rápida y fiable del servicio ante cualquier incidencia grave."
+            },
+            {
+                "pregunta": "La tecnología DWDM (Dense Wavelength Division Multiplexing) permite:",
+                "opciones": ["A) Enviar datos por el cable de tierra", "B) Transmitir múltiples señales de datos sobre una única fibra óptica, cada una en una longitud de onda (color) diferente", "C) Aumentar el voltaje de la fibra", "D) Crear una red Wi-Fi a través de la fibra"],
+                "respuestaCorrecta": "B",
+                "explicacion": "DWDM es la tecnología clave que permite capacidades de transmisión de Terabits/segundo en las redes de transporte, multiplicando la capacidad de la fibra."
+            },
+            {
+                "pregunta": "Un 'switch de Nivel 2' (L2) toma decisiones de reenvío de paquetes basándose en:",
+                "opciones": ["A) La dirección IP de destino", "B) La dirección MAC de destino", "C) El puerto de origen", "D) El tipo de aplicación"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los switches L2 operan en la capa de enlace de datos y utilizan las direcciones físicas (MAC) para conmutar el tráfico dentro de una misma red local (LAN)."
+            },
+            {
+                "pregunta": "Al inspeccionar una sala de equipos, se detecta que la temperatura ambiente es de 45°C. ¿Qué acción se debe tomar?",
+                "opciones": ["A) Es una temperatura normal, no hacer nada", "B) Apagar todos los equipos inmediatamente", "C) Generar una alarma por fallo del sistema de climatización, ya que esa temperatura puede causar averías", "D) Abrir las ventanas para que entre aire fresco"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Los equipos de telecomunicaciones deben operar en un rango de temperatura controlado (normalmente 18-27°C). Una temperatura elevada indica un fallo en la climatización y es un riesgo grave."
+            },
+            {
+                "pregunta": "¿Qué es un 'ber-test' o prueba de Bit Error Rate?",
+                "opciones": ["A) Una prueba de resistencia del cable", "B) Una prueba que transmite un patrón de datos conocido por un enlace y cuenta cuántos bits llegan con errores", "C) Un test de velocidad de internet", "D) Una prueba de seguridad de la red"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El BER es un indicador clave de la calidad de un enlace de transmisión. Un BER alto (muchos errores) indica problemas en el medio físico o en los equipos."
+            },
+            {
+                "pregunta": "En el contexto de la ciberseguridad, un 'puerto de gestión' de un equipo (como el puerto de consola o un puerto Ethernet de gestión) debe estar:",
+                "opciones": ["A) Conectado directamente a la red de pasajeros", "B) Abierto a Internet para facilitar el acceso remoto", "C) En una red separada y segura (VLAN de gestión) para evitar accesos no autorizados", "D) Desactivado permanentemente"],
+                "respuestaCorrecta": "C",
+                "explicacion": "La segregación de la red de gestión es una medida de seguridad básica para proteger la configuración y el control de los equipos de red."
+            },
+            {
+                "pregunta": "¿Qué es un 'SFP' (Small Form-factor Pluggable)?",
+                "opciones": ["A) El software principal de un router", "B) Un módulo transceptor compacto y extraíble que convierte señales eléctricas en ópticas (y viceversa)", "C) El ventilador de un switch", "D) Un tipo de tornillo especial"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los módulos SFP (o sus variantes SFP+, QSFP) dan flexibilidad a los equipos, permitiendo usar diferentes tipos de fibra o distancias simplemente cambiando el módulo."
+            },
+            {
+                "pregunta": "La 'sincronización' en una red de telecomunicaciones (ej. SyncE) es fundamental para:",
+                "opciones": ["A) Que todos los equipos muestren la misma hora al usuario", "B) Asegurar que los flujos de datos se transmitan sin errores ni deslizamientos (slips)", "C) Ahorrar energía", "D) Cumplir con la normativa de colores"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Una sincronización precisa es vital para las redes TDM como SDH y para el correcto funcionamiento de interfaces de alta velocidad, evitando la pérdida de datos."
+            },
+            {
+                "pregunta": "Un 'inventario de red' actualizado es una herramienta de mantenimiento importante porque:",
+                "opciones": ["A) Sirve para decorar la oficina del jefe", "B) Permite conocer qué equipos, versiones de software y conexiones existen, facilitando la gestión y resolución de averías", "C) Es necesario para calcular los impuestos", "D) No tiene ninguna utilidad real"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Saber exactamente qué hay en la red es el primer paso para una gestión eficiente, la planificación de actualizaciones y una rápida actuación ante incidencias."
+            },
+            {
+                "pregunta": "¿Para qué sirve un 'latiguillo de medida' o 'bobina de lanzamiento' cuando se usa un OTDR?",
+                "opciones": ["A) Para alargar la fibra que se quiere medir", "B) Para crear una sección de fibra antes del enlace a medir y así poder caracterizar el primer conector", "C) Para limpiar el conector del OTDR", "D) Para atenuar la señal"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El OTDR tiene una 'zona muerta' inicial. La bobina de lanzamiento permite que la medida se estabilice para poder ver y medir correctamente el evento del primer conector del enlace."
+            },
+            {
+                "pregunta": "Un 'grupo electrógeno' en una sala de comunicaciones tiene la misión de:",
+                "opciones": ["A) Sustituir a los rectificadores en el día a día", "B) Proporcionar energía de larga duración cuando hay un corte de la red eléctrica general, una vez que las baterías del SAI se agotan", "C) Climatizar la sala", "D) Reducir el ruido de los equipos"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es el último respaldo de energía. El SAI cubre los primeros minutos y el grupo electrógeno arranca para proporcionar autonomía durante horas o días."
+            },
+            {
+                "pregunta": "El protocolo 'Telnet' para la gestión remota de equipos está en desuso y se sustituye por 'SSH' porque:",
+                "opciones": ["A) SSH es más rápido", "B) Telnet solo funciona en equipos antiguos", "C) SSH encripta la comunicación, mientras que Telnet envía usuarios y contraseñas en texto plano", "D) SSH permite conectar más usuarios a la vez"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Por seguridad, todo el acceso a la línea de comandos de los equipos de red debe hacerse a través de SSH para proteger las credenciales y los datos de la sesión."
+            },
+            {
+                "pregunta": "Si un switch Nokia 7210 presenta un LED de estado (Status) parpadeando en verde, indica que:",
+                "opciones": ["A) El equipo tiene un fallo crítico", "B) El equipo está operativo pero con una condición menor que requiere atención", "C) El equipo está arrancando su software o realizando un autotest", "D) El equipo está completamente apagado"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Un parpadeo verde durante el arranque es normal. Si se queda fijo, indica operación correcta. Un parpadeo ámbar o rojo señalaría un problema."
+            },
+            {
+                "pregunta": "¿Qué es un 'PoE' (Power over Ethernet) Switch?",
+                "opciones": ["A) Un switch que funciona sin electricidad", "B) Un switch que puede alimentar eléctricamente a dispositivos conectados a él (cámaras IP, teléfonos) a través del propio cable de red", "C) Un switch de color verde", "D) Un switch exclusivo para poesía"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La tecnología PoE simplifica las instalaciones al eliminar la necesidad de un punto de alimentación eléctrica para cada dispositivo final."
+            },
+            {
+                "pregunta": "El 'enfriamiento' en un centro de datos o sala técnica se realiza a menudo mediante un sistema de:",
+                "opciones": ["A) Pasillos de aire frío y pasillos de aire caliente", "B) Sumergir los equipos en aceite", "C) Grandes bloques de hielo", "D) Abrir las puertas en invierno"],
+                "respuestaCorrecta": "A",
+                "explicacion": "Se ordena la sala para que los equipos tomen aire frío por delante y expulsen el caliente por detrás, optimizando la eficiencia de los climatizadores."
+            },
+            {
+                "pregunta": "La 'documentación de una incidencia' (trouble ticket) debe contener, como mínimo:",
+                "opciones": ["A) El nombre del técnico y la hora", "B) Una descripción clara del problema, los equipos afectados, las pruebas realizadas y la solución aplicada", "C) Solo un número de referencia", "D) La predicción meteorológica para ese día"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Una correcta documentación es vital para crear una base de conocimiento, analizar tendencias de fallos y facilitar la resolución de problemas futuros."
+            },
+            {
+                "pregunta": "¿Qué es una 'sala de Meet-Me' o 'MMR' (Meet-Me Room) en un centro de datos?",
+                "opciones": ["A) Una sala de reuniones para el personal", "B) Un espacio físico seguro donde diferentes proveedores de telecomunicaciones interconectan sus redes", "C) El comedor del personal técnico", "D) Un almacén de equipos viejos"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es el punto neurálgico de interconexión, donde se realizan los 'cruces' de fibra entre las distintas redes que llegan al edificio."
+            },
+            {
+                "pregunta": "Al crimpar un conector RJ-45 en un cable Ethernet, ¿por qué es importante seguir una norma de cableado como la T568A o T568B?",
+                "opciones": ["A) Por razones estéticas, para que los colores se vean ordenados", "B) Para asegurar que los pares de hilos coinciden en ambos extremos, garantizando la comunicación y evitando la diafonía", "C) Es una recomendación, pero no afecta al funcionamiento", "D) Para que el cable sea más resistente"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Seguir la norma de pines es absolutamente necesario para que el enlace funcione, especialmente a altas velocidades como Gigabit Ethernet."
+            },
+            {
+                "pregunta": "¿Qué significa que un servicio de red tiene una disponibilidad del 'cinco nueves' (99,999%)?",
+                "opciones": ["A) Que puede estar caído 99.999% del tiempo", "B) Que solo puede estar interrumpido un máximo de aproximadamente 5 minutos al año", "C) Que el 99% de los clientes están contentos", "D) Que cuesta 99.999 euros"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es un estándar de alta disponibilidad para servicios críticos, que exige una fiabilidad y redundancia extremas en todos los componentes de la red."
+            },
+            {
+                "pregunta": "Un 'analizador de protocolos' (como Wireshark) es una herramienta de software que permite:",
+                "opciones": ["A) Traducir protocolos de un idioma a otro", "B) Capturar y examinar en detalle cada paquete de datos que circula por una red", "C) Medir la longitud de un cable", "D) Instalar protocolos nuevos en un ordenador"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es una herramienta de diagnóstico muy potente para analizar problemas de comunicación, seguridad y rendimiento a nivel de paquete."
+            },
+            {
+                "pregunta": "¿Qué es un 'firewall' (cortafuegos) en una red de telecomunicaciones?",
+                "opciones": ["A) Un muro de fuego para proteger los equipos", "B) Un dispositivo o software que filtra el tráfico de red, permitiendo o bloqueando paquetes según reglas de seguridad predefinidas", "C) Un sistema de refrigeración", "D) Un tipo de cable especial"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los firewalls son esenciales para proteger las redes contra accesos no autorizados y ataques cibernéticos, actuando como la primera línea de defensa."
+            },
+            {
+                "pregunta": "¿Qué es una PDU (Power Distribution Unit) en un rack de telecomunicaciones?",
+                "opciones": ["A) El procesador principal del rack", "B) Un dispositivo de diagnóstico de protocolos", "C) Una regleta de enchufes gestionable que distribuye la energía a los equipos", "D) Una unidad de almacenamiento de datos"],
+                "respuestaCorrecta": "C",
+                "explicacion": "La PDU toma la alimentación principal del SAI o de la red y la distribuye de forma segura y organizada a los múltiples equipos instalados en el bastidor o rack."
+            },
+            {
+                "pregunta": "Para una conexión de fibra óptica de 20 km entre dos edificios, ¿qué tipo de fibra se debe utilizar?",
+                "opciones": ["A) Multimodo (OM3)", "B) Monomodo (OS2)", "C) Cable de par de cobre", "D) Plástica (POF)"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La fibra monomodo está diseñada para largas distancias debido a su baja atenuación, mientras que la multimodo se usa para enlaces cortos dentro de un mismo edificio."
+            },
+            {
+                "pregunta": "El protocolo NTP (Network Time Protocol) es crítico en una red para:",
+                "opciones": ["A) Transferir archivos de gran tamaño", "B) Mantener todos los equipos sincronizados con una hora exacta y coherente", "C) Asignar prioridades al tráfico de vídeo", "D) Proteger la red contra virus"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Una hora sincronizada es fundamental para poder correlacionar los registros (logs) de diferentes equipos y diagnosticar correctamente las incidencias en la red."
+            },
+            {
+                "pregunta": "¿Cuál es la principal ventaja de utilizar rutas dinámicas (con OSPF) en lugar de rutas estáticas?",
+                "opciones": ["A) Son más seguras", "B) Son más fáciles de configurar en redes pequeñas", "C) La red se adapta y redirige el tráfico automáticamente si un enlace falla", "D) Consumen menos CPU en los routers"],
+                "respuestaCorrecta": "C",
+                "explicacion": "La gran ventaja del enrutamiento dinámico es la resiliencia; la red aprende y se reconfigura sola, mientras que las rutas estáticas deben ser modificadas manualmente por un técnico."
+            },
+            {
+                "pregunta": "En el mantenimiento de un rack, ¿por qué es importante una correcta gestión del cableado (cable management)?",
+                "opciones": ["A) Solo por motivos estéticos", "B) Para mejorar el flujo de aire, evitar daños en los cables y facilitar futuras intervenciones", "C) Para que los cables transmitan datos más rápido", "D) Para cumplir una norma sobre colores"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Un cableado ordenado previene el sobrecalentamiento al no obstruir la ventilación, evita la tensión mecánica en los conectores y ahorra mucho tiempo en la localización de averías."
+            },
+            {
+                "pregunta": "¿Qué es un 'plan de rollback' en el contexto de una intervención de mantenimiento?",
+                "opciones": ["A) Un plan para desplegar una nueva versión de software", "B) Un procedimiento detallado para deshacer los cambios y volver al estado anterior si la intervención falla", "C) Un plan de evacuación del edificio", "D) El esquema de cableado de la sala"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Ninguna intervención crítica debe empezar sin un plan de rollback probado, ya que garantiza que se puede recuperar el servicio rápidamente en caso de problemas."
+            },
+            {
+                "pregunta": "Un sistema de alimentación ininterrumpida (SAI/UPS) online de doble conversión se caracteriza por:",
+                "opciones": ["A) Alimentar los equipos desde la batería solo cuando falla la red", "B) Proporcionar siempre energía regenerada desde la batería, aislando completamente los equipos de la red eléctrica", "C) Tener dos baterías por si una falla", "D) Funcionar solo con corriente continua"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La doble conversión (AC->DC->AC) ofrece la máxima protección, ya que la salida está permanentemente aislada de las perturbaciones de la red de entrada."
+            },
+            {
+                "pregunta": "Sistemas como TACACS+ o RADIUS se implementan en una red para proporcionar:",
+                "opciones": ["A) Acceso Wi-Fi a los pasajeros", "B) Un sistema centralizado de Autenticación, Autorización y Auditoría (AAA) para el acceso de los técnicos a los equipos", "C) Un servicio de correo electrónico seguro", "D) La hora oficial de la red"],
+                "respuestaCorrecta": "B",
+                "explicacion": "AAA permite gestionar los permisos de todos los administradores de red desde un punto central, mejorando drásticamente la seguridad y el control de acceso."
+            },
+            {
+                "pregunta": "¿Qué es una 'VLAN de gestión'?",
+                "opciones": ["A) La red Wi-Fi para los gerentes de la empresa", "B) Una red virtual aislada y dedicada exclusivamente al acceso y la gestión de los equipos de red", "C) Una VLAN que se gestiona a sí misma", "D) La VLAN por defecto de un switch"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Separar el tráfico de gestión del tráfico de datos de usuario es una práctica de seguridad fundamental para proteger la infraestructura de red."
+            },
+            {
+                "pregunta": "En un OTDR, un 'evento reflectivo' con un pico hacia arriba suele corresponder a:",
+                "opciones": ["A) Una fusión de fibra", "B) Una macrocurvatura en el cable", "C) Un conector o un corte en la fibra", "D) El final de la fibra sin conector"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las conexiones mecánicas (conectores) o las roturas provocan un reflejo de la luz (reflexión de Fresnel) que el OTDR representa como un pico."
+            },
+            {
+                "pregunta": "¿Qué es una 'ventana de mantenimiento'?",
+                "opciones": ["A) La ventana física de una sala de equipos", "B) Un período de tiempo planificado, normalmente de noche o en fin de semana, para realizar trabajos que pueden afectar al servicio", "C) Una aplicación de software para mantenimiento", "D) El tiempo que dura la garantía de un equipo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Las ventanas de mantenimiento se programan para minimizar el impacto en los usuarios, realizando las tareas más críticas cuando el uso de la red es menor."
+            },
+            {
+                "pregunta": "La dirección MAC de un dispositivo de red es:",
+                "opciones": ["A) Una dirección lógica que se puede cambiar fácilmente", "B) Una dirección física única de 48 bits, grabada de fábrica en la tarjeta de red", "C) La dirección postal de la fábrica del equipo", "D) Un código que indica la antigüedad del equipo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La dirección MAC (Media Access Control) es el identificador único a nivel de capa 2. Los switches la usan para saber a qué puerto enviar los datos."
+            },
+            {
+                "pregunta": "Un 'firewall de red' funciona principalmente como:",
+                "opciones": ["A) Un antivirus para los ordenadores", "B) Una barrera que filtra el tráfico entre redes, permitiendo o bloqueando las comunicaciones según unas reglas de seguridad", "C) Un optimizador de velocidad de la red", "D) Un sistema de copias de seguridad"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El firewall es el elemento de seguridad perimetral por excelencia, que protege la red interna de posibles amenazas de redes externas."
+            },
+            {
+                "pregunta": "¿Cuál es la función del 'subsuelo técnico' o 'suelo falso' en una sala de comunicaciones?",
+                "opciones": ["A) Guardar equipos viejos", "B) Permitir el paso ordenado de cables de datos y de alimentación, así como la canalización de aire frío", "C) Esconder la suciedad", "D) Aislar de las vibraciones del tren"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El suelo técnico crea una cámara inferior (plenum) que oculta y protege todo el cableado, además de ser una parte integral del sistema de climatización."
+            },
+            {
+                "pregunta": "Si un técnico necesita conectar un portátil al puerto de consola de un router, ¿qué tipo de cable suele necesitar?",
+                "opciones": ["A) Un cable de red Ethernet estándar", "B) Un cable de consola (cable rollover, a menudo de color azul claro) con un adaptador USB a serie", "C) Un cable de fibra óptica", "D) Un cable de alimentación"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El puerto de consola proporciona un acceso directo de bajo nivel al sistema operativo del equipo y requiere un cableado y configuración serie específicos."
+            },
+            {
+                "pregunta": "El término 'provisionar un servicio' en telecomunicaciones se refiere a:",
+                "opciones": ["A) Reparar un servicio que ha fallado", "B) El proceso de configurar la red y los equipos para dar de alta un nuevo servicio a un cliente", "C) Facturar el servicio al cliente", "D) Vender un servicio"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La provisión implica todas las acciones técnicas (configurar VLANs, rutas, calidad de servicio, etc.) necesarias para que un servicio empiece a funcionar."
+            },
+            {
+                "pregunta": "¿Qué es un 'punto de acceso' (AP) en una red Wi-Fi?",
+                "opciones": ["A) El router principal de la compañía", "B) El dispositivo que crea la red inalámbrica (SSID) y sirve de puente entre los dispositivos inalámbricos y la red cableada", "C) La antena del teléfono móvil", "D) Un software de seguridad"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los APs son los dispositivos que emiten la señal Wi-Fi a la que se conectan los ordenadores portátiles, teléfonos y otros dispositivos."
+            },
+            {
+                "pregunta": "La 'diafonía' (crosstalk) en un cable de par de cobre es:",
+                "opciones": ["A) Una conversación entre dos técnicos", "B) La interferencia que la señal de un par de hilos induce en un par adyacente dentro del mismo cable", "C) Un fallo en el software de comunicación", "D) El eco en una llamada de voz"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El trenzado de los pares en los cables Ethernet está diseñado precisamente para minimizar la diafonía y permitir transmisiones a alta velocidad sin errores."
+            },
+            {
+                "pregunta": "En un sistema de monitorización, ¿qué diferencia hay entre un evento de 'Warning' (amarillo) y uno de 'Critical' (rojo)?",
+                "opciones": ["A) Ninguna, ambos son igual de graves", "B) El 'Warning' es una advertencia que no afecta al servicio, mientras que 'Critical' indica un fallo que sí lo interrumpe", "C) El 'Warning' lo resuelve un técnico junior y el 'Critical' uno senior", "D) El 'Warning' es de software y el 'Critical' es de hardware"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Esta jerarquía de alarmas permite al personal de operación priorizar su trabajo, atendiendo primero los fallos que tienen un impacto real en los usuarios."
+            },
+            {
+                "pregunta": "El comando 'ping' es una herramienta de diagnóstico básica que sirve para:",
+                "opciones": ["A) Medir el ancho de banda de una red", "B) Comprobar la conectividad y medir el tiempo de respuesta (latencia) con otro equipo en la red", "C) Ver las páginas web visitadas", "D) Reiniciar un equipo de forma remota"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El 'ping' envía un pequeño paquete de datos (ICMP) y espera una respuesta, siendo el primer paso para determinar si un equipo es accesible a través de la red."
+            },
+            {
+                "pregunta": "La 'topología física' de una red se refiere a:",
+                "opciones": ["A) Cómo fluyen los datos lógicamente", "B) La disposición real de los cables, equipos y la ubicación física de los componentes", "C) La velocidad de la red", "D) El tipo de datos que se transmiten"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La topología física es el mapa real de la infraestructura (ej. topología en estrella, en anillo o en bus), en contraposición a la topología lógica, que describe cómo se comunican los datos."
+            },
+            {
+                "pregunta": "Un 'Certificador de red' para cableado Ethernet es un equipo que:",
+                "opciones": ["A) Imprime un certificado de que la red es segura", "B) Realiza una serie de pruebas exhaustivas (longitud, atenuación, diafonía) para garantizar que un cable cumple con los estándares de una categoría (ej. Cat 6A)", "C) Solo comprueba que los hilos están conectados", "D) Mide el consumo eléctrico de la red"],
+                "respuestaCorrecta": "B",
+                "explicacion": "A diferencia de un simple 'tester', un certificador garantiza que el enlace de cableado soportará las velocidades para las que ha sido diseñado, siendo una prueba indispensable en instalaciones profesionales."
+            },
+            {
+                "pregunta": "¿Por qué se utiliza -48V DC como estándar de alimentación en telecomunicaciones?",
+                "opciones": ["A) Porque es el voltaje que dan las pilas comunes", "B) Por seguridad (es un voltaje no peligroso) y porque reduce la corrosión galvánica en los cables en caso de humedad", "C) Porque permite usar cables más finos", "D) Es una elección arbitraria sin motivo técnico"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La tensión negativa con positivo a tierra es un estándar histórico que ha demostrado ser muy fiable y seguro para los equipos y el personal."
+            },
+            {
+                "pregunta": "Cuando un equipo de red se describe como 'rugerizado' (rugged), significa que:",
+                "opciones": ["A) Tiene un software muy complejo", "B) Está diseñado para soportar condiciones ambientales adversas (temperatura, vibración, humedad)", "C) Es muy barato", "D) Es un modelo muy antiguo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los equipos rugerizados se instalan en entornos no controlados, como armarios de exterior o junto a la vía, donde la electrónica estándar no sobreviviría."
+            },
+            {
+                "pregunta": "¿Qué es la 'zona desmilitarizada' (DMZ) en una arquitectura de red?",
+                "opciones": ["A) Un área donde no hay personal militar", "B) Una red perimetral que aísla los servidores que necesitan acceso desde Internet (ej. web) de la red interna segura", "C) La red Wi-Fi de invitados", "D) Un almacén de equipos dados de baja"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La DMZ actúa como una zona de contención. Si un servidor en la DMZ es comprometido, el atacante no tiene acceso directo a la red corporativa interna."
+            },
+            {
+                "pregunta": "Una 'Jumper' en un repartidor de pares de cobre (MDF) es:",
+                "opciones": ["A) Una herramienta para saltar de un rack a otro", "B) El cable de par de cobre que conecta físicamente el puerto de un equipo con la línea exterior de un abonado", "C) Un tipo de fusible", "D) Un software de diagnóstico"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El 'jumpeado' es la acción de realizar estas conexiones cruzadas en el repartidor, que es el corazón físico de las redes basadas en cobre."
+            },
+            {
+                "pregunta": "El comando 'traceroute' (o 'tracert') se utiliza para:",
+                "opciones": ["A) Dibujar un mapa de la red", "B) Descubrir la ruta (los saltos o routers intermedios) que siguen los paquetes de datos hasta un destino", "C) Medir la temperatura de un router", "D) Borrar la ruta de un paquete"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es una herramienta de diagnóstico fundamental para localizar en qué punto de la red se está perdiendo la conectividad o dónde se está introduciendo una alta latencia."
+            },
+            {
+                "pregunta": "¿Qué es un 'enlace troncal' (trunk link) entre dos switches?",
+                "opciones": ["A) Un enlace que solo transporta datos de una VLAN", "B) Un enlace de alta velocidad que está configurado para transportar el tráfico de múltiples VLANs a la vez", "C) Un enlace de respaldo que solo se usa si falla el principal", "D) El cable de alimentación de los switches"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los enlaces troncales son las 'autopistas' que interconectan los switches, utilizando un etiquetado especial (protocolo 802.1Q) para identificar a qué VLAN pertenece cada paquete."
+            },
+            {
+                "pregunta": "La 'Gestión del Cambio' (Change Management) en un entorno de TI es un proceso para:",
+                "opciones": ["A) Cambiar de puesto a los técnicos", "B) Asegurar que los cambios en la red se realizan de forma controlada, minimizando el riesgo y el impacto en el servicio", "C) Cambiar las contraseñas cada mes", "D) Renovar los equipos cada año"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Implica planificar, aprobar, comunicar, ejecutar y revisar cualquier modificación en la infraestructura para evitar introducir nuevos problemas."
+            },
+            {
+                "pregunta": "Si al medir un latiguillo de fibra con un medidor de potencia se obtiene una pérdida de 1.5 dB, ¿qué indica este valor?",
+                "opciones": ["A) Que el latiguillo está en perfectas condiciones", "B) Que el valor es inaceptablemente alto y el latiguillo o sus conectores están sucios o dañados", "C) Que la potencia es demasiado alta", "D) Que la medida es errónea, la pérdida no puede ser tan alta"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Una pérdida normal en un latiguillo con dos conectores limpios debería ser inferior a 0.5 dB. Un valor de 1.5 dB indica un problema claro que debe ser solucionado."
+            },
+            {
                 "pregunta": "La 'fibra óptica' es el medio de transmisión principal en alta velocidad por su gran ancho de banda y por ser inmune a:",
                 "opciones": ["A) La lluvia", "B) Las interferencias electromagnéticas", "C) Los terremotos", "D) Las altas temperaturas"],
                 "respuestaCorrecta": "B",
@@ -1515,6 +1881,187 @@
                 "explicacion": "El enclavamiento es el corazón de la seguridad. Garantiza, por ejemplo, que un desvío no se mueva bajo un tren o que una señal no dé vía libre hacia una vía ocupada."
             },
             {
+                "pregunta": "Según el principio de 'seguridad intrínseca' o 'fail-safe', ¿qué sucede si un relé de ocupación de un circuito de vía deja de recibir tensión por un fusible fundido?",
+                "opciones": ["A) El sistema interpreta que el circuito de vía está libre", "B) El relé 'cae' por gravedad y el sistema interpreta que el circuito de vía está ocupado", "C) Se envía un aviso al maquinista pero la señal sigue en verde", "D) El sistema se reinicia automáticamente"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El diseño 'fail-safe' asegura que, ante un fallo como la pérdida de alimentación, el sistema deriva a su estado más restrictivo y seguro, que es considerar el tramo como ocupado."
+            },
+            {
+                "pregunta": "En un enclavamiento eléctrico, ¿qué función cumple la 'protección de flanco'?",
+                "opciones": ["A) Proteger el lateral del tren de golpes", "B) Asegurar que ningún tren pueda invadir una ruta establecida desde un desvío lateral, enclavando la aguja de dicho desvío en posición contraria", "C) Proteger los equipos de subidas de tensión", "D) Es un sistema de seguridad para los operarios que trabajan en el flanco de la vía"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La protección de flanco es una función de seguridad vital que evita colisiones laterales, garantizando que todas las agujas que dan acceso a una ruta queden inmovilizadas en una posición segura."
+            },
+            {
+                "pregunta": "La arquitectura de un enclavamiento electrónico de alta disponibilidad '2 de 3' (2oo3) se caracteriza por:",
+                "opciones": ["A) Tener dos procesadores y si uno falla, el sistema se detiene", "B) Tener tres procesadores que 'votan'; si uno falla, los otros dos lo desconectan y el sistema sigue operando", "C) Usar un procesador activo y dos en reserva (stand-by)", "D) Necesitar tres operarios para su manejo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El sistema 2 de 3 ofrece una alta disponibilidad. Al comparar permanentemente la salida de los tres canales, puede identificar y aislar un canal defectuoso sin interrumpir el servicio."
+            },
+            {
+                "pregunta": "¿Cuál es la principal diferencia entre un bloqueo 'descentralizado' y uno 'centralizado'?",
+                "opciones": ["A) El descentralizado usa más cables", "B) En el descentralizado, la lógica de cada señal está en un armario junto a ella; en el centralizado, la lógica de un tramo se concentra en los enclavamientos de las estaciones colaterales", "C) El descentralizado es más moderno", "D) No hay diferencias funcionales"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los bloqueos centralizados son una evolución para concentrar los equipos en las estaciones, facilitando el mantenimiento y protegiéndolos de actos vandálicos."
+            },
+            {
+                "pregunta": "¿Qué es un 'diferímetro' en un enclavamiento?",
+                "opciones": ["A) Un aparato que mide diferencias de tensión", "B) Un temporizador que retrasa el desenclavado de una ruta si una señal ha sido rebasada o si se cancela con un tren en aproximación", "C) Un relé especial para desvíos", "D) Un detector de velocidad de trenes"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El diferímetro es un elemento de seguridad que garantiza que, aunque se anule una ruta, los elementos (agujas) permanezcan bloqueados un tiempo por si el maquinista ya ha visto un aspecto permisivo y no puede detenerse a tiempo."
+            },
+            {
+                "pregunta": "En un paso a nivel de Semibarreras Automáticas (S.B.A.), ¿qué elemento inicia el proceso de cierre al aproximarse un tren?",
+                "opciones": ["A) El maquinista pulsando un botón", "B) El operador del CTC", "C) Los pedales direccionales de aviso de proximidad de tren", "D) La ocupación del circuito de vía de la estación más cercana"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Las S.B.A. funcionan de forma autónoma. Los pedales de aviso, situados a la distancia necesaria, detectan el paso del tren y desencadenan la secuencia de protección del paso."
+            },
+            {
+                "pregunta": "En un paso a nivel de Semibarreras Enclavadas (S.B.E.), el cierre y la apertura están regulados por:",
+                "opciones": ["A) El enclavamiento de la estación, como parte de la formación de una ruta", "B) Un operario con un mando local", "C) Un temporizador que se activa a una hora fija", "D) Los propios trenes de forma automática"],
+                "respuestaCorrecta": "A",
+                "explicacion": "A diferencia de las S.B.A., las S.B.E. no son autónomas y su protección es una condición indispensable que el enclavamiento debe verificar antes de autorizar una ruta que afecte al paso."
+            },
+            {
+                "pregunta": "El mnemónico 'RCLA' en los planos de un enclavamiento eléctrico se refiere a:",
+                "opciones": ["A) Relé de Circuito de Larga Aceptación", "B) Relé de Comprobación de Lámpara Amarilla", "C) Ruta Central Larga Autorizada", "D) Repetidor de Cierre de Lámpara Auxiliar"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es el relé encargado de verificar que la lámpara amarilla de una señal está luciendo correctamente, como parte de la cadena de seguridad."
+            },
+            {
+                "pregunta": "¿Qué indica el 'Aspa de San Andrés' (aspa amarilla a destellos) en una señal de paso a nivel para el maquinista?",
+                "opciones": ["A) Que el paso a nivel está protegido y puede pasar a velocidad normal", "B) Que el paso a nivel está desprotegido o averiado, debiendo tomar precauciones", "C) Que debe detener el tren inmediatamente", "D) Que el tren siguiente viene muy cerca"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El aspa amarilla a destellos es la señal de alarma grave que informa al maquinista de que el paso a nivel no funciona correctamente y debe actuar con la máxima precaución."
+            },
+            {
+                "pregunta": "¿Qué es el 'shunt límite' de un circuito de vía?",
+                "opciones": ["A) La máxima velocidad a la que un tren puede pasar", "B) El máximo valor de resistencia eléctrica del eje de un tren que garantiza la detección (ocupación)", "C) El límite de balasto que puede tener la vía", "D) La tensión mínima para que funcione el relé"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Un shunt límite alto es más seguro (detecta ejes con mal contacto), pero más inestable (puede ocuparse por humedad en el balasto). Se busca un equilibrio entre seguridad y disponibilidad."
+            },
+            {
+                "pregunta": "En los circuitos de vía de 50 Hz, ¿por qué los circuitos adyacentes deben trabajar en 'oposición de fase' (desfasados 180°)?",
+                "opciones": ["A) Para ahorrar energía", "B) Es una medida de seguridad para que, si falla una junta aislante, no pueda llegar tensión de un circuito al relé del circuito contiguo", "C) Para que los trenes circulen más rápido", "D) Para facilitar la localización de averías"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Si una junta se perfora, la tensión de un circuito anularía a la del otro en el receptor, provocando la caída segura del relé y evitando una falsa indicación de 'vía libre'."
+            },
+            {
+                "pregunta": "Un sistema de detección por 'Contadores de Ejes' determina que un cantón está libre cuando:",
+                "opciones": ["A) Un temporizador llega a cero", "B) El número de ejes que han entrado en el cantón es exactamente igual al número de ejes que han salido", "C) El maquinista avisa por radio", "D) El circuito de vía está en verde"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El sistema se basa en un principio simple de contabilidad: si la cuenta de ejes no es cero, asume que queda un vehículo en el interior del cantón."
+            },
+            {
+                "pregunta": "En un enclavamiento electrónico Westrace, la prueba de desconexión del OPCR se realiza para:",
+                "opciones": ["A) Comprobar el funcionamiento de la fuente de alimentación", "B) Observar si lucen correctamente las lámparas testigo de posición del relé", "C) Medir la tensión de rizado", "D) Actualizar el software del enclavamiento"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es una prueba de mantenimiento preventivo para verificar la correcta indicación visual del estado de los relés, un elemento clave para el diagnóstico de averías."
+            },
+            {
+                "pregunta": "¿Qué es la 'búsqueda dicotómica' durante la localización de una avería en una cadena de relés?",
+                "opciones": ["A) Preguntar a dos técnicos distintos", "B) Ir comprobando la tensión en el punto medio de la cadena sospechosa para descartar la mitad del circuito en cada paso", "C) Revisar los relés de dos en dos", "D) Usar un diccionario técnico"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es una técnica sistemática y eficiente para acotar rápidamente el punto exacto de una interrupción en un circuito eléctrico serie."
+            },
+            {
+                "pregunta": "Un sistema detector de obstáculos en un paso a nivel tipo DOCAVA utiliza:",
+                "opciones": ["A) Un lazo magnético bajo el asfalto", "B) Sensores de infrarrojos", "C) Cámaras de visión artificial y procesado de imagen", "D) Un operario que vigila el cruce"],
+                "respuestaCorrecta": "C",
+                "explicacion": "El sistema DOCAVA (Detección de Obstáculos mediante Cámaras de Visión Artificial) analiza las imágenes de vídeo para detectar vehículos o personas detenidas en la zona de peligro."
+            },
+            {
+                "pregunta": "En un Bloqueo Automático en Vía Doble (BAD), si la señal de un cantón está en rojo, la señal del cantón anterior estará en:",
+                "opciones": ["A) Verde (Vía Libre)", "B) Rojo (Parada)", "C) Amarillo (Anuncio de Parada)", "D) Apagada"],
+                "respuestaCorrecta": "C",
+                "explicacion": "El sistema de bloqueo automático garantiza la distancia de frenado informando con antelación. La luz amarilla advierte al maquinista que la siguiente señal que encontrará está en rojo."
+            },
+            {
+                "pregunta": "El 'fusible mecánico' de la pluma de una semibarrera sirve para:",
+                "opciones": ["A) Proteger el circuito eléctrico de sobrecargas", "B) Que la pluma se parta de forma controlada si un vehículo la golpea, evitando daños mayores en el accionamiento", "C) Bloquear la barrera en posición cerrada", "D) Conectar la alimentación del motor"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es un punto de rotura diseñado para que, en caso de impacto, el fusible (un tornillo de latón) se rompa y la pluma bascule, minimizando los daños."
+            },
+            {
+                "pregunta": "La funcionalidad del sistema ASFA se basa en la transmisión de información a través de:",
+                "opciones": ["A) Un cable de fibra óptica", "B) La catenaria", "C) Un sistema de radio GSM-R", "D) Balizas situadas en la vía que son 'leídas' por un captador en el tren"],
+                "respuestaCorrecta": "D",
+                "explicacion": "El ASFA es un sistema de transmisión puntual. La información del estado de la señal se carga en una baliza y el tren la recoge al pasar sobre ella."
+            },
+            {
+                "pregunta": "En un enclavamiento geográfico, el mantenimiento se simplifica porque:",
+                "opciones": ["A) Utiliza menos relés que uno de cableado libre", "B) La lógica está encapsulada en módulos o grupos estandarizados que se pueden sustituir fácilmente", "C) No necesita alimentación eléctrica", "D) Se repara solo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La arquitectura modular tipo 'caja negra' permite que, ante una avería interna, el técnico pueda sustituir un grupo completo sin necesidad de analizar el circuito relé a relé."
+            },
+            {
+                "pregunta": "En el sistema de bloqueo telefónico, la seguridad para evitar la circulación de dos trenes en el mismo cantón se basa en:",
+                "opciones": ["A) Un complejo sistema de relés", "B) La comunicación verbal y el registro en un libro de telefonemas entre los jefes de circulación de las estaciones colaterales", "C) La detección automática por circuitos de vía", "D) El uso de un único testigo (bastón) para todo el tramo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es el sistema de bloqueo más elemental, donde la seguridad depende enteramente del cumplimiento estricto del procedimiento por parte del personal de circulación."
+            },
+            {
+                "pregunta": "¿Qué es el Registrador Jurídico o JRU en un sistema ERTMS?",
+                "opciones": ["A) Un sistema que graba las conversaciones del maquinista", "B) Una 'caja negra' que registra de forma segura toda la información relevante del movimiento del tren y las acciones del maquinista", "C) El libro de reclamaciones del tren", "D) Un abogado especialista en temas ferroviarios"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El JRU es un elemento de seguridad fundamental que proporciona pruebas objetivas sobre las causas de un accidente o incidencia al registrar todos los datos y comandos."
+            },
+            {
+                "pregunta": "Un sistema de protección de paso a nivel S.L.A. (Señalización Luminosa y Acústica) se diferencia de un S.B.A. en que:",
+                "opciones": ["A) El S.L.A. no tiene señales luminosas", "B) El S.L.A. no dispone de semibarreras físicas", "C) El S.L.A. es de accionamiento manual", "D) El S.L.A. no tiene avisador acústico"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El S.L.A. protege el paso únicamente con señales luminosas y acústicas, sin la barrera física que sí tienen los sistemas S.B.A. (Semibarreras Automáticas)."
+            },
+            {
+                "pregunta": "¿Qué permite un 'bloqueo automático banalizado' (BAB) en una línea de vía doble?",
+                "opciones": ["A) Que los trenes puedan circular en ambos sentidos por cualquiera de las dos vías", "B) Que solo puedan circular trenes de mercancías", "C) Que las vías no necesiten balasto", "D) Que el bloqueo funcione sin señales"],
+                "respuestaCorrecta": "A",
+                "explicacion": "La banalización dota a la línea de una gran flexibilidad operativa, ya que ambas vías están equipadas con señalización para circular en los dos sentidos, como si fueran dos vías únicas paralelas."
+            },
+            {
+                "pregunta": "¿Qué es una 'junta inductiva'?",
+                "opciones": ["A) Una reunión de ingenieros inductivos", "B) Una junta de carril que aísla de la corriente alterna del circuito de vía pero permite el paso de la corriente continua de tracción", "C) Un tipo de soldadura especial", "D) El punto de unión entre dos traviesas"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es un filtro que permite compatibilizar la necesidad de seccionar la vía para los circuitos de señalización con la necesidad de continuidad para el retorno de la corriente de tracción."
+            },
+            {
+                "pregunta": "La función 'Cierre por cola' en una línea de telemando punto a punto sirve para:",
+                "opciones": ["A) Asegurar que el último tren del día llega a su destino", "B) En caso de avería de un módulo, permitir que la comunicación siga funcionando con los módulos que se encuentran antes del punto de fallo", "C) Cerrar la comunicación al final del día", "D) Permitir que la comunicación siga funcionando en los módulos posteriores a un fallo si se dispone de una segunda línea"],
+                "respuestaCorrecta": "D",
+                "explicacion": "Es un sistema de redundancia. Si la línea principal se corta, los módulos posteriores al fallo pueden seguir comunicándose con el puesto central a través de la línea de respaldo o 'cola'."
+            },
+            {
+                "pregunta": "En un sistema ATP como EBICAB 900, las balizas pueden ser 'controladas' o 'no controladas'. La diferencia es que:",
+                "opciones": ["A) Las no controladas no necesitan mantenimiento", "B) Las controladas pueden variar la información que transmiten según el estado de las señales, mientras que las no controladas siempre envían la misma información", "C) Las controladas son para alta velocidad y las no controladas para convencional", "D) Las no controladas no están conectadas al carril"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Las balizas no controladas informan de puntos fijos (inicio de una limitación de velocidad), mientras que las controladas se asocian a señales y su telegrama depende del aspecto de ésta."
+            },
+            {
+                "pregunta": "Si al realizar el mantenimiento de un accionamiento de aguja se introduce una galga de 5 mm entre la aguja y la contra-aguja, ¿qué debe ocurrir?",
+                "opciones": ["A) El motor debe hacer más fuerza para cerrar completamente", "B) El embrague debe actuar y la protección eléctrica debe cortar la alimentación del motor en un tiempo de 5 a 12 segundos", "C) La aguja debe cortar la galga y cerrar normalmente", "D) El enclavamiento debe autorizar el movimiento igualmente"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es la prueba de obstrucción. Simula un obstáculo en el cambio para verificar que los sistemas de protección del motor (embrague mecánico y protección térmica/temporizada) funcionan correctamente."
+            },
+            {
+                "pregunta": "¿Cuál es la función del 'módulo destellador' en la caseta de un paso a nivel?",
+                "opciones": ["A) Controlar el motor de las barreras", "B) Hacer lucir de forma alternada los focos rojos de las señales de carretera y detectar si hay lámparas fundidas", "C) Generar el aviso acústico", "D) Comunicarse con el enclavamiento"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Este módulo es el responsable de la señalización luminosa hacia la carretera. Supervisa el estado de las lámparas y envía una alarma si detecta alguna fundida."
+            },
+            {
+                "pregunta": "Un sistema de 'cantón móvil' (como en ERTMS Nivel 3) aumenta la capacidad de una línea porque:",
+                "opciones": ["A) Los cantones se mueven físicamente", "B) Elimina los cantones fijos y la distancia de seguridad se basa en la posición exacta y la velocidad de los trenes, permitiendo que circulen más juntos", "C) Los trenes son más rápidos", "D) Las señales son más fáciles de ver"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El cantón móvil es una 'burbuja' de seguridad que se mueve con el tren, permitiendo optimizar al máximo la separación entre circulaciones y, por tanto, aumentar la capacidad de la línea."
+            },
+            {
+                "pregunta": "El 'pedal de rearme' en un paso a nivel automático se sitúa después del cruce y sirve para:",
+                "opciones": ["A) Avisar de la llegada del tren", "B) Indicar al sistema que el tren ya ha pasado completamente el cruce para iniciar la secuencia de apertura", "C) Frenar el tren si el paso está ocupado", "D) Rearmar la alimentación eléctrica del paso"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es el punto de detección que confirma que la cola del tren ha liberado el paso a nivel, permitiendo que el sistema inicie el proceso para reanudar el tráfico por carretera de forma segura."
+            },
+            
+            {
                 "pregunta": "Una señal lateral con una luz roja fija significa:",
                 "opciones": ["A) Parada absoluta ante la señal", "B) Anuncio de precaución", "C) Se puede rebasar a baja velocidad", "D) Fallo en la señal"],
                 "respuestaCorrecta": "A",
@@ -1543,6 +2090,192 @@
                 "opciones": ["A) La salida a la línea principal", "B) Un movimiento de maniobra dentro de una estación", "C) La parada inmediata", "D) Un movimiento marcha atrás"],
                 "respuestaCorrecta": "B",
                 "explicacion": "Estas señales, llamadas 'indicadores de dirección' o 'jorobas', se usan en las zonas de maniobras para autorizar movimientos controlados a baja velocidad."
+            },
+            {
+                "pregunta": "¿Cuál es la función principal de un enclavamiento de tipo 'geográfico' o de módulos?",
+                "opciones": ["A) Utilizar relés más grandes que los de cableado libre", "B) Simplificar el diseño y mantenimiento al usar módulos estandarizados por cada elemento de campo (señal, desvío, etc.)", "C) Funcionar exclusivamente con GPS", "D) Ser controlado únicamente desde un Puesto de Mando geográficamente lejano"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los enclavamientos geográficos o de módulos abstraen la complejidad del cableado libre, permitiendo añadir o quitar elementos de forma modular, lo que simplifica enormemente el diseño y el mantenimiento."
+            },
+            {
+                "pregunta": "En un accionamiento de aguja electromecánico, ¿qué indica que la protección temporizada de 8 segundos ha actuado?",
+                "opciones": ["A) Que el movimiento se ha realizado con éxito y en tiempo récord", "B) Que el motor no ha podido completar el recorrido, probablemente por un obstáculo, y el enclavamiento le ha retirado la tensión para evitar daños", "C) Que el motor necesita una revisión de aceite", "D) Que la tensión de alimentación es demasiado alta"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es una protección de seguridad que evita que el motor se queme si el movimiento de los espadines queda obstaculizado. Si en unos 8 segundos no se completa la maniobra, se corta la orden."
+            },
+            {
+                "pregunta": "Si durante el mantenimiento se mide una tensión de 20V en la entrada de un módulo destellador que funciona a 24Vcc (±20%), ¿qué se debe esperar que haga el módulo?",
+                "opciones": ["A) Que funcione con normalidad, ya que está dentro de tolerancia", "B) Que se apague por baja tensión", "C) Que los destellos vayan más lentos", "D) Que se active una alarma pero siga funcionando"],
+                "respuestaCorrecta": "A",
+                "explicacion": "Una tensión de 24Vcc con una tolerancia de ±20% admite un rango de entre 19.2V y 28.8V. Por lo tanto, 20V está dentro del rango de funcionamiento normal del equipo."
+            },
+            {
+                "pregunta": "En un sistema de bloqueo automático, ¿cuál es el propósito de un 'cantón'?",
+                "opciones": ["A) Ser una zona de descanso para maquinistas", "B) Ser un tramo de vía protegido por señales en el que solo puede haber un tren a la vez para garantizar la distancia de seguridad", "C) Indicar la distancia kilométrica de la línea", "D) Ser el lugar donde se guardan las herramientas de mantenimiento"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La división de la vía en cantones es el principio fundamental del bloqueo automático, impidiendo que un tren alcance a otro al asegurar que siempre haya al menos un cantón libre entre ellos."
+            },
+            {
+                "pregunta": "En el sistema LZB, la comunicación continua entre la central y el tren se realiza a través de:",
+                "opciones": ["A) Balizas ERTMS", "B) La catenaria", "C) Un cable o lazo inductivo tendido entre los carriles", "D) Una red de radio GSM-R"],
+                "respuestaCorrecta": "C",
+                "explicacion": "El LZB se basa en un cable-antena tendido a lo largo de la vía que permite un intercambio constante de información con el tren, a diferencia de los sistemas de balizas que son puntuales."
+            },
+            {
+                "pregunta": "¿Qué es un 'circuito de vía de audiofrecuencia'?",
+                "opciones": ["A) Un circuito que emite música para los pasajeros", "B) Un sistema de detección de tren que no necesita juntas aislantes mecánicas, ya que delimita los cantones mediante 'juntas eléctricas' sintonizadas a diferentes frecuencias", "C) Un interfono para hablar con el maquinista", "D) Un circuito de vía que solo funciona de noche"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Estos circuitos eliminan el gran problema de mantenimiento de las juntas aislantes, utilizando frecuencias de audio para separar los circuitos de forma electrónica."
+            },
+            {
+                "pregunta": "Cuando se instala un detector de obstáculos en un paso a nivel con semibarreras (S.B.A.), y el detector informa de la presencia de un vehículo, ¿qué acción realiza la señal ferroviaria?",
+                "opciones": ["A) Se pone en verde para que el tren despeje el paso rápidamente", "B) Se mantiene en indicación de 'paso a nivel sin protección' (aspa amarilla) y no autoriza el paso al tren", "C) Muestra una indicación especial de 'obstáculo en vía'", "D) No se ve afectada, la responsabilidad es del maquinista"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La seguridad es lo primero. Si el detector informa de una ocupación, la señal al ferrocarril no se abrirá, imponiendo la parada al tren hasta que el obstáculo sea retirado."
+            },
+            {
+                "pregunta": "¿Cuál es la función del 'software de sistema' en un enclavamiento electrónico?",
+                "opciones": ["A) Definir la geografía y las rutas específicas de una estación concreta", "B) Proporcionar las funciones básicas de operación, similar al sistema operativo de un ordenador, siendo idéntico para todos los enclavamientos de la misma tecnología", "C) Es el antivirus del enclavamiento", "D) Gestionar la venta de billetes"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El software de sistema es la base genérica y validada, sobre la que corre el 'software de aplicación', que es el que contiene la lógica específica de cada estación."
+            },
+            {
+                "pregunta": "Una 'pérdida intempestiva de supervisión' en un desvío es una avería en la que:",
+                "opciones": ["A) El desvío se mueve solo sin recibir una orden", "B) El desvío, estando en reposo, pierde momentáneamente la comprobación de su posición, a menudo por vibraciones al paso de un tren", "C) El operario se olvida de supervisar el desvío", "D) La supervisión del desvío tarda más de lo normal en llegar"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es un fallo intermitente, a menudo causado por un ajuste mecánico demasiado crítico o falsos contactos, que provoca que el enclavamiento deje de 'ver' la posición correcta del desvío."
+            },
+            {
+                "pregunta": "En un sistema de protección S.L.A., ¿qué indica la señal 'OTRO TREN'?",
+                "opciones": ["A) Que el tren que se acerca es de otra compañía", "B) Que se ha detectado la llegada de un segundo tren mientras el paso a nivel ya estaba activado por un primero", "C) Que el maquinista debe cambiar de tren", "D) Que el tren es demasiado largo"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es un aviso de seguridad para los vehículos de carretera, indicando que, aunque un tren ya haya pasado, otro se aproxima y las protecciones van a seguir activadas."
+            },
+            {
+                "pregunta": "Un enclavamiento eléctrico 'de cableado libre' se caracteriza por:",
+                "opciones": ["A) No utilizar cables para funcionar", "B) Basar su lógica de seguridad exclusivamente en el diseño eléctrico y el cableado relé a relé, sin elementos modulares", "C) Ser el tipo de enclavamiento más moderno que existe", "D) Ser programable mediante software"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es la primera generación de enclavamientos eléctricos, donde cada condición de seguridad se implementa con cadenas de contactos de relés cableadas individualmente, lo que los hace complejos de diseñar y modificar."
+            },
+            {
+                "pregunta": "¿Qué es la 'malla de trenes' que utiliza un regulador en un Puesto de Mando?",
+                "opciones": ["A) La red de cables que alimenta el Puesto de Mando", "B) El plan horario gráfico que describe los trenes que van a circular, sus horarios y sus cruces/adelantamientos previstos", "C) Una red para atrapar trenes que se saltan una señal", "D) El uniforme del regulador"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La 'malla' o gráfico de circulación es la herramienta fundamental con la que el regulador gestiona el tráfico para cumplir los horarios con la mayor exactitud posible."
+            },
+            {
+                "pregunta": "El 'tiempo de aviso' mínimo de 6 segundos en un paso a nivel automático sirve para:",
+                "opciones": ["A) Dar tiempo al maquinista a frenar", "B) Asegurar que las señales luminosas y acústicas actúan un tiempo suficiente para que los conductores se detengan antes de que las barreras empiecen a bajar", "C) Dar tiempo a que el sistema se rearme", "D) Realizar una comprobación de las lámparas"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Este preaviso es una garantía de seguridad para que los vehículos tengan tiempo de reaccionar y detenerse antes del descenso de las barreras."
+            },
+            {
+                "pregunta": "El sistema ATP (Automatic Train Protection) se diferencia del ASFA en que:",
+                "opciones": ["A) El ATP no utiliza balizas", "B) Los sistemas ATP controlan continuamente la velocidad del tren, generando una curva de frenado, mientras que el ASFA es una supervisión puntual en la señal", "C) El ASFA es más moderno que el ATP", "D) El ATP no puede frenar el tren"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El ATP (como ERTMS o EBICAB) ofrece un nivel de seguridad superior, ya que no solo actúa ante el rebase de una señal, sino que supervisa permanentemente que el tren circule por debajo de una curva de velocidad segura."
+            },
+            {
+                "pregunta": "¿Por qué un enclavamiento electrónico necesita un 'software de aplicación' específico para cada instalación?",
+                "opciones": ["A) Porque el software de sistema caduca cada año", "B) Porque el software de aplicación contiene la lógica y los datos únicos de esa estación (mapa de vías, rutas permitidas, etc.)", "C) Para que sea compatible con el idioma del operador local", "D) No es necesario, todos usan el mismo software"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Mientras el 'software de sistema' es el motor genérico, el de 'aplicación' es el traje a medida que define las reglas de funcionamiento concretas para una playa de vías determinada."
+            },
+            {
+                "pregunta": "¿Qué problema resuelve la configuración en 'cascada' de varios circuitos de vía?",
+                "opciones": ["A) El exceso de agua en la vía", "B) La necesidad de supervisar un tramo de vía más largo que la longitud máxima de un solo circuito", "C) La falta de tensión en la línea", "D) El ruido de los trenes"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Cuando un cantón es muy largo, se divide en varios sub-circuitos. Luego, un 'totalizador' suma las informaciones para que el enclavamiento reciba un único estado de libre/ocupado para todo el tramo."
+            },
+            {
+                "pregunta": "Un 'fallo de mando' en un accionamiento de aguja ocurre cuando:",
+                "opciones": ["A) El motor recibe la orden de movimiento pero no llega a iniciarlo, o se detiene a mitad de recorrido", "B) El mando del operador del CTC no funciona", "C) La aguja se mueve en dirección contraria a la ordenada", "D) La aguja pierde la supervisión una vez que ya está en su posición final"],
+                "respuestaCorrecta": "A",
+                "explicacion": "Se diferencia del fallo de supervisión en que el problema ocurre durante la maniobra, impidiendo que esta se complete con éxito."
+            },
+            {
+                "pregunta": "El 'módulo de mando electrónico' es considerado el 'cerebro' de un paso a nivel porque:",
+                "opciones": ["A) Es el componente más grande", "B) Contiene la lógica programada para interpretar las señales de los detectores de tren y controlar todos los periféricos (barreras, señales, etc.)", "C) Emite un sonido similar a un cerebro", "D) Está ubicado en la parte más alta de la caseta"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Este módulo centraliza toda la operación del paso a nivel, tomando las decisiones de abrir o cerrar en función de la información que recibe de la vía y de su configuración."
+            },
+            {
+                "pregunta": "En el mantenimiento de un enclavamiento de cableado libre, ¿por qué es crítico comprobar el 'apriete de bornas'?",
+                "opciones": ["A) Porque las bornas flojas hacen mucho ruido", "B) Porque una borna floja puede crear una alta resistencia, calentamiento o un falso contacto, provocando fallos intermitentes muy difíciles de localizar", "C) Para pasar una auditoría de calidad", "D) Para que el cableado quede estéticamente mejor"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Muchísimas averías en sistemas eléctricos tienen su origen en un mal conexionado. El apriete de bornas es una tarea de mantenimiento preventivo básica y fundamental."
+            },
+            {
+                "pregunta": "En una arquitectura de telemando, la 'máquina de interfaces externos' (MIE) sirve para:",
+                "opciones": ["A) Conectar las pantallas del operador", "B) Proporcionar información del estado de la circulación a sistemas externos como otros CTCs o el Sistema de Información al Viajero (SIV)", "C) Gestionar el correo electrónico del Puesto de Mando", "D) Controlar el sistema de aire acondicionado"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La MIE actúa como una pasarela segura para intercambiar datos con otros sistemas, permitiendo por ejemplo que un tren 'pase' de forma transparente de un telemando a otro contiguo."
+            },
+            {
+                "pregunta": "La principal ventaja de la señalización en cabina (ERTMS Nivel 2) frente a la lateral es que:",
+                "opciones": ["A) Permite eliminar las señales físicas (semáforos) de la vía, ya que el maquinista recibe las órdenes directamente en una pantalla", "B) Las pantallas de cabina tienen más colores que los semáforos", "C) Requiere menos mantenimiento para el maquinista", "D) Es más barata de instalar"],
+                "respuestaCorrecta": "A",
+                "explicacion": "La señalización en cabina es indispensable para la alta velocidad, ya que la visibilidad de las señales laterales se degrada. Además, permite una supervisión continua y no solo puntual."
+            },
+            {
+                "pregunta": "Si un paso a nivel automático queda cerrado por 'tiempo de cierre excesivo' (ej. 10 minutos), ¿qué hace el sistema?",
+                "opciones": ["A) Envía una alarma al Puesto de Mando pero permanece cerrado indefinidamente", "B) Llama automáticamente a la policía de tráfico", "C) Ordena la apertura automática de las semibarreras y presenta una indicación de fallo leve al próximo tren", "D) Provoca una bajada de tensión en toda la línea"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Es una medida de seguridad para no bloquear indefinidamente el tráfico de carretera por una avería. El sistema se normaliza y avisa al siguiente tren de la incidencia para que extreme las precauciones."
+            },
+            {
+                "pregunta": "Un sistema 'hot-standby' en los servidores de un CTC significa que:",
+                "opciones": ["A) Los servidores se calientan mucho y necesitan refrigeración especial", "B) Hay dos servidores idénticos funcionando en paralelo; si el 'activo' falla, el 'pasivo' ('en caliente') toma el control de forma inmediata y automática", "C) El segundo servidor está apagado y hay que encenderlo manualmente si el primero falla", "D) Los datos se guardan en la nube"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Esta arquitectura de redundancia es clave para garantizar la alta disponibilidad de un sistema crítico como el CTC, permitiendo una conmutación casi instantánea en caso de fallo."
+            },
+            {
+                "pregunta": "En un circuito de vía 'monocarril', la corriente de señalización circula por:",
+                "opciones": ["A) Los dos carriles por igual", "B) Un solo carril (carril señalizado), mientras que el otro se usa exclusivamente para el retorno de la corriente de tracción", "C) El balasto", "D) Un cable aéreo paralelo a la vía"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Es una configuración que se usa para simplificar la instalación en zonas con tracción eléctrica, aunque presenta más problemas de interferencias y de detección de rotura de carril."
+            },
+            {
+                "pregunta": "El 'módulo de protección peatonal' de un paso a nivel controla:",
+                "opciones": ["A) La velocidad de los peatones", "B) Las señales acústicas y luminosas específicas para el cruce de peatones", "C) La apertura y cierre de la estación", "D) Las máquinas de venta de billetes"],
+                "respuestaCorrecta": "B",
+                "explicacion": "En pasos a nivel con mucho tránsito peatonal, se instalan señales adicionales (siluetas de peatón, etc.) cuyo funcionamiento es gobernado por este módulo específico."
+            },
+            {
+                "pregunta": "¿Cuál es la función del 'módulo convertidor' asociado a las señales ferroviarias de un paso a nivel?",
+                "opciones": ["A) Convertir la corriente alterna en continua", "B) Encender las lámparas de las señales al ferrocarril (aspa y doble flecha), controlando su aspecto fijo o intermitente", "C) Adaptar los enchufes de la caseta", "D) Convertir los telegramas ERTMS a ASFA"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Este módulo recibe las órdenes del módulo de mando y las traduce en la alimentación eléctrica necesaria para encender el aspecto que corresponda en la señal que ve el maquinista."
+            },
+            {
+                "pregunta": "La 'localización de averías' en un enclavamiento electrónico es generalmente más fácil que en uno eléctrico porque:",
+                "opciones": ["A) Los componentes electrónicos nunca fallan", "B) Los sistemas electrónicos disponen de herramientas de diagnóstico por software, registros de eventos (logs) e indicaciones visuales (LEDs) que ayudan a identificar el fallo", "C) Siempre hay un informático en la estación", "D) Se pueden reparar con un reinicio"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Mientras que en un enclavamiento eléctrico la avería hay que buscarla midiendo en las cadenas de relés, en uno electrónico el propio sistema suele ofrecer un diagnóstico mucho más preciso."
+            },
+            {
+                "pregunta": "En el sistema EBICAB 900, un 'Punto de Información de Señal' consta de dos balizas. ¿Por qué motivo?",
+                "opciones": ["A) Una es de repuesto por si la otra falla", "B) La primera es controlada (su información depende de la señal) y la segunda es no controlada (informa de la posición y características fijas)", "C) Para poder detectar trenes en ambos sentidos", "D) Para medir la velocidad del tren por el tiempo que tarda en pasar entre ellas"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Esta combinación de balizas permite al tren recibir tanto la información variable (el aspecto de la señal) como la información fija (punto kilométrico, gradientes, etc.) en un mismo punto."
+            },
+            {
+                "pregunta": "¿Qué información crucial proporciona un 'relé de caída diferida'?",
+                "opciones": ["A) Asegura que una condición de seguridad ha estado presente durante un tiempo mínimo antes de confirmarla", "B) Retrasa la caída de la tensión de la catenaria", "C) Mide el tiempo que tarda un tren en frenar", "D) Indica cuándo va a llover"],
+                "respuestaCorrecta": "A",
+                "explicacion": "Se usa para evitar micro-cortes o señales espurias. El relé solo se activa o desactiva si la condición de entrada (tensión) se mantiene de forma estable durante el tiempo de retardo para el que está diseñado, filtrando así los fallos breves."
+            },
+            {
+                "pregunta": "Una 'cerradura eléctrica' o 'cerrojo eléctrico' gobernado por un enclavamiento se utiliza para:",
+                "opciones": ["A) Cerrar las puertas de la estación por la noche", "B) Bloquear un elemento de vía (ej. una aguja de maniobra manual) e informar de su estado al enclavamiento", "C) Asegurar los armarios de relés", "D) Dar una descarga eléctrica de seguridad"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Permite integrar elementos manuales en la lógica de seguridad. El enclavamiento no liberará la cerradura para que se mueva la aguja si no se dan las condiciones de seguridad, y viceversa."
+            },
+            {
+                "pregunta": "En un sistema de señalización, ¿qué es un 'circuito de vía de audiofrecuencia'?",
+                "opciones": ["A) Un circuito que emite música para los pasajeros", "B) Un sistema de detección de tren que no necesita juntas aislantes mecánicas, ya que delimita los cantones mediante 'juntas eléctricas' sintonizadas a diferentes frecuencias", "C) Un interfono para hablar con el maquinista", "D) Un circuito de vía que solo funciona de noche"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Estos circuitos eliminan el gran problema de mantenimiento de las juntas aislantes, utilizando frecuencias de audio para separar los circuitos de forma electrónica."
             },
             {
                 "pregunta": "¿Qué función tiene un 'detector de cajas calientes'?",
@@ -1863,6 +2596,188 @@
                 "opciones": ["A) Cobre", "B) Acero", "C) Carbono o grafito", "D) Plástico"],
                 "respuestaCorrecta": "C",
                 "explicacion": "Se usa carbono porque es un buen conductor eléctrico y, a la vez, es más blando que el hilo de contacto, asegurando que el desgaste se produzca en la pletina (que es reemplazable) y no en la catenaria."
+            }
+        ],
+        "LAV ESTE": [
+            {
+                "pregunta": "¿En qué año se inauguró el tramo de alta velocidad Madrid - Valencia?",
+                "opciones": ["A) 1992", "B) 2005", "C) 2010", "D) 2015"],
+                "respuestaCorrecta": "C",
+                "explicacion": "La Línea de Alta Velocidad (LAV) Madrid-Valencia se inauguró oficialmente en diciembre de 2010, conectando ambas ciudades en aproximadamente 95 minutos."
+            },
+            {
+                "pregunta": "¿Qué sistema de señalización y seguridad es el estándar en la LAV Levante?",
+                "opciones": ["A) ASFA convencional", "B) LZB", "C) ERTMS Nivel 1 y Nivel 2", "D) Bloqueo Telefónico"],
+                "respuestaCorrecta": "C",
+                "explicacion": "La línea utiliza principalmente ERTMS Nivel 1, con tramos preparados para Nivel 2, el estándar europeo que permite la interoperabilidad y la supervisión continua de la velocidad."
+            },
+            {
+                "pregunta": "¿Cómo se llama la estación de alta velocidad de Cuenca, una parada clave en la línea?",
+                "opciones": ["A) Cuenca Central", "B) Cuenca del Huécar", "C) Fernando Zóbel", "D) Alfonso VIII"],
+                "respuestaCorrecta": "C",
+                "explicacion": "La estación, ubicada a las afueras de la ciudad, fue nombrada en honor al pintor abstracto español Fernando Zóbel, muy vinculado a Cuenca."
+            },
+            {
+                "pregunta": "El Viaducto de Contreras, una de las obras más espectaculares de la línea, ostenta un récord. ¿Cuál es?",
+                "opciones": ["A) Ser el más largo de España", "B) Ser el puente con el mayor arco de hormigón para ferrocarril de Europa", "C) Ser el más alto de España", "D) Estar construido con un solo pilar"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El arco del Viaducto de Contreras, con sus 261 metros de luz, fue en su momento el mayor de Europa para uso ferroviario, una proeza de la ingeniería."
+            },
+            {
+                "pregunta": "¿Qué estación es la principal terminal de los trenes de alta velocidad en Valencia?",
+                "opciones": ["A) València Nord", "B) València Cabanyal", "C) València Font de Sant Lluís", "D) València Joaquín Sorolla"],
+                "respuestaCorrecta": "D",
+                "explicacion": "La estación de Joaquín Sorolla se construyó como una terminal provisional para la llegada del AVE, a la espera de la futura Estación Central subterránea."
+            },
+            {
+                "pregunta": "La conexión de alta velocidad con Alicante se completó en 2013, ¿desde qué punto de la línea principal se ramifica?",
+                "opciones": ["A) Cerca de Cuenca", "B) En la bifurcación de Albacete", "C) A las afueras de Valencia", "D) Directamente desde Madrid"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La línea se diseñó con un tronco común Madrid-Albacete. En la bifurcación de Albacete, la línea se divide en dos ramales: uno hacia Valencia y otro hacia Alicante/Murcia."
+            },
+            {
+                "pregunta": "¿Qué serie de trenes de Renfe, apodados 'Pato', son los más habituales en el servicio AVE de esta línea?",
+                "opciones": ["A) Serie 100", "B) Serie 103 'Velaro'", "C) Serie 130 'Patito'", "D) Serie 102/112"],
+                "respuestaCorrecta": "D",
+                "explicacion": "Los trenes de las series 102 y su evolución, la 112, fabricados por Talgo-Bombardier, son la imagen característica de este corredor por su particular diseño aerodinámico."
+            },
+            {
+                "pregunta": "Además de Renfe (AVE/Avlo), ¿qué otros dos operadores privados compiten en la ruta Madrid-Valencia?",
+                "opciones": ["A) Alsa y Avanza", "B) SNCF y Trenitalia", "C) Ouigo e Iryo", "D) Euskotren y FGC"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Tras la liberalización, la francesa Ouigo (con trenes de dos pisos) y la hispano-italiana Iryo (con los trenes 'Frecciarossa') operan en esta línea, aumentando la oferta y la competencia."
+            },
+            {
+                "pregunta": "¿Cuál es la única estación intermedia en el trayecto directo de la LAV entre Madrid y Valencia?",
+                "opciones": ["A) Cuenca Fernando Zóbel", "B) Albacete-Los Llanos", "C) Requena-Utiel", "D) No hay ninguna"],
+                "respuestaCorrecta": "C",
+                "explicacion": "En el ramal directo a Valencia, las únicas paradas son Cuenca y Requena-Utiel. Albacete se encuentra en el ramal que se desvía hacia Alicante."
+            },
+            {
+                "pregunta": "¿Qué tensión y tipo de corriente utiliza la catenaria de la LAV Levante?",
+                "opciones": ["A) 3.000 V en Corriente Continua", "B) 1.500 V en Corriente Continua", "C) 25.000 V en Corriente Alterna", "D) 50.000 V en Corriente Alterna"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Como todas las líneas de alta velocidad de España, utiliza 25 kV (25.000 voltios) a 50 Hz en corriente alterna, el estándar europeo."
+            },
+            {
+                "pregunta": "El túnel más largo de la línea es el de La Cabrera, con más de 7 km. ¿Entre qué dos provincias se encuentra?",
+                "opciones": ["A) Madrid y Toledo", "B) Madrid y Cuenca", "C) Cuenca y Valencia", "D) Valencia y Castellón"],
+                "respuestaCorrecta": "B",
+                "explicacion": "El túnel de La Cabrera es una de las infraestructuras clave del primer tramo de la línea, perforando la Sierra de Altomira entre las provincias de Madrid y Cuenca."
+            },
+            {
+                "pregunta": "El servicio de bajo coste de Renfe en esta línea se llama Avlo. ¿Qué color corporativo lo caracteriza?",
+                "opciones": ["A) Rojo", "B) Verde", "C) Morado", "D) Amarillo"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Los trenes Avlo, que son unidades de la serie 112 reformadas con más asientos, se distinguen fácilmente por su llamativa decoración en color morado."
+            },
+            {
+                "pregunta": "¿Qué ancho de vía se utiliza en la LAV Madrid-Levante?",
+                "opciones": ["A) Ancho Ibérico (1668 mm)", "B) Ancho Internacional o UIC (1435 mm)", "C) Ancho Métrico (1000 mm)", "D) Ancho Mixto"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Se utiliza el ancho estándar (UIC) para permitir la interoperabilidad con la red europea y el uso de material rodante estándar de alta velocidad."
+            },
+            {
+                "pregunta": "Los trenes de Ouigo que operan en esta línea tienen una característica distintiva. ¿Cuál es?",
+                "opciones": ["A) Son híbridos (diésel/eléctricos)", "B) Son de dos pisos", "C) Tienen bogies de ancho variable", "D) Son los más cortos"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Ouigo utiliza los trenes Alstom Euroduplex, derivados del TGV, que son los únicos de dos pisos que circulan por esta línea, ofreciendo una gran capacidad de pasajeros."
+            },
+            {
+                "pregunta": "¿Qué importante infraestructura permite a los trenes AVE llegar desde Atocha hasta Chamartín en Madrid para continuar viaje al norte?",
+                "opciones": ["A) La M-30", "B) Un cambiador de ancho", "C) El nuevo túnel de alta velocidad Atocha-Chamartín", "D) La línea de Cercanías C-5"],
+                "respuestaCorrecta": "C",
+                "explicacion": "El tercer túnel de la risa, exclusivo para alta velocidad, permite la conexión directa entre las dos grandes estaciones de Madrid, creando un eje pasante Norte-Sur."
+            },
+            {
+                "pregunta": "Los trenes 'Frecciarossa 1000' del operador Iryo son de fabricación:",
+                "opciones": ["A) Alemana (Siemens)", "B) Española (Talgo)", "C) Francesa (Alstom)", "D) Italiana (Hitachi/Bombardier)"],
+                "respuestaCorrecta": "D",
+                "explicacion": "Estos trenes, conocidos como 'Flecha Roja' en Italia, son el buque insignia de la alta velocidad italiana y han sido adaptados para operar en la red española."
+            },
+            {
+                "pregunta": "Para la construcción de los túneles de la línea, ¿qué tipo de maquinaria pesada se utilizó principalmente?",
+                "opciones": ["A) Excavadoras convencionales", "B) Explosivos (método tradicional)", "C) Tuneladoras (TBM)", "D) Martillos hidráulicos gigantes"],
+                "respuestaCorrecta": "C",
+                "explicacion": "Se utilizaron varias tuneladoras (TBM), apodadas 'topos', máquinas que perforan la sección completa del túnel y colocan el revestimiento de hormigón a medida que avanzan."
+            },
+            {
+                "pregunta": "¿Cuál es la velocidad comercial máxima a la que los trenes están autorizados a circular en la mayor parte de la LAV Levante?",
+                "opciones": ["A) 250 km/h", "B) 270 km/h", "C) 300 km/h", "D) 350 km/h"],
+                "respuestaCorrecta": "C",
+                "explicacion": "La línea está diseñada y equipada para una velocidad máxima sostenida de 300 km/h, aunque técnicamente la infraestructura podría soportar velocidades superiores."
+            },
+            {
+                "pregunta": "Además de Valencia y Alicante, la LAV Levante también da servicio de alta velocidad a la Región de:",
+                "opciones": ["A) Extremadura", "B) Asturias", "C) Murcia", "D) Galicia"],
+                "respuestaCorrecta": "C",
+                "explicacion": "El ramal de Alicante se extiende hasta la Región de Murcia, con la llegada del AVE a la capital murciana a finales de 2022."
+            },
+            {
+                "pregunta": "La estación de Alicante Terminal recibió el AVE adaptando sus vías. ¿Qué tuvo que hacer Adif para ello?",
+                "opciones": ["A) Construir una estación completamente nueva", "B) Cambiar vías de ancho ibérico a ancho internacional", "C) Electrificar la estación por primera vez", "D) Añadir un tercer piso a la estación"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Para la llegada del AVE, se tuvieron que adaptar varias vías de la estación, cambiando el tradicional ancho ibérico al ancho estándar (UIC) que usa la alta velocidad."
+            },
+            {
+                "pregunta": "¿Qué significa el acrónimo LAV?",
+                "opciones": ["A) Larga Vía", "B) Locomotora a Vapor", "C) Límite Autorizado de Velocidad", "D) Línea de Alta Velocidad"],
+                "respuestaCorrecta": "D",
+                "explicacion": "LAV es el término técnico que Adif utiliza para referirse a las Líneas de Alta Velocidad que componen la red ferroviaria española."
+            },
+            {
+                "pregunta": "El viaje inaugural Madrid-Valencia fue protagonizado por un tren de la serie 112. ¿Quiénes fueron unos de sus primeros pasajeros?",
+                "opciones": ["A) Futbolistas del Madrid y Valencia", "B) Los entonces Reyes de España y el Presidente del Gobierno", "C) Un grupo de turistas elegidos por sorteo", "D) Solo personal ferroviario"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Como es tradición en las grandes obras públicas, el viaje inaugural contó con la presencia de las más altas autoridades del Estado."
+            },
+            {
+                "pregunta": "La orografía entre Cuenca y Valencia es muy compleja. ¿Qué tipo de obra de ingeniería predomina en este tramo?",
+                "opciones": ["A) Largas rectas a nivel del suelo", "B) Una sucesión de túneles y viaductos", "C) Vías que bordean un río", "D) Un único y larguísimo túnel"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Para salvar las hoces y montañas de la Serranía de Cuenca, el trazado es una continua sucesión de túneles y viaductos para mantener un perfil suave."
+            },
+            {
+                "pregunta": "¿Qué empresa pública es la propietaria y gestora de la infraestructura (vías, estaciones, catenaria) de la LAV Levante?",
+                "opciones": ["A) Renfe", "B) Iryo", "C) El Ministerio de Fomento", "D) Adif AV (Alta Velocidad)"],
+                "respuestaCorrecta": "D",
+                "explicacion": "Adif (Administrador de Infraestructuras Ferroviarias) es la empresa estatal que construye y gestiona la red, cobrando un canon a los operadores (Renfe, Ouigo, Iryo) por su uso."
+            },
+            {
+                "pregunta": "¿Cuál fue uno de los principales objetivos socioeconómicos de la construcción de esta línea?",
+                "opciones": ["A) Fomentar el uso de la bicicleta", "B) Conectar la capital con la tercera ciudad más grande de España y un importante eje turístico", "C) Facilitar el transporte de mercancías pesadas", "D) Probar una nueva tecnología de levitación"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La línea buscaba una mejor vertebración territorial, uniendo de forma rápida y eficiente el centro político y económico con la potente Comunidad Valenciana."
+            },
+            {
+                "pregunta": "Algunos trenes Alvia que usan esta línea hacia la costa mediterránea necesitan una instalación especial. ¿Cuál?",
+                "opciones": ["A) Un surtidor de diésel", "B) Un cambiador de ancho de vía", "C) Un túnel de lavado especial", "D) Un muelle para barcos"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Los Alvia usan la LAV hasta Valencia y luego continúan por vía convencional (ancho ibérico) hacia otros destinos. Para ello, deben pasar por un cambiador de ancho."
+            },
+            {
+                "pregunta": "El tiempo de viaje entre Madrid y Valencia (aprox. 1h 40m) es significativamente menor que el viaje en coche (aprox. 3h 30m), esto es un ejemplo de:",
+                "opciones": ["A) Competitividad intermodal del ferrocarril", "B) Magia", "C) Un error en los horarios", "D) El tráfico lento de los coches"],
+                "respuestaCorrecta": "A",
+                "explicacion": "La alta velocidad compite directamente con otros modos de transporte (coche, avión). Su éxito en esta línea demuestra su alta competitividad en tiempo y comodidad."
+            },
+            {
+                "pregunta": "La estación de Requena-Utiel, a pesar de estar en la línea de alta velocidad, se encuentra:",
+                "opciones": ["A) En el centro de Requena", "B) A varios kilómetros de ambas poblaciones", "C) Bajo tierra", "D) Dentro de una bodega de vino"],
+                "respuestaCorrecta": "B",
+                "explicacion": "Como muchas estaciones de alta velocidad construidas para trazados nuevos, se ubica fuera de los núcleos urbanos para permitir un paso a alta velocidad y dar servicio a toda la comarca."
+            },
+            {
+                "pregunta": "El futuro de la línea en Valencia pasa por una obra faraónica. ¿Cuál es?",
+                "opciones": ["A) Convertirla en una línea de levitación magnética", "B) Cubrir toda la playa de vías con un parque", "C) El soterramiento de las vías y la construcción de una Estación Central subterránea", "D) Añadir dos vías más en superficie"],
+                "respuestaCorrecta": "C",
+                "explicacion": "El gran proyecto a largo plazo es la creación del Canal de Acceso y la Estación Central subterránea, eliminando la barrera ferroviaria que divide la ciudad."
+            },
+            {
+                "pregunta": "La liberalización de la línea Madrid-Valencia ha provocado un efecto notable en el mercado. ¿Cuál?",
+                "opciones": ["A) Un aumento significativo de los precios", "B) Una drástica bajada de los precios medios y un aumento de la oferta", "C) La desaparición de los trenes de Renfe", "D) Que solo se pueda viajar en primera clase"],
+                "respuestaCorrecta": "B",
+                "explicacion": "La entrada de Ouigo e Iryo generó una fuerte competencia que resultó en una notable reducción del precio medio de los billetes y un incremento masivo en el número de trenes diarios."
             }
         ],
         "Operación y Circulación": [

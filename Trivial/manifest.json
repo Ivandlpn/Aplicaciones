@@ -1,0 +1,23 @@
+{
+    "name": "Trivial Ferroviario de Alta Velocidad",
+    "short_name": "Trivial AV",
+    "description": "Un juego de preguntas y respuestas sobre el mundo ferroviario.",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#1a4488",
+    "theme_color": "#1a4488",
+    "icons": [
+      {
+        "src": "icontrivial.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "icontrivial.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ]
+  }

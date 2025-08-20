@@ -8,15 +8,16 @@ let questionsPerPlayer = 5;
 let shuffledQuestions = [];
 let feedbackTimer = null;
 let questionTimer = null;
-// --- INICIO DE LA MODIFICACIÓN: Duración del temporizador reducida ---
 const TIMER_DURATION = 10;
-// --- FIN DE LA MODIFICACIÓN ---
 let timeRemaining = TIMER_DURATION;
+let isGamePaused = false; 
 let usedRandomNames = new Set();
 let usedRandomAvatars = new Set();
 let usedRandomColors = new Set();
 let currentPlayerAvatarSelectionIndex = -1;
 let maxQuestionsAvailable = 0;
+let selectedCategories = [];
+
 
 // --- DATOS CONSTANTES ---
 const MAX_PLAYERS = 8;
@@ -28,26 +29,36 @@ const defaultPlayerColors = [
     '#20B2AA', '#FF1493', '#00BFFF', '#7FFF00', '#BA55D3', '#F4A460', 
     '#FF69B4', '#00FFFF', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'
   ];
-// --- INICIO DE LA MODIFICACIÓN: Icono añadido para la categoría faltante ---
 const CATEGORY_ICONS = {
-    "Elementos Estructurales de la Vía": "fas fa-trowel-bricks", "Sistemas y Tecnologías": "fas fa-microchip",
-    "Historia Ferroviaria": "fas fa-landmark", "Infraestructura y Vía de Alta Velocidad": "fas fa-bridge-water",
-    "Seguridad y Normativa": "fas fa-shield-halved", "Maquinaria Pesada de Vía": "fas fa-tractor",
-    "Energía y Catenaria": "fas fa-bolt", "Comunicaciones": "fas fa-tower-broadcast",
-    "Material Rodante": "fas fa-train-subway", "Operación y Circulación": "fas fa-route", 
-    "Instalaciones de Seguridad": "fas fa-traffic-light", "default": "fas fa-question-circle"
+    "Elementos Estructurales de la Vía": "fas fa-layer-group",
+    "Sistemas y Tecnologías": "fas fa-microchip",
+    "Historia Ferroviaria": "fas fa-landmark",
+    "Infraestructura y Vía de Alta Velocidad": "fas fa-road",
+    "Seguridad y Normativa": "fas fa-shield-alt",
+    "Maquinaria Pesada de Vía": "fas fa-tractor",
+    "Energía y Catenaria": "fas fa-bolt",
+    "Comunicaciones": "fas fa-tower-broadcast",
+    "Material Rodante": "fas fa-train-subway",
+    "Operación y Circulación": "fas fa-route", 
+    "Instalaciones de Seguridad": "fas fa-traffic-light",
+    "default": "fas fa-question-circle"
 };
-// --- FIN DE LA MODIFICACIÓN ---
 
 // --- REFERENCIAS A ELEMENTOS DEL DOM ---
 const splashScreen = document.getElementById('splash-screen');
 const playerConfigScreen = document.getElementById('player-config-screen');
+const categoryConfigScreen = document.getElementById('category-config-screen');
+const categoryGrid = document.getElementById('category-grid');
+const selectAllCategoriesBtn = document.getElementById('select-all-categories-btn');
+const startGameFromCategoriesBtn = document.getElementById('start-game-from-categories-btn');
 const roundConfigScreen = document.getElementById('round-config-screen');
 const gameScreen = document.getElementById('game-screen');
 const endScreen = document.getElementById('end-screen');
 const startGameBtn = document.getElementById('start-game-btn');
 const playerCardsGrid = document.getElementById('player-cards-grid');
 const startMatchBtn = document.getElementById('start-match-btn');
+const backToPlayersBtn = document.getElementById('back-to-players-btn');
+const backToCategoriesBtn = document.getElementById('back-to-categories-btn');
 const decreaseRoundsBtn = document.getElementById('decrease-rounds-btn');
 const increaseRoundsBtn = document.getElementById('increase-rounds-btn');
 const roundCountSpan = document.getElementById('round-count');
@@ -91,6 +102,10 @@ let categoryIcon, categoryNameSpan;
 const questionImageContainer = document.getElementById('question-image-container');
 const questionImage = document.getElementById('question-image');
 const saveAvatarBtn = document.getElementById('save-avatar-btn');
+// /* CAMBIO INICIA: Referencias para el nuevo menú de comodines */
+const toggleJokersBtn = document.getElementById('toggle-jokers-btn');
+const jokersDropdown = document.getElementById('jokers-dropdown');
+// /* CAMBIO TERMINA */
 
 
 // --- FUNCIONES DE UTILIDAD ---
@@ -118,8 +133,13 @@ const getRandomItem = (array, usedSet) => {
 function initPlayerConfigScreen() {
     if (players.length === 0) {
         players.push({ 
-            name: `Jugador 1`, score: 0, hasFiftyFiftyJoker: true, hasAddTimeJoker: true, hasPassJoker: true,
-            avatar: getRandomItem(avatarIcons, usedRandomAvatars), color: getRandomItem(defaultPlayerColors, usedRandomColors) 
+            name: getRandomItem(randomRailwayNames, usedRandomNames), 
+            score: 0, 
+            hasFiftyFiftyJoker: true, 
+            hasAddTimeJoker: true, 
+            hasPassJoker: true,
+            avatar: getRandomItem(avatarIcons, usedRandomAvatars), 
+            color: getRandomItem(defaultPlayerColors, usedRandomColors) 
         });
     }
     renderPlayerCards();
@@ -153,8 +173,13 @@ function renderPlayerCards() {
         addCard.onclick = () => {
             if (players.length < MAX_PLAYERS) {
                 players.push({
-                    name: `Jugador ${players.length + 1}`, score: 0, hasFiftyFiftyJoker: true, hasAddTimeJoker: true, hasPassJoker: true,
-                    avatar: getRandomItem(avatarIcons, usedRandomAvatars), color: getRandomItem(defaultPlayerColors, usedRandomColors)
+                    name: getRandomItem(randomRailwayNames, usedRandomNames),
+                    score: 0, 
+                    hasFiftyFiftyJoker: true, 
+                    hasAddTimeJoker: true, 
+                    hasPassJoker: true,
+                    avatar: getRandomItem(avatarIcons, usedRandomAvatars), 
+                    color: getRandomItem(defaultPlayerColors, usedRandomColors)
                 });
                 renderPlayerCards();
             }
@@ -164,7 +189,6 @@ function renderPlayerCards() {
     
     addCardListeners();
 }
-
 function addCardListeners() {
     document.querySelectorAll('.player-avatar-config').forEach(avatar => {
         avatar.onclick = (e) => openAvatarSelectionModal(parseInt(e.currentTarget.dataset.playerIndex));
@@ -194,7 +218,6 @@ function addCardListeners() {
         };
     });
 }
-
 function openAvatarSelectionModal(playerIndex) {
     currentPlayerAvatarSelectionIndex = playerIndex;
     const player = players[playerIndex];
@@ -229,7 +252,6 @@ function openAvatarSelectionModal(playerIndex) {
     
     avatarSelectionModal.classList.add('active');
 }
-
 function updateAvatarSelectionModal() {
     const player = players[currentPlayerAvatarSelectionIndex];
     avatarGrid.querySelectorAll('.avatar-option').forEach(opt => {
@@ -239,8 +261,93 @@ function updateAvatarSelectionModal() {
         opt.classList.toggle('selected', opt.style.backgroundColor === player.color);
     });
 }
-
 function hideAvatarSelectionModal() { avatarSelectionModal.classList.remove('active'); }
+
+// --- LÓGICA PARA LA PANTALLA DE CATEGORÍAS ---
+function initCategoryConfigScreen() {
+    categoryGrid.innerHTML = '';
+    const allCategories = Object.keys(gameData.preguntas);
+
+    allCategories.forEach(category => {
+        const button = document.createElement('button');
+        button.className = 'category-btn';
+        button.dataset.category = category;
+        const iconClass = CATEGORY_ICONS[category] || CATEGORY_ICONS.default;
+
+        button.innerHTML = `
+            <i class="${iconClass}"></i>
+            <span class="category-name">${category}</span>
+            <i class="fas fa-check-circle check-icon"></i>
+        `;
+        
+        if (selectedCategories.includes(category)) {
+            button.classList.add('selected');
+        }
+
+        button.addEventListener('click', () => {
+            button.classList.toggle('selected');
+            const categoryName = button.dataset.category;
+            if (selectedCategories.includes(categoryName)) {
+                selectedCategories = selectedCategories.filter(c => c !== categoryName);
+            } else {
+                selectedCategories.push(categoryName);
+            }
+            updateMaxQuestionsAvailable();
+            updateCategoryNextButtonState(); 
+        });
+
+        categoryGrid.appendChild(button);
+    });
+
+    updateMaxQuestionsAvailable();
+    updateCategoryNextButtonState();
+}
+
+function selectAllCategories() {
+    const allCategories = Object.keys(gameData.preguntas);
+    selectedCategories = [...allCategories];
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.add('selected'));
+    updateMaxQuestionsAvailable();
+    updateCategoryNextButtonState();
+}
+
+function deselectAllCategories() {
+    selectedCategories = [];
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('selected'));
+    updateMaxQuestionsAvailable();
+    updateCategoryNextButtonState();
+}
+
+function updateMaxQuestionsAvailable() {
+    maxQuestionsAvailable = selectedCategories.reduce((total, categoryName) => {
+        return total + (gameData.preguntas[categoryName] ? gameData.preguntas[categoryName].length : 0);
+    }, 0);
+}
+
+function updateCategoryNextButtonState() {
+    startGameFromCategoriesBtn.disabled = selectedCategories.length === 0;
+}
+
+
+// ================== INICIO MEJORA ==================
+// --- FUNCIONES DE PAUSA Y REANUDACIÓN DEL JUEGO ---
+function pauseGame() {
+    if (!isGamePaused && questionTimer) {
+        isGamePaused = true;
+        clearInterval(questionTimer);
+    }
+}
+
+function resumeGame() {
+    if (isGamePaused && gameScreen.classList.contains('active')) {
+        isGamePaused = false;
+        if (timeRemaining > 0) {
+            questionTimer = setInterval(updateTimer, 1000);
+        }
+    }
+}
+// =================== FIN MEJORA ====================
+
 
 // --- LÓGICA PRINCIPAL DEL JUEGO ---
 function startGame() {
@@ -251,15 +358,30 @@ function startGame() {
         p.hasPassJoker = true;
     });
     currentPlayerIndex = 0; currentQuestionIndex = 0;
+
     const allQuestions = [];
-    for (const category in gameData.preguntas) {
-        if (Array.isArray(gameData.preguntas[category])) {
-            gameData.preguntas[category].forEach(q => allQuestions.push({ ...q, category }));
+    selectedCategories.forEach(categoryName => {
+        const questionsInCategory = gameData.preguntas[categoryName];
+        if (questionsInCategory && Array.isArray(questionsInCategory)) {
+            questionsInCategory.forEach(q => {
+                allQuestions.push({ ...q, category: categoryName });
+            });
         }
-    }
+    });
+
     questionsPerGame = questionsPerPlayer * players.length;
+    if(questionsPerGame > allQuestions.length) {
+        questionsPerGame = allQuestions.length;
+    }
+
     shuffledQuestions = shuffleArray(allQuestions).slice(0, questionsPerGame);
     
+    if(shuffledQuestions.length === 0){
+        alert("No hay preguntas disponibles para las categorías seleccionadas. Volviendo al inicio.");
+        showScreen(splashScreen);
+        return;
+    }
+
     progressStationsContainer.innerHTML = '';
     for (let i = 0; i < questionsPerGame; i++) {
         const station = document.createElement('div');
@@ -277,11 +399,17 @@ function displayQuestion() {
     if (feedbackTimer) clearTimeout(feedbackTimer);
     feedbackOverlay.classList.remove('show');
     feedbackCard.classList.remove('correct-feedback', 'incorrect-feedback');
+    isGamePaused = false; 
+    jokersDropdown.classList.remove('active');
     
     const currentPlayer = players[currentPlayerIndex];
     fiftyFiftyBtn.disabled = !currentPlayer.hasFiftyFiftyJoker;
     addTimeBtn.disabled = !currentPlayer.hasAddTimeJoker;
     passQuestionBtn.disabled = !currentPlayer.hasPassJoker;
+    
+    [fiftyFiftyBtn, addTimeBtn, passQuestionBtn].forEach(btn => btn.classList.remove('used'));
+    
+    toggleJokersBtn.disabled = !currentPlayer.hasFiftyFiftyJoker && !currentPlayer.hasAddTimeJoker && !currentPlayer.hasPassJoker;
 
     timeRemaining = TIMER_DURATION;
     timerBar.style.transition = 'none';
@@ -323,43 +451,52 @@ function displayQuestion() {
 
         optionsGridDiv.innerHTML = '';
         question.opciones.forEach((opt, i) => {
-            const optLetter = String.fromCharCode(65 + i);
             const button = document.createElement('button');
             button.className = 'option-btn';
-            button.dataset.option = optLetter;
-            button.innerHTML = `<span class="option-text">${opt}</span>`;
-            button.onclick = () => checkAnswer(optLetter);
+            button.dataset.index = i;
+            button.innerHTML = `<span class="option-text">${opt.replace(/^[A-D]\)\s*/, '')}</span>`;
+            button.onclick = () => checkAnswer(i);
             button.classList.add('fade-in');
             button.style.animationDelay = `${i * 100}ms`;
             optionsGridDiv.appendChild(button);
         });
+        
+        // MEJORA: Revelar el área de la pregunta una vez que el contenido nuevo está listo.
+        const questionArea = document.getElementById('question-area');
+        questionArea.classList.remove('is-hidden');
 
         timerBar.style.transition = 'width 1s linear, background 1s ease';
         questionTimer = setInterval(updateTimer, 1000);
-    }, 500);
+    }, 300); // Reducimos ligeramente el delay para que sea más ágil
 }
 function updateTimer() {
     timeRemaining--;
     timerText.textContent = timeRemaining;
     const percentage = (timeRemaining / TIMER_DURATION) * 100;
     timerBar.style.width = `${percentage}%`;
-    if (timeRemaining <= 3) { // Adjusted for 10 second timer
+    if (timeRemaining <= 3) {
         timerBar.style.background = `linear-gradient(90deg, var(--rojo-incorrecto), var(--rojo-acento))`; 
         timerClock.style.backgroundColor = 'var(--rojo-acento)';
         timerClock.classList.add('pulsing');
     }
     if (timeRemaining <= 0) { timeUp(); }
 }
-function checkAnswer(selectedOption) {
+
+function checkAnswer(selectedIndex) {
     clearInterval(questionTimer);
     timerClock.classList.remove('pulsing');
     const q = shuffledQuestions[currentQuestionIndex];
-    const correct = q.respuestaCorrecta;
+    const correctIndex = q.respuestaCorrecta.charCodeAt(0) - 'A'.charCodeAt(0);
     
     document.querySelectorAll('.option-btn').forEach(b => {
         b.disabled = true;
-        const isCorrect = b.dataset.option === correct;
-        const isSelected = b.dataset.option === selectedOption;
+        const buttonIndex = parseInt(b.dataset.index);
+        const isCorrect = buttonIndex === correctIndex;
+        const isSelected = buttonIndex === selectedIndex;
+
+        if (!isCorrect && !isSelected) {
+            b.classList.add('faded');
+        }
 
         if (isCorrect || isSelected) {
             const icon = document.createElement('i');
@@ -378,7 +515,7 @@ function checkAnswer(selectedOption) {
         else if (isSelected) b.classList.add('incorrect');
     });
 
-    if (selectedOption === correct) {
+    if (selectedIndex === correctIndex) {
         const points = 10 + Math.floor(timeRemaining * 0.5);
         players[currentPlayerIndex].score += points;
         const scoreUpdate = document.createElement('div');
@@ -395,66 +532,79 @@ function checkAnswer(selectedOption) {
         feedbackTitle.className = 'incorrect-feedback';
         feedbackTitle.textContent = "ERROR";
     }
-
-    feedbackTextContent.textContent = q.explicacion;
-    feedbackOverlay.classList.add('show');
-    feedbackTimer = setTimeout(() => goToNextQuestion(true), 5000);
+    
+    setTimeout(() => {
+        feedbackTextContent.textContent = q.explicacion;
+        feedbackOverlay.classList.add('show');
+        feedbackTimer = setTimeout(() => goToNextQuestion(true), 5000);
+    }, 800);
 }
 
 function timeUp() {
     clearInterval(questionTimer);
     timerClock.classList.remove('pulsing');
     const q = shuffledQuestions[currentQuestionIndex];
-    const correct = q.respuestaCorrecta;
+    const correctIndex = q.respuestaCorrecta.charCodeAt(0) - 'A'.charCodeAt(0);
     document.querySelectorAll('.option-btn').forEach(b => {
         b.disabled = true;
-        if (b.dataset.option === correct) {
+        if (parseInt(b.dataset.index) === correctIndex) {
             b.classList.add('correct');
             const icon = document.createElement('i');
             icon.className = 'answer-icon fas fa-check';
             b.appendChild(icon);
             void icon.offsetWidth;
             icon.classList.add('visible');
+        } else {
+            b.classList.add('faded');
         }
     });
 
     feedbackCard.classList.add('incorrect-feedback');
     feedbackTitle.className = 'incorrect-feedback';
     feedbackTitle.textContent = "SE ACABÓ EL TIEMPO";
-    feedbackTextContent.textContent = q.explicacion;
-
-    feedbackOverlay.classList.add('show');
-    feedbackTimer = setTimeout(() => goToNextQuestion(true), 5000);
+    
+    setTimeout(() => {
+        feedbackTextContent.textContent = q.explicacion;
+        feedbackOverlay.classList.add('show');
+        feedbackTimer = setTimeout(() => goToNextQuestion(true), 5000);
+    }, 800);
 }
 
 function goToNextQuestion(advancePlayer) {
     if (feedbackTimer) clearTimeout(feedbackTimer);
     feedbackOverlay.classList.remove('show');
     
+    // MEJORA: Ocultar el área de la pregunta ANTES de la transición.
+    const questionArea = document.getElementById('question-area');
+    questionArea.classList.add('is-hidden');
+    
     currentQuestionIndex++;
     updateGameProgress();
     
     if (currentQuestionIndex >= shuffledQuestions.length) {
-        endGame();
+        // Añadimos un pequeño delay para que la animación de ocultar termine antes de ir a la pantalla final
+        setTimeout(endGame, 500);
         return;
     }
     
     if (advancePlayer) {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        // El delay de la transición de turno da tiempo a que la animación 'is-hidden' termine
         showTurnTransition(displayQuestion);
     } else {
-        displayQuestion();
+        // Si no hay transición de turno, esperamos un poco antes de mostrar la nueva pregunta
+        setTimeout(displayQuestion, 500);
     }
 }
 
 function updateGameProgress() {
     if (!progressTrainIcon || !progressText) return;
-
-    progressText.textContent = `Pregunta ${currentQuestionIndex + 1} de ${questionsPerGame}`;
+    const currentDisplayQuestion = Math.min(currentQuestionIndex + 1, questionsPerGame);
+    progressText.textContent = `Pregunta ${currentDisplayQuestion} de ${questionsPerGame}`;
 
     const totalSteps = questionsPerGame > 1 ? questionsPerGame - 1 : 1;
     let progressPercentage = (currentQuestionIndex / totalSteps) * 100;
-    if (currentQuestionIndex === questionsPerGame -1) progressPercentage = 100;
+    if (currentQuestionIndex >= questionsPerGame -1) progressPercentage = 100;
 
     progressTrainIcon.style.left = `${progressPercentage}%`;
     
@@ -469,29 +619,32 @@ function updateGameProgress() {
     });
 }
 
-
 function useFiftyFiftyJoker() {
     const currentPlayer = players[currentPlayerIndex];
     if (!currentPlayer.hasFiftyFiftyJoker) return;
+    fiftyFiftyBtn.classList.add('used');
     currentPlayer.hasFiftyFiftyJoker = false;
     fiftyFiftyBtn.disabled = true;
 
     const q = shuffledQuestions[currentQuestionIndex];
-    const incorrectOptions = ['A', 'B', 'C', 'D'].filter(opt => opt !== q.respuestaCorrecta);
-    const optionsToHide = shuffleArray(incorrectOptions).slice(0, 2);
+    const correctIndex = q.respuestaCorrecta.charCodeAt(0) - 'A'.charCodeAt(0);
+    const incorrectIndices = [0, 1, 2, 3].filter(index => index !== correctIndex);
+    const indicesToHide = shuffleArray(incorrectIndices).slice(0, 2);
     
-    optionsToHide.forEach(opt => {
-        const button = optionsGridDiv.querySelector(`[data-option="${opt}"]`);
+    indicesToHide.forEach(index => {
+        const button = optionsGridDiv.querySelector(`[data-index="${index}"]`);
         if (button) { button.style.visibility = 'hidden'; }
     });
+    jokersDropdown.classList.remove('active');
 }
 function useAddTimeJoker() {
     const currentPlayer = players[currentPlayerIndex];
     if (!currentPlayer.hasAddTimeJoker) return;
+    addTimeBtn.classList.add('used');
     currentPlayer.hasAddTimeJoker = false;
     addTimeBtn.disabled = true;
 
-    timeRemaining += 5; // Ajustado a +5 segundos
+    timeRemaining += 5;
     if (timeRemaining > TIMER_DURATION) {
         timeRemaining = TIMER_DURATION;
     }
@@ -504,19 +657,22 @@ function useAddTimeJoker() {
     
     const percentage = (timeRemaining / TIMER_DURATION) * 100;
     timerBar.style.width = `${percentage}%`;
-    if (timeRemaining > 3) { // Ajustado para 10 segundo timer
+    if (timeRemaining > 3) {
         timerBar.style.background = `linear-gradient(90deg, var(--rojo-acento), var(--azul-claro), var(--rojo-acento))`;
         timerClock.style.backgroundColor = 'var(--azul-principal)';
         timerClock.classList.remove('pulsing');
     }
+    jokersDropdown.classList.remove('active');
 }
 
 function usePassJoker() {
     const currentPlayer = players[currentPlayerIndex];
     if (!currentPlayer.hasPassJoker) return;
     clearInterval(questionTimer);
+    passQuestionBtn.classList.add('used');
     currentPlayer.hasPassJoker = false;
     passQuestionBtn.disabled = true;
+    jokersDropdown.classList.remove('active');
     goToNextQuestion(false);
 }
 
@@ -534,7 +690,7 @@ function endGame() {
     winnerCardContainer.innerHTML = '';
 
     if (players.length > 0) {
-        const isTie = players.length > 1 && players[0].score === players[1].score;
+        const isTie = players.length > 1 && players[0].score === players[1].score && players[0].score > 0;
         if (isTie) {
             const tiedWinners = players.filter(p => p.score === players[0].score);
             const winnerNamesHTML = tiedWinners.map(p => `<div class="winner-name">${p.name}</div>`).join('');
@@ -548,6 +704,7 @@ function endGame() {
     const podiumPlayers = players.slice(0, 3);
     const podiumElements = [];
     podiumPlayers.forEach((player, rank) => {
+        if (player.score === 0 && players.filter(p => p.score > 0).length > 0) return;
         let rankClass = '';
         if (rank === 0) rankClass = 'gold'; else if (rank === 1) rankClass = 'silver'; else if (rank === 2) rankClass = 'bronze';
         const place = document.createElement('div');
@@ -588,6 +745,7 @@ function generateConfetti() {
 
 // --- MODALES Y RÉCORDS ---
 function showScoreModal() {
+    pauseGame();
     modalScoreList.innerHTML = '';
     const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
     const leaderScore = sortedPlayers.length > 0 ? (sortedPlayers[0].score || 1) : 1;
@@ -628,9 +786,20 @@ function showTurnTransition(callback) {
     }, 1500);
 }
 
-function hideScoreModal() { scoreModal.classList.remove('active'); }
-function showConfirmExitModal() { confirmExitModal.classList.add('active'); }
-function hideConfirmExitModal() { confirmExitModal.classList.remove('active'); }
+function hideScoreModal() { 
+    scoreModal.classList.remove('active');
+    resumeGame();
+}
+
+function showConfirmExitModal() { 
+    pauseGame(); 
+    confirmExitModal.classList.add('active'); 
+}
+
+function hideConfirmExitModal() { 
+    confirmExitModal.classList.remove('active');
+    resumeGame();
+}
 
 function saveHighScore(name, score) {
     if (score === 0) return;
@@ -658,7 +827,25 @@ function hideHighScoresModal() { highScoresModal.classList.remove('active'); }
 
 function initializeEventListeners() {
     startGameBtn.addEventListener('click', () => { showScreen(playerConfigScreen); initPlayerConfigScreen(); });
-    startMatchBtn.addEventListener('click', () => { showScreen(roundConfigScreen); });
+    startMatchBtn.addEventListener('click', () => { showScreen(categoryConfigScreen); initCategoryConfigScreen(); });
+    
+    selectAllCategoriesBtn.addEventListener('click', () => {
+        const totalCategories = categoryGrid.children.length;
+        if (selectedCategories.length < totalCategories) {
+            selectAllCategories();
+        } else {
+            deselectAllCategories();
+        }
+    });
+
+    startGameFromCategoriesBtn.addEventListener('click', () => {
+        if (startGameFromCategoriesBtn.disabled) return;
+        showScreen(roundConfigScreen);
+    });
+    
+    backToPlayersBtn.addEventListener('click', () => showScreen(playerConfigScreen));
+    backToCategoriesBtn.addEventListener('click', () => showScreen(categoryConfigScreen));
+
     decreaseRoundsBtn.addEventListener('click', () => { let count = parseInt(roundCountSpan.textContent); if (count > 1) roundCountSpan.textContent = --count; });
     
     increaseRoundsBtn.addEventListener('click', () => { 
@@ -670,12 +857,27 @@ function initializeEventListeners() {
     startGameFromRoundsBtn.addEventListener('click', () => { questionsPerPlayer = parseInt(roundCountSpan.textContent); startGame(); });
     showScoreBtn.addEventListener('click', showScoreModal);
     highScoresBtn.addEventListener('click', showHighScoresModal);
-    playAgainBtn.addEventListener('click', () => { players = []; showScreen(splashScreen); });
+    playAgainBtn.addEventListener('click', () => { players = []; selectedCategories = []; showScreen(splashScreen); });
     fiftyFiftyBtn.addEventListener('click', useFiftyFiftyJoker);
     addTimeBtn.addEventListener('click', useAddTimeJoker);
     passQuestionBtn.addEventListener('click', usePassJoker);
     exitGameBtn.addEventListener('click', showConfirmExitModal);
     saveAvatarBtn.addEventListener('click', hideAvatarSelectionModal);
+    
+    // /* CAMBIO INICIA: Lógica para el menú de comodines */
+    toggleJokersBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evita que el clic se propague al 'document' y cierre el menú inmediatamente
+        jokersDropdown.classList.toggle('active');
+    });
+
+    // Cierra el menú si se hace clic en cualquier otro lugar
+    document.addEventListener('click', (e) => {
+        if (!jokersDropdown.contains(e.target) && !toggleJokersBtn.contains(e.target)) {
+            jokersDropdown.classList.remove('active');
+        }
+    });
+    // /* CAMBIO TERMINA */
+
 
     document.querySelectorAll('.close-btn').forEach(b => {
         b.onclick = (e) => {
@@ -698,7 +900,7 @@ function initializeEventListeners() {
         };
     });
     
-    confirmExitYesBtn.addEventListener('click', () => { if (questionTimer) clearInterval(questionTimer); players = []; hideConfirmExitModal(); showScreen(splashScreen); });
+    confirmExitYesBtn.addEventListener('click', () => { if (questionTimer) clearInterval(questionTimer); isGamePaused = false; players = []; selectedCategories = []; hideConfirmExitModal(); showScreen(splashScreen); });
     confirmExitNoBtn.addEventListener('click', hideConfirmExitModal);
 }
 
@@ -712,12 +914,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             gameData = data;
-            maxQuestionsAvailable = 0;
-            for (const category in gameData.preguntas) {
-                if (Array.isArray(gameData.preguntas[category])) {
-                    maxQuestionsAvailable += gameData.preguntas[category].length;
-                }
-            }
             startGameBtn.disabled = false;
         })
         .catch(error => {

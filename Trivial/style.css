@@ -4,8 +4,10 @@
     --azul-claro: rgb(52, 99, 172);
     --azul-aun-mas-claro: rgb(107, 150, 207);
     --blanco-puro: rgb(255, 255, 255);
+    --blanco-roto: #F8F9FA; /* NUEVO: Para el fondo principal, más suave que el blanco puro */
     --gris-oscuro: rgb(50, 50, 50);
     --gris-claro: rgb(230, 230, 230);
+    --gris-borde-sutil: #dee2e6; /* NUEVO: Un borde más elegante que el gris claro */
     --verde-correcto: rgb(76, 175, 80);
     --rojo-incorrecto: rgb(244, 67, 54);
     --gold: #FFD700;
@@ -33,11 +35,10 @@ body {
 }
 
 .game-container { 
-    background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--blanco-roto); 
+    border: 1px solid var(--gris-borde-sutil); 
     border-radius: 20px; 
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); 
     width: 90%; 
     max-width: 1200px;
     display: flex; flex-direction: column; overflow: hidden; position: relative; 
@@ -66,7 +67,7 @@ body {
     transform: translateX(-100%);
     opacity: 0;
 }
-#player-config-screen { justify-content: space-between; }
+#player-config-screen, #category-config-screen { justify-content: space-between; }
 #game-screen {
     padding: 20px; 
     padding-top: 100px; 
@@ -79,10 +80,28 @@ body {
     padding: 15px 30px; border-radius: 10px; font-family: 'Poppins', sans-serif; 
     font-weight: 600; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; 
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); margin: 10px; 
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
 .btn:hover { background-color: var(--azul-claro); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
 .btn.secondary-btn { background-color: var(--azul-claro); }
 .btn.secondary-btn:hover { background-color: var(--azul-aun-mas-claro); }
+
+.btn:disabled, .btn-icon-with-text:disabled { /* CAMBIO */
+    background-color: var(--gris-oscuro);
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    color: var(--blanco-puro); /* CAMBIO */
+}
+.btn:disabled:hover, .btn-icon-with-text:disabled:hover { /* CAMBIO */
+    background-color: var(--gris-oscuro);
+    transform: none;
+    color: var(--blanco-puro); /* CAMBIO */
+}
+
 .splash-buttons { display: flex; flex-wrap: wrap; justify-content: center; }
 .close-btn { 
     position: absolute; top: 20px; right: 20px; background: none; border: none; 
@@ -91,13 +110,16 @@ body {
 }
 .close-btn:hover { color: var(--rojo-acento); transform: scale(1.1); }
 #splash-screen { 
-    background: none;
+    background: url('portada.png') no-repeat center center/cover;
     color: var(--blanco-puro);
 }
 #splash-screen h1 { 
-    font-size: 3.5rem; font-weight: 700; margin-bottom: 30px; 
+    font-size: 3.5rem; font-weight: 700; 
     color: var(--azul-principal);
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+    margin-bottom: +200px;
+    position: relative;
+    z-index: 1;
 }
 .splash-logo {
     font-size: 6rem; color: var(--azul-principal); margin-bottom: 20px;
@@ -109,7 +131,7 @@ body {
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
 }
-#player-config-screen h2, #round-config-screen h2 { font-size: 2.2rem; color: var(--azul-principal); margin-bottom: 20px; padding-top: 20px; }
+#player-config-screen h2, #round-config-screen h2, #category-config-screen h2 { font-size: 2.2rem; color: var(--azul-principal); margin-bottom: 20px; padding-top: 20px; }
 #player-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -119,7 +141,8 @@ body {
     flex-grow: 1;
 }
 .player-card-config, .add-player-card {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: var(--blanco-puro); 
+    border: 1px solid var(--gris-borde-sutil); 
     border-radius: 15px;
     padding: 20px;
     display: flex;
@@ -127,7 +150,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08); 
     position: relative;
     transition: all 0.3s ease;
     animation: card-appear 0.5s ease-out forwards;
@@ -140,7 +163,7 @@ body {
 }
 .player-card-config:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12); 
 }
 .player-avatar-config {
     width: 80px;
@@ -165,7 +188,7 @@ body {
 .player-card-config input[type="text"] {
     width: 100%;
     border: none;
-    border-bottom: 2px solid var(--gris-oscuro);
+    border-bottom: 2px solid var(--gris-borde-sutil); 
     background: transparent;
     text-align: center;
     font-size: 1.1rem;
@@ -191,7 +214,7 @@ body {
 }
 .card-actions .random-name-btn:hover {
     transform: scale(1.2) rotate(15deg);
-    color: var(--rojo-acento);
+    color: var(--azul-claro); 
 }
 .remove-player-btn {
     position: absolute;
@@ -213,20 +236,21 @@ body {
     background-color: rgb(230, 30, 45);
 }
 .add-player-card {
-    border: 3px dashed var(--gris-oscuro);
+    border: 3px dashed var(--gris-borde-sutil); 
     cursor: pointer;
     color: var(--gris-oscuro);
 }
 .add-player-card:hover {
     border-color: var(--azul-principal);
     color: var(--azul-principal);
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: var(--blanco-puro);
 }
 .add-player-card i {
     font-size: 3rem;
 }
 .config-card {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: var(--blanco-puro); 
+    border: 1px solid var(--gris-borde-sutil); 
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -257,8 +281,152 @@ body {
     text-align: center;
     color: var(--azul-principal);
 }
-.game-header { position: absolute; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: var(--blanco-puro); border-bottom: 2px solid var(--gris-claro); box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10; gap: 15px; }
-.game-header .header-group { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+#category-config-screen {
+    justify-content: space-between;
+}
+#category-actions {
+    margin-bottom: 20px;
+}
+#category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    width: 100%;
+    padding: 20px;
+    flex-grow: 1;
+    align-content: flex-start;
+}
+.category-btn {
+    background-color: var(--blanco-puro);
+    color: var(--azul-principal);
+    border: 2px solid var(--gris-borde-sutil); 
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+.category-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    border-color: var(--azul-principal);
+}
+.category-btn.selected {
+    background-color: var(--azul-principal);
+    color: var(--blanco-puro);
+    border-color: var(--azul-principal);
+}
+.category-btn i {
+    font-size: 1.5rem;
+    min-width: 25px;
+    text-align: center;
+    color: var(--azul-claro); 
+}
+.category-btn.selected i {
+    color: var(--blanco-puro);
+}
+.category-btn .check-icon {
+    margin-left: auto;
+    font-size: 1.5rem;
+    color: var(--verde-correcto);
+    transform: scale(0);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+.category-btn.selected .check-icon {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.nav-buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 10px 0;
+    flex-wrap: wrap;
+}
+
+/* CAMBIO INICIA: Estilos para el nuevo header simplificado y el menú de comodines */
+.game-header { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 25px; 
+    background-color: var(--blanco-puro); 
+    border-bottom: 2px solid var(--gris-borde-sutil); 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+    z-index: 10; 
+    gap: 15px; 
+}
+.game-header .header-group { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px;
+}
+.header-group.player-info {
+    justify-content: flex-start;
+    flex: 1;
+}
+.header-group.central-controls {
+    justify-content: center;
+    flex: 2;
+}
+.header-group.exit-info {
+    justify-content: flex-end;
+    flex: 1;
+}
+.jokers-main-container {
+    position: relative;
+    display: inline-block;
+}
+#toggle-jokers-btn {
+    background-color: var(--gris-claro);
+}
+#toggle-jokers-btn i {
+    color: var(--rojo-acento);
+}
+.jokers-dropdown-content {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    right: 0;
+    top: calc(100% + 5px);
+    background-color: var(--blanco-puro);
+    border: 1px solid var(--gris-borde-sutil);
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    z-index: 15;
+    min-width: 200px;
+    padding: 10px;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.jokers-dropdown-content.active {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+.jokers-dropdown-content .joker-btn {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px 15px;
+}
+/* CAMBIO TERMINA */
+
 .game-header .btn-icon { background: none; border: none; font-size: 1.8rem; color: var(--azul-principal); cursor: pointer; transition: transform 0.2s ease, color 0.3s ease; }
 .game-header .btn-icon:hover { transform: scale(1.1); color: var(--rojo-acento); }
 .btn-icon-with-text {
@@ -272,14 +440,6 @@ body {
 }
 .btn-icon-with-text i { font-size: 1.8rem; }
 .btn-icon-with-text .btn-text { font-size: 1rem; font-weight: 500; }
-.jokers-container, .classification-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background-color: var(--gris-claro);
-    padding: 5px 15px;
-    border-radius: 10px;
-}
 .jokers-label {
     font-weight: 600;
     color: var(--gris-oscuro);
@@ -294,12 +454,13 @@ body {
 .joker-btn:disabled { background-color: var(--gris-oscuro); cursor: not-allowed; opacity: 0.7; transform: none; }
 #question-area { 
     position: relative; 
-    background-color: var(--gris-claro); 
+    background-color: var(--blanco-puro); 
+    border: 1px solid var(--gris-borde-sutil); 
     border-radius: 15px; 
     padding: 20px; 
     width: 100%; 
     max-width: 1000px;
-    box-shadow: inset 0 3px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08); 
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -312,10 +473,10 @@ body {
     align-items: center; 
     justify-content: center; 
     margin: 0 auto 15px auto;
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: var(--gris-claro); 
     padding: 8px 15px;
     border-radius: 20px;
-    border: 1px solid var(--azul-aun-mas-claro);
+    border: 1px solid var(--gris-borde-sutil); 
 }
 .category-display i { 
     color: var(--rojo-acento); 
@@ -450,7 +611,7 @@ body {
 }
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 1rem; }
 .modal-overlay.active { opacity: 1; pointer-events: all; }
-.modal-content { background: white; border-radius: 15px; padding: 30px; width: 100%; max-width: 500px; position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.4); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.modal-content { background: var(--blanco-puro); border-radius: 15px; padding: 30px; width: 100%; max-width: 500px; position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.4); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); } 
 #score-modal .modal-content, #high-scores-modal .modal-content { max-width: 650px; }
 .modal-overlay.active .modal-content { transform: scale(1); }
 .modal-content h3 { color: var(--rojo-acento); margin-bottom: 20px; font-size: 2.2rem; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
@@ -466,6 +627,7 @@ body {
     margin: 0;
     padding: 12px 20px;
     font-size: 1rem;
+    justify-content: center; 
 }
 #confirm-exit-yes {
     background-color: var(--rojo-incorrecto);
@@ -694,9 +856,7 @@ body {
 .progress-icon {
     font-size: 1.8rem;
     color: var(--azul-principal);
-    /* --- INICIO DE LA MODIFICACIÓN: Robusted del icono en Flexbox --- */
     flex-shrink: 0;
-    /* --- FIN DE LA MODIFICACIÓN --- */
 }
 .game-progress-bar-bg {
     width: 100%;
@@ -717,6 +877,7 @@ body {
     transition: left 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     z-index: 1;
+    transition: left 1s cubic-bezier(0.25, 1, 0.5, 1);
 }
 #progress-stations-container {
     position: absolute;
@@ -753,15 +914,6 @@ body {
     50% { box-shadow: 0 0 12px rgba(203, 24, 35, 1); }
     100% { box-shadow: 0 0 5px rgba(203, 24, 35, 0.4); }
 }
-.centered-button-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-}
-.centered-button-container .btn {
-    margin: 0;
-}
 .legend-info {
     position: absolute;
     bottom: 20px;
@@ -786,10 +938,7 @@ body {
     .game-container { 
         width: 100%; height: 100%; max-height: none; border-radius: 0;
         backdrop-filter: none;
-        background-color: var(--blanco-puro);
-    }
-    #splash-screen {
-        background: linear-gradient(180deg, var(--azul-principal) 0%, var(--azul-claro) 100%);
+        background-color: var(--blanco-roto); 
     }
     #splash-screen h1, #splash-screen .splash-logo {
         color: var(--blanco-puro);
@@ -799,61 +948,113 @@ body {
     #splash-screen, #end-screen { justify-content: center; padding-top: 15px; }
     .screen:not(.active) { display: none; }
     .screen.active { position: relative; height: 100%; display: flex; }
-    #player-config-screen, #round-config-screen { padding-top: 20px; }
+    #player-config-screen, #round-config-screen, #category-config-screen { padding-top: 20px; }
     #game-screen { padding-top: 90px; padding-left: 15px; padding-right: 15px; padding-bottom: 15px; }
     .close-btn { font-size: 1.5rem; top: 15px; right: 15px; }
-    .game-header { padding: 10px 15px; height: auto; flex-wrap: wrap; justify-content: center; }
-    .game-header .header-group .btn-icon { font-size: 1.5rem; }
-    .classification-container { display: none; }
-    #current-player-turn-display { font-size: 1rem; padding: 6px 12px; }
-    .joker-btn { padding: 8px 15px; font-size: 0.9rem; }
     #splash-screen h1 { font-size: 2.5rem; }
-    .btn { padding: 12px 25px; font-size: 1rem; margin: 8px; }
-    #player-config-screen h2, #round-config-screen h2 { font-size: 1.8rem; margin-bottom: 20px; }
-    #player-cards-grid { grid-template-columns: 1fr; }
-    #round-config-screen .round-count-selector span { font-size: 3rem; margin: 0 20px; }
-    #round-config-screen .round-count-selector button { width: 45px; height: 45px; font-size: 2rem; }
-    #question-area { padding: 20px; }
-    .category-display { font-size: 1rem; margin-bottom: 10px; padding: 6px 12px; }
-    .category-display i { font-size: 1.3rem; }
-    #question-image-container { max-height: 150px; margin: 10px auto; } 
-    #question-text { font-size: 1.3rem; margin-bottom: 20px; min-height: 40px; }
-    .options-grid { grid-template-columns: 1fr; gap: 10px; }
-    .option-btn { padding: 12px 15px; font-size: 1rem; }
-    #feedback-overlay { padding: 15px; }
-    #feedback-card { padding: 20px; max-width: 90%; }
-    #feedback-text-content { font-size: 1rem; }
-    #end-screen h2 { font-size: 2rem; }
-    .winner-card { padding: 20px; margin: 15px 0; width: 100%; }
-    .winner-card h3 { font-size: 1.6rem; }
-    .winner-card .trophy-icon { font-size: 3rem; margin: 10px 0; }
-    .winner-card .winner-name { font-size: 1.8rem; }
-    .winner-card .winner-score { font-size: 1.2rem; }
-    .podium-container { height: 150px; margin-top: 5px; margin-bottom: 15px; }
-    .podium-place { padding: 8px; }
+    .btn { padding: 12px 24px; font-size: 1rem; }
+    .options-grid { grid-template-columns: 1fr; }
+    .option-btn { font-size: 1rem; padding: 15px; }
+    #question-text { font-size: 1.2rem; }
+    #podium-container { height: 150px; }
     .podium-place .podium-name { font-size: 1rem; }
-    .podium-place .podium-score { font-size: 0.9rem; }
-    .podium-place .podium-rank { font-size: 2rem; }
-    .modal-content { padding: 20px; }
-    .modal-content h3 { font-size: 1.8rem; gap: 8px; }
-    #score-modal .modal-content, #high-scores-modal .modal-content { max-width: 90vw; }
-    .score-card-modal { padding: 10px; gap: 10px; }
-    .score-card-rank { font-size: 1.2rem; min-width: 30px; }
-    .score-card-name { font-size: 0.95rem; }
-    .score-card-score { font-size: 1.3rem; }
-    #avatar-grid { grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); gap: 10px; }
-    .avatar-option i { font-size: 2rem; }
-    #color-palette { gap: 8px; }
-    .color-option { width: 30px; height: 30px; }
-    .confirm-exit-buttons { flex-direction: column; align-items: stretch; }
-    .legend-info {
-        display: none;
+    #round-config-screen .round-count-selector button { width: 45px; height: 45px; font-size: 2rem; }
+    #round-config-screen .round-count-selector span { font-size: 3.5rem; margin: 0 20px; }
+    .game-header { padding: 8px 15px; flex-wrap: wrap; height: auto; justify-content: center; }
+    #current-player-turn-display { order: 1; flex-basis: 50%; justify-content: flex-start; }
+    .game-header .header-group.central-controls { order: 3; flex-basis: 100%; justify-content: space-around; }
+    .header-group.exit-info { order: 2; flex-basis: 40%; justify-content: flex-end;}
+}
+
+@media (max-width: 480px) {
+    #splash-screen h1 { font-size: 2rem; margin-bottom: 150px; }
+    .splash-buttons { flex-direction: column; gap: 5px; }
+    .btn { width: 100%; margin: 5px 0; justify-content: center; }
+    #player-cards-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+    .player-avatar-config { width: 60px; height: 60px; }
+    .player-avatar-config i { font-size: 2rem; }
+    .podium-container { flex-direction: column; height: auto; align-items: center; gap: 5px; }
+    .podium-place { width: 80%; height: auto !important; position: relative; animation-delay: 1s !important; order: 0 !important; }
+    .winner-card .winner-name { font-size: 1.8rem; }
+    #category-grid { grid-template-columns: 1fr; }
+}
+
+
+/* ================================================================== */
+/* =================== INICIO: CÓDIGOS DE MEJORA ==================== */
+/* ================================================================== */
+
+/* --- MEJORA 1: Feedback visual para comodines --- */
+.joker-btn.used {
+    animation: joker-used-animation 0.5s cubic-bezier(0.55, 0.09, 0.68, 0.54) forwards;
+}
+
+@keyframes joker-used-animation {
+    0% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0) rotate(360deg);
+        opacity: 0;
     }
 }
-@media (max-width: 480px) {
-    body { padding: 0; }
-    .joker-btn .joker-text { display: none; }
-    .jokers-label { display: none; }
-    .btn-icon-with-text .btn-text { display: none; }
-    .joker-btn { padding: 8px; width: 40px; height: 40px; justify-content: center; }
+
+/* --- MEJORA 2: Visualización centrada de la explicación --- */
+#feedback-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(248, 249, 250, 0.9);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* ¡CAMBIO CLAVE! Alineamos al centro */
+    padding: 20px;
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+#feedback-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+}
+#feedback-card {
+    background-color: var(--blanco-puro);
+    color: var(--gris-oscuro);
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    width: 95%; /* Hacemos que sea responsive */
+    max-width: 600px; /* Le damos un máximo para pantallas grandes */
+    box-shadow: 0 5px 25px rgba(0,0,0,0.15); /* Sombra en todas direcciones */
+    border: 3px solid transparent; /* El borde completo, no solo arriba */
+    transform: scale(0.9); /* Empieza un poco más pequeña */
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+#feedback-overlay.show #feedback-card {
+    transform: scale(1); /* Crece a su tamaño final */
+}
+#feedback-card.correct-feedback {
+    border-color: var(--verde-correcto);
+}
+#feedback-card.incorrect-feedback {
+    border-color: var(--rojo-incorrecto);
+}
+.option-btn.faded {
+    opacity: 0.5;
+    transform: scale(0.98);
+    background-color: var(--gris-oscuro);
+    pointer-events: none;
+}
+
+/* --- MEJORA 3: Transición suave del área de pregunta --- */
+#question-area {
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+#question-area.is-hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
 }
