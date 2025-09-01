@@ -1,0 +1,5 @@
+{
+  "name": "Pronóstico de Viento Visual",
+  "description": "Una aplicación web visual e interactiva para mostrar el pronóstico del tiempo y el viento, inspirada en Windguru. Muestra datos como la velocidad del viento, las ráfagas, la dirección del viento, la altura de las olas y la temperatura en un formato gráfico y tabular.",
+  "requestFramePermissions": []
+}
