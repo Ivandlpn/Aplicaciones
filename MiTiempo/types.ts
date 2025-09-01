@@ -1,12 +1,10 @@
-
 export interface ForecastEntry {
   time: string;
   windSpeed: number;
   windGust: number;
   windDirection: number;
-  waveHeight: number;
-  wavePeriod: number;
   temperature: number;
+  feelsLike: number;
   cloudCover: number;
   precipitation: number;
 }
