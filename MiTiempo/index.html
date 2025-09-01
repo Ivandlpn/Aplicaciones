@@ -1,319 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Paseo por la Playa - Pronóstico</title>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React & ReactDOM CDN -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <!-- Babel Standalone CDN (para transpilar JSX en el navegador) -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Recharts CDN -->
-    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
-    
-    <style>
-      body { font-family: 'Inter', sans-serif; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☀️ Pronóstico del Tiempo | Arenales del Sol</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Carga de la librería Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gradient-to-b from-sky-200 to-amber-100 text-slate-800">
+<body>
+    <div class="dashboard-container">
+        <header class="header">
+            <h1 id="greeting"></h1>
+            <p>Condiciones para tu paseo en <span class="location">Arenales del Sol, ES</span></p>
+            <p class="generation-date">Fecha de generación: <span id="generation-timestamp"></span></p>
+        </header>
 
-    <div id="root"></div>
+        <nav class="day-tabs" id="day-tabs-container">
+            <!-- Las pestañas de los días se generarán aquí con JS -->
+            <p class="loading-message">Cargando días...</p>
+        </nav>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line } = Recharts;
-
-        // --- Lógica del Servicio Meteorológico (weatherService.ts) ---
-        const API_KEY = 'e84ff906e340479416a5dc273280afcc';
-        const LAT = 38.258; // Coordenadas para Arenales del Sol
-        const LON = -0.505;
-        const API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${LAT}&lon=${LON}&appid=${API_KEY}&units=metric&lang=es`;
-
-        const msToKnots = (ms) => Math.round(ms * 1.94384);
-
-        const getForecast = async () => {
-          const response = await fetch(API_URL);
-          if (!response.ok) {
-            if (response.status === 401) {
-              throw new Error('Error de autenticación (401): La clave de la API parece ser inválida.');
-            }
-            throw new Error(`Error de red: ${response.status} ${response.statusText}`);
-          }
-          const data = await response.json();
-          if (!data.list || data.list.length === 0) {
-            throw new Error('La respuesta de la API no contiene datos de pronóstico.');
-          }
-
-          const dailyForecasts = {};
-          data.list.forEach((item) => {
-            const date = new Date(item.dt * 1000);
-            const dayKey = date.toISOString().split('T')[0];
-            if (!dailyForecasts[dayKey]) {
-              dailyForecasts[dayKey] = [];
-            }
-            const forecastEntry = {
-              time: date.toISOString(),
-              temperature: Math.round(item.main.temp),
-              feelsLike: Math.round(item.main.feels_like),
-              cloudCover: item.clouds.all,
-              windSpeed: msToKnots(item.wind.speed),
-              windGust: item.wind.gust ? msToKnots(item.wind.gust) : msToKnots(item.wind.speed),
-              windDirection: item.wind.deg,
-              precipitation: item.rain ? item.rain['3h'] || 0 : 0,
-            };
-            dailyForecasts[dayKey].push(forecastEntry);
-          });
-
-          return {
-            spotName: `${data.city.name}, ${data.city.country}`,
-            generatedAt: new Date().toISOString(),
-            dailyForecasts,
-          };
-        };
-
-        // --- Componentes de Iconos (Icons.tsx) ---
-        const SunIcon = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-        );
-        const MoonIcon = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-        );
-        const CloudIcon = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-            </svg>
-        );
-        const RainIcon = ({ className }) => (
-             <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15zm7-9l-2 4h4l-2 4" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19v1m4-1v1m-2 1v1" />
-            </svg>
-        );
-        const PartlyCloudyIcon = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5h8.25a4.5 4.5 0 004.5-4.5V15m-15 0l15 0m-15 0V9a4.5 4.5 0 014.5-4.5h2.25a4.5 4.5 0 014.5 4.5v1.5m-6.75 6.75v-6.75a4.5 4.5 0 014.5-4.5h2.25a4.5 4.5 0 014.5 4.5v6.75" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" style={{ transform: 'scale(0.7) translate(-5px, -5px)', stroke: 'orange' }}/>
-            </svg>
-        );
-        const WeatherIcon = ({ cloudCover, precipitation, size = 'normal' }) => {
-            const sizeClass = size === 'large' ? 'w-8 h-8' : 'w-6 h-6';
-            const className = `${sizeClass} text-slate-500`;
-            if (precipitation > 0.1) return <RainIcon className={`${sizeClass} text-blue-500`} />;
-            if (cloudCover > 75) return <CloudIcon className={className} />;
-            if (cloudCover > 25) return <PartlyCloudyIcon className={className} />;
-            return <SunIcon className={`${sizeClass} text-yellow-500`} />;
-        };
-
-        // --- Componente WindArrow (WindArrow.tsx) ---
-        const WindArrow = ({ degrees }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-sky-600 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ transform: `rotate(${degrees}deg)` }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
-        );
-
-        // --- Componente ForecastChart (ForecastChart.tsx) ---
-        const CustomTooltip = ({ active, payload, label }) => {
-          if (active && payload && payload.length) {
-            const time = new Date(label).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-            return (
-              <div className="bg-white/80 backdrop-blur-sm p-4 border border-slate-300 rounded-lg shadow-lg text-sm">
-                <p className="font-bold text-slate-700 mb-2">{`Hora: ${time}`}</p>
-                {payload.map((p) => <p key={p.dataKey} style={{ color: p.color }}>{`${p.name}: ${p.value} ${p.unit}`}</p>)}
-              </div>
-            );
-          }
-          return null;
-        };
-        const ForecastChart = ({ data }) => {
-          const chartData = data.map(entry => ({ ...entry, time: new Date(entry.time).getTime() }));
-          return (
-            <div className="bg-white/60 p-4 rounded-xl shadow-lg backdrop-blur-sm">
-              <h3 className="text-lg font-semibold mb-4 px-2 text-sky-700">Resumen Gráfico del Día</h3>
-              <div style={{ width: '100%', height: 300 }}>
-                <ResponsiveContainer>
-                  <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#f59e0b" stopOpacity={0.7}/><stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/></linearGradient>
-                      <linearGradient id="colorWind" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#06b6d4" stopOpacity={0.7}/><stop offset="95%" stopColor="#06b6d4" stopOpacity={0}/></linearGradient>
-                    </defs>
-                    <XAxis dataKey="time" tickFormatter={(timeStr) => new Date(timeStr).toLocaleTimeString('es-ES', { hour: '2-digit' })} stroke="#6b7280" tick={{ fontSize: 11 }} />
-                    <YAxis yAxisId="left" stroke="#6b7280" tick={{ fontSize: 11 }} label={{ value: '°C', angle: -90, position: 'insideLeft', fill: '#475569', fontSize: 11 }} />
-                    <YAxis yAxisId="right" orientation="right" stroke="#6b7280" tick={{ fontSize: 11 }} label={{ value: 'Nudos', angle: 90, position: 'insideRight', fill: '#475569', fontSize: 11 }} />
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend wrapperStyle={{fontSize: "12px"}} />
-                    <Area yAxisId="left" type="monotone" dataKey="temperature" name="Temperatura" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTemp)" unit="°C" />
-                    <Line yAxisId="left" type="monotone" dataKey="feelsLike" name="Sensación" stroke="#ef4444" strokeDasharray="5 5" unit="°C" />
-                    <Area yAxisId="right" type="monotone" dataKey="windSpeed" name="Viento" stroke="#06b6d4" fillOpacity={1} fill="url(#colorWind)" unit="nudos" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          );
-        };
-
-        // --- Componente ForecastTable (ForecastTable.tsx) ---
-        const getTemperatureColor = (temp) => {
-          if (temp < 10) return 'bg-blue-100 text-blue-800'; if (temp < 20) return 'bg-cyan-100 text-cyan-800'; if (temp < 25) return 'bg-amber-100 text-amber-800'; return 'bg-red-100 text-red-800';
-        };
-        const getCloudColor = (cover) => {
-          if (cover < 25) return 'bg-slate-100 text-slate-700'; if (cover < 75) return 'bg-slate-200 text-slate-800'; return 'bg-slate-300 text-slate-900';
-        };
-        const getWindColor = (speed) => {
-          if (speed < 10) return 'bg-green-100 text-green-800'; if (speed < 15) return 'bg-lime-100 text-lime-800'; if (speed < 20) return 'bg-yellow-100 text-yellow-800'; if (speed < 25) return 'bg-orange-100 text-orange-800'; return 'bg-red-100 text-red-800';
-        };
-        const DesktopTable = ({ data }) => {
-            const renderRow = (label, key) => (
-                <div className="grid grid-cols-9 text-center items-center">
-                    <div className="col-span-2 text-left font-semibold text-slate-700 py-3 px-2 text-sm">{label}</div>
-                    {data.map((entry, index) => {
-                        let content;
-                        switch (key) {
-                            case 'weather': content = <div className="flex flex-col items-center justify-center"><WeatherIcon cloudCover={entry.cloudCover} precipitation={entry.precipitation} />{entry.precipitation > 0 && <span className="text-xs text-blue-500 mt-1">{entry.precipitation}mm</span>}</div>; break;
-                            case 'temperature': content = <div className={`w-full h-full flex items-center justify-center p-2 rounded-md ${getTemperatureColor(entry.temperature)}`}><span className="font-bold text-lg">{entry.temperature}°</span></div>; break;
-                            case 'feelsLike': content = <div className={`w-full h-full flex items-center justify-center p-2 rounded-md ${getTemperatureColor(entry.feelsLike)}`}><span className="font-bold text-lg">{entry.feelsLike}°</span></div>; break;
-                            case 'cloudCover': content = <div className={`w-full h-full flex items-center justify-center p-2 rounded-md ${getCloudColor(entry.cloudCover)}`}><span className="font-bold text-lg">{entry.cloudCover}%</span></div>; break;
-                            case 'windSpeed': content = <div className={`w-full h-full flex flex-col items-center justify-center p-1 rounded-md ${getWindColor(entry.windSpeed)}`}><span className="font-bold text-lg">{entry.windSpeed}</span><span className="text-xs">{entry.windGust}</span></div>; break;
-                            case 'windDirection': content = <div className="flex flex-col items-center justify-center"><WindArrow degrees={entry.windDirection} /><span className="text-xs text-slate-500 mt-1">{entry.windDirection}°</span></div>; break;
-                            default: content = <span>{entry[key]}</span>; break;
-                        }
-                        return <div key={index} className="flex items-center justify-center py-2 px-1 text-sm">{content}</div>;
-                    })}
+        <main>
+            <section class="summary-section">
+                <h2 class="section-title">Resumen Gráfico del Día</h2>
+                <div class="chart-container">
+                    <canvas id="weatherChart"></canvas>
                 </div>
-            );
-            return (
-                <div className="overflow-x-auto"><div className="min-w-[700px]">
-                    <div className="grid grid-cols-9 text-center bg-slate-100/70 font-bold sticky top-0 z-10">
-                        <div className="col-span-2 text-left py-3 px-2 text-sm text-sky-700">Parámetro</div>
-                        {data.map((entry) => <div key={entry.time} className="py-3 px-1 text-sm text-sky-700">{new Date(entry.time).toLocaleTimeString('es-ES', { hour: '2-digit' })}h</div>)}
-                    </div>
-                    <div className="divide-y divide-slate-200">
-                        {renderRow('Clima', 'weather')} {renderRow('Temperatura (°C)', 'temperature')} {renderRow('Sensación (°C)', 'feelsLike')} {renderRow('Nubosidad (%)', 'cloudCover')} {renderRow('Viento (nudos)', 'windSpeed')} {renderRow('Dirección', 'windDirection')}
-                    </div>
-                </div></div>
-            );
-        };
-        const MobileTable = ({ data }) => (
-            <div className="overflow-x-auto p-2"><div className="flex space-x-3">
-                {data.map((entry, index) => (
-                    <div key={index} className="bg-white/70 rounded-lg p-3 w-36 flex-shrink-0 text-center shadow">
-                        <div className="font-bold text-sky-600 mb-3 pb-2 border-b border-slate-300">{new Date(entry.time).toLocaleTimeString('es-ES', { hour: '2-digit' })}h</div>
-                        <div className="space-y-3 text-sm">
-                            <div className="flex flex-col items-center justify-center h-10"><WeatherIcon cloudCover={entry.cloudCover} precipitation={entry.precipitation} size="large" /></div>
-                            <div className="flex flex-col items-center">
-                                <div className={`w-full flex flex-col items-center justify-center p-1 rounded-md ${getTemperatureColor(entry.temperature)}`}><span className="font-bold text-xl">{entry.temperature}°C</span><span className="text-xs">Real</span></div>
-                                <div className={`w-full flex flex-col items-center justify-center p-1 mt-1 rounded-md ${getTemperatureColor(entry.feelsLike)}`}><span className="font-semibold text-base">{entry.feelsLike}°C</span><span className="text-xs">Sensación</span></div>
-                            </div>
-                            <div className="flex flex-col items-center"><div className="text-slate-500 mb-1 text-xs">Nubes</div><div className={`w-full flex items-center justify-center p-1 rounded-md ${getCloudColor(entry.cloudCover)}`}><span className="font-bold text-base">{entry.cloudCover}%</span></div></div>
-                            <div className="flex flex-col items-center"><div className="text-slate-500 mb-1 text-xs">Viento</div><div className={`w-full flex items-center justify-around p-1 rounded-md ${getWindColor(entry.windSpeed)}`}><span className="font-bold text-base">{entry.windSpeed}</span><WindArrow degrees={entry.windDirection} /></div></div>
-                        </div>
-                    </div>
-                ))}
-            </div></div>
-        );
-        const ForecastTable = ({ data }) => (
-            <div className="bg-white/60 rounded-xl shadow-lg backdrop-blur-sm overflow-hidden">
-                <div className="hidden md:block"><DesktopTable data={data} /></div>
-                <div className="md:hidden"><MobileTable data={data} /></div>
-            </div>
-        );
+            </section>
 
-        // --- Componente Principal (App.tsx) ---
-        const App = () => {
-          const [forecast, setForecast] = useState(null);
-          const [loading, setLoading] = useState(true);
-          const [error, setError] = useState(null);
-          const [selectedDay, setSelectedDay] = useState('');
-          
-          useEffect(() => {
-            const fetchForecast = async () => {
-              setLoading(true);
-              setError(null);
-              try {
-                const data = await getForecast();
-                setForecast(data);
-                if (data && Object.keys(data.dailyForecasts).length > 0) {
-                  setSelectedDay(Object.keys(data.dailyForecasts)[0]);
-                }
-              } catch (err) {
-                setError(err.message || "Ocurrió un error desconocido.");
-              } finally {
-                setLoading(false);
-              }
-            };
-            fetchForecast();
-          }, []);
+            <section class="details-section">
+                <h2 class="section-title">Detalle por Parámetro y Hora</h2>
+                <div class="parameters-table-container">
+                    <table class="parameters-table">
+                        <thead id="table-head">
+                            <!-- El encabezado de la tabla se generará aquí -->
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Las filas de datos se generarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+                 <p id="table-placeholder" class="loading-message">Cargando datos del clima...</p>
+            </section>
+        </main>
+    </div>
 
-          const getGreeting = () => {
-            const hour = new Date().getHours();
-            if (hour < 12) return { text: 'Buenos Días', icon: <SunIcon className="w-8 h-8 text-yellow-500" /> };
-            if (hour < 18) return { text: 'Buenas Tardes', icon: <SunIcon className="w-8 h-8 text-orange-500" /> };
-            return { text: 'Buenas Noches', icon: <MoonIcon className="w-8 h-8 text-indigo-500" /> };
-          };
-
-          const { text: greetingText, icon: greetingIcon } = getGreeting();
-          
-          const renderContent = () => {
-            if (loading) return (
-              <div className="flex flex-col items-center justify-center h-64">
-                <svg className="animate-spin -ml-1 mr-3 h-10 w-10 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <p className="mt-4 text-lg text-slate-600">Cargando pronóstico...</p>
-              </div>
-            );
-            if (error) return (
-              <div className="text-center p-8 bg-red-50 border border-red-200 rounded-lg">
-                <h3 className="text-lg font-semibold text-red-800">¡Ups! Algo salió mal</h3>
-                <p className="mt-2 text-sm text-red-700">{error}</p>
-              </div>
-            );
-            if (!forecast) return <p className="text-center text-lg p-8">No hay datos.</p>;
-            const dailyForecast = forecast.dailyForecasts[selectedDay];
-            return (
-              <>
-                <div className="mb-6 md:px-4"><div className="border-b border-slate-300"><nav className="-mb-px flex space-x-2 sm:space-x-4 md:space-x-6 overflow-x-auto">
-                  {Object.keys(forecast.dailyForecasts).map(day => (
-                    <button key={day} onClick={() => setSelectedDay(day)} className={`${selectedDay === day ? 'border-sky-500 text-sky-600' : 'border-transparent text-slate-500 hover:text-sky-600 hover:border-sky-300'} whitespace-nowrap py-4 px-3 border-b-2 font-medium text-sm transition-colors duration-200`}>
-                      {new Date(day).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' })}
-                    </button>
-                  ))}
-                </nav></div></div>
-                {dailyForecast && <div className="space-y-8"><ForecastChart data={dailyForecast} /><ForecastTable data={dailyForecast} /></div>}
-              </>
-            );
-          };
-
-          return (
-            <div className="min-h-screen">
-              <main className="container mx-auto p-4 md:p-8">
-                <header className="mb-8">
-                  <div className="flex items-center space-x-4 mb-2">{greetingIcon}<h1 className="text-3xl md:text-4xl font-bold text-slate-900">{greetingText}</h1></div>
-                  <p className="text-lg text-slate-600">Condiciones para tu paseo en <span className="font-semibold text-sky-600">{forecast?.spotName || '...'}</span></p>
-                  <p className="text-xs text-slate-500 mt-1">Fecha de generación: {forecast ? new Date(forecast.generatedAt).toLocaleString('es-ES') : '...'}</p>
-                </header>
-                {renderContent()}
-              </main>
-              <footer className="text-center p-4 text-xs text-slate-500"><p>Datos del tiempo proporcionados por OpenWeatherMap.</p></footer>
-            </div>
-          );
-        };
-
-        // --- Montaje de la Aplicación (index.tsx) ---
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
