@@ -1,0 +1,7 @@
+{
+  "name": "Ineco Cabin Trip Anomaly Logger",
+  "description": "A visual and interactive application for technicians to log anomalies observed during train cabin inspections, leveraging AI for report summarization.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
