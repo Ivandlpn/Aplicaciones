@@ -1,15 +1,19 @@
-
 import { GoogleGenAI } from "@google/genai";
 import type { Anomaly } from '../types';
 
-if (!process.env.API_KEY) {
-  console.warn("API_KEY environment variable not set. AI features will be disabled.");
+// WARNING: This is a simulated API key for demonstration purposes as requested.
+// In a real application, you should NEVER hardcode API keys directly in the source code.
+// Use environment variables and secure key management practices.
+const SIMULATED_API_KEY = "AIzaSyChjPVuOfVq4BmzbjTVwlbGzSgq8QNKbOo";
+
+if (!SIMULATED_API_KEY) {
+  console.warn("API_KEY is not set. AI features will be disabled.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+const ai = new GoogleGenAI({ apiKey: SIMULATED_API_KEY! });
 
 export const generateTripSummary = async (anomalies: Anomaly[]): Promise<string> => {
-  if (!process.env.API_KEY) {
+  if (!SIMULATED_API_KEY) {
     return "AI Summary is disabled. Please configure your API_KEY.";
   }
   
