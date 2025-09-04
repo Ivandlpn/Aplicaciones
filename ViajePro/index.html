@@ -1,105 +1,36 @@
+
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inspección en Cabina</title>
-    
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#005a9c"/>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="img/icon-192x192.png">
-
-    <link rel="stylesheet" href="style.css">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ineco Cabin Trip Anomaly Logger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @layer base {
+            html {
+                font-family: 'Poppins', sans-serif;
+            }
+        }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.17.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
 </head>
-<body>
-
-    <!-- Pantalla de Inicio -->
-    <div id="page-home" class="page active">
-        <header>
-            <h1>Inspecciones en Cabina</h1>
-        </header>
-        <main>
-            <div id="inspections-list">
-                <!-- Las inspecciones se cargarán aquí dinámicamente -->
-            </div>
-        </main>
-        <button id="btn-new-inspection" class="fab">+</button>
-    </div>
-
-    <!-- Pantalla de Detalle de Inspección -->
-    <div id="page-inspection-detail" class="page">
-        <header>
-            <button class="back-button" data-target="page-home">&larr; Volver</button>
-            <h1 id="inspection-title">Detalle de Inspección</h1>
-        </header>
-        <main>
-            <div id="anomalies-list">
-                <!-- Las anomalías de esta inspección se cargarán aquí -->
-            </div>
-        </main>
-        <button id="btn-add-anomaly" class="fab">+</button>
-    </div>
-    
-    <!-- Pantalla para Añadir/Editar Anomalía -->
-    <div id="page-add-anomaly" class="page">
-        <header>
-            <button class="back-button">&larr; Cancelar</button>
-            <h1>Registrar Anomalía</h1>
-        </header>
-        <main>
-            <form id="anomaly-form">
-                <div class="form-group">
-                    <label for="anomaly-pk">Punto Kilométrico (PK)</label>
-                    <input type="text" id="anomaly-pk" placeholder="Ej: 123.450" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="anomaly-element">Elemento y Defecto</label>
-                    <select id="anomaly-element" required>
-                        <option value="">-- Seleccionar defecto --</option>
-                        <!-- Opciones cargadas desde JS -->
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="anomaly-severity">Nivel de Gravedad</label>
-                    <select id="anomaly-severity" required>
-                        <option value="IAL">IAL - Actuación Inmediata</option>
-                        <option value="IL">IL - Intervención</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="anomaly-notes">Observaciones</label>
-                    <textarea id="anomaly-notes" rows="4"></textarea>
-                </div>
-                
-                <!-- SECCIÓN DE UBICACIÓN MODIFICADA -->
-                <div class="form-group">
-                    <label>Ubicación GPS</label>
-                    <div class="location-buttons">
-                        <button type="button" id="btn-get-location">Obtener de Nuevo</button>
-                        <button type="button" id="btn-clear-location" class="btn-secondary">Borrar</button>
-                    </div>
-                    <p id="location-display">Ubicación no capturada.</p>
-                </div>
-                <!-- FIN DE LA SECCIÓN MODIFICADA -->
-
-
-                <div class="form-group">
-                    <label for="anomaly-photo">Adjuntar Fotografía</label>
-                    <input type="file" id="anomaly-photo" accept="image/*" capture="environment">
-                    <img id="photo-preview" class="photo-preview" src="" alt="Vista previa de la foto">
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn-primary">Guardar Anomalía</button>
-                </div>
-            </form>
-        </main>
-    </div>
-
-    <script src="app.js"></script>
+  <body class="bg-white">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>
