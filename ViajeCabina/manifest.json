@@ -1,0 +1,21 @@
+{
+    "name": "Inspección en Cabina",
+    "short_name": "InspecVía",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#f4f4f4",
+    "theme_color": "#005a9c",
+    "orientation": "portrait-primary",
+    "icons": [
+      {
+        "src": "img/icon-192x192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "img/icon-512x512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ]
+  }
