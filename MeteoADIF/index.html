@@ -3,85 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visor de Alertas AEMET - ADIF Alta Velocidad</title>
+    <title>Visor Alertas AEMET en LAV ESTE</title>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
+            /* --- THEME COLORS (Light Mode) --- */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f7f9;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0,0,0,0.1);
             --adif-blue: #003057;
             --alta-velocidad-accent: #00a4e4;
-            --light-gray: #f4f7f9;
-            --medium-gray: #e9ecef;
-            --dark-gray: #212529;
-            --font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+            /* -- STRIKING CELL COLORS -- */
+            --level-0-bg: #e9ecef; --level-0-text: #6c757d;
+            --level-1-bg: linear-gradient(135deg, #29b6f6, #0288d1);
+            --level-2-bg: linear-gradient(135deg, #ffca28, #ff8f00);
+            --level-3-bg: linear-gradient(135deg, #ef5350, #c62828);
             
-            /* Cell Colors */
-            --level-0-bg: #f8f9fa; --level-0-text: #6c757d;
-            --level-1-bg: #e0f7fa; --level-1-text: #007c91;
-            --level-2-bg: #fff3cd; --level-2-text: #856404;
-            --level-3-bg: #f8d7da; --level-3-text: #721c24;
+            /* -- GLOW COLORS for HOVER -- */
+            --glow-level-1: rgba(2, 136, 209, 0.7);
+            --glow-level-2: rgba(255, 143, 0, 0.7);
+            --glow-level-3: rgba(198, 40, 40, 0.7);
+        }
+
+        body.dark-mode {
+            /* --- THEME COLORS (Dark Mode) --- */
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --shadow-color: rgba(0,0,0,0.4);
         }
 
         body {
-            font-family: var(--font-family);
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
-            background: radial-gradient(circle, #ffffff 0%, var(--light-gray) 100%);
-            color: var(--dark-gray);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
         }
         
         .app-container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            max-width: 1100px; margin: 2rem auto; background: var(--bg-primary);
+            border-radius: 16px; box-shadow: 0 8px 40px var(--shadow-color);
+            overflow: hidden; transition: background-color 0.3s;
         }
 
         .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2.5rem;
-            background: linear-gradient(90deg, var(--adif-blue) 0%, #005a9e 100%);
-            color: white;
-            border-bottom: 5px solid var(--alta-velocidad-accent);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(90deg, #002340, #005a9e);
+            color: white; border-bottom: 5px solid var(--alta-velocidad-accent);
         }
-        .app-header img { 
-            max-height: 50px; 
-            width: auto; 
+        .app-header .logo-container { display: flex; align-items: center; gap: 1rem; }
+        .app-header img { max-height: 45px; width: auto; }
+        .app-header .logo-adif, .app-header .logo-aemet {
+            background-color: white; padding: 6px; border-radius: 6px;
+            box-sizing: border-box; max-height: 55px;
         }
+        .app-header h1 { font-size: 1.5rem; font-weight: 600; margin: 0; text-align: center; }
 
-        /* --- AJUSTE: Fondo blanco para AMBOS logos --- */
-        .app-header .logo-adif,
-        .app-header .logo-aemet {
-            background-color: white;
-            padding: 8px;
-            border-radius: 6px;
-            box-sizing: border-box; /* El padding se incluye en la altura total */
-            max-height: 60px;
+        #theme-toggle {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%; width: 40px; height: 40px;
+            color: white; font-size: 1.2rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background-color 0.3s;
         }
-
-        .app-header h1 { font-size: 1.8rem; font-weight: 600; margin: 0 1rem; text-align: center; }
+        #theme-toggle:hover { background: rgba(255,255,255,0.2); }
+        #theme-toggle .fa-sun { display: none; }
+        body.dark-mode #theme-toggle .fa-sun { display: block; }
+        body.dark-mode #theme-toggle .fa-moon { display: none; }
 
         .main-content { padding: 2.5rem; }
 
         .input-panel {
-            background-color: var(--light-gray); padding: 2rem;
-            border-radius: 12px; border: 1px solid var(--medium-gray);
+            background-color: var(--bg-secondary); padding: 2rem;
+            border-radius: 12px; border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
         }
-        .input-panel p { margin-top: 0; font-size: 1.1rem; font-weight: 500; color: var(--adif-blue); }
+        
+        /* --- AJUSTE: Panel de Instrucciones --- */
+        .preview-instruction {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            background-color: rgba(0, 164, 228, 0.1);
+            border-left: 4px solid var(--alta-velocidad-accent);
+            color: var(--text-primary);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .preview-instruction i {
+            font-size: 1.5rem;
+            color: var(--alta-velocidad-accent);
+        }
+
         textarea {
-            width: 100%; height: 180px; margin-bottom: 1rem; padding: 1rem;
-            border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;
+            width: 100%; height: 200px; margin-bottom: 1rem; padding: 1rem;
+            border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box;
             font-family: 'Consolas', 'Courier New', monospace; font-size: 0.9em; resize: vertical;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: var(--bg-primary); color: var(--text-primary);
+            transition: all 0.3s;
         }
-        textarea:focus {
-            outline: none; border-color: var(--alta-velocidad-accent);
-            box-shadow: 0 0 8px rgba(0, 164, 228, 0.3);
-        }
-        .button-container { text-align: center; }
+        textarea:focus { outline: none; border-color: var(--alta-velocidad-accent); box-shadow: 0 0 8px rgba(0, 164, 228, 0.3); }
+        
+        .button-group { display: flex; justify-content: center; gap: 1rem; }
         button {
             background: linear-gradient(45deg, var(--alta-velocidad-accent), #007bff); color: white;
             padding: 14px 30px; border: none; border-radius: 50px; cursor: pointer;
@@ -89,81 +123,121 @@
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
         }
         button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4); }
+        #load-example-btn { background: #6c757d; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
-        .visualizer { margin-top: 2.5rem; opacity: 0; transition: opacity 0.8s ease-in-out; }
-        .visualizer.visible { opacity: 1; }
+        .visualizer > * {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .visualizer.visible > * { opacity: 1; transform: translateY(0); }
+        .visualizer.visible .summary-panel { transition-delay: 0s; }
+        .visualizer.visible .table-container { transition-delay: 0.2s; }
+        .visualizer.visible .legend-container { transition-delay: 0.4s; }
 
         .summary-panel {
-            display: flex; align-items: center; justify-content: center; gap: 20px;
-            padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; color: white;
-            font-size: 1.5rem; font-weight: 600; text-align: center;
+            padding: 1.5rem 2rem; border-radius: 12px; margin: 2.5rem 0;
+            color: white; text-align: center;
         }
-        .summary-panel i { font-size: 2.5rem; }
+        .summary-line-info {
+            font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;
+            padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+        .summary-line-info i { margin-right: 0.75rem; opacity: 0.9; }
+        .summary-date { font-size: 1.1rem; font-weight: 500; opacity: 0.9; margin-bottom: 1rem; }
+        .summary-main { display: flex; align-items: center; justify-content: center; gap: 1rem; font-size: 1.4rem; font-weight: 500; }
+        .summary-main i { font-size: 2.2rem; }
         .summary-level-0 { background: #6c757d; }
         .summary-level-1 { background: #17a2b8; }
         .summary-level-2 { background: #ffc107; color: var(--dark-gray); }
         .summary-level-3 { background: #dc3545; }
 
-        /* --- VISUAL TABLE STYLES --- */
         .table-container { overflow-x: auto; padding: 5px; }
-        table {
-            width: 100%; border-collapse: separate; border-spacing: 6px;
-            text-align: center; table-layout: fixed; /* Ayuda a controlar el ancho de las columnas */
-        }
-        th { padding: 16px; background-color: #f2f6fa; color: var(--adif-blue); font-weight: 600; border-radius: 8px; }
-        td { padding: 16px; border-radius: 8px; transition: all 0.2s ease-in-out; }
+        table { width: 100%; border-collapse: separate; border-spacing: 5px; text-align: center; table-layout: fixed; }
         
-        th:first-child,
-        td.pk-cell {
-            width: 120px; /* Ancho fijo para la columna PK */
+        th {
+            padding: 14px 10px; background: linear-gradient(180deg, #004e89, var(--adif-blue));
+            color: white; font-weight: 700; font-size: 0.95em; letter-spacing: 0.5px;
+            border-radius: 8px; border-bottom: 3px solid var(--alta-velocidad-accent);
+            vertical-align: middle;
         }
+        th i { margin-right: 8px; opacity: 0.8; }
 
+        td { padding: 10px; border-radius: 8px; transition: all 0.25s ease-in-out; }
+        th:first-child, td.pk-cell { width: 100px; }
         .pk-cell {
-            font-weight: bold; color: white; background-color: var(--adif-blue);
-            font-size: 1.2rem; border: none;
+            font-weight: 700; color: white; background: linear-gradient(180deg, #004e89, var(--adif-blue));
+            font-size: 1.1rem; border: none;
         }
+        .alert-cell {
+            font-weight: 600; cursor: help; position: relative;
+            color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .alert-icon { font-size: 2em; display: block; margin: 0 auto; }
+        .alert-cell-content { position: relative; }
+        .alert-cell span { font-size: 0.8em; opacity: 0.9; }
         
-        .alert-cell { font-weight: 600; cursor: help; position: relative; }
-        .alert-cell:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.15); z-index: 10; }
-        .alert-icon { font-size: 2em; display: block; margin: 0 auto 8px; }
+        .trend-icon {
+            position: absolute; top: 2px; right: 5px; font-size: 0.9em;
+            padding: 2px; border-radius: 50%; text-shadow: none;
+        }
+        .trend-up { color: #e53e3e; background: rgba(255,255,255,0.7); }
+        .trend-down { color: #38a169; background: rgba(255,255,255,0.7); }
+        .trend-stable { color: #718096; background: rgba(255,255,255,0.7); }
+        body.dark-mode .trend-icon { background: rgba(0,0,0,0.5); }
         
-        .cell-level-0 { background-color: var(--level-0-bg); color: var(--level-0-text); }
-        .cell-level-1 { background-color: var(--level-1-bg); color: var(--level-1-text); }
-        .cell-level-2 { background-color: var(--level-2-bg); color: var(--level-2-text); }
-        .cell-level-3 { background-color: var(--level-3-bg); color: var(--level-3-text); }
+        .cell-level-0 { background: var(--level-0-bg); color: var(--level-0-text); text-shadow: none; border: none; box-shadow: none; }
+        .cell-level-1 { background: var(--level-1-bg); }
+        .cell-level-2 { background: var(--level-2-bg); }
+        .cell-level-3 { background: var(--level-3-bg); }
+        
+        .alert-cell:hover { transform: scale(1.05) translateY(-2px); z-index: 10; }
+        .cell-level-0:hover { box-shadow: 0 0 20px rgba(0,0,0,0.15); }
+        .cell-level-1:hover { box-shadow: 0 0 25px var(--glow-level-1); }
+        .cell-level-2:hover { box-shadow: 0 0 25px var(--glow-level-2); }
+        .cell-level-3:hover { box-shadow: 0 0 25px var(--glow-level-3); }
 
-        /* --- Legend --- */
         .legend-container {
             margin-top: 2.5rem; display: flex; justify-content: center;
             gap: 25px; flex-wrap: wrap; padding: 1.5rem;
-            background-color: var(--light-gray); border-radius: 12px;
+            background-color: var(--bg-secondary); border-radius: 12px;
         }
-        .legend-item { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+        .legend-item { display: flex; align-items: center; gap: 10px; font-weight: 500; color: var(--text-secondary);}
         .legend-item i { font-size: 1.5rem; width: 30px; text-align: center; }
+        .legend-level-1 { color: #0288d1; }
+        .legend-level-2 { color: #ff8f00; }
+        .legend-level-3 { color: #c62828; }
+        body.dark-mode .legend-level-1 { color: #29b6f6; }
+        body.dark-mode .legend-level-2 { color: #ffca28; }
+        body.dark-mode .legend-level-3 { color: #ef5350; }
+
     </style>
 </head>
 <body>
     <div class="app-container">
         <header class="app-header">
-            <img src="https://www.adifaltavelocidad.es/documents/34745/2553140/Logo+Adif+AV+color.png/6fe9b0ae-618b-bc8a-405c-b296d4356994?t=1616685949205&download=true" alt="Logo de ADIF Alta Velocidad" class="logo-adif">
-            <h1>Visor de Alertas Meteorológicas</h1>
-            <!-- LOGO AEMET ACTUALIZADO Y CON CLASE PARA FONDO BLANCO -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Logotipo_de_la_Agencia_Estatal_de_Meteorolog%C3%ADa_%282025%29.svg/330px-Logotipo_de_la_Agencia_Estatal_de_Meteorolog%C3%ADa_%282025%29.svg.png" alt="Logo de AEMET" class="logo-aemet">
+            <div class="logo-container">
+                <img src="https://www.adifaltavelocidad.es/documents/34745/2553140/Logo+Adif+AV+color.png/6fe9b0ae-618b-bc8a-405c-b296d4356994?t=1616685949205&download=true" alt="Logo ADIF AV" class="logo-adif">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Logotipo_de_la_Agencia_Estatal_de_Meteorolog%C3%ADa_%282025%29.svg/330px-Logotipo_de_la_Agencia_Estatal_de_Meteorolog%C3%ADa_%282025%29.svg.png" alt="Logo AEMET" class="logo-aemet">
+            </div>
+            <h1>Visor Alertas AEMET en LAV ESTE</h1>
+            <button id="theme-toggle" title="Cambiar Tema">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+            </button>
         </header>
 
         <main class="main-content">
             <section class="input-panel">
-                <p>Introduzca el texto completo de la alerta para generar el panel de visualización.</p>
-                <textarea id="dataInput" placeholder="Predicción para el intervalo del dia 2025-09-07 a las 14:00:00 hasta el 2025-09-08 a las 14:00:00 LA PREDICCION DE ALERTAS HORARIAS ES:
-
-PK      PCP_1   PCP_2   PCP3    PCP_4
-455       0       1       0       0
-460       0       2       0       0
-470       0       3       1       0"></textarea>
-                <div class="button-container">
-                    <button onclick="processData()">
-                        <i class="fa-solid fa-bolt"></i> Analizar y Visualizar
-                    </button>
+                <div class="preview-instruction">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>Aquí tienes una previsualización. <b>Pega tus datos en el área de texto para actualizar la vista.</b></span>
+                </div>
+                <textarea id="dataInput"></textarea>
+                <div class="button-group">
+                    <button id="load-example-btn" onclick="loadExampleData()"><i class="fa-solid fa-file-invoice"></i> Restaurar Ejemplo</button>
+                    <button onclick="processData()"><i class="fa-solid fa-bolt"></i> Analizar y Visualizar</button>
                 </div>
             </section>
 
@@ -178,6 +252,38 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
             2: { desc: "Nivel 2: Precipitación entre 40 y 80 mm.", icon: "fa-cloud-showers-heavy" },
             3: { desc: "Nivel 3: Precipitación > 80 mm.", icon: "fa-bolt-lightning" }
         };
+        
+        const MONTH_NAMES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+        function getExampleDataString() {
+            return `LINEA FERROVIARIA: TORREJÓN DE VELASCO - VALENCIA
+__________________________________________________
+
+
+Predicción para el intervalo del dia 2025-09-07 a las 14:00:00 hasta el 2025-09-08 a las 14:00:00 LA PREDICCION DE ALERTAS HORARIAS ES:
+
+PK      PCP_1   PCP_2   PCP3    PCP_4
+455       0       1       1       0
+460       0       2       3       1
+465       1       3       2       1
+470       0       1       2       2
+475       0       0       1       0`;
+        }
+
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        function loadExampleData() {
+            document.getElementById('dataInput').value = getExampleDataString();
+            processData(); // Also process the data to show the view
+        }
 
         function processData() {
             const dataInput = document.getElementById('dataInput').value;
@@ -187,14 +293,22 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
             outputDiv.classList.remove('visible');
 
             const lines = dataInput.trim().split('\n');
-            let predictionIntervalText = '', dataLines = [], headerFound = false, maxAlertLevel = 0;
+            let railwayLine = 'Línea no especificada', 
+                dataLines = [], headerFound = false, maxAlertLevel = 0;
+            let predictionDate = null, startDate = null;
 
             for (const line of lines) {
-                if (line.includes('Predicción')) {
-                    predictionIntervalText = line;
+                if (line.includes('LINEA FERROVIARIA:')) {
+                    railwayLine = line.split(':')[1].trim();
+                } else if (line.includes('Predicción')) {
+                    const dateMatch = line.match(/del dia (\d{4}-\d{2}-\d{2}) a las (\d{2}:\d{2}:\d{2})/);
+                    if(dateMatch) {
+                        startDate = new Date(`${dateMatch[1]}T${dateMatch[2]}`);
+                        predictionDate = new Date(dateMatch[1]);
+                    }
                 } else if (line.includes('PK')) {
                     headerFound = true;
-                } else if (headerFound && line.trim() !== '') {
+                } else if (headerFound && line.trim() !== '' && !line.startsWith('_')) {
                     dataLines.push(line);
                     const parts = line.trim().split(/\s+/).slice(1).map(Number);
                     const currentMax = Math.max(...parts);
@@ -202,32 +316,39 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
                 }
             }
             
-            let startDate = null;
-            if (predictionIntervalText) {
-                const dateMatch = predictionIntervalText.match(/del dia (\d{4}-\d{2}-\d{2}) a las (\d{2}:\d{2}:\d{2})/);
-                if(dateMatch) startDate = new Date(`${dateMatch[1]}T${dateMatch[2]}`);
-            }
-
             if (dataLines.length === 0) {
-                 outputDiv.innerHTML = `<p style="color: red; text-align: center; font-size: 1.2rem;">No se encontraron datos de precipitación válidos en el texto introducido.</p>`;
+                 outputDiv.innerHTML = `<p style="color: red; text-align: center; font-size: 1.2rem;">No se encontraron datos de precipitación válidos en el texto.</p>`;
                  setTimeout(() => outputDiv.classList.add('visible'), 10);
                  return;
             }
 
+            const formattedDate = predictionDate ? `Predicción para el ${predictionDate.getUTCDate()} de ${MONTH_NAMES[predictionDate.getUTCMonth()]} de ${predictionDate.getUTCFullYear()}` : '';
+            
             const summaryData = ALERT_DATA[maxAlertLevel];
             const summaryHTML = `
                 <div class="summary-panel summary-level-${maxAlertLevel}">
-                    <i class="fa-solid ${summaryData.icon}"></i>
-                    <span>Alerta Máxima Detectada: ${summaryData.desc}</span>
+                    <div>
+                        <div class="summary-line-info">
+                            <i class="fa-solid fa-train-subway"></i>
+                            <span>${railwayLine}</span>
+                        </div>
+                        <div class="summary-date">${formattedDate}</div>
+                        <div class="summary-main">
+                            <i class="fa-solid ${summaryData.icon}"></i>
+                            <span>Alerta Máxima: ${summaryData.desc}</span>
+                        </div>
+                    </div>
                 </div>`;
 
             let tableHTML = '';
             if (startDate) {
-                let tableHead = `<thead><tr><th>PK</th>`;
-                [6, 12, 18, 24].forEach(interval => {
-                    const end = new Date(startDate.getTime() + interval * 3600000);
-                    tableHead += `<th>${startDate.getHours().toString().padStart(2, '0')}:00 - ${end.getHours().toString().padStart(2, '0')}:00</th>`;
-                });
+                let tableHead = `<thead><tr><th><i class="fa-solid fa-road"></i> PK</th>`;
+                let intervalStart = new Date(startDate.getTime());
+                for (let i = 0; i < 4; i++) {
+                    const intervalEnd = new Date(intervalStart.getTime() + 6 * 3600000);
+                    tableHead += `<th><i class="fa-regular fa-clock"></i> ${intervalStart.getHours().toString().padStart(2, '0')}:00 - ${intervalEnd.getHours().toString().padStart(2, '0')}:00</th>`;
+                    intervalStart = intervalEnd;
+                }
                 tableHead += `</tr></thead>`;
 
                 let tableBody = `<tbody>`;
@@ -236,12 +357,23 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
                     const pk = parts[0];
                     const pcps = parts.slice(1).map(Number);
                     tableBody += `<tr><td class="pk-cell">${pk}</td>`;
-                    pcps.forEach(level => {
+                    pcps.forEach((level, index) => {
                         const levelData = ALERT_DATA[level] || { desc: 'N/A', icon: 'fa-question-circle' };
+                        let trendIcon = '';
+                        if (index > 0) {
+                            const prevLevel = pcps[index-1];
+                            if (level > prevLevel) trendIcon = '<i class="fas fa-arrow-up trend-icon trend-up" title="Riesgo en aumento"></i>';
+                            else if (level < prevLevel) trendIcon = '<i class="fas fa-arrow-down trend-icon trend-down" title="Riesgo en descenso"></i>';
+                            else trendIcon = '<i class="fas fa-equals trend-icon trend-stable" title="Riesgo estable"></i>';
+                        }
+                        
                         tableBody += `
                             <td class="alert-cell cell-level-${level}" title="${levelData.desc}">
-                                <i class="alert-icon fa-solid ${levelData.icon}"></i>
-                                <span>Nivel ${level}</span>
+                                <div class="alert-cell-content">
+                                    ${trendIcon}
+                                    <i class="alert-icon fa-solid ${levelData.icon}"></i>
+                                    <span>Nivel ${level}</span>
+                                </div>
                             </td>`;
                     });
                     tableBody += `</tr>`;
@@ -253,7 +385,7 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
             const legendHTML = `
                 <div class="legend-container">
                     ${Object.entries(ALERT_DATA).map(([level, data]) => `
-                        <div class="legend-item" style="color: var(--level-${level}-text)">
+                        <div class="legend-item legend-level-${level}">
                             <i class="fa-solid ${data.icon}"></i>
                             <span>${data.desc}</span>
                         </div>
@@ -263,6 +395,9 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
             outputDiv.innerHTML = summaryHTML + tableHTML + legendHTML;
             setTimeout(() => outputDiv.classList.add('visible'), 10);
         }
+        
+        // --- AJUSTE: Cargar la previsualización al iniciar la página ---
+        document.addEventListener('DOMContentLoaded', loadExampleData);
     </script>
 </body>
 </html>
