@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visor Alertas AEMET en LAV ESTE</title>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -42,7 +42,9 @@
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0; background: var(--bg-secondary); color: var(--text-primary);
+            margin: 0;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             transition: background-color 0.3s, color 0.3s;
         }
         
@@ -54,7 +56,8 @@
 
         .app-header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 1.5rem; background: linear-gradient(90deg, #002340, #005a9e);
+            padding: 1rem 1.5rem;
+            background: linear-gradient(90deg, #002340, #005a9e);
             color: white; border-bottom: 5px solid var(--alta-velocidad-accent);
         }
         .app-header .logo-container { display: flex; align-items: center; gap: 1rem; }
@@ -67,8 +70,10 @@
 
         #theme-toggle {
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50%; width: 40px; height: 40px; color: white; font-size: 1.2rem; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: background-color 0.3s;
+            border-radius: 50%; width: 40px; height: 40px;
+            color: white; font-size: 1.2rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background-color 0.3s;
         }
         #theme-toggle:hover { background: rgba(255,255,255,0.2); }
         #theme-toggle .fa-sun { display: none; }
@@ -78,24 +83,39 @@
         .main-content { padding: 2.5rem; }
 
         .input-panel {
-            background-color: var(--bg-secondary); padding: 2rem; border-radius: 12px;
-            border: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s;
+            background-color: var(--bg-secondary); padding: 2rem;
+            border-radius: 12px; border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
         }
+        
+        /* --- AJUSTE: Panel de Instrucciones --- */
         .preview-instruction {
-            display: flex; align-items: center; gap: 1rem; padding: 1rem; margin-bottom: 1.5rem;
-            background-color: rgba(0, 164, 228, 0.1); border-left: 4px solid var(--alta-velocidad-accent);
-            color: var(--text-primary); border-radius: 8px; font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            background-color: rgba(0, 164, 228, 0.1);
+            border-left: 4px solid var(--alta-velocidad-accent);
+            color: var(--text-primary);
+            border-radius: 8px;
+            font-weight: 500;
         }
-        .preview-instruction i { font-size: 1.5rem; color: var(--alta-velocidad-accent); }
+        .preview-instruction i {
+            font-size: 1.5rem;
+            color: var(--alta-velocidad-accent);
+        }
+
         textarea {
             width: 100%; height: 200px; margin-bottom: 1rem; padding: 1rem;
             border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box;
             font-family: 'Consolas', 'Courier New', monospace; font-size: 0.9em; resize: vertical;
-            background-color: var(--bg-primary); color: var(--text-primary); transition: all 0.3s;
+            background-color: var(--bg-primary); color: var(--text-primary);
+            transition: all 0.3s;
         }
         textarea:focus { outline: none; border-color: var(--alta-velocidad-accent); box-shadow: 0 0 8px rgba(0, 164, 228, 0.3); }
         
-        .button-group { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .button-group { display: flex; justify-content: center; gap: 1rem; }
         button {
             background: linear-gradient(45deg, var(--alta-velocidad-accent), #007bff); color: white;
             padding: 14px 30px; border: none; border-radius: 50px; cursor: pointer;
@@ -104,11 +124,10 @@
         }
         button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4); }
         #load-example-btn { background: #6c757d; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        #share-btn { background: #28a745; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); display: none; }
-        #share-btn.visible { display: inline-block; }
 
         .visualizer > * {
-            opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
         .visualizer.visible > * { opacity: 1; transform: translateY(0); }
         .visualizer.visible .summary-panel { transition-delay: 0s; }
@@ -116,7 +135,8 @@
         .visualizer.visible .legend-container { transition-delay: 0.4s; }
 
         .summary-panel {
-            padding: 1.5rem 2rem; border-radius: 12px; margin: 2.5rem 0; color: white; text-align: center;
+            padding: 1.5rem 2rem; border-radius: 12px; margin: 2.5rem 0;
+            color: white; text-align: center;
         }
         .summary-line-info {
             font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;
@@ -137,18 +157,31 @@
         th {
             padding: 14px 10px; background: linear-gradient(180deg, #004e89, var(--adif-blue));
             color: white; font-weight: 700; font-size: 0.95em; letter-spacing: 0.5px;
-            border-radius: 8px; border-bottom: 3px solid var(--alta-velocidad-accent); vertical-align: middle;
+            border-radius: 8px; border-bottom: 3px solid var(--alta-velocidad-accent);
+            vertical-align: middle;
         }
         th i { margin-right: 8px; opacity: 0.8; }
+
         td { padding: 10px; border-radius: 8px; transition: all 0.25s ease-in-out; }
         th:first-child, td.pk-cell { width: 100px; }
-        .pk-cell { font-weight: 700; color: white; background: linear-gradient(180deg, #004e89, var(--adif-blue)); font-size: 1.1rem; border: none; }
-        .alert-cell { font-weight: 600; cursor: help; position: relative; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+        .pk-cell {
+            font-weight: 700; color: white; background: linear-gradient(180deg, #004e89, var(--adif-blue));
+            font-size: 1.1rem; border: none;
+        }
+        .alert-cell {
+            font-weight: 600; cursor: help; position: relative;
+            color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        }
         .alert-icon { font-size: 2em; display: block; margin: 0 auto; }
         .alert-cell-content { position: relative; }
         .alert-cell span { font-size: 0.8em; opacity: 0.9; }
         
-        .trend-icon { position: absolute; top: 2px; right: 5px; font-size: 0.9em; padding: 2px; border-radius: 50%; text-shadow: none; }
+        .trend-icon {
+            position: absolute; top: 2px; right: 5px; font-size: 0.9em;
+            padding: 2px; border-radius: 50%; text-shadow: none;
+        }
         .trend-up { color: #e53e3e; background: rgba(255,255,255,0.7); }
         .trend-down { color: #38a169; background: rgba(255,255,255,0.7); }
         .trend-stable { color: #718096; background: rgba(255,255,255,0.7); }
@@ -166,40 +199,18 @@
         .cell-level-3:hover { box-shadow: 0 0 25px var(--glow-level-3); }
 
         .legend-container {
-            margin-top: 2.5rem; display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; padding: 1.5rem;
+            margin-top: 2.5rem; display: flex; justify-content: center;
+            gap: 25px; flex-wrap: wrap; padding: 1.5rem;
             background-color: var(--bg-secondary); border-radius: 12px;
         }
         .legend-item { display: flex; align-items: center; gap: 10px; font-weight: 500; color: var(--text-secondary);}
         .legend-item i { font-size: 1.5rem; width: 30px; text-align: center; }
-        .legend-level-1 { color: #0288d1; } .legend-level-2 { color: #ff8f00; } .legend-level-3 { color: #c62828; }
-        body.dark-mode .legend-level-1 { color: #29b6f6; } body.dark-mode .legend-level-2 { color: #ffca28; } body.dark-mode .legend-level-3 { color: #ef5350; }
-
-        /* --- MODAL STYLES --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-            display: none; align-items: center; justify-content: center; z-index: 1000;
-        }
-        .modal-overlay.visible { display: flex; }
-        .modal-content {
-            background: var(--bg-primary); color: var(--text-primary);
-            padding: 2rem; border-radius: 12px; width: 90%; max-width: 800px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .modal-header h2 { margin: 0; font-size: 1.5rem; color: var(--adif-blue); }
-        body.dark-mode .modal-header h2 { color: var(--alta-velocidad-accent); }
-        .modal-close-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--text-secondary); }
-        
-        .email-preview {
-            border: 1px solid var(--border-color); border-radius: 8px;
-            padding: 1.5rem; max-height: 40vh; overflow-y: auto;
-            margin-bottom: 1.5rem;
-        }
-        .modal-instructions { margin-bottom: 1.5rem; line-height: 1.6; }
-        .modal-instructions b { color: var(--alta-velocidad-accent); }
-        .modal-actions { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; }
-        .mailto-link { color: var(--text-secondary); font-size: 0.9em; }
+        .legend-level-1 { color: #0288d1; }
+        .legend-level-2 { color: #ff8f00; }
+        .legend-level-3 { color: #c62828; }
+        body.dark-mode .legend-level-1 { color: #29b6f6; }
+        body.dark-mode .legend-level-2 { color: #ffca28; }
+        body.dark-mode .legend-level-3 { color: #ef5350; }
 
     </style>
 </head>
@@ -211,20 +222,22 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Logotipo_de_la_Agencia_Estatal_de_Meteorolog%C3%ADa_%282025%29.svg/330px-Logotipo_de_la_Agencia_Estatal_de_Meteorolog%C3%ADa_%282025%29.svg.png" alt="Logo AEMET" class="logo-aemet">
             </div>
             <h1>Visor Alertas AEMET en LAV ESTE</h1>
-            <button id="theme-toggle" title="Cambiar Tema"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+            <button id="theme-toggle" title="Cambiar Tema">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+            </button>
         </header>
 
         <main class="main-content">
             <section class="input-panel">
                 <div class="preview-instruction">
                     <i class="fa-solid fa-lightbulb"></i>
-                    <span>Aquí tienes una previsualización. <b>Pega tus datos para actualizar la vista.</b></span>
+                    <span>Aquí tienes una previsualización. <b>Pega tus datos en el área de texto para actualizar la vista.</b></span>
                 </div>
                 <textarea id="dataInput"></textarea>
                 <div class="button-group">
                     <button id="load-example-btn" onclick="loadExampleData()"><i class="fa-solid fa-file-invoice"></i> Restaurar Ejemplo</button>
-                    <button onclick="processData()"><i class="fa-solid fa-bolt"></i> Analizar</button>
-                    <button id="share-btn" onclick="shareByEmail()"><i class="fa-solid fa-envelope"></i> Compartir</button>
+                    <button onclick="processData()"><i class="fa-solid fa-bolt"></i> Analizar y Visualizar</button>
                 </div>
             </section>
 
@@ -232,54 +245,20 @@
         </main>
     </div>
 
-    <!-- --- MODAL PARA COMPARTIR POR CORREO --- -->
-    <div class="modal-overlay" id="email-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Compartir Alerta por Correo</h2>
-                <button class="modal-close-btn" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-instructions">
-                <p><b>Paso 1:</b> Haz clic en el botón para copiar el informe visual.</p>
-                <p><b>Paso 2:</b> Pega el contenido en tu cliente de correo (Outlook, Gmail, etc.).</p>
-            </div>
-            <div class="email-preview" id="email-preview-content">
-                <!-- Contenido del correo generado por JS -->
-            </div>
-            <div class="modal-actions">
-                <a href="#" id="mailto-link" class="mailto-link">Abrir correo (texto simple)</a>
-                <button id="copy-email-btn" onclick="copyEmailToClipboard()"><i class="fa-solid fa-copy"></i> Copiar Contenido del Correo</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         const ALERT_DATA = {
-            0: { desc: "Sin alerta: < 20 mm", icon: "☀️", color: "#6c757d", bgColor: "#f8f9fa" },
-            1: { desc: "Nivel 1: 20-40 mm", icon: "💧", color: "white", bgColor: "#17a2b8" },
-            2: { desc: "Nivel 2: 40-80 mm", icon: "⛈️", color: "#212529", bgColor: "#ffc107" },
-            3: { desc: "Nivel 3: > 80 mm", icon: "⚡️", color: "white", bgColor: "#dc3545" }
+            0: { desc: "Sin alerta: Precipitación < 20 mm.", icon: "fa-cloud-sun" },
+            1: { desc: "Nivel 1: Precipitación entre 20 y 40 mm.", icon: "fa-cloud-rain" },
+            2: { desc: "Nivel 2: Precipitación entre 40 y 80 mm.", icon: "fa-cloud-showers-heavy" },
+            3: { desc: "Nivel 3: Precipitación > 80 mm.", icon: "fa-bolt-lightning" }
         };
-        const TREND_EMOJIS = { up: '🔼', down: '🔽', stable: '⏸️' };
         
         const MONTH_NAMES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        let currentAlertData = null; // Variable para guardar los datos procesados
-
-        // --- Event Listeners ---
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
-            }
-            loadExampleData(); // Cargar previsualización al inicio
-        });
 
         function getExampleDataString() {
             return `LINEA FERROVIARIA: TORREJÓN DE VELASCO - VALENCIA
 __________________________________________________
+
 
 Predicción para el intervalo del dia 2025-09-07 a las 14:00:00 hasta el 2025-09-08 a las 14:00:00 LA PREDICCION DE ALERTAS HORARIAS ES:
 
@@ -290,10 +269,20 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
 470       0       1       2       2
 475       0       0       1       0`;
         }
+
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
         
         function loadExampleData() {
             document.getElementById('dataInput').value = getExampleDataString();
-            processData();
+            processData(); // Also process the data to show the view
         }
 
         function processData() {
@@ -328,25 +317,26 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
             }
             
             if (dataLines.length === 0) {
-                 outputDiv.innerHTML = `<p style="color: red; text-align: center; font-size: 1.2rem;">No se encontraron datos de precipitación válidos.</p>`;
-                 document.getElementById('share-btn').classList.remove('visible');
-                 currentAlertData = null;
+                 outputDiv.innerHTML = `<p style="color: red; text-align: center; font-size: 1.2rem;">No se encontraron datos de precipitación válidos en el texto.</p>`;
                  setTimeout(() => outputDiv.classList.add('visible'), 10);
                  return;
             }
-            
-            // Guardar datos procesados para el correo
-            currentAlertData = { railwayLine, predictionDate, maxAlertLevel, startDate, dataLines };
-            
+
             const formattedDate = predictionDate ? `Predicción para el ${predictionDate.getUTCDate()} de ${MONTH_NAMES[predictionDate.getUTCMonth()]} de ${predictionDate.getUTCFullYear()}` : '';
             
             const summaryData = ALERT_DATA[maxAlertLevel];
             const summaryHTML = `
                 <div class="summary-panel summary-level-${maxAlertLevel}">
                     <div>
-                        <div class="summary-line-info"><i class="fa-solid fa-train-subway"></i><span>${railwayLine}</span></div>
+                        <div class="summary-line-info">
+                            <i class="fa-solid fa-train-subway"></i>
+                            <span>${railwayLine}</span>
+                        </div>
                         <div class="summary-date">${formattedDate}</div>
-                        <div class="summary-main"><i class="fa-solid ${summaryData.icon.replace('fa-', '')}"></i><span>Alerta Máxima: ${summaryData.desc}</span></div>
+                        <div class="summary-main">
+                            <i class="fa-solid ${summaryData.icon}"></i>
+                            <span>Alerta Máxima: ${summaryData.desc}</span>
+                        </div>
                     </div>
                 </div>`;
 
@@ -372,16 +362,16 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
                         let trendIcon = '';
                         if (index > 0) {
                             const prevLevel = pcps[index-1];
-                            if (level > prevLevel) trendIcon = `<i class="fas fa-arrow-up trend-icon trend-up" title="Riesgo en aumento"></i>`;
-                            else if (level < prevLevel) trendIcon = `<i class="fas fa-arrow-down trend-icon trend-down" title="Riesgo en descenso"></i>`;
-                            else trendIcon = `<i class="fas fa-equals trend-icon trend-stable" title="Riesgo estable"></i>`;
+                            if (level > prevLevel) trendIcon = '<i class="fas fa-arrow-up trend-icon trend-up" title="Riesgo en aumento"></i>';
+                            else if (level < prevLevel) trendIcon = '<i class="fas fa-arrow-down trend-icon trend-down" title="Riesgo en descenso"></i>';
+                            else trendIcon = '<i class="fas fa-equals trend-icon trend-stable" title="Riesgo estable"></i>';
                         }
                         
                         tableBody += `
                             <td class="alert-cell cell-level-${level}" title="${levelData.desc}">
                                 <div class="alert-cell-content">
                                     ${trendIcon}
-                                    <i class="alert-icon fa-solid fa-${levelData.icon}"></i>
+                                    <i class="alert-icon fa-solid ${levelData.icon}"></i>
                                     <span>Nivel ${level}</span>
                                 </div>
                             </td>`;
@@ -396,130 +386,18 @@ PK      PCP_1   PCP_2   PCP3    PCP_4
                 <div class="legend-container">
                     ${Object.entries(ALERT_DATA).map(([level, data]) => `
                         <div class="legend-item legend-level-${level}">
-                            <i class="fa-solid fa-${data.icon}"></i>
+                            <i class="fa-solid ${data.icon}"></i>
                             <span>${data.desc}</span>
                         </div>
                     `).join('')}
                 </div>`;
             
             outputDiv.innerHTML = summaryHTML + tableHTML + legendHTML;
-            document.getElementById('share-btn').classList.add('visible');
             setTimeout(() => outputDiv.classList.add('visible'), 10);
         }
-
-        // --- EMAIL SHARING LOGIC ---
-        function closeModal() {
-            document.getElementById('email-modal').classList.remove('visible');
-        }
-
-        function shareByEmail() {
-            if (!currentAlertData) return;
-            
-            const emailHTML = generateEmailHTML(currentAlertData);
-            document.getElementById('email-preview-content').innerHTML = emailHTML;
-            
-            const emailPlainText = generateEmailPlainText(currentAlertData);
-            const mailtoLink = document.getElementById('mailto-link');
-            const subject = `Informe de Alertas AEMET para ${currentAlertData.railwayLine}`;
-            mailtoLink.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailPlainText)}`;
-
-            document.getElementById('email-modal').classList.add('visible');
-        }
-
-        function copyEmailToClipboard() {
-            const content = document.getElementById('email-preview-content');
-            const blob = new Blob([content.innerHTML], { type: 'text/html' });
-            const clipboardItem = new ClipboardItem({ 'text/html': blob });
-
-            navigator.clipboard.write([clipboardItem]).then(() => {
-                const btn = document.getElementById('copy-email-btn');
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Copiado!';
-                setTimeout(() => {
-                    btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copiar Contenido del Correo';
-                }, 2000);
-            }).catch(err => {
-                console.error('Error al copiar al portapapeles:', err);
-                alert('No se pudo copiar el contenido.');
-            });
-        }
-
-        function generateEmailHTML(data) {
-            const summaryData = ALERT_DATA[data.maxAlertLevel];
-            const formattedDate = data.predictionDate ? `Predicción para el ${data.predictionDate.getUTCDate()} de ${MONTH_NAMES[data.predictionDate.getUTCMonth()]} de ${data.predictionDate.getUTCFullYear()}` : '';
-
-            let head = `<thead style="font-family: Arial, sans-serif; color: white;"><tr><th style="padding: 12px; background-color: #003057; border-radius: 8px 0 0 0;">🛤️ PK</th>`;
-            let intervalStart = new Date(data.startDate.getTime());
-            for (let i = 0; i < 4; i++) {
-                const end = new Date(intervalStart.getTime() + 6 * 3600000);
-                head += `<th style="padding: 12px; background-color: #003057;">🗓️ ${intervalStart.getHours().toString().padStart(2, '0')}:00 - ${end.getHours().toString().padStart(2, '0')}:00</th>`;
-                intervalStart = end;
-            }
-            head += `</tr></thead>`;
-
-            let body = `<tbody>`;
-            data.dataLines.forEach(line => {
-                const parts = line.trim().split(/\s+/);
-                const pk = parts[0];
-                const pcps = parts.slice(1).map(Number);
-                body += `<tr><td style="padding: 12px; background-color: #003057; color: white; font-weight: bold;">${pk}</td>`;
-                pcps.forEach((level, index) => {
-                    const levelData = ALERT_DATA[level];
-                    let trendEmoji = '';
-                    if (index > 0) {
-                        const prevLevel = pcps[index-1];
-                        if (level > prevLevel) trendEmoji = TREND_EMOJIS.up;
-                        else if (level < prevLevel) trendEmoji = TREND_EMOJIS.down;
-                        else trendEmoji = TREND_EMOJIS.stable;
-                    }
-                    body += `<td style="padding: 12px; text-align: center; background-color: ${levelData.bgColor}; color: ${levelData.color};">
-                                <div style="font-size: 24px;">${levelData.icon} ${trendEmoji}</div>
-                                <div style="font-size: 12px;">Nivel ${level}</div>
-                             </td>`;
-                });
-                body += `</tr>`;
-            });
-            body += `</tbody>`;
-
-            return `
-            <div style="font-family: Arial, sans-serif; color: #333;">
-                <h2 style="color: #003057; border-bottom: 2px solid #00a4e4; padding-bottom: 10px;">🚂 Informe de Alertas: ${data.railwayLine}</h2>
-                <p style="font-size: 16px; margin-bottom: 20px;">${formattedDate}</p>
-                <div style="padding: 15px; border-radius: 8px; color: ${summaryData.color}; background-color: ${summaryData.bgColor}; font-size: 18px; text-align: center; margin-bottom: 20px;">
-                    <b>Alerta Máxima:</b> ${summaryData.icon} ${summaryData.desc}
-                </div>
-                <table style="width: 100%; border-collapse: collapse;">
-                    ${head}${body}
-                </table>
-            </div>`;
-        }
-
-        function generateEmailPlainText(data) {
-            const summaryData = ALERT_DATA[data.maxAlertLevel];
-            const formattedDate = data.predictionDate ? `Predicción para el ${data.predictionDate.getUTCDate()} de ${MONTH_NAMES[data.predictionDate.getUTCMonth()]} de ${data.predictionDate.getUTCFullYear()}` : '';
-            
-            let text = `INFORME DE ALERTAS AEMET\n`;
-            text += `====================================\n\n`;
-            text += `🚂 LÍNEA FERROVIARIA: ${data.railwayLine}\n`;
-            text += `🗓️ FECHA: ${formattedDate}\n\n`;
-            text += `ALERTA MÁXIMA: ${summaryData.icon} ${summaryData.desc}\n\n`;
-            text += `DETALLE DE LA PREDICCIÓN:\n`;
-            
-            data.dataLines.forEach(line => {
-                const parts = line.trim().split(/\s+/);
-                const pk = parts[0];
-                const pcps = parts.slice(1).map(Number);
-                text += `\nPK ${pk}:\n`;
-                let intervalStart = new Date(data.startDate.getTime());
-                pcps.forEach(level => {
-                    const end = new Date(intervalStart.getTime() + 6 * 3600000);
-                    text += `  - De ${intervalStart.getHours()}:00 a ${end.getHours()}:00 -> Nivel ${level} (${ALERT_DATA[level].icon})\n`;
-                    intervalStart = end;
-                });
-            });
-            
-            return text;
-        }
-
+        
+        // --- AJUSTE: Cargar la previsualización al iniciar la página ---
+        document.addEventListener('DOMContentLoaded', loadExampleData);
     </script>
 </body>
-</html>```
+</html>
