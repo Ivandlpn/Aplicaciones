@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Alertas AEMET - ADIF Alta Velocidad</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --adif-blue: #003057;
+            --alta-velocidad-accent: #00a4e4;
+            --light-gray: #f4f7f9;
+            --medium-gray: #e9ecef;
+            --dark-gray: #212529;
+            --font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            
+            /* Cell Colors */
+            --level-0-bg: #f8f9fa; --level-0-text: #6c757d;
+            --level-1-bg: #e0f7fa; --level-1-text: #007c91;
+            --level-2-bg: #fff3cd; --level-2-text: #856404;
+            --level-3-bg: #f8d7da; --level-3-text: #721c24;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            background: radial-gradient(circle, #ffffff 0%, var(--light-gray) 100%);
+            color: var(--dark-gray);
+        }
+        
+        .app-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
+            background: linear-gradient(90deg, var(--adif-blue) 0%, #005a9e 100%);
+            color: white;
+            border-bottom: 5px solid var(--alta-velocidad-accent);
+        }
+        .app-header img { 
+            max-height: 50px; 
+            width: auto; 
+        }
+
+        /* --- AJUSTE: Fondo blanco para AMBOS logos --- */
+        .app-header .logo-adif,
+        .app-header .logo-aemet {
+            background-color: white;
+            padding: 8px;
+            border-radius: 6px;
+            box-sizing: border-box; /* El padding se incluye en la altura total */
+            max-height: 60px;
+        }
+
+        .app-header h1 { font-size: 1.8rem; font-weight: 600; margin: 0 1rem; text-align: center; }
+
+        .main-content { padding: 2.5rem; }
+
+        .input-panel {
+            background-color: var(--light-gray); padding: 2rem;
+            border-radius: 12px; border: 1px solid var(--medium-gray);
+        }
+        .input-panel p { margin-top: 0; font-size: 1.1rem; font-weight: 500; color: var(--adif-blue); }
+        textarea {
+            width: 100%; height: 180px; margin-bottom: 1rem; padding: 1rem;
+            border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;
+            font-family: 'Consolas', 'Courier New', monospace; font-size: 0.9em; resize: vertical;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        textarea:focus {
+            outline: none; border-color: var(--alta-velocidad-accent);
+            box-shadow: 0 0 8px rgba(0, 164, 228, 0.3);
+        }
+        .button-container { text-align: center; }
+        button {
+            background: linear-gradient(45deg, var(--alta-velocidad-accent), #007bff); color: white;
+            padding: 14px 30px; border: none; border-radius: 50px; cursor: pointer;
+            font-size: 1.1rem; font-weight: 600; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4); }
+
+        .visualizer { margin-top: 2.5rem; opacity: 0; transition: opacity 0.8s ease-in-out; }
+        .visualizer.visible { opacity: 1; }
+
+        .summary-panel {
+            display: flex; align-items: center; justify-content: center; gap: 20px;
+            padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; color: white;
+            font-size: 1.5rem; font-weight: 600; text-align: center;
+        }
+        .summary-panel i { font-size: 2.5rem; }
+        .summary-level-0 { background: #6c757d; }
+        .summary-level-1 { background: #17a2b8; }
+        .summary-level-2 { background: #ffc107; color: var(--dark-gray); }
+        .summary-level-3 { background: #dc3545; }
+
+        /* --- VISUAL TABLE STYLES --- */
+        .table-container { overflow-x: auto; padding: 5px; }
+        table {
+            width: 100%; border-collapse: separate; border-spacing: 6px;
+            text-align: center; table-layout: fixed; /* Ayuda a controlar el ancho de las columnas */
+        }
+        th { padding: 16px; background-color: #f2f6fa; color: var(--adif-blue); font-weight: 600; border-radius: 8px; }
+        td { padding: 16px; border-radius: 8px; transition: all 0.2s ease-in-out; }
+        
+        th:first-child,
+        td.pk-cell {
+            width: 120px; /* Ancho fijo para la columna PK */
+        }
+
+        .pk-cell {
+            font-weight: bold; color: white; background-color: var(--adif-blue);
+            font-size: 1.2rem; border: none;
+        }
+        
+        .alert-cell { font-weight: 600; cursor: help; position: relative; }
+        .alert-cell:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.15); z-index: 10; }
+        .alert-icon { font-size: 2em; display: block; margin: 0 auto 8px; }
+        
+        .cell-level-0 { background-color: var(--level-0-bg); color: var(--level-0-text); }
+        .cell-level-1 { background-color: var(--level-1-bg); color: var(--level-1-text); }
+        .cell-level-2 { background-color: var(--level-2-bg); color: var(--level-2-text); }
+        .cell-level-3 { background-color: var(--level-3-bg); color: var(--level-3-text); }
+
+        /* --- Legend --- */
+        .legend-container {
+            margin-top: 2.5rem; display: flex; justify-content: center;
+            gap: 25px; flex-wrap: wrap; padding: 1.5rem;
+            background-color: var(--light-gray); border-radius: 12px;
+        }
+        .legend-item { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+        .legend-item i { font-size: 1.5rem; width: 30px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <img src="https://www.adifaltavelocidad.es/documents/34745/2553140/Logo+Adif+AV+color.png/6fe9b0ae-618b-bc8a-405c-b296d4356994?t=1616685949205&download=true" alt="Logo de ADIF Alta Velocidad" class="logo-adif">
+            <h1>Visor de Alertas Meteorológicas</h1>
+            <!-- LOGO AEMET ACTUALIZADO Y CON CLASE PARA FONDO BLANCO -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Logotipo_de_la_Agencia_Estatal_de_Meteorolog%C3%ADa_%282025%29.svg/330px-Logotipo_de_la_Agencia_Estatal_de_Meteorolog%C3%ADa_%282025%29.svg.png" alt="Logo de AEMET" class="logo-aemet">
+        </header>
+
+        <main class="main-content">
+            <section class="input-panel">
+                <p>Introduzca el texto completo de la alerta para generar el panel de visualización.</p>
+                <textarea id="dataInput" placeholder="Predicción para el intervalo del dia 2025-09-07 a las 14:00:00 hasta el 2025-09-08 a las 14:00:00 LA PREDICCION DE ALERTAS HORARIAS ES:
+
+PK      PCP_1   PCP_2   PCP3    PCP_4
+455       0       1       0       0
+460       0       2       0       0
+470       0       3       1       0"></textarea>
+                <div class="button-container">
+                    <button onclick="processData()">
+                        <i class="fa-solid fa-bolt"></i> Analizar y Visualizar
+                    </button>
+                </div>
+            </section>
+
+            <section class="visualizer" id="visualizerOutput"></section>
+        </main>
+    </div>
+
+    <script>
+        const ALERT_DATA = {
+            0: { desc: "Sin alerta: Precipitación < 20 mm.", icon: "fa-cloud-sun" },
+            1: { desc: "Nivel 1: Precipitación entre 20 y 40 mm.", icon: "fa-cloud-rain" },
+            2: { desc: "Nivel 2: Precipitación entre 40 y 80 mm.", icon: "fa-cloud-showers-heavy" },
+            3: { desc: "Nivel 3: Precipitación > 80 mm.", icon: "fa-bolt-lightning" }
+        };
+
+        function processData() {
+            const dataInput = document.getElementById('dataInput').value;
+            const outputDiv = document.getElementById('visualizerOutput');
+            
+            outputDiv.innerHTML = '';
+            outputDiv.classList.remove('visible');
+
+            const lines = dataInput.trim().split('\n');
+            let predictionIntervalText = '', dataLines = [], headerFound = false, maxAlertLevel = 0;
+
+            for (const line of lines) {
+                if (line.includes('Predicción')) {
+                    predictionIntervalText = line;
+                } else if (line.includes('PK')) {
+                    headerFound = true;
+                } else if (headerFound && line.trim() !== '') {
+                    dataLines.push(line);
+                    const parts = line.trim().split(/\s+/).slice(1).map(Number);
+                    const currentMax = Math.max(...parts);
+                    if (currentMax > maxAlertLevel) maxAlertLevel = currentMax;
+                }
+            }
+            
+            let startDate = null;
+            if (predictionIntervalText) {
+                const dateMatch = predictionIntervalText.match(/del dia (\d{4}-\d{2}-\d{2}) a las (\d{2}:\d{2}:\d{2})/);
+                if(dateMatch) startDate = new Date(`${dateMatch[1]}T${dateMatch[2]}`);
+            }
+
+            if (dataLines.length === 0) {
+                 outputDiv.innerHTML = `<p style="color: red; text-align: center; font-size: 1.2rem;">No se encontraron datos de precipitación válidos en el texto introducido.</p>`;
+                 setTimeout(() => outputDiv.classList.add('visible'), 10);
+                 return;
+            }
+
+            const summaryData = ALERT_DATA[maxAlertLevel];
+            const summaryHTML = `
+                <div class="summary-panel summary-level-${maxAlertLevel}">
+                    <i class="fa-solid ${summaryData.icon}"></i>
+                    <span>Alerta Máxima Detectada: ${summaryData.desc}</span>
+                </div>`;
+
+            let tableHTML = '';
+            if (startDate) {
+                let tableHead = `<thead><tr><th>PK</th>`;
+                [6, 12, 18, 24].forEach(interval => {
+                    const end = new Date(startDate.getTime() + interval * 3600000);
+                    tableHead += `<th>${startDate.getHours().toString().padStart(2, '0')}:00 - ${end.getHours().toString().padStart(2, '0')}:00</th>`;
+                });
+                tableHead += `</tr></thead>`;
+
+                let tableBody = `<tbody>`;
+                dataLines.forEach(line => {
+                    const parts = line.trim().split(/\s+/);
+                    const pk = parts[0];
+                    const pcps = parts.slice(1).map(Number);
+                    tableBody += `<tr><td class="pk-cell">${pk}</td>`;
+                    pcps.forEach(level => {
+                        const levelData = ALERT_DATA[level] || { desc: 'N/A', icon: 'fa-question-circle' };
+                        tableBody += `
+                            <td class="alert-cell cell-level-${level}" title="${levelData.desc}">
+                                <i class="alert-icon fa-solid ${levelData.icon}"></i>
+                                <span>Nivel ${level}</span>
+                            </td>`;
+                    });
+                    tableBody += `</tr>`;
+                });
+                tableBody += `</tbody>`;
+                tableHTML = `<div class="table-container"><table>${tableHead}${tableBody}</table></div>`;
+            }
+
+            const legendHTML = `
+                <div class="legend-container">
+                    ${Object.entries(ALERT_DATA).map(([level, data]) => `
+                        <div class="legend-item" style="color: var(--level-${level}-text)">
+                            <i class="fa-solid ${data.icon}"></i>
+                            <span>${data.desc}</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+            
+            outputDiv.innerHTML = summaryHTML + tableHTML + legendHTML;
+            setTimeout(() => outputDiv.classList.add('visible'), 10);
+        }
+    </script>
+</body>
+</html>
