@@ -51,7 +51,7 @@
         <!-- Pantalla de Configuración de Jugadores -->
         <div id="player-config-screen" class="screen">
             <button class="close-btn" data-target-screen="splash-screen">×</button>
-            <h2>Elige a los Jugadores</h2>
+            <h2>PERSONALIZA A LOS JUGADORES</h2>
             <div id="player-cards-grid"></div>
             <div class="nav-buttons-container">
                 <button id="start-match-btn" class="btn">Siguiente <i class="fas fa-arrow-right"></i></button>
@@ -64,9 +64,10 @@
         <!-- Pantalla de Configuración de Categorías -->
         <div id="category-config-screen" class="screen">
             <button class="close-btn" data-target-screen="player-config-screen">×</button>
-            <h2>Selecciona los Temas</h2>
+            <h2>SELECCIONA LOS TEMAS</h2>
             <div id="category-actions">
                  <button id="select-all-categories-btn" class="btn secondary-btn"><i class="fas fa-check-double"></i> Seleccionar/Deseleccionar Todos</button>
+                 <button id="select-random-categories-btn" class="btn"><i class="fas fa-dice"></i> Selección Aleatoria</button>
             </div>
             <div id="category-grid"></div>
             <div class="nav-buttons-container">
@@ -79,7 +80,7 @@
         <div id="round-config-screen" class="screen">
             <button class="close-btn" data-target-screen="category-config-screen">×</button>
             <div class="config-card">
-                <h2>¿Cuántas preguntas por jugador?</h2>
+                <h2>NÚMERO DE PREGUNTAS</h2>
                 <div class="round-count-selector">
                     <button id="decrease-rounds-btn">-</button>
                     <span id="round-count">5</span>
@@ -204,11 +205,20 @@
             <div class="modal-content">
                 <button class="close-btn" data-target-screen="hide-avatar-modal">×</button>
                 <h3>Personaliza tu Jugador</h3>
-                <h4>Elige tu Avatar</h4>
-                <div id="avatar-grid"></div>
-                <h4>Elige tu Color</h4>
-                <div id="color-palette"></div>
-                <button id="save-avatar-btn" class="btn">Guardar</button>
+        <div class="centering-wrapper">
+            <div id="avatar-preview-area">
+                <div id="avatar-preview" class="player-avatar-config">
+                    <i></i>
+                </div>
+            </div>
+        </div>
+        <h4>Elige tu Avatar</h4>
+        <div id="avatar-grid"></div>
+        <h4>Elige tu Color</h4>
+        <div id="color-palette"></div>
+        <div class="centering-wrapper">
+            <button id="save-avatar-btn" class="btn">Guardar</button>
+        </div>
             </div>
         </div>
 

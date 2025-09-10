@@ -41,6 +41,7 @@ const CATEGORY_ICONS = {
     "Material Rodante": "fas fa-train-subway",
     "Operación y Circulación": "fas fa-route", 
     "Instalaciones de Seguridad": "fas fa-traffic-light",
+    "LAV ESTE": "fas fa-train-tunnel",
     "default": "fas fa-question-circle"
 };
 
@@ -50,6 +51,7 @@ const playerConfigScreen = document.getElementById('player-config-screen');
 const categoryConfigScreen = document.getElementById('category-config-screen');
 const categoryGrid = document.getElementById('category-grid');
 const selectAllCategoriesBtn = document.getElementById('select-all-categories-btn');
+const selectRandomCategoriesBtn = document.getElementById('select-random-categories-btn'); // Referencia añadida
 const startGameFromCategoriesBtn = document.getElementById('start-game-from-categories-btn');
 const roundConfigScreen = document.getElementById('round-config-screen');
 const gameScreen = document.getElementById('game-screen');
@@ -102,10 +104,8 @@ let categoryIcon, categoryNameSpan;
 const questionImageContainer = document.getElementById('question-image-container');
 const questionImage = document.getElementById('question-image');
 const saveAvatarBtn = document.getElementById('save-avatar-btn');
-// /* CAMBIO INICIA: Referencias para el nuevo menú de comodines */
 const toggleJokersBtn = document.getElementById('toggle-jokers-btn');
 const jokersDropdown = document.getElementById('jokers-dropdown');
-// /* CAMBIO TERMINA */
 
 
 // --- FUNCIONES DE UTILIDAD ---
@@ -250,10 +250,18 @@ function openAvatarSelectionModal(playerIndex) {
         colorPalette.appendChild(option);
     });
     
+    updateAvatarSelectionModal();
     avatarSelectionModal.classList.add('active');
 }
 function updateAvatarSelectionModal() {
+    if (currentPlayerAvatarSelectionIndex === -1) return;
     const player = players[currentPlayerAvatarSelectionIndex];
+
+    const avatarPreview = document.getElementById('avatar-preview');
+    const avatarPreviewIcon = avatarPreview.querySelector('i');
+    avatarPreview.style.backgroundColor = player.color;
+    avatarPreviewIcon.className = player.avatar;
+
     avatarGrid.querySelectorAll('.avatar-option').forEach(opt => {
         opt.classList.toggle('selected', opt.querySelector('i').className === player.avatar);
     });
@@ -318,6 +326,73 @@ function deselectAllCategories() {
     updateCategoryNextButtonState();
 }
 
+// === NUEVA FUNCIÓN PARA LA SELECCIÓN ALEATORIA VISUAL ===
+function selectRandomCategories() {
+    const categoryButtons = Array.from(categoryGrid.querySelectorAll('.category-btn'));
+    const actionButtons = document.querySelectorAll('#category-actions button, .nav-buttons-container button');
+
+    // 1. Deshabilitar todos los botones para evitar clics durante la animación
+    actionButtons.forEach(btn => btn.disabled = true);
+    categoryButtons.forEach(btn => btn.disabled = true);
+
+    // 2. Limpiar la selección previa
+    deselectAllCategories(); 
+
+    // 3. Mezclar los botones para que la animación sea aleatoria
+    const shuffledButtons = shuffleArray([...categoryButtons]);
+
+    // 4. Iniciar la animación de resaltado secuencial
+    const highlightDuration = 100; // Duración en ms de cada resaltado
+    let currentIndex = 0;
+
+    function highlightNext() {
+        // Quitar el resaltado del botón anterior
+        if (currentIndex > 0) {
+            shuffledButtons[currentIndex - 1].classList.remove('is-highlighted');
+        }
+        
+        // Si aún quedan botones por recorrer en la animación
+        if (currentIndex < shuffledButtons.length) {
+            shuffledButtons[currentIndex].classList.add('is-highlighted');
+            currentIndex++;
+            setTimeout(highlightNext, highlightDuration);
+        } else {
+            // La animación ha terminado, proceder a la selección final
+            finalizeSelection();
+        }
+    }
+
+    highlightNext(); // Comenzar la animación
+
+    // 5. Función para realizar la selección final después de la animación
+    function finalizeSelection() {
+        shuffledButtons[shuffledButtons.length - 1].classList.remove('is-highlighted');
+
+        // Lógica de selección: elegimos aproximadamente la mitad de las categorías
+        const allCategories = categoryButtons.map(btn => btn.dataset.category);
+        const shuffledCategories = shuffleArray(allCategories);
+        const numToSelect = Math.max(3, Math.ceil(allCategories.length / 2)); // Seleccionar al menos 3
+        const newSelectedCategories = shuffledCategories.slice(0, numToSelect);
+
+        // Actualizar el array de estado con las nuevas categorías
+        selectedCategories = newSelectedCategories;
+        
+        // Aplicar la clase .selected a los botones elegidos
+        categoryButtons.forEach(btn => {
+            if (selectedCategories.includes(btn.dataset.category)) {
+                btn.classList.add('selected');
+            }
+        });
+
+        // 6. Reactivar los botones y actualizar el estado de la UI
+        actionButtons.forEach(btn => btn.disabled = false);
+        categoryButtons.forEach(btn => btn.disabled = false);
+        updateMaxQuestionsAvailable();
+        updateCategoryNextButtonState();
+    }
+}
+
+
 function updateMaxQuestionsAvailable() {
     maxQuestionsAvailable = selectedCategories.reduce((total, categoryName) => {
         return total + (gameData.preguntas[categoryName] ? gameData.preguntas[categoryName].length : 0);
@@ -329,7 +404,6 @@ function updateCategoryNextButtonState() {
 }
 
 
-// ================== INICIO MEJORA ==================
 // --- FUNCIONES DE PAUSA Y REANUDACIÓN DEL JUEGO ---
 function pauseGame() {
     if (!isGamePaused && questionTimer) {
@@ -346,8 +420,6 @@ function resumeGame() {
         }
     }
 }
-// =================== FIN MEJORA ====================
-
 
 // --- LÓGICA PRINCIPAL DEL JUEGO ---
 function startGame() {
@@ -461,13 +533,12 @@ function displayQuestion() {
             optionsGridDiv.appendChild(button);
         });
         
-        // MEJORA: Revelar el área de la pregunta una vez que el contenido nuevo está listo.
         const questionArea = document.getElementById('question-area');
         questionArea.classList.remove('is-hidden');
 
         timerBar.style.transition = 'width 1s linear, background 1s ease';
         questionTimer = setInterval(updateTimer, 1000);
-    }, 300); // Reducimos ligeramente el delay para que sea más ágil
+    }, 300);
 }
 function updateTimer() {
     timeRemaining--;
@@ -574,7 +645,6 @@ function goToNextQuestion(advancePlayer) {
     if (feedbackTimer) clearTimeout(feedbackTimer);
     feedbackOverlay.classList.remove('show');
     
-    // MEJORA: Ocultar el área de la pregunta ANTES de la transición.
     const questionArea = document.getElementById('question-area');
     questionArea.classList.add('is-hidden');
     
@@ -582,17 +652,14 @@ function goToNextQuestion(advancePlayer) {
     updateGameProgress();
     
     if (currentQuestionIndex >= shuffledQuestions.length) {
-        // Añadimos un pequeño delay para que la animación de ocultar termine antes de ir a la pantalla final
         setTimeout(endGame, 500);
         return;
     }
     
     if (advancePlayer) {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        // El delay de la transición de turno da tiempo a que la animación 'is-hidden' termine
         showTurnTransition(displayQuestion);
     } else {
-        // Si no hay transición de turno, esperamos un poco antes de mostrar la nueva pregunta
         setTimeout(displayQuestion, 500);
     }
 }
@@ -619,9 +686,43 @@ function updateGameProgress() {
     });
 }
 
+// === CÓDIGO DUPLICADO ELIMINADO ===
+function animateJokerFly(sourceElement) {
+    if (!sourceElement) return;
+
+    const icon = sourceElement.querySelector('i');
+    if (!icon) return;
+
+    const iconClass = icon.className;
+    const startRect = sourceElement.getBoundingClientRect();
+    const targetElement = document.getElementById('question-text');
+    const endRect = targetElement.getBoundingClientRect();
+
+    const flyingIcon = document.createElement('i');
+    flyingIcon.className = iconClass + ' flying-joker';
+    document.body.appendChild(flyingIcon);
+
+    flyingIcon.style.position = 'absolute';
+    flyingIcon.style.left = `${startRect.left + startRect.width / 2}px`;
+    flyingIcon.style.top = `${startRect.top + startRect.height / 2}px`;
+    
+    setTimeout(() => {
+        flyingIcon.style.left = `${endRect.left + endRect.width / 2}px`;
+        flyingIcon.style.top = `${endRect.top + endRect.height / 2}px`;
+        flyingIcon.classList.add('is-flying');
+    }, 10);
+
+    flyingIcon.addEventListener('transitionend', () => {
+        flyingIcon.remove();
+    }, { once: true });
+}
+
 function useFiftyFiftyJoker() {
     const currentPlayer = players[currentPlayerIndex];
     if (!currentPlayer.hasFiftyFiftyJoker) return;
+    
+    animateJokerFly(fiftyFiftyBtn);
+
     fiftyFiftyBtn.classList.add('used');
     currentPlayer.hasFiftyFiftyJoker = false;
     fiftyFiftyBtn.disabled = true;
@@ -640,6 +741,9 @@ function useFiftyFiftyJoker() {
 function useAddTimeJoker() {
     const currentPlayer = players[currentPlayerIndex];
     if (!currentPlayer.hasAddTimeJoker) return;
+
+    animateJokerFly(addTimeBtn);
+
     addTimeBtn.classList.add('used');
     currentPlayer.hasAddTimeJoker = false;
     addTimeBtn.disabled = true;
@@ -668,6 +772,9 @@ function useAddTimeJoker() {
 function usePassJoker() {
     const currentPlayer = players[currentPlayerIndex];
     if (!currentPlayer.hasPassJoker) return;
+
+    animateJokerFly(passQuestionBtn);
+
     clearInterval(questionTimer);
     passQuestionBtn.classList.add('used');
     currentPlayer.hasPassJoker = false;
@@ -838,6 +945,9 @@ function initializeEventListeners() {
         }
     });
 
+    // === EVENT LISTENER PARA EL NUEVO BOTÓN ===
+    selectRandomCategoriesBtn.addEventListener('click', selectRandomCategories);
+
     startGameFromCategoriesBtn.addEventListener('click', () => {
         if (startGameFromCategoriesBtn.disabled) return;
         showScreen(roundConfigScreen);
@@ -864,20 +974,16 @@ function initializeEventListeners() {
     exitGameBtn.addEventListener('click', showConfirmExitModal);
     saveAvatarBtn.addEventListener('click', hideAvatarSelectionModal);
     
-    // /* CAMBIO INICIA: Lógica para el menú de comodines */
     toggleJokersBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Evita que el clic se propague al 'document' y cierre el menú inmediatamente
+        e.stopPropagation();
         jokersDropdown.classList.toggle('active');
     });
 
-    // Cierra el menú si se hace clic en cualquier otro lugar
     document.addEventListener('click', (e) => {
         if (!jokersDropdown.contains(e.target) && !toggleJokersBtn.contains(e.target)) {
             jokersDropdown.classList.remove('active');
         }
     });
-    // /* CAMBIO TERMINA */
-
 
     document.querySelectorAll('.close-btn').forEach(b => {
         b.onclick = (e) => {
