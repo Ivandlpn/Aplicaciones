@@ -23,17 +23,18 @@
         .logo { font-weight: 600; font-size: 2rem; color: var(--azul-ineco); padding-right: 1.5rem; }
         .main-title { font-weight: 600; font-size: 1.75rem; color: var(--azul-ineco); text-align: right; flex-grow: 1; }
         
+        /* Flexbox para layout principal */
         .app-wrapper {
             display: flex;
             gap: 2rem;
             align-items: flex-start;
         }
         .tracking-section {
-            flex: 2;
+            flex: 2; 
             background-color: var(--blanco); border-radius: var(--radius-main); padding: 2rem; box-shadow: var(--shadow-main);
         }
         .display-section {
-            flex: 1;
+            flex: 1; 
             display: flex; flex-direction: column; gap: 2rem; position: sticky; top: 2rem;
         }
 
@@ -64,10 +65,11 @@
         .display-card { background-color: var(--blanco); border-radius: var(--radius-main); padding: 1.5rem; box-shadow: var(--shadow-main); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--azul-ineco); }
         .display-card .label { font-weight: 600; font-size: 1.1rem; color: var(--azul-ineco); }
         .display-card .value { font-weight: 600; font-size: 1.75rem; color: var(--blanco); background-color: var(--azul-claro); padding: 0.5rem 1rem; border-radius: 10px; min-width: 50px; text-align: center; }
-        .main-display-card { background: linear-gradient(135deg, var(--azul-ineco) 70%, var(--azul-claro) 100%); padding: 2rem; text-align: center; color: var(--blanco); border-left: none; border-radius: var(--radius-main); }
+        .main-display-card { background: linear-gradient(135deg, var(--azul-ineco) 70%, var(--azul-claro) 100%); padding: 2rem; text-align: center; color: var(--blanco); border-left: none; }
         .main-display-card .label { color: var(--blanco); font-size: 1.25rem; font-weight: 500; margin-bottom: 1rem; display: block; }
         .main-display-card .value { font-size: 6rem; font-weight: 600; background: none; padding: 0; line-height: 1; transition: var(--transition-main); }
         
+        /* Media Query para Responsividad */
         @media (max-width: 992px) {
             .app-wrapper { flex-direction: column; }
             .display-section { position: static; width: 100%; order: 1; }
@@ -87,8 +89,9 @@
     <div class="container">
         <header>
             <div class="logo">ineco</div>
-            <h1 class="main-title">ACTAS SEMANALES INECO TELECO LAV 4 - 2025</h1>
+            <h1 class="main-title">ACTAS SEMANALES INECO TELECO LAV 4 - 2026</h1>
         </header>
+
         <main class="app-wrapper">
             <section class="tracking-section">
                 <div class="tables-grid">
@@ -97,6 +100,7 @@
                     <div class="table-container" id="table-41-53"></div>
                 </div>
             </section>
+            
             <aside class="display-section">
                 <div class="display-card current-week-card">
                     <span class="label">SEMANA ACTUAL</span>
@@ -110,38 +114,42 @@
         </main>
     </div>
 
-    <!-- SDK de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <script>
-    // --- ESTA ES LA CONFIGURACIÓN DE TU NUEVO PROYECTO ---
     const firebaseConfig = {
-      apiKey: "AIzaSyAEDLq5GQsnqd0SupbnAACvBZa4k-EN4io",
-      authDomain: "actas-ineco-final.firebaseapp.com",
-      projectId: "actas-ineco-final",
-      storageBucket: "actas-ineco-final.appspot.com",
-      messagingSenderId: "1038303827279",
-      appId: "1:1038303827279:web:cf84943e14153b4229213a"
+      apiKey: "AIzaSyAp-yyjD_Du7mdmT5imq4wnH17tpyBZBzg",
+      authDomain: "actas-ineco-lav4.firebaseapp.com",
+      projectId: "actas-ineco-lav4",
+      storageBucket: "actas-ineco-lav4.appspot.com",
+      messagingSenderId: "1043968671762",
+      appId: "1:1043968671762:web:08cebe9ca7adbcaab658cb"
     };
 
-    // Inicializamos Firebase (método de la versión 8, que es la que usas)
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    function getWeekNumber(d) {
-        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-        return weekNo;
+    // FUNCIÓN NUEVA: Calcular semana ISO automáticamente
+    function getISOWeek(date) {
+        date = new Date(date || new Date());
+        date.setHours(0, 0, 0, 0);
+        // El jueves de la semana actual decide el año.
+        date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+        // El 4 de enero siempre está en la primera semana.
+        var week1 = new Date(date.getFullYear(), 0, 4);
+        // Ajustar a jueves de la semana 1 y contar semanas completas desde entonces.
+        return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const CURRENT_WEEK = getWeekNumber(new Date());
+        // ACTUALIZADO: Calcula la semana actual real
+        const CURRENT_WEEK = getISOWeek();
         const TOTAL_WEEKS = 53;
         let actasData = [];
-        const actasCollection = db.collection('actas-2025');
+        
+        // ACTUALIZADO: Colección 2026 para no sobrescribir datos antiguos
+        const actasCollection = db.collection('actas-2026');
         
         const tableContainers = {
             '1-20': document.getElementById('table-1-20'),
@@ -169,13 +177,14 @@
                 tableContainers[key].appendChild(body);
             }
 
+            // Ordenar datos antes de renderizar
+            actasData.sort((a, b) => a.week - b.week);
+
             actasData.forEach(item => {
                 const row = document.createElement('div');
                 row.className = 'table-row';
                 row.dataset.week = item.week;
-                if (item.week === CURRENT_WEEK) {
-                    row.classList.add('current-week-row');
-                }
+                if (item.week === CURRENT_WEEK) row.classList.add('current-week-row');
 
                 row.innerHTML = `
                     <span class="week-number">${item.week}</span>
@@ -199,7 +208,7 @@
         function updateDisplayPanel() {
             const currentWeekData = actasData.find(d => d.week === CURRENT_WEEK);
             currentWeekValueEl.textContent = CURRENT_WEEK;
-            currentActaValueEl.textContent = currentWeekData ? currentWeekData.acta : 'N/A';
+            currentActaValueEl.textContent = currentWeekData && currentWeekData.acta && currentWeekData.acta !== '' && currentWeekData.acta !== '*' ? currentWeekData.acta : '--';
         }
 
         function handleEditEvents(event) {
@@ -207,37 +216,30 @@
             if (!icon) return;
             const row = icon.closest('.table-row');
             const week = parseInt(row.dataset.week);
-            
             if (icon.classList.contains('icon-edit')) {
                 const currentlyEditing = document.querySelector('.table-row.is-editing');
-                if (currentlyEditing) {
-                    const originalValue = currentlyEditing.querySelector('.acta-value').textContent;
-                    currentlyEditing.querySelector('.acta-input').value = originalValue;
-                    currentlyEditing.classList.remove('is-editing');
-                }
+                if (currentlyEditing) currentlyEditing.classList.remove('is-editing');
                 row.classList.add('is-editing');
                 const input = row.querySelector('.acta-input');
                 input.focus();
                 input.select();
             }
-
             if (icon.classList.contains('icon-save')) {
                 const newValue = row.querySelector('.acta-input').value;
-                row.querySelector('.acta-value').textContent = newValue;
                 updateActaInDb(week, newValue);
                 row.classList.remove('is-editing');
             }
-
             if (icon.classList.contains('icon-cancel')) {
-                const originalValue = row.querySelector('.acta-value').textContent;
-                row.querySelector('.acta-input').value = originalValue;
                 row.classList.remove('is-editing');
             }
         }
 
         function getInitialSeedData() {
-             const initialData = [ { week: 1, acta: '*' }, { week: 2, acta: '*' }, { week: 3, acta: '67' }, { week: 4, acta: '77' }, { week: 5, acta: '24' }, { week: 6, acta: '4' }, { week: 7, acta: '4' }, { week: 8, acta: '4' }, { week: 9, acta: '4' }, { week: 10, acta: '4' }, { week: 11, acta: '21' }, { week: 12, acta: '19' }, { week: 13, acta: '19' }, { week: 14, acta: '20' }, { week: 15, acta: '10' }, { week: 16, acta: '2' }, { week: 17, acta: '2' }, { week: 18, acta: '2' }, { week: 19, acta: '2' }, { week: 20, acta: '2' }, { week: 21, acta: '152' }, { week: 22, acta: '21' }, { week: 23, acta: '18' }, { week: 24, acta: '17' }, { week: 25, acta: '9' }, { week: 26, acta: '2' }, { week: 27, acta: '2' }, { week: 28, acta: '2' }, { week: 29, acta: '2' }, { week: 30, acta: '2' }, ];
-             const fullData = Array.from({ length: TOTAL_WEEKS }, (_, i) => { const weekNum = i + 1; const existingEntry = initialData.find(d => d.week === weekNum); return existingEntry || { week: weekNum, acta: '' }; });
+             // ACTUALIZADO: Datos limpios para el inicio de 2026
+             // Creamos un array vacío para todas las semanas
+             const fullData = Array.from({ length: TOTAL_WEEKS }, (_, i) => { 
+                return { week: i + 1, acta: '' }; 
+             });
              return fullData;
         }
 
@@ -252,7 +254,7 @@
 
         actasCollection.orderBy('week').onSnapshot(snapshot => {
             if (snapshot.empty) {
-                console.log("Colección vacía. Poblando la base de datos...");
+                console.log("Colección 2026 vacía. Poblando la base de datos...");
                 seedDatabase();
                 return;
             }
@@ -260,7 +262,6 @@
             renderUI();
         }, error => {
             console.error("ERROR GRAVE DE FIREBASE: ", error);
-            alert("No se pudo conectar a la base de datos. Revisa la consola y asegúrate de que la API de Firestore está HABILITADA en tu proyecto de Google Cloud.");
         });
 
         trackingSection.addEventListener('click', handleEditEvents);
