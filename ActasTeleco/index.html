@@ -11,24 +11,20 @@
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // --- FUNCIÓN MODIFICADA CON AJUSTE +1 ---
+    // FUNCIÓN ESTÁNDAR (Correcta para ISO 8601)
     function getISOWeek(date) {
         date = new Date(date || new Date());
         date.setHours(0, 0, 0, 0);
-        // Ajuste al jueves de la semana actual
+        // El jueves de la semana actual decide el año.
         date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-        // El 4 de enero siempre está en la primera semana ISO
+        // El 4 de enero siempre está en la primera semana.
         var week1 = new Date(date.getFullYear(), 0, 4);
-        // Calcular la semana estándar
-        var currentWeek = 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-        
-        // *** AQUÍ ESTÁ EL CAMBIO ***
-        // Sumamos 1 artificialmente para forzar que sea Semana 3
-        return currentWeek + 1;
+        // Ajustar a jueves de la semana 1 y contar semanas completas.
+        return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const CURRENT_WEEK = getISOWeek(); // Ahora devolverá 3
+        const CURRENT_WEEK = getISOWeek(); // Devolverá 2 automáticamente hoy
         const TOTAL_WEEKS = 53;
         let actasData = [];
         
