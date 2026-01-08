@@ -1,123 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actas Semanales - INECO (Firebase)</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --azul-ineco: #1A4488; --rojo-ineco: #CB1823; --azul-claro: #3463AC;
-            --azul-muy-claro: #6B96CF; --gris-oscuro: #323232; --gris-claro: #E6E6E6;
-            --gris-fondo: #F4F6F9; --blanco: #FFFFFF; --font-main: 'Poppins', sans-serif;
-            --radius-main: 16px; --shadow-main: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --transition-main: all 0.3s ease;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-main); background-color: var(--gris-fondo); color: var(--gris-oscuro); padding: 2rem; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-        .logo { font-weight: 600; font-size: 2rem; color: var(--azul-ineco); padding-right: 1.5rem; }
-        .main-title { font-weight: 600; font-size: 1.75rem; color: var(--azul-ineco); text-align: right; flex-grow: 1; }
-        
-        /* Flexbox para layout principal */
-        .app-wrapper {
-            display: flex;
-            gap: 2rem;
-            align-items: flex-start;
-        }
-        .tracking-section {
-            flex: 2; 
-            background-color: var(--blanco); border-radius: var(--radius-main); padding: 2rem; box-shadow: var(--shadow-main);
-        }
-        .display-section {
-            flex: 1; 
-            display: flex; flex-direction: column; gap: 2rem; position: sticky; top: 2rem;
-        }
-
-        .tables-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-        .table-container .table-header { display: flex; justify-content: space-between; padding: 0.75rem 1rem; background-color: var(--azul-ineco); color: var(--blanco); font-weight: 600; border-top-left-radius: 12px; border-top-right-radius: 12px; }
-        .table-body { border: 1px solid var(--gris-claro); border-top: none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; overflow: hidden; }
-        .table-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; padding: 0.6rem 1rem; border-bottom: 1px solid var(--gris-claro); transition: background-color 0.3s ease; gap: 1rem; }
-        .table-row:last-child { border-bottom: none; }
-        .week-number { font-weight: 500; color: var(--azul-claro); }
-        .acta-cell { text-align: right; }
-        .acta-value { font-weight: 400; color: var(--gris-oscuro); }
-        .acta-input { border: 1px solid var(--azul-muy-claro); background: #f0f5ff; text-align: right; font-family: var(--font-main); font-size: 1rem; width: 100%; padding: 4px 8px; border-radius: 6px; }
-        .acta-input:focus { outline: 2px solid var(--azul-ineco); }
-        .action-icons { display: flex; gap: 0.5rem; }
-        .action-icons svg { width: 20px; height: 20px; cursor: pointer; transition: all 0.2s ease; }
-        .icon-edit { color: var(--azul-claro); opacity: 0; pointer-events: none; }
-        .table-row:hover:not(.is-editing) .icon-edit { opacity: 1; pointer-events: auto; }
-        .icon-edit:hover { color: var(--azul-ineco); transform: scale(1.1); }
-        .icon-save { color: #28a745; }
-        .icon-save:hover { color: #218838; transform: scale(1.1); }
-        .icon-cancel { color: #dc3545; }
-        .icon-cancel:hover { color: #c82333; transform: scale(1.1); }
-        .table-row:not(.is-editing) .acta-input, .table-row:not(.is-editing) .icon-save, .table-row:not(.is-editing) .icon-cancel { display: none; }
-        .table-row.is-editing .acta-value, .table-row.is-editing .icon-edit { display: none; }
-        .table-row.is-editing { background-color: #eaf2ff; }
-        .table-row.current-week-row { background-color: #dbeaff; font-weight: 600; }
-        .table-row.current-week-row.is-editing { background-color: #c4d9ff; }
-        .display-card { background-color: var(--blanco); border-radius: var(--radius-main); padding: 1.5rem; box-shadow: var(--shadow-main); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--azul-ineco); }
-        .display-card .label { font-weight: 600; font-size: 1.1rem; color: var(--azul-ineco); }
-        .display-card .value { font-weight: 600; font-size: 1.75rem; color: var(--blanco); background-color: var(--azul-claro); padding: 0.5rem 1rem; border-radius: 10px; min-width: 50px; text-align: center; }
-        .main-display-card { background: linear-gradient(135deg, var(--azul-ineco) 70%, var(--azul-claro) 100%); padding: 2rem; text-align: center; color: var(--blanco); border-left: none; }
-        .main-display-card .label { color: var(--blanco); font-size: 1.25rem; font-weight: 500; margin-bottom: 1rem; display: block; }
-        .main-display-card .value { font-size: 6rem; font-weight: 600; background: none; padding: 0; line-height: 1; transition: var(--transition-main); }
-        
-        /* Media Query para Responsividad */
-        @media (max-width: 992px) {
-            .app-wrapper { flex-direction: column; }
-            .display-section { position: static; width: 100%; order: 1; }
-            .tracking-section { order: 2; }
-            .main-display-card { order: 1; }
-            .current-week-card { order: 2; }
-        }
-        @media (max-width: 768px) {
-            body { padding: 1rem; }
-            header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-            .main-title { text-align: left; font-size: 1.5rem; }
-            .main-display-card .value { font-size: 4rem; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="logo">ineco</div>
-            <h1 class="main-title">ACTAS SEMANALES INECO TELECO LAV 4 - 2026</h1>
-        </header>
-
-        <main class="app-wrapper">
-            <section class="tracking-section">
-                <div class="tables-grid">
-                    <div class="table-container" id="table-1-20"></div>
-                    <div class="table-container" id="table-21-40"></div>
-                    <div class="table-container" id="table-41-53"></div>
-                </div>
-            </section>
-            
-            <aside class="display-section">
-                <div class="display-card current-week-card">
-                    <span class="label">SEMANA ACTUAL</span>
-                    <span class="value" id="current-week-value">--</span>
-                </div>
-                <div class="main-display-card">
-                    <span class="label">NÚMERO ACTA</span>
-                    <span class="value" id="current-acta-value">--</span>
-                </div>
-            </aside>
-        </main>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-    <script>
+<script>
     const firebaseConfig = {
       apiKey: "AIzaSyAp-yyjD_Du7mdmT5imq4wnH17tpyBZBzg",
       authDomain: "actas-ineco-lav4.firebaseapp.com",
@@ -130,25 +11,28 @@
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // FUNCIÓN NUEVA: Calcular semana ISO automáticamente
+    // --- FUNCIÓN MODIFICADA CON AJUSTE +1 ---
     function getISOWeek(date) {
         date = new Date(date || new Date());
         date.setHours(0, 0, 0, 0);
-        // El jueves de la semana actual decide el año.
+        // Ajuste al jueves de la semana actual
         date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-        // El 4 de enero siempre está en la primera semana.
+        // El 4 de enero siempre está en la primera semana ISO
         var week1 = new Date(date.getFullYear(), 0, 4);
-        // Ajustar a jueves de la semana 1 y contar semanas completas desde entonces.
-        return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        // Calcular la semana estándar
+        var currentWeek = 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        
+        // *** AQUÍ ESTÁ EL CAMBIO ***
+        // Sumamos 1 artificialmente para forzar que sea Semana 3
+        return currentWeek + 1;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        // ACTUALIZADO: Calcula la semana actual real
-        const CURRENT_WEEK = getISOWeek();
+        const CURRENT_WEEK = getISOWeek(); // Ahora devolverá 3
         const TOTAL_WEEKS = 53;
         let actasData = [];
         
-        // ACTUALIZADO: Colección 2026 para no sobrescribir datos antiguos
+        // Colección 2026
         const actasCollection = db.collection('actas-2026');
         
         const tableContainers = {
@@ -177,7 +61,6 @@
                 tableContainers[key].appendChild(body);
             }
 
-            // Ordenar datos antes de renderizar
             actasData.sort((a, b) => a.week - b.week);
 
             actasData.forEach(item => {
@@ -235,8 +118,6 @@
         }
 
         function getInitialSeedData() {
-             // ACTUALIZADO: Datos limpios para el inicio de 2026
-             // Creamos un array vacío para todas las semanas
              const fullData = Array.from({ length: TOTAL_WEEKS }, (_, i) => { 
                 return { week: i + 1, acta: '' }; 
              });
@@ -254,18 +135,13 @@
 
         actasCollection.orderBy('week').onSnapshot(snapshot => {
             if (snapshot.empty) {
-                console.log("Colección 2026 vacía. Poblando la base de datos...");
                 seedDatabase();
                 return;
             }
             actasData = snapshot.docs.map(doc => doc.data());
             renderUI();
-        }, error => {
-            console.error("ERROR GRAVE DE FIREBASE: ", error);
         });
 
         trackingSection.addEventListener('click', handleEditEvents);
     });
     </script>
-</body>
-</html>
