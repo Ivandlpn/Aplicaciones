@@ -136,6 +136,28 @@ tbody tr.total-row td { border-bottom: none; }
 .badge.ok { background: rgba(34,197,94,.15); color: var(--green); }
 .badge.warn { background: rgba(245,158,11,.15); color: var(--amber); }
 .badge.bad { background: rgba(239,68,68,.15); color: var(--red); }
+.badge.na { background: var(--panel-2); color: var(--muted); }
+
+/* Pills en cabeceras de tarjeta */
+.pill {
+    background: rgba(59,130,246,.12); color: var(--accent);
+    font-weight: 800; font-size: 13px; padding: 4px 13px;
+    border-radius: 20px; white-space: nowrap;
+}
+
+/* Barra de progreso global (avance anual) */
+.progress-global { display: flex; align-items: center; gap: 12px; margin: 2px 0 18px; flex-wrap: wrap; }
+.progress-line { flex: 1; min-width: 180px; height: 14px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.progress-line > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 8px; }
+.progress-txt { font-size: 12.5px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.progress-txt b { color: var(--text); }
+
+/* Mapa esquemático de centros */
+.map-wrap { padding: 6px 4px 0; }
+.map-wrap svg { width: 100%; height: auto; display: block; }
+
+/* Tabla histórico bajo el gráfico */
+.hist-table { margin-top: 16px; }
 
 @media (max-width: 900px) {
     .grid-2 { grid-template-columns: 1fr; }

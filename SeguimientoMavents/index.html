@@ -67,7 +67,10 @@
             <!-- INCIDENCIAS -->
             <section class="view" id="view-incidencias">
                 <div class="card">
-                    <div class="card-head"><h3>Detalle de incidencias del mes por técnica e imputación</h3></div>
+                    <div class="card-head">
+                        <h3>Detalle de incidencias del mes por técnica e imputación</h3>
+                        <span class="pill" id="pill-total-inc"></span>
+                    </div>
                     <div class="table-wrap">
                         <table id="tabla-inc-mes"></table>
                     </div>
@@ -78,9 +81,13 @@
                         <div class="chart-box"><canvas id="chart-inc-imput"></canvas></div>
                     </div>
                     <div class="card">
-                        <div class="card-head"><h3>Tiempo medio de reparación (min) vs nº incidencias</h3></div>
-                        <div class="chart-box"><canvas id="chart-tiempos"></canvas></div>
+                        <div class="card-head"><h3>Incidencias por técnica e imputación</h3></div>
+                        <div class="chart-box"><canvas id="chart-inc-tecimput"></canvas></div>
                     </div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><h3>Tiempo medio de reparación (min) vs nº incidencias</h3></div>
+                    <div class="chart-box tall"><canvas id="chart-tiempos"></canvas></div>
                 </div>
                 <div class="card">
                     <div class="card-head">
@@ -88,13 +95,28 @@
                         <div class="chips" id="hist-year-chips"></div>
                     </div>
                     <div class="chart-box tall"><canvas id="chart-hist-cat"></canvas></div>
+                    <div class="table-wrap hist-table"><table id="tabla-hist"></table></div>
                 </div>
             </section>
 
             <!-- PREVENTIVOS -->
             <section class="view" id="view-preventivos">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-head">
+                            <h3>Preventivo mensual · previsto vs ejecutado por red</h3>
+                            <span class="pill" id="pill-prev-mes"></span>
+                        </div>
+                        <div class="table-wrap"><table id="tabla-prev-mes"></table></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-head"><h3>Porcentaje ejecutado del preventivo mensual</h3></div>
+                        <div class="chart-box"><canvas id="chart-prev-mes"></canvas></div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-head"><h3>Preventivo anual · previsto vs realizado por red</h3></div>
+                    <div class="progress-global" id="progress-anual"></div>
                     <div class="table-wrap"><table id="tabla-prev-anual"></table></div>
                 </div>
                 <div class="grid-2">
@@ -108,8 +130,12 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-head"><h3>Ejecución semanal por centro (previsto / ejecutado)</h3></div>
+                    <div class="card-head"><h3>Ejecución semanal por centro (ejecutado / previsto)</h3></div>
                     <div class="table-wrap"><table id="tabla-centros"></table></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><h3>Centros de mantenimiento · Eje Este de Alta Velocidad</h3></div>
+                    <div class="map-wrap" id="mapa-centros"></div>
                 </div>
             </section>
 

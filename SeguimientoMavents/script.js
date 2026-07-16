@@ -166,6 +166,7 @@ function buildResumen() {
 function buildIncidencias() {
   const inc = DATA.incidencias_mes;
   const t = inc.totales;
+  document.getElementById('pill-total-inc').textContent = 'Nº incidencias: ' + inc.total;
   // Tabla
   const rows = inc.tecnicas.map(r => `
     <tr><td class="cell-name">${r.tecnica}</td>
@@ -178,16 +179,36 @@ function buildIncidencias() {
       <td>${nz(t.ajenas)}</td><td>${t.terceros}</td><td>${t.propprev}</td></tr>
     </tbody>`;
 
-  // Doughnut imputación
+  // Doughnut imputación (con % en las etiquetas)
+  const imputVals = [t.propias, t.preventivo, nz(t.ajenas), t.terceros];
+  const sumImput = imputVals.reduce((a, b) => a + b, 0);
+  const imputLbls = ['Propias', 'Preventivo', 'Ajenas', 'A terceros']
+    .map((n, i) => `${n} · ${Math.round(imputVals[i] / sumImput * 100)}%`);
   mkChart('chart-inc-imput', {
     type: 'doughnut',
     data: {
-      labels: ['Propias', 'Preventivo', 'Ajenas', 'A terceros'],
-      datasets: [{ data: [t.propias, t.preventivo, nz(t.ajenas), t.terceros],
+      labels: imputLbls,
+      datasets: [{ data: imputVals,
         backgroundColor: [C.accent, C.violet, C.amber, C.green], borderColor: '#ffffff', borderWidth: 3 }]
     },
     options: { maintainAspectRatio: false, cutout: '60%',
       plugins: { legend: { position: 'right' } } }
+  });
+
+  // Barras agrupadas: técnica × imputación (como el informe mensual)
+  mkChart('chart-inc-tecimput', {
+    type: 'bar',
+    data: {
+      labels: inc.tecnicas.map(r => r.tecnica),
+      datasets: [
+        { label: 'Propias', data: inc.tecnicas.map(r => nz(r.propias)), backgroundColor: C.accent, borderRadius: 4 },
+        { label: 'Preventivo', data: inc.tecnicas.map(r => nz(r.preventivo)), backgroundColor: C.violet, borderRadius: 4 },
+        { label: 'Ajenas', data: inc.tecnicas.map(r => nz(r.ajenas)), backgroundColor: C.amber, borderRadius: 4 },
+        { label: 'A terceros', data: inc.tecnicas.map(r => nz(r.terceros)), backgroundColor: C.green, borderRadius: 4 }
+      ]
+    },
+    options: { maintainAspectRatio: false,
+      scales: { x: { grid: { display: false } }, y: gridScale({ beginAtZero: true, ticks: { precision: 0 } }) } }
   });
 
   // Tiempos: tmedio (línea) + nº incidencias (barras)
@@ -239,11 +260,69 @@ function renderHistCat(year) {
       plugins: { legend: { position: 'bottom' } },
       scales: { x: { grid: { display: false } }, y: gridScale({ beginAtZero: true }) } }
   });
+
+  // Tabla técnica × mes del año seleccionado (como el informe)
+  const cats = Object.entries(blk.cats);
+  const head = `<thead><tr><th>Técnica / mes</th>
+    ${blk.meses.map(m => `<th>${fmtMes(m)}</th>`).join('')}<th>Total</th></tr></thead>`;
+  const body = cats.map(([name, arr]) => {
+    const tot = arr.reduce((a, v) => a + nz(v), 0);
+    return `<tr><td class="cell-name">${name}</td>
+      ${arr.map(v => `<td>${v == null ? '—' : v}</td>`).join('')}<td><b>${tot}</b></td></tr>`;
+  }).join('');
+  const totMes = blk.meses.map((_, i) =>
+    cats.some(([, arr]) => arr[i] != null) ? cats.reduce((a, [, arr]) => a + nz(arr[i]), 0) : null);
+  const totAll = totMes.reduce((a, v) => a + nz(v), 0);
+  document.getElementById('tabla-hist').innerHTML = head + `<tbody>${body}
+    <tr class="total-row"><td>TOTAL</td>
+    ${totMes.map(v => `<td>${v == null ? '—' : v}</td>`).join('')}<td>${totAll}</td></tr></tbody>`;
 }
 
 /* ---------- Preventivos ---------- */
 function buildPreventivos() {
+  // Preventivo mensual por red (previsto vs ejecutado + % consecución)
+  const pm = DATA.preventivo_mes;
+  const pmTot = pm.find(r => r.red === 'TOTAL');
+  const consecTot = pmTot.previsto > 0 ? pmTot.ejecutado / pmTot.previsto : null;
+  document.getElementById('pill-prev-mes').textContent = 'Ejecución del mes: ' + pct(consecTot);
+  const pmRows = pm.filter(r => r.red !== 'TOTAL').map(r => {
+    const c = r.previsto > 0 ? r.ejecutado / r.previsto : null;
+    const badge = c == null
+      ? '<span class="badge na">Sin preventivo</span>'
+      : `<span class="badge ${c >= 1 ? 'ok' : c >= 0.9 ? 'warn' : 'bad'}">${pct(c)}</span>`;
+    return `<tr><td class="cell-name">${r.red}</td>
+      <td>${r.previsto}</td><td>${r.ejecutado}</td><td>${badge}</td></tr>`;
+  }).join('');
+  document.getElementById('tabla-prev-mes').innerHTML = `
+    <thead><tr><th>Red</th><th>Previsto</th><th>Ejecutado</th><th>% Consecución</th></tr></thead>
+    <tbody>${pmRows}
+      <tr class="total-row"><td>TOTAL</td><td>${pmTot.previsto}</td><td>${pmTot.ejecutado}</td>
+      <td>${pct(consecTot)}</td></tr>
+    </tbody>`;
+
+  // % ejecutado del preventivo mensual (solo redes con carga prevista)
+  const pmRedes = pm.filter(r => r.red !== 'TOTAL' && r.previsto > 0);
+  mkChart('chart-prev-mes', {
+    type: 'bar',
+    data: {
+      labels: pmRedes.map(r => r.red),
+      datasets: [{ label: '% ejecutado',
+        data: pmRedes.map(r => +(r.ejecutado / r.previsto * 100).toFixed(1)),
+        backgroundColor: C.accent, borderRadius: 6 }]
+    },
+    options: { maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => i.raw + '%' } } },
+      scales: { x: { grid: { display: false } },
+                y: gridScale({ beginAtZero: true, max: 110, ticks: { callback: v => v + '%' } }) } }
+  });
+
   const pa = DATA.preventivo_anual;
+  // Barra de avance global anual (realizado vs pendiente)
+  const paTot = pa.find(r => r.red === 'TOTAL');
+  document.getElementById('progress-anual').innerHTML = `
+    <span class="progress-txt">Realizado: <b>${pct(paTot.acumulado)}</b></span>
+    <div class="progress-line"><span style="width:${(nz(paTot.acumulado) * 100).toFixed(1)}%"></span></div>
+    <span class="progress-txt">Pendiente ${DATA.contrato.anio}: <b>${pct(1 - nz(paTot.acumulado))}</b></span>`;
   const rows = pa.filter(r => r.red !== 'TOTAL').map(r => {
     const w = Math.min(100, nz(r.acumulado) * 100);
     return `<tr>
@@ -306,6 +385,49 @@ function buildPreventivos() {
   document.getElementById('tabla-centros').innerHTML = head + `<tbody>${body}
     <tr class="total-row"><td>TOTAL</td>${keys.map((k, i) => `<td>${totReal[i]}/${totPrev[i]}</td>`).join('')}
     <td>${tRealT}/${tPrevT}</td></tr></tbody>`;
+
+  buildMapaCentros(cen, keys, totPrev, totReal);
+}
+
+/* Mapa esquemático del Eje Este con los centros de mantenimiento */
+function buildMapaCentros(cen, keys, totPrev, totReal) {
+  const box = document.getElementById('mapa-centros');
+  if (!box) return;
+  const pctC = {};
+  keys.forEach((k, i) => { pctC[k] = totPrev[i] > 0 ? Math.round(totReal[i] / totPrev[i] * 100) : null; });
+
+  // Posiciones esquemáticas: Madrid → Villarrubia → Cuenca → (bif. Motilla) → Requena → Valencia; ramal a Albacete
+  const P = {
+    Madrid: [55, 112], CM1: [235, 138], CM2: [430, 102], SPLIT: [565, 140],
+    CM3: [705, 115], Valencia: [855, 95], CM4: [610, 245]
+  };
+  const pt = (p) => `${p[0]} ${p[1]}`;
+  const colorPct = (v) => v == null ? '#94a3b8' : v >= 100 ? C.green : v >= 90 ? C.amber : C.red;
+
+  const marker = (k) => {
+    const [x, y] = P[k];
+    const v = pctC[k];
+    return `<g>
+      <circle cx="${x}" cy="${y}" r="18" fill="${colorPct(v)}" stroke="#ffffff" stroke-width="3"/>
+      <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">${v == null ? '—' : v + '%'}</text>
+      <text x="${x}" y="${y + 40}" text-anchor="middle" font-size="13" font-weight="700" fill="${C.text}">${cen.nombres[k]}</text>
+    </g>`;
+  };
+  const city = (name, p, dy) => `
+    <circle cx="${p[0]}" cy="${p[1]}" r="6" fill="${C.muted}" stroke="#ffffff" stroke-width="2"/>
+    <text x="${p[0]}" y="${p[1] + dy}" text-anchor="middle" font-size="12.5" font-weight="600" fill="${C.muted}">${name}</text>`;
+
+  box.innerHTML = `
+  <svg viewBox="0 0 910 300" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="Mapa esquemático de los centros de mantenimiento del Eje Este">
+    <path d="M ${pt(P.Madrid)} L ${pt(P.CM1)} L ${pt(P.CM2)} L ${pt(P.SPLIT)} L ${pt(P.CM3)} L ${pt(P.Valencia)}"
+          fill="none" stroke="${C.accent}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M ${pt(P.SPLIT)} L ${pt(P.CM4)}"
+          fill="none" stroke="${C.accent}" stroke-width="4" stroke-linecap="round"/>
+    ${city('Madrid', P.Madrid, -16)}
+    ${city('Valencia', P.Valencia, -16)}
+    ${keys.map(marker).join('')}
+  </svg>`;
 }
 
 /* ---------- Fiabilidad ---------- */
