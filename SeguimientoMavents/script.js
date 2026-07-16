@@ -1,9 +1,9 @@
 /* Seguimiento de proyecto · UTE MAVENTS — Eje Este de Alta Velocidad */
 
 const C = {
-  text: '#eaf0fb', muted: '#93a3c4', grid: 'rgba(147,163,196,.14)',
-  accent: '#3b82f6', accent2: '#22d3ee', green: '#22c55e',
-  amber: '#f59e0b', red: '#ef4444', violet: '#a78bfa', pink: '#f472b6'
+  text: '#17233d', muted: '#5c6b8a', grid: 'rgba(23,35,61,.10)',
+  accent: '#3b82f6', accent2: '#0891b2', green: '#16a34a',
+  amber: '#d97706', red: '#dc2626', violet: '#7c3aed', pink: '#db2777'
 };
 const PALETTE = [C.accent, C.accent2, C.violet, C.amber, C.green, C.pink, C.red];
 const charts = {};
@@ -184,7 +184,7 @@ function buildIncidencias() {
     data: {
       labels: ['Propias', 'Preventivo', 'Ajenas', 'A terceros'],
       datasets: [{ data: [t.propias, t.preventivo, nz(t.ajenas), t.terceros],
-        backgroundColor: [C.accent, C.violet, C.amber, C.green], borderColor: '#1c2842', borderWidth: 3 }]
+        backgroundColor: [C.accent, C.violet, C.amber, C.green], borderColor: '#ffffff', borderWidth: 3 }]
     },
     options: { maintainAspectRatio: false, cutout: '60%',
       plugins: { legend: { position: 'right' } } }
