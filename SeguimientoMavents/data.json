@@ -7,59 +7,302 @@
   "eje": "EJE ESTE DE ALTA VELOCIDAD",
   "mes": "2026-06",
   "anio": 2026,
-  "certificacion": "2026-06"
+  "certificacion": "2026-06",
+  "meses_seguimiento": [
+   "2026-01",
+   "2026-02",
+   "2026-03",
+   "2026-04",
+   "2026-05",
+   "2026-06"
+  ]
  },
- "incidencias_mes": {
-  "tecnicas": [
-   {
-    "tecnica": "TFJ",
-    "propias": 1,
-    "preventivo": 1,
-    "ajenas": 0,
-    "terceros": 3,
-    "propprev": 2
-   },
-   {
-    "tecnica": "GSM-R",
-    "propias": 7,
-    "preventivo": 8,
-    "ajenas": 0,
-    "terceros": 1,
-    "propprev": 15
-   },
-   {
-    "tecnica": "OP",
-    "propias": 3,
-    "preventivo": 8,
-    "ajenas": 0,
-    "terceros": 0,
-    "propprev": 11
-   },
-   {
-    "tecnica": "VCA",
-    "propias": 11,
-    "preventivo": 5,
-    "ajenas": 1,
-    "terceros": 2,
-    "propprev": 16
-   },
-   {
-    "tecnica": "TME",
-    "propias": 3,
-    "preventivo": 1,
-    "ajenas": 0,
-    "terceros": 0,
-    "propprev": 4
-   }
-  ],
-  "totales": {
-   "propias": 25,
-   "preventivo": 23,
-   "ajenas": 1,
-   "terceros": 6,
-   "propprev": 48
+ "meses": {
+  "2026-01": {
+   "incidencias_mes": null,
+   "preventivo_mes": null,
+   "preventivo_centros": null,
+   "fiabilidad": null,
+   "fiabilidad_avance": null
   },
-  "total": 55
+  "2026-02": {
+   "incidencias_mes": null,
+   "preventivo_mes": null,
+   "preventivo_centros": null,
+   "fiabilidad": null,
+   "fiabilidad_avance": null
+  },
+  "2026-03": {
+   "incidencias_mes": null,
+   "preventivo_mes": null,
+   "preventivo_centros": null,
+   "fiabilidad": null,
+   "fiabilidad_avance": null
+  },
+  "2026-04": {
+   "incidencias_mes": null,
+   "preventivo_mes": null,
+   "preventivo_centros": null,
+   "fiabilidad": null,
+   "fiabilidad_avance": null
+  },
+  "2026-05": {
+   "incidencias_mes": null,
+   "preventivo_mes": null,
+   "preventivo_centros": null,
+   "fiabilidad": null,
+   "fiabilidad_avance": null
+  },
+  "2026-06": {
+   "incidencias_mes": {
+    "tecnicas": [
+     {
+      "tecnica": "TFJ",
+      "propias": 1,
+      "preventivo": 1,
+      "ajenas": 0,
+      "terceros": 3,
+      "propprev": 2
+     },
+     {
+      "tecnica": "GSM-R",
+      "propias": 7,
+      "preventivo": 8,
+      "ajenas": 0,
+      "terceros": 1,
+      "propprev": 15
+     },
+     {
+      "tecnica": "OP",
+      "propias": 3,
+      "preventivo": 8,
+      "ajenas": 0,
+      "terceros": 0,
+      "propprev": 11
+     },
+     {
+      "tecnica": "VCA",
+      "propias": 11,
+      "preventivo": 5,
+      "ajenas": 1,
+      "terceros": 2,
+      "propprev": 16
+     },
+     {
+      "tecnica": "TME",
+      "propias": 3,
+      "preventivo": 1,
+      "ajenas": 0,
+      "terceros": 0,
+      "propprev": 4
+     }
+    ],
+    "totales": {
+     "propias": 25,
+     "preventivo": 23,
+     "ajenas": 1,
+     "terceros": 6,
+     "propprev": 48
+    },
+    "total": 55
+   },
+   "preventivo_mes": [
+    {
+     "red": "FIJAS",
+     "previsto": 15,
+     "ejecutado": 15
+    },
+    {
+     "red": "VCA",
+     "previsto": 0,
+     "ejecutado": 0
+    },
+    {
+     "red": "GSM-R",
+     "previsto": 32,
+     "ejecutado": 32
+    },
+    {
+     "red": "OPE",
+     "previsto": 31,
+     "ejecutado": 31
+    },
+    {
+     "red": "TME",
+     "previsto": 0,
+     "ejecutado": 0
+    },
+    {
+     "red": "TOTAL",
+     "previsto": 78,
+     "ejecutado": 78
+    }
+   ],
+   "preventivo_centros": {
+    "nombres": {
+     "CM1": "CM1 (Villarrubia)",
+     "CM2": "CM2 (Cuenca)",
+     "CM3": "CM3 (Requena)",
+     "CM4": "CM4 (Albacete)"
+    },
+    "semanas": [
+     {
+      "semana": 23,
+      "CM1": {
+       "prev": 8,
+       "real": 8
+      },
+      "CM2": {
+       "prev": 5,
+       "real": 5
+      },
+      "CM3": {
+       "prev": 7,
+       "real": 7
+      },
+      "CM4": {
+       "prev": 4,
+       "real": 4
+      },
+      "total": {
+       "prev": 24,
+       "real": 24
+      }
+     },
+     {
+      "semana": 24,
+      "CM1": {
+       "prev": 7,
+       "real": 7
+      },
+      "CM2": {
+       "prev": 5,
+       "real": 5
+      },
+      "CM3": {
+       "prev": 5,
+       "real": 5
+      },
+      "CM4": {
+       "prev": 4,
+       "real": 4
+      },
+      "total": {
+       "prev": 21,
+       "real": 21
+      }
+     },
+     {
+      "semana": 25,
+      "CM1": {
+       "prev": 6,
+       "real": 6
+      },
+      "CM2": {
+       "prev": 6,
+       "real": 6
+      },
+      "CM3": {
+       "prev": 5,
+       "real": 5
+      },
+      "CM4": {
+       "prev": 2,
+       "real": 2
+      },
+      "total": {
+       "prev": 19,
+       "real": 19
+      }
+     },
+     {
+      "semana": 26,
+      "CM1": {
+       "prev": 5,
+       "real": 5
+      },
+      "CM2": {
+       "prev": 3,
+       "real": 3
+      },
+      "CM3": {
+       "prev": 5,
+       "real": 5
+      },
+      "CM4": {
+       "prev": 1,
+       "real": 1
+      },
+      "total": {
+       "prev": 14,
+       "real": 14
+      }
+     }
+    ]
+   },
+   "fiabilidad": {
+    "tecnicas": [
+     "TFJ",
+     "GSMR",
+     "OP",
+     "VCA",
+     "TME"
+    ],
+    "mes": [
+     2,
+     15,
+     11,
+     16,
+     4
+    ],
+    "suma_anio": [
+     30,
+     75,
+     63,
+     123,
+     9
+    ],
+    "max_2026": [
+     61,
+     143,
+     115,
+     280,
+     26
+    ]
+   },
+   "fiabilidad_avance": [
+    {
+     "tecnica": "TME",
+     "real": 0.34615384615384615,
+     "acum": 0.34615384615384615,
+     "pendiente": 0.5
+    },
+    {
+     "tecnica": "VCA",
+     "real": 0.4392857142857143,
+     "acum": 0.4392857142857143,
+     "pendiente": 0.5
+    },
+    {
+     "tecnica": "OPE",
+     "real": 0.5,
+     "acum": 0.5478260869565217,
+     "pendiente": 0.4521739130434783
+    },
+    {
+     "tecnica": "GSM-R",
+     "real": 0.5,
+     "acum": 0.5244755244755245,
+     "pendiente": 0.4755244755244755
+    },
+    {
+     "tecnica": "TFJ",
+     "real": 0.4918032786885246,
+     "acum": 0.4918032786885246,
+     "pendiente": 0.5
+    }
+   ]
+  }
  },
  "historico_incidencias": {
   "2024": {
@@ -509,38 +752,6 @@
    "ninc": null
   }
  ],
- "preventivo_mes": [
-  {
-   "red": "FIJAS",
-   "previsto": 15,
-   "ejecutado": 15
-  },
-  {
-   "red": "VCA",
-   "previsto": 0,
-   "ejecutado": 0
-  },
-  {
-   "red": "GSM-R",
-   "previsto": 32,
-   "ejecutado": 32
-  },
-  {
-   "red": "OPE",
-   "previsto": 31,
-   "ejecutado": 31
-  },
-  {
-   "red": "TME",
-   "previsto": 0,
-   "ejecutado": 0
-  },
-  {
-   "red": "TOTAL",
-   "previsto": 78,
-   "ejecutado": 78
-  }
- ],
  "preventivo_anual": [
   {
    "red": "FIJAS",
@@ -589,170 +800,6 @@
    "realizado": 1413,
    "desviacion": null,
    "acumulado": 0.5413793103448276
-  }
- ],
- "preventivo_centros": {
-  "nombres": {
-   "CM1": "CM1 (Villarrubia)",
-   "CM2": "CM2 (Cuenca)",
-   "CM3": "CM3 (Requena)",
-   "CM4": "CM4 (Albacete)"
-  },
-  "semanas": [
-   {
-    "semana": 23,
-    "CM1": {
-     "prev": 8,
-     "real": 8
-    },
-    "CM2": {
-     "prev": 5,
-     "real": 5
-    },
-    "CM3": {
-     "prev": 7,
-     "real": 7
-    },
-    "CM4": {
-     "prev": 4,
-     "real": 4
-    },
-    "total": {
-     "prev": 24,
-     "real": 24
-    }
-   },
-   {
-    "semana": 24,
-    "CM1": {
-     "prev": 7,
-     "real": 7
-    },
-    "CM2": {
-     "prev": 5,
-     "real": 5
-    },
-    "CM3": {
-     "prev": 5,
-     "real": 5
-    },
-    "CM4": {
-     "prev": 4,
-     "real": 4
-    },
-    "total": {
-     "prev": 21,
-     "real": 21
-    }
-   },
-   {
-    "semana": 25,
-    "CM1": {
-     "prev": 6,
-     "real": 6
-    },
-    "CM2": {
-     "prev": 6,
-     "real": 6
-    },
-    "CM3": {
-     "prev": 5,
-     "real": 5
-    },
-    "CM4": {
-     "prev": 2,
-     "real": 2
-    },
-    "total": {
-     "prev": 19,
-     "real": 19
-    }
-   },
-   {
-    "semana": 26,
-    "CM1": {
-     "prev": 5,
-     "real": 5
-    },
-    "CM2": {
-     "prev": 3,
-     "real": 3
-    },
-    "CM3": {
-     "prev": 5,
-     "real": 5
-    },
-    "CM4": {
-     "prev": 1,
-     "real": 1
-    },
-    "total": {
-     "prev": 14,
-     "real": 14
-    }
-   }
-  ]
- },
- "fiabilidad": {
-  "tecnicas": [
-   "TFJ",
-   "GSMR",
-   "OP",
-   "VCA",
-   "TME"
-  ],
-  "mes": [
-   2,
-   15,
-   11,
-   16,
-   4
-  ],
-  "suma_anio": [
-   30,
-   75,
-   63,
-   123,
-   9
-  ],
-  "max_2026": [
-   61,
-   143,
-   115,
-   280,
-   26
-  ]
- },
- "fiabilidad_avance": [
-  {
-   "tecnica": "TME",
-   "real": 0.34615384615384615,
-   "acum": 0.34615384615384615,
-   "pendiente": 0.5
-  },
-  {
-   "tecnica": "VCA",
-   "real": 0.4392857142857143,
-   "acum": 0.4392857142857143,
-   "pendiente": 0.5
-  },
-  {
-   "tecnica": "OPE",
-   "real": 0.5,
-   "acum": 0.5478260869565217,
-   "pendiente": 0.4521739130434783
-  },
-  {
-   "tecnica": "GSM-R",
-   "real": 0.5,
-   "acum": 0.5244755244755245,
-   "pendiente": 0.4755244755244755
-  },
-  {
-   "tecnica": "TFJ",
-   "real": 0.4918032786885246,
-   "acum": 0.4918032786885246,
-   "pendiente": 0.5
   }
  ],
  "pat": {

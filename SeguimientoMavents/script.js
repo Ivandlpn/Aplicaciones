@@ -8,11 +8,18 @@ const C = {
 const PALETTE = [C.accent, C.accent2, C.violet, C.amber, C.green, C.pink, C.red];
 const charts = {};
 let DATA = null;
+let MES_SEL = null;               // mes seleccionado, p.ej. "2026-06"
 
 const MES_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MES_LARGO = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const fmtMes = (s) => { const [y,m] = s.split('-'); return `${MES_ES[+m-1]} ${y.slice(2)}`; };
+const fmtMesLargo = (s) => { const [y,m] = s.split('-'); return `${MES_LARGO[+m-1]} ${y}`; };
 const pct = (v) => (v == null || isNaN(v)) ? '—' : (v * 100).toFixed(1) + '%';
 const nz = (v) => (v == null || v === '' || isNaN(v)) ? 0 : v;
+
+// Datos del mes seleccionado y si tiene detalle cargado
+const mesData = () => (DATA.meses && DATA.meses[MES_SEL]) || {};
+const tieneDetalle = (mk) => { const m = DATA.meses && DATA.meses[mk]; return !!(m && m.incidencias_mes); };
 
 Chart.defaults.color = C.muted;
 Chart.defaults.font.family = "'Inter', sans-serif";
@@ -21,11 +28,43 @@ Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.boxWidth = 8;
 Chart.defaults.plugins.legend.labels.padding = 14;
 
+// Localiza el .chart-box que contiene (o contenía) un canvas dado
+function chartBox(id) {
+  const el = document.getElementById(id);
+  if (el) return el.closest('.chart-box') || el.parentElement;
+  return document.querySelector(`[data-cid="${id}"]`);
+}
+
 function mkChart(id, cfg) {
-  if (charts[id]) charts[id].destroy();
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+  const box = chartBox(id);
+  if (box && !box.querySelector('canvas')) {
+    box.classList.remove('is-empty');
+    box.innerHTML = `<canvas id="${id}"></canvas>`;
+  }
   const el = document.getElementById(id);
   if (!el) return;
   charts[id] = new Chart(el, cfg);
+}
+
+// Renderiza el gráfico si hay datos; si no, muestra un placeholder "sin datos"
+function renderChart(id, ok, cfg, msg) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+  const box = chartBox(id);
+  if (!box) return;
+  if (!ok) {
+    box.classList.add('is-empty');
+    box.dataset.cid = id;
+    box.innerHTML = `<div class="nodata"><span class="nodata-ico">📊</span>${msg || 'Detalle pendiente de carga'}</div>`;
+    return;
+  }
+  mkChart(id, cfg);
+}
+
+// Placeholder de "sin datos" para tablas y otros contenedores
+function emptyMsg(html = 'Detalle pendiente de carga') {
+  return `<div class="nodata"><span class="nodata-ico">📊</span>${html}
+    <small>Selecciona un mes con datos o carga el detalle de este mes.</small></div>`;
 }
 
 const gridScale = (extra = {}) => ({
@@ -33,7 +72,7 @@ const gridScale = (extra = {}) => ({
 });
 
 /* ---------- Bootstrap ---------- */
-fetch('data.json?v=4')
+fetch('data.json?v=5')
   .then(r => r.json())
   .then(d => { DATA = d; init(); })
   .catch(err => {
@@ -45,10 +84,35 @@ function init() {
   const c = DATA.contrato;
   document.getElementById('contract-sub').textContent =
     `${c.titulo || 'Contrato de mantenimiento'} · Expediente ${c.expediente || ''} · ${c.eje || ''}`;
-  document.getElementById('period-value').textContent = fmtMes(c.mes).toUpperCase();
-  document.getElementById('foot-mes').textContent = 'Certificación: ' + fmtMes(c.certificacion);
 
+  MES_SEL = c.mes;
   setupNav();
+  setupMonthSelector();
+  renderAll();
+}
+
+/* ---------- Selector de mes ---------- */
+function mesesDisponibles() {
+  if (DATA.meses) return Object.keys(DATA.meses).sort();
+  return [DATA.contrato.mes];
+}
+function setupMonthSelector() {
+  const sel = document.getElementById('month-select');
+  if (!sel) return;
+  const meses = mesesDisponibles();
+  if (!meses.includes(MES_SEL)) MES_SEL = meses[meses.length - 1];
+  sel.innerHTML = meses.map(mk =>
+    `<option value="${mk}"${mk === MES_SEL ? ' selected' : ''}>${fmtMesLargo(mk)}${tieneDetalle(mk) ? '' : ' · sin datos'}</option>`
+  ).join('');
+  sel.addEventListener('change', (e) => { MES_SEL = e.target.value; renderAll(); });
+}
+
+// Re-render de todo el cuadro de mando para el mes seleccionado
+function renderAll() {
+  const c = DATA.contrato;
+  document.getElementById('foot-mes').textContent = 'Mes en seguimiento: ' + fmtMesLargo(MES_SEL);
+  const badge = document.querySelector('.period-label');
+  if (badge) badge.textContent = tieneDetalle(MES_SEL) ? 'Periodo' : 'Periodo · sin detalle';
   buildResumen();
   buildIncidencias();
   buildPreventivos();
@@ -80,22 +144,33 @@ function setupNav() {
 /* ---------- KPIs + Resumen ---------- */
 function buildResumen() {
   const pa = DATA.preventivo_anual.find(r => r.red === 'TOTAL');
-  const inc = DATA.incidencias_mes;
-  const fiab = DATA.fiabilidad;
-  const consumo = fiab.mes.reduce((a, b) => a + nz(b), 0);
-  const maxAnio = fiab.max_2026.reduce((a, b) => a + nz(b), 0);
-  const sumAnio = fiab.suma_anio.reduce((a, b) => a + nz(b), 0);
-  const ultTiempo = DATA.tiempos.filter(t => t.tmedio != null).slice(-1)[0];
+  const md = mesData();
+  const inc = md.incidencias_mes;
+  const fiab = md.fiabilidad;
+  const tMes = DATA.tiempos.find(t => t.mes === MES_SEL);
+
+  // Incidencias del mes: del detalle si existe, o del registro mensual de tiempos
+  let incVal = '—', incHint = 'Detalle no cargado';
+  if (inc) { incVal = inc.total; incHint = `<b>${inc.totales.propprev}</b> propias+prev · <b>${inc.totales.terceros}</b> a terceros`; }
+  else if (tMes && tMes.ninc != null) { incVal = tMes.ninc; incHint = 'Registradas en el mes'; }
+
+  let tVal = '—', tHint = fmtMesLargo(MES_SEL);
+  if (tMes && tMes.tmedio != null) { tVal = tMes.tmedio + ' min'; }
+
+  let fVal = '—', fHint = 'Detalle no cargado';
+  if (fiab) {
+    const maxAnio = fiab.max_2026.reduce((a, b) => a + nz(b), 0);
+    const sumAnio = fiab.suma_anio.reduce((a, b) => a + nz(b), 0);
+    fVal = pct(maxAnio ? sumAnio / maxAnio : 0);
+    fHint = `<b>${sumAnio}</b> de ${maxAnio} incidencias máx.`;
+  }
 
   const kpis = [
     { label: 'Avance preventivo anual', value: pct(pa.acumulado),
       hint: `<b>${pa.realizado}</b> de ${pa.total} actuaciones`, glow: 'rgba(59,130,246,.20)' },
-    { label: 'Incidencias del mes', value: inc.total,
-      hint: `<b>${inc.totales.propprev}</b> propias · <b>${inc.totales.terceros}</b> a terceros`, glow: 'rgba(34,211,238,.18)' },
-    { label: 'T. medio reparación', value: (ultTiempo ? ultTiempo.tmedio + ' min' : '—'),
-      hint: `Mes ${ultTiempo ? fmtMes(ultTiempo.mes) : ''}`, glow: 'rgba(167,139,250,.18)' },
-    { label: 'Fiabilidad · consumo año', value: pct(maxAnio ? sumAnio / maxAnio : 0),
-      hint: `<b>${sumAnio}</b> de ${maxAnio} incidencias máx.`, glow: 'rgba(34,197,94,.18)' },
+    { label: 'Incidencias del mes', value: incVal, hint: incHint, glow: 'rgba(34,211,238,.18)' },
+    { label: 'T. medio reparación', value: tVal, hint: tHint, glow: 'rgba(167,139,250,.18)' },
+    { label: 'Fiabilidad · consumo año', value: fVal, hint: fHint, glow: 'rgba(34,197,94,.18)' },
   ];
   document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
     <div class="kpi" style="--kpi-glow:${k.glow}">
@@ -123,9 +198,9 @@ function buildResumen() {
     }
   });
 
-  // Incidencias del mes por técnica (prop+prev)
-  const tecs = DATA.incidencias_mes.tecnicas;
-  mkChart('chart-inc-mes', {
+  // Incidencias del mes por técnica (prop+prev) — específico del mes
+  const tecs = inc ? inc.tecnicas : [];
+  renderChart('chart-inc-mes', !!inc, {
     type: 'bar',
     data: {
       labels: tecs.map(t => t.tecnica),
@@ -135,7 +210,7 @@ function buildResumen() {
     options: { maintainAspectRatio: false, indexAxis: 'y',
       plugins: { legend: { display: false } },
       scales: { x: gridScale({ beginAtZero: true }), y: { grid: { display: false } } } }
-  });
+  }, `Sin detalle de incidencias para ${fmtMesLargo(MES_SEL)}`);
 
   // Histórico total incidencias (suma por mes en los 3 años)
   const serie = [];
@@ -164,61 +239,74 @@ function buildResumen() {
 
 /* ---------- Incidencias ---------- */
 function buildIncidencias() {
-  const inc = DATA.incidencias_mes;
-  const t = inc.totales;
-  document.getElementById('pill-total-inc').textContent = 'Nº incidencias: ' + inc.total;
-  // Tabla
-  const rows = inc.tecnicas.map(r => `
-    <tr><td class="cell-name">${r.tecnica}</td>
-      <td>${r.propias}</td><td>${r.preventivo}</td><td>${r.ajenas}</td>
-      <td>${r.terceros}</td><td><b>${r.propprev}</b></td></tr>`).join('');
-  document.getElementById('tabla-inc-mes').innerHTML = `
-    <thead><tr><th>Técnica</th><th>Propias</th><th>Preventivo</th><th>Ajenas</th><th>A terceros</th><th>Prop+Prev</th></tr></thead>
-    <tbody>${rows}
-      <tr class="total-row"><td>TOTALES</td><td>${t.propias}</td><td>${t.preventivo}</td>
-      <td>${nz(t.ajenas)}</td><td>${t.terceros}</td><td>${t.propprev}</td></tr>
-    </tbody>`;
+  const inc = mesData().incidencias_mes;
+  const pill = document.getElementById('pill-total-inc');
 
-  // Doughnut imputación (con % en las etiquetas)
-  const imputVals = [t.propias, t.preventivo, nz(t.ajenas), t.terceros];
-  const sumImput = imputVals.reduce((a, b) => a + b, 0);
-  const imputLbls = ['Propias', 'Preventivo', 'Ajenas', 'A terceros']
-    .map((n, i) => `${n} · ${Math.round(imputVals[i] / sumImput * 100)}%`);
-  mkChart('chart-inc-imput', {
-    type: 'doughnut',
-    data: {
-      labels: imputLbls,
-      datasets: [{ data: imputVals,
-        backgroundColor: [C.accent, C.violet, C.amber, C.green], borderColor: '#ffffff', borderWidth: 3 }]
-    },
-    options: { maintainAspectRatio: false, cutout: '60%',
-      plugins: { legend: { position: 'right' } } }
-  });
+  if (inc) {
+    const t = inc.totales;
+    pill.textContent = 'Nº incidencias: ' + inc.total;
+    // Tabla
+    const rows = inc.tecnicas.map(r => `
+      <tr><td class="cell-name">${r.tecnica}</td>
+        <td>${r.propias}</td><td>${r.preventivo}</td><td>${r.ajenas}</td>
+        <td>${r.terceros}</td><td><b>${r.propprev}</b></td></tr>`).join('');
+    document.getElementById('tabla-inc-mes').innerHTML = `
+      <thead><tr><th>Técnica</th><th>Propias</th><th>Preventivo</th><th>Ajenas</th><th>A terceros</th><th>Prop+Prev</th></tr></thead>
+      <tbody>${rows}
+        <tr class="total-row"><td>TOTALES</td><td>${t.propias}</td><td>${t.preventivo}</td>
+        <td>${nz(t.ajenas)}</td><td>${t.terceros}</td><td>${t.propprev}</td></tr>
+      </tbody>`;
 
-  // Barras agrupadas: técnica × imputación (como el informe mensual)
-  mkChart('chart-inc-tecimput', {
-    type: 'bar',
-    data: {
-      labels: inc.tecnicas.map(r => r.tecnica),
-      datasets: [
-        { label: 'Propias', data: inc.tecnicas.map(r => nz(r.propias)), backgroundColor: C.accent, borderRadius: 4 },
-        { label: 'Preventivo', data: inc.tecnicas.map(r => nz(r.preventivo)), backgroundColor: C.violet, borderRadius: 4 },
-        { label: 'Ajenas', data: inc.tecnicas.map(r => nz(r.ajenas)), backgroundColor: C.amber, borderRadius: 4 },
-        { label: 'A terceros', data: inc.tecnicas.map(r => nz(r.terceros)), backgroundColor: C.green, borderRadius: 4 }
-      ]
-    },
-    options: { maintainAspectRatio: false,
-      scales: { x: { grid: { display: false } }, y: gridScale({ beginAtZero: true, ticks: { precision: 0 } }) } }
-  });
+    // Doughnut imputación (con % en las etiquetas)
+    const imputVals = [t.propias, t.preventivo, nz(t.ajenas), t.terceros];
+    const sumImput = imputVals.reduce((a, b) => a + b, 0);
+    const imputLbls = ['Propias', 'Preventivo', 'Ajenas', 'A terceros']
+      .map((n, i) => `${n} · ${Math.round(imputVals[i] / sumImput * 100)}%`);
+    renderChart('chart-inc-imput', true, {
+      type: 'doughnut',
+      data: {
+        labels: imputLbls,
+        datasets: [{ data: imputVals,
+          backgroundColor: [C.accent, C.violet, C.amber, C.green], borderColor: '#ffffff', borderWidth: 3 }]
+      },
+      options: { maintainAspectRatio: false, cutout: '60%',
+        plugins: { legend: { position: 'right' } } }
+    });
 
-  // Tiempos: tmedio (línea) + nº incidencias (barras)
+    // Barras agrupadas: técnica × imputación (como el informe mensual)
+    renderChart('chart-inc-tecimput', true, {
+      type: 'bar',
+      data: {
+        labels: inc.tecnicas.map(r => r.tecnica),
+        datasets: [
+          { label: 'Propias', data: inc.tecnicas.map(r => nz(r.propias)), backgroundColor: C.accent, borderRadius: 4 },
+          { label: 'Preventivo', data: inc.tecnicas.map(r => nz(r.preventivo)), backgroundColor: C.violet, borderRadius: 4 },
+          { label: 'Ajenas', data: inc.tecnicas.map(r => nz(r.ajenas)), backgroundColor: C.amber, borderRadius: 4 },
+          { label: 'A terceros', data: inc.tecnicas.map(r => nz(r.terceros)), backgroundColor: C.green, borderRadius: 4 }
+        ]
+      },
+      options: { maintainAspectRatio: false,
+        scales: { x: { grid: { display: false } }, y: gridScale({ beginAtZero: true, ticks: { precision: 0 } }) } }
+    });
+  } else {
+    // Mes sin detalle cargado
+    pill.textContent = '';
+    document.getElementById('tabla-inc-mes').innerHTML =
+      `<tbody><tr><td>${emptyMsg(`Sin detalle de imputación para ${fmtMesLargo(MES_SEL)}`)}</td></tr></tbody>`;
+    renderChart('chart-inc-imput', false, null, `Sin datos de imputación para ${fmtMesLargo(MES_SEL)}`);
+    renderChart('chart-inc-tecimput', false, null, `Sin datos de imputación para ${fmtMesLargo(MES_SEL)}`);
+  }
+
+  // Tiempos: tmedio (línea) + nº incidencias (barras) — anual, siempre
   const tp = DATA.tiempos.filter(x => x.tmedio != null);
+  const selIdx = tp.findIndex(x => x.mes === MES_SEL);
   mkChart('chart-tiempos', {
     data: {
       labels: tp.map(x => fmtMes(x.mes)),
       datasets: [
         { type: 'bar', label: 'Nº incidencias', data: tp.map(x => x.ninc),
-          backgroundColor: 'rgba(59,130,246,.35)', borderRadius: 4, yAxisID: 'y1', order: 2 },
+          backgroundColor: tp.map((_, i) => i === selIdx ? C.accent : 'rgba(59,130,246,.30)'),
+          borderRadius: 4, yAxisID: 'y1', order: 2 },
         { type: 'line', label: 'T. medio reparación (min)', data: tp.map(x => x.tmedio),
           borderColor: C.amber, backgroundColor: C.amber, tension: .35, pointRadius: 2, borderWidth: 2, yAxisID: 'y', order: 1 }
       ]
@@ -280,63 +368,72 @@ function renderHistCat(year) {
 
 /* ---------- Preventivos ---------- */
 function buildPreventivos() {
-  // Preventivo mensual por red (previsto vs ejecutado + % consecución)
-  const pm = DATA.preventivo_mes;
-  const pmTot = pm.find(r => r.red === 'TOTAL');
-  const consecTot = pmTot.previsto > 0 ? pmTot.ejecutado / pmTot.previsto : null;
-  document.getElementById('pill-prev-mes').textContent = 'Ejecución del mes: ' + pct(consecTot);
-  const pmRows = pm.filter(r => r.red !== 'TOTAL').map(r => {
-    const c = r.previsto > 0 ? r.ejecutado / r.previsto : null;
-    const badge = c == null
-      ? '<span class="badge na">Sin preventivo</span>'
-      : `<span class="badge ${c >= 1 ? 'ok' : c >= 0.9 ? 'warn' : 'bad'}">${pct(c)}</span>`;
-    return `<tr><td class="cell-name">${r.red}</td>
-      <td>${r.previsto}</td><td>${r.ejecutado}</td><td>${badge}</td></tr>`;
-  }).join('');
-  document.getElementById('tabla-prev-mes').innerHTML = `
-    <thead><tr><th>Red</th><th>Previsto</th><th>Ejecutado</th><th>% Consecución</th></tr></thead>
-    <tbody>${pmRows}
-      <tr class="total-row"><td>TOTAL</td><td>${pmTot.previsto}</td><td>${pmTot.ejecutado}</td>
-      <td>${pct(consecTot)}</td></tr>
-    </tbody>`;
+  // Preventivo mensual por red (previsto vs ejecutado + % consecución) — específico del mes
+  const pm = mesData().preventivo_mes;
+  const pillPrev = document.getElementById('pill-prev-mes');
+  if (pm) {
+    const pmTot = pm.find(r => r.red === 'TOTAL');
+    const consecTot = pmTot.previsto > 0 ? pmTot.ejecutado / pmTot.previsto : null;
+    pillPrev.textContent = 'Ejecución del mes: ' + pct(consecTot);
+    const pmRows = pm.filter(r => r.red !== 'TOTAL').map(r => {
+      const c = r.previsto > 0 ? r.ejecutado / r.previsto : null;
+      const badge = c == null
+        ? '<span class="badge na">Sin preventivo</span>'
+        : `<span class="badge ${c >= 1 ? 'ok' : c >= 0.9 ? 'warn' : 'bad'}">${pct(c)}</span>`;
+      return `<tr><td class="cell-name">${r.red}</td>
+        <td>${r.previsto}</td><td>${r.ejecutado}</td><td>${badge}</td></tr>`;
+    }).join('');
+    document.getElementById('tabla-prev-mes').innerHTML = `
+      <thead><tr><th>Red</th><th>Previsto</th><th>Ejecutado</th><th>% Consecución</th></tr></thead>
+      <tbody>${pmRows}
+        <tr class="total-row"><td>TOTAL</td><td>${pmTot.previsto}</td><td>${pmTot.ejecutado}</td>
+        <td>${pct(consecTot)}</td></tr>
+      </tbody>`;
 
-  // % ejecutado del preventivo mensual (solo redes con carga prevista)
-  const pmRedes = pm.filter(r => r.red !== 'TOTAL' && r.previsto > 0);
-  mkChart('chart-prev-mes', {
-    type: 'bar',
-    data: {
-      labels: pmRedes.map(r => r.red),
-      datasets: [{ label: '% ejecutado',
-        data: pmRedes.map(r => +(r.ejecutado / r.previsto * 100).toFixed(1)),
-        backgroundColor: C.accent, borderRadius: 6 }]
-    },
-    options: { maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => i.raw + '%' } } },
-      scales: { x: { grid: { display: false } },
-                y: gridScale({ beginAtZero: true, max: 110, ticks: { callback: v => v + '%' } }) } }
-  });
-
-  // Gráfico independiente: barra vertical con el TOTAL ejecutado del mes
-  const totPctVal = consecTot == null ? 0 : +(consecTot * 100).toFixed(1);
-  mkChart('chart-prev-mes-total', {
-    type: 'bar',
-    data: {
-      labels: ['TOTAL'],
-      datasets: [{ label: '% ejecutado', data: [totPctVal],
-        backgroundColor: totPctVal >= 100 ? C.green : totPctVal >= 90 ? C.amber : C.red,
-        borderRadius: 6, barPercentage: 0.45, categoryPercentage: 0.6 }]
-    },
-    options: { maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: {
-          label: (i) => i.raw + '%',
-          footer: () => `Ejecutado ${pmTot.ejecutado} de ${pmTot.previsto} previstos`
-        } }
+    // % ejecutado del preventivo mensual (solo redes con carga prevista)
+    const pmRedes = pm.filter(r => r.red !== 'TOTAL' && r.previsto > 0);
+    renderChart('chart-prev-mes', true, {
+      type: 'bar',
+      data: {
+        labels: pmRedes.map(r => r.red),
+        datasets: [{ label: '% ejecutado',
+          data: pmRedes.map(r => +(r.ejecutado / r.previsto * 100).toFixed(1)),
+          backgroundColor: C.accent, borderRadius: 6 }]
       },
-      scales: { x: { grid: { display: false } },
-                y: gridScale({ beginAtZero: true, max: 110, ticks: { callback: v => v + '%' } }) } }
-  });
+      options: { maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => i.raw + '%' } } },
+        scales: { x: { grid: { display: false } },
+                  y: gridScale({ beginAtZero: true, max: 110, ticks: { callback: v => v + '%' } }) } }
+    });
+
+    // Gráfico independiente: barra vertical con el TOTAL ejecutado del mes
+    const totPctVal = consecTot == null ? 0 : +(consecTot * 100).toFixed(1);
+    renderChart('chart-prev-mes-total', true, {
+      type: 'bar',
+      data: {
+        labels: ['TOTAL'],
+        datasets: [{ label: '% ejecutado', data: [totPctVal],
+          backgroundColor: totPctVal >= 100 ? C.green : totPctVal >= 90 ? C.amber : C.red,
+          borderRadius: 6, barPercentage: 0.45, categoryPercentage: 0.6 }]
+      },
+      options: { maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (i) => i.raw + '%',
+            footer: () => `Ejecutado ${pmTot.ejecutado} de ${pmTot.previsto} previstos`
+          } }
+        },
+        scales: { x: { grid: { display: false } },
+                  y: gridScale({ beginAtZero: true, max: 110, ticks: { callback: v => v + '%' } }) } }
+    });
+  } else {
+    pillPrev.textContent = '';
+    document.getElementById('tabla-prev-mes').innerHTML =
+      `<tbody><tr><td>${emptyMsg(`Sin preventivo mensual para ${fmtMesLargo(MES_SEL)}`)}</td></tr></tbody>`;
+    renderChart('chart-prev-mes', false, null, `Sin datos de ${fmtMesLargo(MES_SEL)}`);
+    renderChart('chart-prev-mes-total', false, null, `Sin datos de ${fmtMesLargo(MES_SEL)}`);
+  }
 
   const pa = DATA.preventivo_anual;
   // Barra de avance global anual (realizado vs pendiente)
@@ -376,12 +473,19 @@ function buildPreventivos() {
       scales: { x: { grid: { display: false } }, y: gridScale({ beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } }) } }
   });
 
-  // Preventivo del mes por centro
-  const cen = DATA.preventivo_centros;
+  // Preventivo del mes por centro — específico del mes
+  const cen = mesData().preventivo_centros;
+  if (!cen) {
+    renderChart('chart-prev-centros', false, null, `Sin ejecución por centro para ${fmtMesLargo(MES_SEL)}`);
+    document.getElementById('tabla-centros').innerHTML =
+      `<tbody><tr><td>${emptyMsg(`Sin ejecución semanal por centro para ${fmtMesLargo(MES_SEL)}`)}</td></tr></tbody>`;
+    document.getElementById('mapa-centros').innerHTML = emptyMsg(`Sin datos de centros para ${fmtMesLargo(MES_SEL)}`);
+    return;
+  }
   const keys = ['CM1', 'CM2', 'CM3', 'CM4'];
   const totPrev = keys.map(k => cen.semanas.reduce((a, s) => a + nz(s[k].prev), 0));
   const totReal = keys.map(k => cen.semanas.reduce((a, s) => a + nz(s[k].real), 0));
-  mkChart('chart-prev-centros', {
+  renderChart('chart-prev-centros', true, {
     type: 'bar',
     data: {
       labels: keys.map(k => cen.nombres[k]),
@@ -454,9 +558,11 @@ function buildMapaCentros(cen, keys, totPrev, totReal) {
 
 /* ---------- Fiabilidad ---------- */
 function buildFiabilidad() {
-  const f = DATA.fiabilidad;
+  const f = mesData().fiabilidad;
+  const av = mesData().fiabilidad_avance;
+
   // Consumo del año vs máximo
-  mkChart('chart-fiab-anio', {
+  renderChart('chart-fiab-anio', !!f, f && {
     type: 'bar',
     data: {
       labels: f.tecnicas,
@@ -470,10 +576,10 @@ function buildFiabilidad() {
       scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, ...gridScale({ beginAtZero: true }) } },
       plugins: { tooltip: { callbacks: { footer: (it) => {
         const i = it[0].dataIndex; return 'Máximo 2026: ' + f.max_2026[i]; } } } } }
-  });
+  }, `Sin datos de fiabilidad para ${fmtMesLargo(MES_SEL)}`);
 
   // Incidencias imputables del mes
-  mkChart('chart-fiab-mes', {
+  renderChart('chart-fiab-mes', !!f, f && {
     type: 'bar',
     data: {
       labels: f.tecnicas,
@@ -481,20 +587,25 @@ function buildFiabilidad() {
     },
     options: { maintainAspectRatio: false, plugins: { legend: { display: false } },
       scales: { x: { grid: { display: false } }, y: gridScale({ beginAtZero: true }) } }
-  });
+  }, `Sin datos de fiabilidad para ${fmtMesLargo(MES_SEL)}`);
 
   // Tabla avance
-  const rows = DATA.fiabilidad_avance.map(r => {
-    const acum = nz(r.acum), pend = nz(r.pendiente);
-    const b = acum > 0.5 ? 'bad' : acum > 0.45 ? 'warn' : 'ok';
-    return `<tr><td class="cell-name">${r.tecnica}</td>
-      <td>${pct(r.real)}</td><td>${pct(r.acum)}</td>
-      <td><span class="badge ${b}">${pct(r.acum)}</span></td>
-      <td>${pct(pend)}</td></tr>`;
-  }).join('');
-  document.getElementById('tabla-fiab').innerHTML = `
-    <thead><tr><th>Técnica</th><th>% Mes</th><th>% Acumulado</th><th>Estado</th><th>Margen pendiente</th></tr></thead>
-    <tbody>${rows}</tbody>`;
+  if (av) {
+    const rows = av.map(r => {
+      const acum = nz(r.acum), pend = nz(r.pendiente);
+      const b = acum > 0.5 ? 'bad' : acum > 0.45 ? 'warn' : 'ok';
+      return `<tr><td class="cell-name">${r.tecnica}</td>
+        <td>${pct(r.real)}</td><td>${pct(r.acum)}</td>
+        <td><span class="badge ${b}">${pct(r.acum)}</span></td>
+        <td>${pct(pend)}</td></tr>`;
+    }).join('');
+    document.getElementById('tabla-fiab').innerHTML = `
+      <thead><tr><th>Técnica</th><th>% Mes</th><th>% Acumulado</th><th>Estado</th><th>Margen pendiente</th></tr></thead>
+      <tbody>${rows}</tbody>`;
+  } else {
+    document.getElementById('tabla-fiab').innerHTML =
+      `<tbody><tr><td>${emptyMsg(`Sin índice de fiabilidad para ${fmtMesLargo(MES_SEL)}`)}</td></tr></tbody>`;
+  }
 }
 
 /* ---------- PAT ---------- */
@@ -518,17 +629,19 @@ function buildPat() {
         return 'Consecución: ' + pct(s.acumulado / s.objetivo); } } } } }
   });
 
-  // Tabla mensual programadas/realizadas
+  // Tabla mensual programadas/realizadas (resalta el mes seleccionado)
   const meses = DATA.pat.meses;
+  const selCls = (m) => m === MES_SEL ? ' class="col-sel"' : '';
   const head = `<thead><tr><th>Subsistema</th><th>Objetivo</th><th>Acum.</th>
-    ${meses.map(m => `<th>${fmtMes(m)}</th>`).join('')}</tr></thead>`;
+    ${meses.map(m => `<th${selCls(m)}>${fmtMes(m)}</th>`).join('')}</tr></thead>`;
   const allSubs = DATA.pat.subsistemas.filter(s => s.objetivo);
   const body = allSubs.map(s => {
     const isTot = s.nombre === 'TOTAL';
-    const cells = meses.map((_, i) => {
+    const cells = meses.map((m, i) => {
       const p = s.programadas[i], r = s.realizadas[i];
-      if (p == null && r == null) return '<td>—</td>';
-      return `<td>${r == null ? '·' : r}/${p == null ? '·' : p}</td>`;
+      const cls = m === MES_SEL ? ' class="col-sel"' : '';
+      if (p == null && r == null) return `<td${cls}>—</td>`;
+      return `<td${cls}>${r == null ? '·' : r}/${p == null ? '·' : p}</td>`;
     }).join('');
     return `<tr class="${isTot ? 'total-row' : ''}">
       <td class="cell-name">${shortName(s.nombre)}</td>

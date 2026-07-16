@@ -74,6 +74,32 @@ body {
 }
 .period-label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
 .period-value { display: block; font-size: 18px; font-weight: 800; color: var(--accent-2); }
+.period-select {
+    display: block; margin-top: 2px;
+    font: inherit; font-size: 17px; font-weight: 800; color: var(--accent-2);
+    background: transparent; border: none; cursor: pointer;
+    padding: 2px 22px 2px 2px; text-transform: uppercase;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230891b2' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right center;
+}
+.period-select:focus { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.period-select option { color: var(--text); font-size: 14px; text-transform: none; }
+
+/* Placeholder "sin datos" en tarjetas de detalle mensual */
+.nodata {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; height: 100%; min-height: 120px; text-align: center;
+    color: var(--muted); font-size: 14px; font-weight: 600;
+    border: 1.5px dashed var(--border); border-radius: 12px; padding: 22px;
+    background: var(--panel-2);
+}
+.nodata .nodata-ico { font-size: 26px; }
+.nodata small { font-weight: 500; font-size: 12.5px; opacity: .85; }
+
+/* Resalte del mes seleccionado en tablas/gráficos anuales */
+.col-sel { background: rgba(59,130,246,.10); }
+thead th.col-sel { background: rgba(59,130,246,.16); }
 
 /* Views */
 .view { display: none; animation: fade .35s ease; }
