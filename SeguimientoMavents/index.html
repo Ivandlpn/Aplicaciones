@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📡 Seguimiento MAVENTS · Eje Este AV</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-icon">📡</span>
+                <div>
+                    <span class="brand-title">MAVENTS</span>
+                    <span class="brand-sub">Seguimiento</span>
+                </div>
+            </div>
+            <nav class="menu" id="menu">
+                <button class="menu-item active" data-view="resumen"><span>📊</span> Resumen</button>
+                <button class="menu-item" data-view="incidencias"><span>🛠️</span> Incidencias</button>
+                <button class="menu-item" data-view="preventivos"><span>🗓️</span> Preventivos</button>
+                <button class="menu-item" data-view="fiabilidad"><span>📈</span> Fiabilidad</button>
+                <button class="menu-item" data-view="pat"><span>📋</span> PAT Anual</button>
+            </nav>
+            <div class="sidebar-foot">
+                <p id="foot-mes"></p>
+                <p class="foot-ute">UTE MAVENTS</p>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="topbar">
+                <div>
+                    <h1 id="page-title">Resumen del proyecto</h1>
+                    <p class="topbar-sub" id="contract-sub"></p>
+                </div>
+                <div class="period-badge">
+                    <span class="period-label">Periodo</span>
+                    <span class="period-value" id="period-value">JUN 2026</span>
+                </div>
+            </header>
+
+            <!-- RESUMEN -->
+            <section class="view active" id="view-resumen">
+                <div class="kpi-grid" id="kpi-grid"></div>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-head"><h3>Avance anual de preventivos por red</h3></div>
+                        <div class="chart-box"><canvas id="chart-prev-anual"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-head"><h3>Incidencias del mes por técnica</h3></div>
+                        <div class="chart-box"><canvas id="chart-inc-mes"></canvas></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><h3>Evolución de incidencias (histórico mensual)</h3></div>
+                    <div class="chart-box tall"><canvas id="chart-hist-total"></canvas></div>
+                </div>
+            </section>
+
+            <!-- INCIDENCIAS -->
+            <section class="view" id="view-incidencias">
+                <div class="card">
+                    <div class="card-head"><h3>Detalle de incidencias del mes por técnica e imputación</h3></div>
+                    <div class="table-wrap">
+                        <table id="tabla-inc-mes"></table>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-head"><h3>Imputación de incidencias del mes</h3></div>
+                        <div class="chart-box"><canvas id="chart-inc-imput"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-head"><h3>Tiempo medio de reparación (min) vs nº incidencias</h3></div>
+                        <div class="chart-box"><canvas id="chart-tiempos"></canvas></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-head">
+                        <h3>Histórico de incidencias por categoría</h3>
+                        <div class="chips" id="hist-year-chips"></div>
+                    </div>
+                    <div class="chart-box tall"><canvas id="chart-hist-cat"></canvas></div>
+                </div>
+            </section>
+
+            <!-- PREVENTIVOS -->
+            <section class="view" id="view-preventivos">
+                <div class="card">
+                    <div class="card-head"><h3>Preventivo anual · previsto vs realizado por red</h3></div>
+                    <div class="table-wrap"><table id="tabla-prev-anual"></table></div>
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-head"><h3>Grado de consecución acumulado</h3></div>
+                        <div class="chart-box"><canvas id="chart-prev-consec"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-head"><h3>Preventivo del mes por centro de mantenimiento</h3></div>
+                        <div class="chart-box"><canvas id="chart-prev-centros"></canvas></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><h3>Ejecución semanal por centro (previsto / ejecutado)</h3></div>
+                    <div class="table-wrap"><table id="tabla-centros"></table></div>
+                </div>
+            </section>
+
+            <!-- FIABILIDAD -->
+            <section class="view" id="view-fiabilidad">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-head"><h3>Fiabilidad · consumo del año vs máximo permitido</h3></div>
+                        <div class="chart-box"><canvas id="chart-fiab-anio"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-head"><h3>Incidencias imputables del mes por técnica</h3></div>
+                        <div class="chart-box"><canvas id="chart-fiab-mes"></canvas></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><h3>Índice de fiabilidad · avance acumulado y margen pendiente</h3></div>
+                    <div class="table-wrap"><table id="tabla-fiab"></table></div>
+                </div>
+            </section>
+
+            <!-- PAT -->
+            <section class="view" id="view-pat">
+                <div class="card">
+                    <div class="card-head"><h3>Programación Anual de Trabajos (PAT) · consecución acumulada por subsistema</h3></div>
+                    <div class="chart-box tall"><canvas id="chart-pat"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><h3>Detalle mensual de actuaciones programadas</h3></div>
+                    <div class="table-wrap"><table id="tabla-pat"></table></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

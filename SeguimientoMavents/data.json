@@ -1,0 +1,1040 @@
+{
+ "contrato": {
+  "titulo": "CONTRATO MANTENIMIENTO Y RENOVACIÓN TELECOMUNICACIONES Y TELEMANDO DE ENERGIA LINEAS DE ALTA VELOCIDAD MADRID-SEVILLA-MALAGA, MADRID-VALLADOLID, MADRID-BARCELONA-FRONTERA FRANCESA Y MADRID-VALENCIA/ALBACETE",
+  "ute": "UTE MAVENTS",
+  "ambito": "COMUNICACIONES FIJAS, GSM-R, OPERADORES, VCA, TELEMANDO Y OPERADORES",
+  "expediente": "2.14/20506.0042",
+  "eje": "EJE ESTE DE ALTA VELOCIDAD",
+  "mes": "2026-06",
+  "anio": 2026,
+  "certificacion": "2026-06"
+ },
+ "incidencias_mes": {
+  "tecnicas": [
+   {
+    "tecnica": "TFJ",
+    "propias": 1,
+    "preventivo": 1,
+    "ajenas": 0,
+    "terceros": 3,
+    "propprev": 2
+   },
+   {
+    "tecnica": "GSM-R",
+    "propias": 7,
+    "preventivo": 8,
+    "ajenas": 0,
+    "terceros": 1,
+    "propprev": 15
+   },
+   {
+    "tecnica": "OP",
+    "propias": 3,
+    "preventivo": 8,
+    "ajenas": 0,
+    "terceros": 0,
+    "propprev": 11
+   },
+   {
+    "tecnica": "VCA",
+    "propias": 11,
+    "preventivo": 5,
+    "ajenas": 1,
+    "terceros": 2,
+    "propprev": 16
+   },
+   {
+    "tecnica": "TME",
+    "propias": 3,
+    "preventivo": 1,
+    "ajenas": 0,
+    "terceros": 0,
+    "propprev": 4
+   }
+  ],
+  "totales": {
+   "propias": 25,
+   "preventivo": 23,
+   "ajenas": 1,
+   "terceros": 6,
+   "propprev": 48
+  },
+  "total": 55
+ },
+ "historico_incidencias": {
+  "2024": {
+   "meses": [
+    "2024-01",
+    "2024-02",
+    "2024-03",
+    "2024-04",
+    "2024-05",
+    "2024-06",
+    "2024-07",
+    "2024-08",
+    "2024-09",
+    "2024-10",
+    "2024-11",
+    "2024-12"
+   ],
+   "cats": {
+    "Comunicaciones Fijas": [
+     3,
+     5,
+     5,
+     3,
+     3,
+     3,
+     10,
+     11,
+     5,
+     8,
+     3,
+     3
+    ],
+    "Comunicaciones Móviles (GSM-R)": [
+     7,
+     6,
+     14,
+     14,
+     8,
+     25,
+     15,
+     6,
+     8,
+     14,
+     5,
+     12
+    ],
+    "Comunicaciones Móviles (Operadores)": [
+     4,
+     2,
+     7,
+     8,
+     9,
+     15,
+     21,
+     8,
+     9,
+     7,
+     5,
+     10
+    ],
+    "PyS": [
+     14,
+     17,
+     20,
+     35,
+     28,
+     18,
+     23,
+     24,
+     18,
+     33,
+     24,
+     17
+    ],
+    "Telemando de Energía": [
+     1,
+     1,
+     1,
+     3,
+     1,
+     2,
+     3,
+     2,
+     2,
+     2,
+     0,
+     8
+    ]
+   }
+  },
+  "2025": {
+   "meses": [
+    "2025-01",
+    "2025-02",
+    "2025-03",
+    "2025-04",
+    "2025-05",
+    "2025-06",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12"
+   ],
+   "cats": {
+    "Comunicaciones Fijas": [
+     3,
+     3,
+     3,
+     4,
+     8,
+     6,
+     6,
+     5,
+     5,
+     5,
+     11,
+     2
+    ],
+    "Comunicaciones Móviles (GSM-R)": [
+     3,
+     5,
+     8,
+     17,
+     14,
+     20,
+     11,
+     10,
+     11,
+     13,
+     8,
+     8
+    ],
+    "Comunicaciones Móviles (Operadores)": [
+     3,
+     4,
+     8,
+     11,
+     10,
+     16,
+     13,
+     11,
+     7,
+     5,
+     8,
+     6
+    ],
+    "PyS": [
+     24,
+     31,
+     29,
+     19,
+     23,
+     23,
+     20,
+     30,
+     10,
+     7,
+     21,
+     33
+    ],
+    "Telemando de Energía": [
+     1,
+     0,
+     1,
+     1,
+     1,
+     2,
+     3,
+     1,
+     1,
+     3,
+     4,
+     9
+    ]
+   }
+  },
+  "2026": {
+   "meses": [
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08",
+    "2026-09",
+    "2026-10",
+    "2026-11",
+    "2026-12"
+   ],
+   "cats": {
+    "Comunicaciones Fijas": [
+     8,
+     7,
+     4,
+     4,
+     5,
+     2,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "Comunicaciones Móviles (GSM-R)": [
+     10,
+     12,
+     6,
+     15,
+     17,
+     15,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "Comunicaciones Móviles (Operadores)": [
+     3,
+     8,
+     12,
+     14,
+     15,
+     11,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "PyS": [
+     16,
+     30,
+     29,
+     13,
+     19,
+     16,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "Telemando de Energía": [
+     0,
+     2,
+     1,
+     0,
+     2,
+     4,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   }
+  }
+ },
+ "tiempos": [
+  {
+   "mes": "2024-01",
+   "tmedio": 49,
+   "ninc": 37
+  },
+  {
+   "mes": "2024-02",
+   "tmedio": 59,
+   "ninc": 32
+  },
+  {
+   "mes": "2024-03",
+   "tmedio": 54,
+   "ninc": 51
+  },
+  {
+   "mes": "2024-04",
+   "tmedio": 35,
+   "ninc": 67
+  },
+  {
+   "mes": "2024-05",
+   "tmedio": 69,
+   "ninc": 52
+  },
+  {
+   "mes": "2024-06",
+   "tmedio": 41,
+   "ninc": 68
+  },
+  {
+   "mes": "2024-07",
+   "tmedio": 61,
+   "ninc": 76
+  },
+  {
+   "mes": "2024-08",
+   "tmedio": 56,
+   "ninc": 56
+  },
+  {
+   "mes": "2024-09",
+   "tmedio": 40,
+   "ninc": 47
+  },
+  {
+   "mes": "2024-10",
+   "tmedio": 53,
+   "ninc": 72
+  },
+  {
+   "mes": "2024-11",
+   "tmedio": 41,
+   "ninc": 45
+  },
+  {
+   "mes": "2024-12",
+   "tmedio": 12,
+   "ninc": 53
+  },
+  {
+   "mes": "2025-01",
+   "tmedio": 44,
+   "ninc": 39
+  },
+  {
+   "mes": "2025-02",
+   "tmedio": 37,
+   "ninc": 48
+  },
+  {
+   "mes": "2025-03",
+   "tmedio": 27,
+   "ninc": 52
+  },
+  {
+   "mes": "2025-04",
+   "tmedio": 21,
+   "ninc": 59
+  },
+  {
+   "mes": "2025-05",
+   "tmedio": 35,
+   "ninc": 61
+  },
+  {
+   "mes": "2025-06",
+   "tmedio": 45,
+   "ninc": 69
+  },
+  {
+   "mes": "2025-07",
+   "tmedio": 31,
+   "ninc": 58
+  },
+  {
+   "mes": "2025-08",
+   "tmedio": 41,
+   "ninc": 62
+  },
+  {
+   "mes": "2025-09",
+   "tmedio": 29,
+   "ninc": 42
+  },
+  {
+   "mes": "2025-10",
+   "tmedio": 34,
+   "ninc": 39
+  },
+  {
+   "mes": "2025-11",
+   "tmedio": 32,
+   "ninc": 57
+  },
+  {
+   "mes": "2025-12",
+   "tmedio": 33,
+   "ninc": 62
+  },
+  {
+   "mes": "2026-01",
+   "tmedio": 19,
+   "ninc": 47
+  },
+  {
+   "mes": "2026-02",
+   "tmedio": 19,
+   "ninc": 66
+  },
+  {
+   "mes": "2026-03",
+   "tmedio": 38,
+   "ninc": 58
+  },
+  {
+   "mes": "2026-04",
+   "tmedio": 35,
+   "ninc": 51
+  },
+  {
+   "mes": "2026-05",
+   "tmedio": 26,
+   "ninc": 62
+  },
+  {
+   "mes": "2026-06",
+   "tmedio": 39,
+   "ninc": 55
+  },
+  {
+   "mes": "2026-07",
+   "tmedio": null,
+   "ninc": null
+  },
+  {
+   "mes": "2026-08",
+   "tmedio": null,
+   "ninc": null
+  },
+  {
+   "mes": "2026-09",
+   "tmedio": null,
+   "ninc": null
+  },
+  {
+   "mes": "2026-10",
+   "tmedio": null,
+   "ninc": null
+  },
+  {
+   "mes": "2026-11",
+   "tmedio": null,
+   "ninc": null
+  },
+  {
+   "mes": "2026-12",
+   "tmedio": null,
+   "ninc": null
+  }
+ ],
+ "preventivo_mes": [
+  {
+   "red": "FIJAS",
+   "previsto": 15,
+   "ejecutado": 15
+  },
+  {
+   "red": "VCA",
+   "previsto": 0,
+   "ejecutado": 0
+  },
+  {
+   "red": "GSM-R",
+   "previsto": 32,
+   "ejecutado": 32
+  },
+  {
+   "red": "OPE",
+   "previsto": 31,
+   "ejecutado": 31
+  },
+  {
+   "red": "TME",
+   "previsto": 0,
+   "ejecutado": 0
+  },
+  {
+   "red": "TOTAL",
+   "previsto": 78,
+   "ejecutado": 78
+  }
+ ],
+ "preventivo_anual": [
+  {
+   "red": "FIJAS",
+   "total": 853,
+   "previsto": 464,
+   "realizado": 464,
+   "desviacion": 0,
+   "acumulado": 0.5439624853458382
+  },
+  {
+   "red": "VCA",
+   "total": 951,
+   "previsto": 489,
+   "realizado": 489,
+   "desviacion": 0,
+   "acumulado": 0.5141955835962145
+  },
+  {
+   "red": "GSM-R",
+   "total": 354,
+   "previsto": 217,
+   "realizado": 217,
+   "desviacion": 0,
+   "acumulado": 0.6129943502824858
+  },
+  {
+   "red": "OPE",
+   "total": 111,
+   "previsto": 111,
+   "realizado": 111,
+   "desviacion": 0,
+   "acumulado": 1
+  },
+  {
+   "red": "TME",
+   "total": 341,
+   "previsto": 132,
+   "realizado": 132,
+   "desviacion": 0,
+   "acumulado": 0.3870967741935484
+  },
+  {
+   "red": "TOTAL",
+   "total": 2610,
+   "previsto": 1413,
+   "realizado": 1413,
+   "desviacion": null,
+   "acumulado": 0.5413793103448276
+  }
+ ],
+ "preventivo_centros": {
+  "nombres": {
+   "CM1": "CM1 (Villarrubia)",
+   "CM2": "CM2 (Cuenca)",
+   "CM3": "CM3 (Requena)",
+   "CM4": "CM4 (Albacete)"
+  },
+  "semanas": [
+   {
+    "semana": 23,
+    "CM1": {
+     "prev": 8,
+     "real": 8
+    },
+    "CM2": {
+     "prev": 5,
+     "real": 5
+    },
+    "CM3": {
+     "prev": 7,
+     "real": 7
+    },
+    "CM4": {
+     "prev": 4,
+     "real": 4
+    },
+    "total": {
+     "prev": 24,
+     "real": 24
+    }
+   },
+   {
+    "semana": 24,
+    "CM1": {
+     "prev": 7,
+     "real": 7
+    },
+    "CM2": {
+     "prev": 5,
+     "real": 5
+    },
+    "CM3": {
+     "prev": 5,
+     "real": 5
+    },
+    "CM4": {
+     "prev": 4,
+     "real": 4
+    },
+    "total": {
+     "prev": 21,
+     "real": 21
+    }
+   },
+   {
+    "semana": 25,
+    "CM1": {
+     "prev": 6,
+     "real": 6
+    },
+    "CM2": {
+     "prev": 6,
+     "real": 6
+    },
+    "CM3": {
+     "prev": 5,
+     "real": 5
+    },
+    "CM4": {
+     "prev": 2,
+     "real": 2
+    },
+    "total": {
+     "prev": 19,
+     "real": 19
+    }
+   },
+   {
+    "semana": 26,
+    "CM1": {
+     "prev": 5,
+     "real": 5
+    },
+    "CM2": {
+     "prev": 3,
+     "real": 3
+    },
+    "CM3": {
+     "prev": 5,
+     "real": 5
+    },
+    "CM4": {
+     "prev": 1,
+     "real": 1
+    },
+    "total": {
+     "prev": 14,
+     "real": 14
+    }
+   }
+  ]
+ },
+ "fiabilidad": {
+  "tecnicas": [
+   "TFJ",
+   "GSMR",
+   "OP",
+   "VCA",
+   "TME"
+  ],
+  "mes": [
+   2,
+   15,
+   11,
+   16,
+   4
+  ],
+  "suma_anio": [
+   30,
+   75,
+   63,
+   123,
+   9
+  ],
+  "max_2026": [
+   61,
+   143,
+   115,
+   280,
+   26
+  ]
+ },
+ "fiabilidad_avance": [
+  {
+   "tecnica": "TME",
+   "real": 0.34615384615384615,
+   "acum": 0.34615384615384615,
+   "pendiente": 0.5
+  },
+  {
+   "tecnica": "VCA",
+   "real": 0.4392857142857143,
+   "acum": 0.4392857142857143,
+   "pendiente": 0.5
+  },
+  {
+   "tecnica": "OPE",
+   "real": 0.5,
+   "acum": 0.5478260869565217,
+   "pendiente": 0.4521739130434783
+  },
+  {
+   "tecnica": "GSM-R",
+   "real": 0.5,
+   "acum": 0.5244755244755245,
+   "pendiente": 0.4755244755244755
+  },
+  {
+   "tecnica": "TFJ",
+   "real": 0.4918032786885246,
+   "acum": 0.4918032786885246,
+   "pendiente": 0.5
+  }
+ ],
+ "pat": {
+  "meses": [
+   "2026-01",
+   "2026-02",
+   "2026-03",
+   "2026-04",
+   "2026-05",
+   "2026-06",
+   "2026-07",
+   "2026-08",
+   "2026-09",
+   "2026-10",
+   "2026-11",
+   "2026-12"
+  ],
+  "subsistemas": [
+   {
+    "nombre": "TELECOMUNICACIONES FIJAS",
+    "objetivo": 853,
+    "acumulado": 464,
+    "programadas": [
+     128,
+     125,
+     118,
+     61,
+     17,
+     15,
+     58,
+     44,
+     83,
+     102,
+     62,
+     40
+    ],
+    "realizadas": [
+     128,
+     123,
+     120,
+     61,
+     17,
+     15,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   {
+    "nombre": "VIDEOVIGILANCIA Y CONTROL DE ACCESOS",
+    "objetivo": 951,
+    "acumulado": 489,
+    "programadas": [
+     117,
+     114,
+     118,
+     41,
+     99,
+     0,
+     0,
+     99,
+     120,
+     144,
+     99,
+     0
+    ],
+    "realizadas": [
+     117,
+     114,
+     118,
+     41,
+     99,
+     0,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   {
+    "nombre": "TELECOMUNICACIONES GSM-R",
+    "objetivo": 354,
+    "acumulado": 217,
+    "programadas": [
+     35,
+     27,
+     37,
+     45,
+     41,
+     32,
+     23,
+     17,
+     22,
+     34,
+     26,
+     15
+    ],
+    "realizadas": [
+     35,
+     27,
+     37,
+     45,
+     41,
+     32,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   {
+    "nombre": "OPERADORES PUBLICOS DE TELEFONÍA MÓVIL",
+    "objetivo": 111,
+    "acumulado": 111,
+    "programadas": [
+     0,
+     0,
+     0,
+     38,
+     42,
+     31,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "realizadas": [
+     0,
+     0,
+     0,
+     38,
+     42,
+     31,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   {
+    "nombre": "TELEMANDO DE ENERGIA",
+    "objetivo": 341,
+    "acumulado": 132,
+    "programadas": [
+     40,
+     42,
+     32,
+     18,
+     0,
+     0,
+     41,
+     25,
+     37,
+     33,
+     42,
+     31
+    ],
+    "realizadas": [
+     40,
+     42,
+     32,
+     18,
+     0,
+     0,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   {
+    "nombre": "CORE GSM-R",
+    "objetivo": null,
+    "acumulado": null,
+    "programadas": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "realizadas": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   {
+    "nombre": "CORE GESTORES",
+    "objetivo": null,
+    "acumulado": null,
+    "programadas": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "realizadas": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   {
+    "nombre": "TOTAL",
+    "objetivo": 2610,
+    "acumulado": 1413,
+    "programadas": [
+     320,
+     308,
+     305,
+     203,
+     199,
+     78,
+     122,
+     185,
+     262,
+     313,
+     229,
+     86
+    ],
+    "realizadas": [
+     320,
+     306,
+     307,
+     203,
+     199,
+     78,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ }
+}
