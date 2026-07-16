@@ -33,7 +33,7 @@ const gridScale = (extra = {}) => ({
 });
 
 /* ---------- Bootstrap ---------- */
-fetch('data.json')
+fetch('data.json?v=3')
   .then(r => r.json())
   .then(d => { DATA = d; init(); })
   .catch(err => {
