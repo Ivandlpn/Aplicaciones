@@ -33,7 +33,7 @@ const gridScale = (extra = {}) => ({
 });
 
 /* ---------- Bootstrap ---------- */
-fetch('data.json?v=3')
+fetch('data.json?v=4')
   .then(r => r.json())
   .then(d => { DATA = d; init(); })
   .catch(err => {
@@ -312,6 +312,28 @@ function buildPreventivos() {
     },
     options: { maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => i.raw + '%' } } },
+      scales: { x: { grid: { display: false } },
+                y: gridScale({ beginAtZero: true, max: 110, ticks: { callback: v => v + '%' } }) } }
+  });
+
+  // Gráfico independiente: barra vertical con el TOTAL ejecutado del mes
+  const totPctVal = consecTot == null ? 0 : +(consecTot * 100).toFixed(1);
+  mkChart('chart-prev-mes-total', {
+    type: 'bar',
+    data: {
+      labels: ['TOTAL'],
+      datasets: [{ label: '% ejecutado', data: [totPctVal],
+        backgroundColor: totPctVal >= 100 ? C.green : totPctVal >= 90 ? C.amber : C.red,
+        borderRadius: 6, barPercentage: 0.45, categoryPercentage: 0.6 }]
+    },
+    options: { maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          label: (i) => i.raw + '%',
+          footer: () => `Ejecutado ${pmTot.ejecutado} de ${pmTot.previsto} previstos`
+        } }
+      },
       scales: { x: { grid: { display: false } },
                 y: gridScale({ beginAtZero: true, max: 110, ticks: { callback: v => v + '%' } }) } }
   });
