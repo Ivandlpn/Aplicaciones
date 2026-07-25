@@ -72,7 +72,7 @@ const gridScale = (extra = {}) => ({
 });
 
 /* ---------- Bootstrap ---------- */
-fetch('data.json?v=5')
+fetch('data.json?v=6')
   .then(r => r.json())
   .then(d => { DATA = d; init(); })
   .catch(err => {
@@ -143,8 +143,9 @@ function setupNav() {
 
 /* ---------- KPIs + Resumen ---------- */
 function buildResumen() {
-  const pa = DATA.preventivo_anual.find(r => r.red === 'TOTAL');
   const md = mesData();
+  const paArr = md.preventivo_anual;
+  const pa = paArr ? paArr.find(r => r.red === 'TOTAL') : null;
   const inc = md.incidencias_mes;
   const fiab = md.fiabilidad;
   const tMes = DATA.tiempos.find(t => t.mes === MES_SEL);
@@ -166,8 +167,8 @@ function buildResumen() {
   }
 
   const kpis = [
-    { label: 'Avance preventivo anual', value: pct(pa.acumulado),
-      hint: `<b>${pa.realizado}</b> de ${pa.total} actuaciones`, glow: 'rgba(59,130,246,.20)' },
+    { label: 'Avance preventivo anual', value: pa ? pct(pa.acumulado) : '—',
+      hint: pa ? `<b>${pa.realizado}</b> de ${pa.total} actuaciones` : 'Detalle no cargado', glow: 'rgba(59,130,246,.20)' },
     { label: 'Incidencias del mes', value: incVal, hint: incHint, glow: 'rgba(34,211,238,.18)' },
     { label: 'T. medio reparación', value: tVal, hint: tHint, glow: 'rgba(167,139,250,.18)' },
     { label: 'Fiabilidad · consumo año', value: fVal, hint: fHint, glow: 'rgba(34,197,94,.18)' },
@@ -179,9 +180,9 @@ function buildResumen() {
       <div class="kpi-hint">${k.hint}</div>
     </div>`).join('');
 
-  // Preventivo anual por red (previsto vs realizado)
-  const redes = DATA.preventivo_anual.filter(r => r.red !== 'TOTAL');
-  mkChart('chart-prev-anual', {
+  // Preventivo anual por red (previsto vs realizado) — acumulado del mes
+  const redes = paArr ? paArr.filter(r => r.red !== 'TOTAL') : [];
+  renderChart('chart-prev-anual', !!paArr, {
     type: 'bar',
     data: {
       labels: redes.map(r => r.red),
@@ -196,7 +197,7 @@ function buildResumen() {
       plugins: { tooltip: { callbacks: { footer: (it) => {
         const r = redes[it[0].dataIndex]; return 'Consecución: ' + pct(r.acumulado); } } } }
     }
-  });
+  }, `Sin acumulado anual para ${fmtMesLargo(MES_SEL)}`);
 
   // Incidencias del mes por técnica (prop+prev) — específico del mes
   const tecs = inc ? inc.tecnicas : [];
@@ -435,43 +436,49 @@ function buildPreventivos() {
     renderChart('chart-prev-mes-total', false, null, `Sin datos de ${fmtMesLargo(MES_SEL)}`);
   }
 
-  const pa = DATA.preventivo_anual;
-  // Barra de avance global anual (realizado vs pendiente)
-  const paTot = pa.find(r => r.red === 'TOTAL');
-  document.getElementById('progress-anual').innerHTML = `
-    <span class="progress-txt">Realizado: <b>${pct(paTot.acumulado)}</b></span>
-    <div class="progress-line"><span style="width:${(nz(paTot.acumulado) * 100).toFixed(1)}%"></span></div>
-    <span class="progress-txt">Pendiente ${DATA.contrato.anio}: <b>${pct(1 - nz(paTot.acumulado))}</b></span>`;
-  const rows = pa.filter(r => r.red !== 'TOTAL').map(r => {
-    const w = Math.min(100, nz(r.acumulado) * 100);
-    return `<tr>
-      <td class="cell-name">${r.red}</td>
-      <td>${r.total}</td><td>${r.previsto}</td><td>${r.realizado}</td>
-      <td>${nz(r.desviacion)}</td>
-      <td><span class="pct-cell">${pct(r.acumulado)}<span class="bar-mini"><span style="width:${w}%"></span></span></span></td>
-    </tr>`;
-  }).join('');
-  const tot = pa.find(r => r.red === 'TOTAL');
-  document.getElementById('tabla-prev-anual').innerHTML = `
-    <thead><tr><th>Red</th><th>Total anual</th><th>Previsto</th><th>Realizado</th><th>Desviación</th><th>% Consecución</th></tr></thead>
-    <tbody>${rows}
-      <tr class="total-row"><td>TOTAL</td><td>${tot.total}</td><td>${tot.previsto}</td>
-      <td>${tot.realizado}</td><td>${nz(tot.desviacion)}</td><td>${pct(tot.acumulado)}</td></tr>
-    </tbody>`;
+  // Preventivo anual (acumulado hasta el mes seleccionado)
+  const pa = mesData().preventivo_anual;
+  if (pa) {
+    const paTot = pa.find(r => r.red === 'TOTAL');
+    document.getElementById('progress-anual').innerHTML = `
+      <span class="progress-txt">Realizado: <b>${pct(paTot.acumulado)}</b></span>
+      <div class="progress-line"><span style="width:${(nz(paTot.acumulado) * 100).toFixed(1)}%"></span></div>
+      <span class="progress-txt">Pendiente ${DATA.contrato.anio}: <b>${pct(1 - nz(paTot.acumulado))}</b></span>`;
+    const rows = pa.filter(r => r.red !== 'TOTAL').map(r => {
+      const w = Math.min(100, nz(r.acumulado) * 100);
+      return `<tr>
+        <td class="cell-name">${r.red}</td>
+        <td>${r.total}</td><td>${r.previsto}</td><td>${r.realizado}</td>
+        <td>${nz(r.desviacion)}</td>
+        <td><span class="pct-cell">${pct(r.acumulado)}<span class="bar-mini"><span style="width:${w}%"></span></span></span></td>
+      </tr>`;
+    }).join('');
+    document.getElementById('tabla-prev-anual').innerHTML = `
+      <thead><tr><th>Red</th><th>Total anual</th><th>Previsto</th><th>Realizado</th><th>Desviación</th><th>% Consecución</th></tr></thead>
+      <tbody>${rows}
+        <tr class="total-row"><td>TOTAL</td><td>${paTot.total}</td><td>${paTot.previsto}</td>
+        <td>${paTot.realizado}</td><td>${nz(paTot.desviacion)}</td><td>${pct(paTot.acumulado)}</td></tr>
+      </tbody>`;
 
-  // Consecución acumulada por red
-  const redes = pa.filter(r => r.red !== 'TOTAL');
-  mkChart('chart-prev-consec', {
-    type: 'bar',
-    data: {
-      labels: redes.map(r => r.red),
-      datasets: [{ label: '% consecución acumulada', data: redes.map(r => +(nz(r.acumulado) * 100).toFixed(1)),
-        backgroundColor: redes.map(r => nz(r.acumulado) >= 0.5 ? C.green : C.amber), borderRadius: 6 }]
-    },
-    options: { maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => i.raw + '%' } } },
-      scales: { x: { grid: { display: false } }, y: gridScale({ beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } }) } }
-  });
+    // Consecución acumulada por red
+    const redes = pa.filter(r => r.red !== 'TOTAL');
+    renderChart('chart-prev-consec', true, {
+      type: 'bar',
+      data: {
+        labels: redes.map(r => r.red),
+        datasets: [{ label: '% consecución acumulada', data: redes.map(r => +(nz(r.acumulado) * 100).toFixed(1)),
+          backgroundColor: redes.map(r => nz(r.acumulado) >= 0.5 ? C.green : C.amber), borderRadius: 6 }]
+      },
+      options: { maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => i.raw + '%' } } },
+        scales: { x: { grid: { display: false } }, y: gridScale({ beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } }) } }
+    });
+  } else {
+    document.getElementById('progress-anual').innerHTML = '';
+    document.getElementById('tabla-prev-anual').innerHTML =
+      `<tbody><tr><td>${emptyMsg(`Sin acumulado anual para ${fmtMesLargo(MES_SEL)}`)}</td></tr></tbody>`;
+    renderChart('chart-prev-consec', false, null, `Sin acumulado anual para ${fmtMesLargo(MES_SEL)}`);
+  }
 
   // Preventivo del mes por centro — específico del mes
   const cen = mesData().preventivo_centros;
